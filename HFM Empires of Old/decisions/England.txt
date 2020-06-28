@@ -1,0 +1,307 @@
+political_decisions = {
+	end_of_the_UK = {
+		potential = {
+			tag = ENG
+			NOT = { has_global_flag = united_kingdom_no_more }
+			NOT = { has_country_flag = dismantling_treaty }
+			SCO = {
+				exists = yes
+				NOT = { vassal_of = ENG }
+			}
+			IRE = {
+				exists = yes
+				NOT = { vassal_of = ENG }
+			}
+		}
+	
+		allow = {
+			war = no
+			SCO = {
+				exists = yes
+				NOT = { vassal_of = ENG }
+			}
+			IRE = {
+				exists = yes
+				NOT = { vassal_of = ENG }
+			}
+		}
+	
+		effect = {
+			set_global_flag = united_kingdom_no_more
+			ENG_300 = { add_core = ENL }
+			ENG_277 = { add_core = ENL }
+			ENG_280 = { add_core = ENL }
+			ENG_284 = { add_core = ENL }
+			ENG_291 = { add_core = ENL }
+			ENG_296 = { add_core = ENL }
+			517 = { add_core = ENL }
+			ENG = {
+				all_core = { remove_core = ENG }
+			}
+			change_tag = ENL
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
+	reclaim_the_UK = {
+		picture = reform_the_UK
+		potential = {
+			tag = ENL
+			NOT = { has_country_flag = reclaimed_the_uk }
+		}
+		
+		allow = {
+			war = no
+			is_disarmed = no
+			has_recently_lost_war = no
+			is_greater_power = yes
+			OR = {
+				owns = 269
+				war_policy = jingoism
+			}
+		}
+		
+		effect = {
+			set_country_flag = reclaimed_the_uk
+			prestige = 10
+			SCO = {
+				all_core = { add_core = ENL }
+			}
+			WHA = {
+				all_core = { add_core = ENL }
+			}
+			ENG_254 = { add_core = ENL }
+			any_country = {
+				limit = {
+					any_owned_province = {
+						OR = {
+							is_core = SCO
+							is_core = WHA
+							region = ENG_254
+						}
+					}
+					NOT = { tag = THIS }
+				}
+				leave_alliance = THIS
+				relation = { who = THIS value = -100 }
+			}
+		}
+	}
+	
+	reform_the_UK = {
+		potential = {
+			tag = ENL
+			has_country_flag = reclaimed_the_uk
+			NOT = { exists = ENG }
+		}
+		
+		allow = {
+			war = no
+			owns = 300
+			269 = {
+				OR = {
+					owned_by = THIS
+					owner = { in_sphere = THIS }
+				}
+			}
+			273 = {
+				OR = {
+					owned_by = THIS
+					owner = { in_sphere = THIS }
+				}
+			}
+			254 = {
+				OR = {
+					owned_by = THIS
+					owner = { in_sphere = THIS }
+				}
+			}
+		}
+		
+		effect = {
+			prestige = 20
+			all_core = {
+				remove_core = ENL
+				add_core = ENG
+			}
+			change_tag = ENG
+			random_country = {
+				limit = {
+					tag = SCO
+					exists = yes
+					ai = yes
+				}
+				SCO = { all_core = { add_core = ENG } }
+				THIS = { inherit = SCO }
+			}
+			random_country = {
+				limit = {
+					tag = SCO
+					exists = yes
+					ai = no
+				}
+				country_event = 11101
+			}
+			random_country = {
+				limit = {
+					tag = WHA
+					exists = yes
+					ai = yes
+				}
+				THIS = { inherit = WHA }
+			}
+			random_country = {
+				limit = {
+					tag = WHA
+					exists = yes
+					ai = no
+				}
+				country_event = 11101
+			}			
+			any_country = {
+				limit = {
+					in_sphere = THIS
+					NOT = {
+						tag = THIS
+						tag = SCO
+						tag = WHA
+					}
+				}
+				any_owned = {
+					limit = {
+						OR = {
+							is_core = SCO
+							is_core = WHA
+							region = ENG_254
+						}
+					}
+					secede_province = THIS
+				}
+			}
+		}
+	}
+	
+	declaration_of_independence = {
+		potential = {
+			NOT = { has_country_flag = full_independence_achieved }
+			OR = {
+				AND = {
+					tag = SCO
+					any_owned_province = { is_core = SCO is_core = ENG }
+				}
+				AND = {
+					tag = RGS
+					any_owned_province = { is_core = RGS is_core = BRZ }
+				}
+				AND = {
+					tag = CAT
+					any_owned_province = {
+						is_core = CAT
+						OR = {
+							is_core = SPA
+							is_core = SPC
+							is_core = IBR
+						}
+					}
+				}
+				AND = {
+					tag = BSQ
+					any_owned_province = {
+						is_core = BSQ
+						OR = {
+							is_core = SPA
+							is_core = SPC
+							is_core = IBR
+						}
+					}
+				}
+			}
+		}
+	
+		allow = {
+			war = no
+			nationalism_n_imperialism = 1
+			is_greater_power = yes
+			all_core = { owned_by = THIS }
+			OR = {
+				AND = {
+					tag = SCO
+					ENG = {
+						OR = {
+							AND = {
+								is_disarmed = yes
+								truce_with = THIS
+							}
+							exists = no
+						}
+					}
+				}
+				AND = {
+					tag = RGS
+					BRZ = { is_disarmed = yes truce_with = THIS }
+				}
+				AND = {
+					OR = {
+						tag = CAT
+						tag = BSQ
+					}
+					SPA = {
+						OR = {
+							AND = {
+								is_disarmed = yes
+								truce_with = THIS
+							}
+							exists = no
+						}
+					}
+					SPC = {
+						OR = {
+							AND = {
+								is_disarmed = yes
+								truce_with = THIS
+							}
+							exists = no
+						}
+					}
+					IBR = {
+						OR = {
+							AND = {
+								is_disarmed = yes
+								truce_with = THIS
+							}
+							exists = no
+						}
+					}
+				}
+			}
+		}
+	
+		effect = {
+			set_country_flag = full_independence_achieved
+			prestige = 5
+			random_owned = {
+				limit = { owner = { tag = SCO } }
+				owner = { all_core = { remove_core = ENG } }
+			}
+			random_owned = {
+				limit = { owner = { tag = CAT } }
+				owner = {
+					all_core = { remove_core = SPA }
+					all_core = { remove_core = SPC }
+					all_core = { remove_core = IBR }
+				}
+			}
+			random_owned = {
+				limit = { owner = { tag = BSQ } }
+				owner = {
+					all_core = { remove_core = SPA }
+					all_core = { remove_core = SPC }
+					all_core = { remove_core = IBR }
+				}
+			}
+		}
+		ai_will_do = { factor = 1 }
+	}
+}

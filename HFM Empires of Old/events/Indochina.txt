@@ -1,0 +1,1114 @@
+#############################################################################
+# French conquest of Indochina
+#############################################################################
+
+country_event = {
+	id = 95639
+	title = "EVTNAME95640" #Persecution of French Missionaries
+	desc = "EVTDESC95639"
+	picture = "missionaries"
+	
+	trigger = {
+		owns = 1380
+		civilized = no
+		is_vassal = no
+		OR = { 
+			FRA = {
+				exists = yes
+				war = no
+				is_disarmed = no
+				nationalism_n_imperialism = 1
+				is_greater_power = yes
+				NOT = {
+					alliance_with = THIS
+					truce_with = THIS
+					war_exhaustion = 20
+					war_policy = pacifism
+					has_country_flag = cochinchina_campaign
+				}
+			}
+			BOR = {
+				exists = yes
+				war = no
+				is_disarmed = no
+				nationalism_n_imperialism = 1
+				is_greater_power = yes
+				NOT = {
+					alliance_with = THIS
+					truce_with = THIS
+					war_exhaustion = 20
+					war_policy = pacifism
+					has_country_flag = cochinchina_campaign
+				}
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 20
+		modifier = {
+			factor = 0.5
+			has_global_flag = berlin_conference
+		}
+		modifier = {
+			factor = 0.5
+			neighbour = FRA
+		}
+		modifier = {
+			factor = 0.5
+			neighbour = BOR
+		}
+	}
+	
+	option = {
+		name = "EVT95639OPTA"
+		random_country = {
+			limit = {
+				primary_culture = french
+				is_greater_power = yes
+				exists = yes
+			}
+			country_event = 95640
+		}
+	}
+}
+
+country_event = {
+	id = 95640
+	title = "EVTNAME95640" #Persecution of French Missionaries - French Response
+	desc = "EVTDESC95640"
+	picture = "missionaries"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT95640OPTA"
+		set_country_flag = cochinchina_campaign
+		FROM = { country_event = 95641 }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "EVT95640OPTB"
+		prestige = -20
+		badboy = -2
+		relation = {
+			who = FROM
+			value = 50
+		}
+		diplomatic_influence = {
+			who = FROM
+			value = 100
+		}
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 95641
+	title = "EVTNAME95641" #The French Demand
+	desc = "EVTDESC95641"
+	picture = "missionaries"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT95641OPTA"
+		prestige = -10
+		relation = { who = FROM value = -50 }
+		any_pop = { militancy = 3 }
+		any_owned = {
+			limit = { region = DAI_1380 }
+			secede_province = FROM
+			1380 = { trade_goods = coffee }
+		}
+		ai_chance = { factor = 10 }
+	}
+	
+	option = {
+		name = "EVT95641OPTB"
+		prestige = 5
+		any_pop = { militancy = -2 }
+		FROM = { country_event = 95642 }
+		ai_chance = { factor = 90 }
+	}
+}
+
+country_event = {
+	id = 95642
+	title = "EVTNAME95642"
+	desc = "EVTDESC95642"
+	news = yes
+	news_title = "EVTNAME95641_NEWS_TITLE"
+	news_desc_long = "EVTDESC95641_NEWS_LONG"
+	news_desc_medium = "EVTDESC95641_NEWS_MEDIUM"
+	news_desc_short = "EVTDESC95641_NEWS_SHORT"
+	picture = "administration"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT95642OPTA"
+		relation = {
+			who = FROM
+			value = -200
+		}
+		diplomatic_influence = {
+			who = FROM
+			value = -200
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					NOT = { has_global_flag = berlin_conference }
+				}
+			}
+			owner = {
+				casus_belli = {
+					target = FROM
+					type = demand_concession_NI_casus_belli
+					months = 60
+				}
+				war = {
+					target = FROM
+					attacker_goal = {
+						casus_belli = demand_concession_NI_casus_belli
+						state_province_id = 1380
+					}
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					has_global_flag = berlin_conference
+				}
+			}
+			owner = {
+				casus_belli = {
+					target = FROM
+					type = demand_concession_BC_casus_belli
+					months = 60
+				}
+				war = {
+					target = FROM
+					attacker_goal = {
+						casus_belli = demand_concession_BC_casus_belli
+						state_province_id = 1380
+					}
+				}
+			}
+		}
+	}
+}
+
+#Events leading to the Cambodia's release by Dai Nam
+
+country_event = {
+	id = 95645
+	title = "EVTNAME95645" #The Suzerainty of Cambodia
+	desc = "EVTDESC95645"
+	picture = "asian_administration"
+	
+	trigger = {
+		tag = CAM
+		civilized = no
+		DAI = {
+			is_our_vassal = THIS
+			war = no
+			civilized = no
+		}
+		1380 = { #Saigon
+			NOT = { owned_by = DAI }
+			owner = {
+				neighbour = THIS
+				war = no
+				is_disarmed = no
+				is_greater_power = yes
+				NOT = {
+					war_policy = pacifism
+					truce_with = DAI
+				}
+			}
+		}
+		NOT = {
+			number_of_states = 2
+			has_country_flag = asked_for_french_protection
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 50
+		modifier = {
+			factor = 0.5
+			year = 1865
+		}
+		modifier = {
+			factor = 0.5
+			has_global_flag = berlin_conference
+		}
+		modifier = {
+			factor = 0.5
+			DAI = { exists = no }
+		}
+	}
+	
+	option = {
+		name = "EVT95645OPTA"
+		random_country = {
+			limit = {
+				is_greater_power = yes
+				owns = 1380 #Saigon
+			}
+			country_event = 95646
+		}
+		ai_chance = {
+			factor = 95
+		}
+	}
+	
+	option = {
+		name = "EVT95645OPTB"
+		DAI = {
+			release_vassal = CAM
+			leave_alliance = CAM
+			relation = { who = CAM value = -200 }
+			casus_belli = {
+				target = THIS
+				type = conquest
+				months = 60
+			}
+		}
+		any_neighbor_country = {
+			limit = {
+				civilized = no
+				NOT = { tag = DAI }
+			}
+			casus_belli = {
+				target = THIS
+				type = conquest
+				months = 30
+			}
+		}
+		ai_chance = {
+			factor = 5
+		}
+	}
+}
+
+country_event = {
+	id = 95646
+	title = "EVTNAME95646" #The King of Cambodia
+	desc = "EVTDESC95646"
+	picture = "deliberation"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT95646OPTA"
+		diplomatic_influence = { who = CAM value = 200 }
+		relation = { who = CAM value = 100 }
+		DAI = { country_event = 95647 }
+		ai_chance = { factor = 100 }
+	}
+	
+	option = {
+		name = "EVT95646OPTB"
+		CAM = { country_event = 95649 }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 95647
+	title = "EVTNAME95645" #The Suzerainty of Cambodia - To Dai Nam
+	desc = "EVTDESC95645"
+	picture = "asian_administration"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT95647OPTA"
+		random_country = {
+			limit = {
+				owns = 1380 #Saigon
+				is_greater_power = yes
+			}
+			create_vassal = CAM
+			relation = { who = THIS value = -100 }
+			relation = { who = SIA value = -100 }
+		}
+		ai_chance = { factor = 75 }
+	}
+	
+	option = {
+		name = "EVT95647OPTB"
+		FROM = { country_event = 95648 }
+		ai_chance = { factor = 25 }
+	}
+}
+
+country_event = {
+	id = 95648
+	title = "EVTNAME95648"
+	desc = "EVTDESC95648"
+	picture = "asian_administration"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT95648OPTA"
+		war = {
+			target = DAI
+			attacker_goal = {
+				casus_belli = release_puppet
+				country = CAM
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 95649
+	title = "EVTNAME95649"
+	desc = "EVTDESC95649"
+	picture = "asian_administration"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT95649OPTA"
+		DAI = {
+			release_vassal = CAM
+			leave_alliance = CAM
+			relation = { who = CAM value = -200 }
+			casus_belli = {
+				target = THIS
+				type = conquest
+				months = 60
+			}
+		}
+		any_neighbor_country = {
+			limit = {
+				civilized = no
+				NOT = { tag = DAI }
+			}
+			casus_belli = {
+				target = THIS
+				type = conquest
+				months = 30
+			}
+		}
+		ai_chance = { factor = 90 }
+	}
+	
+	option = {
+		name = "EVT95649OPTB"
+		prestige = -10
+		any_pop = { militancy = 4 }
+		ai_chance = { factor = 10 }
+	}
+}
+
+# Indochina campaigns
+
+country_event = {
+	id = 95650
+	title = "EVTNAME95650" #French Indochina
+	desc = "EVTDESC95650"
+	picture = "deliberation"
+
+	trigger = {
+		owns = 1380 #Saigon
+		war = no
+		is_disarmed = no
+		is_greater_power = yes
+		capital_scope = { continent = europe }
+		NOT = { tag = TUR }
+		nationalism_n_imperialism = 1
+		has_global_flag = berlin_conference
+		any_neighbor_country = {
+			civilized = no
+			is_vassal = no
+			OR = {
+				primary_culture = lao
+				primary_culture = khmer
+				primary_culture = vietnamese
+				AND = {
+					tag = SIA
+					any_owned_province = {
+						OR = {
+							is_core = DAI
+							is_core = CAM
+							is_core = LUA
+							is_core = WIA
+						}
+					}
+				}
+			}
+			NOT = {
+				in_sphere = THIS
+				truce_with = THIS
+			}
+		}
+		NOT = {
+			has_country_flag = no_more_indochina
+			has_country_modifier = punitive_effects
+			war_policy = pacifism
+			casus_belli = DAI
+			casus_belli = CAM
+			casus_belli = LUA
+			casus_belli = WIA
+			casus_belli = LXA
+			casus_belli = SIA
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 6
+		
+		modifier = {
+			factor = 0.75
+			revolution_n_counterrevolution = 1
+		}
+		
+		modifier = {
+			factor = 0.5
+			mass_politics = 1
+		}
+	}
+
+	option = {
+		name = "EVT95650OPTA"
+		badboy = 2
+		random_country = {
+			limit = {
+				capital_scope = { continent = indochina }
+				OR = {
+					primary_culture = lao
+					primary_culture = khmer
+					primary_culture = vietnamese
+					AND = {
+						tag = SIA
+						NOT = { civilization_progress = 0.75 }
+						any_owned_province = {
+							OR = {
+								is_core = DAI
+								is_core = CAM
+								is_core = LUA
+								is_core = WIA
+							}
+						}
+					}
+				}
+				is_vassal = no
+				exists = yes
+				civilized = no
+				neighbour = THIS
+				NOT = {
+					number_of_states = 2
+					truce_with = THIS
+					in_sphere = THIS
+				}
+			}
+			leave_alliance = THIS
+			relation = {
+				who = THIS
+				value = -100
+			}
+			add_casus_belli = {
+				target = THIS
+				type = establish_protectorate_BC_casus_belli
+				months = 60
+			}
+		}
+		random_country = {
+			limit = {
+				capital_scope = { continent = indochina }
+				OR = {
+					primary_culture = lao
+					primary_culture = khmer
+					is_vassal = no
+					AND = {
+						tag = SIA
+						NOT = { civilization_progress = 0.75 }
+						any_owned_province = {
+							OR = {
+								is_core = DAI
+								is_core = CAM
+								is_core = LUA
+								is_core = WIA
+							}
+						}
+					}
+				}
+				exists = yes
+				civilized = no
+				neighbour = THIS
+				number_of_states = 2
+				NOT = {
+					truce_with = THIS
+					in_sphere = THIS
+				}
+			}
+			leave_alliance = THIS
+			relation = {
+				who = THIS
+				value = -100
+			}
+			add_casus_belli = {
+				target = THIS
+				type = demand_concession_BC_casus_belli
+				months = 60
+			}
+		}
+		random_country = {
+			limit = {
+				tag = DAI
+				exists = yes
+				civilized = no
+				neighbour = THIS
+				number_of_states = 2
+				is_vassal = no
+				NOT = {
+					truce_with = THIS
+					in_sphere = THIS
+				}
+			}
+			leave_alliance = THIS
+			relation = {
+				who = THIS
+				value = -100
+			}
+			add_casus_belli = {
+				target = THIS
+				type = demand_concession_BC_casus_belli
+				months = 60
+			}
+			THIS = { diplomatic_influence = { who = DAI value = -200 } }
+		}
+		
+		random_country = {
+			limit = {
+				tag = DAI
+				exists = yes
+				civilized = no
+				neighbour = THIS
+				NOT = { number_of_states = 2 }
+				is_vassal = no
+				NOT = {
+					truce_with = THIS
+					in_sphere = THIS
+				}
+			}
+			leave_alliance = THIS
+			relation = {
+				who = THIS
+				value = -100
+			}
+			add_casus_belli = {
+				target = THIS
+				type = establish_protectorate_BC_casus_belli
+				months = 60
+			}
+			THIS = { diplomatic_influence = { who = DAI value = -200 } }
+		}
+		
+		
+		ai_chance = {
+			factor = 95
+			modifier = {
+				factor = 0
+				badboy = 0.92
+			}
+		}
+	}
+	option = {
+		name = "EVT95650OPTB"
+		prestige = -5
+		any_neighbor_country = {
+			limit = {
+				capital_scope = { continent = indochina }
+				OR = {
+					primary_culture = lao
+					primary_culture = khmer
+					primary_culture = vietnamese
+					is_vassal = no
+					AND = {
+						tag = SIA
+						any_owned_province = {
+							OR = {
+								is_core = DAI
+								is_core = CAM
+								is_core = LUA
+								is_core = WIA
+							}
+						}
+					}
+				}
+				exists = yes
+				civilized = no
+				NOT = {
+					truce_with = THIS
+					in_sphere = THIS
+				}
+			}
+			relation = {
+				who = THIS
+				value = 25
+			}
+		}
+		ai_chance = {
+			factor = 5
+		}
+	}
+	option = {
+		name = "EVT95650OPTC"
+		prestige = -10
+		set_country_flag = no_more_indochina
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+# Siamese Border Treaty
+
+country_event = {
+	id = 95652
+	title = "EVTNAME95641" #The French Demand
+	desc = "EVTDESC95652"
+	picture = "asian_administration"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT95652OPTA"
+		prestige = -20
+		FROM = { country_event = 95654 }
+		any_pop = {
+			limit = { is_primary_culture = yes }
+			militancy = 3
+		}
+		1365 = { remove_core = CAM }
+		random_owned = {
+			limit = { province_id = 1366 any_neighbor_province = { owned_by = FROM } }
+			remove_core = SIA
+			secede_province = FROM
+		}
+		any_owned = {
+			limit = {
+				OR = {
+					is_core = LUA
+					is_core = WIA
+					is_core = CHK
+				}
+				any_neighbor_province = { owned_by = FROM }
+			}
+		remove_core = SIA
+		secede_province = FROM
+		}
+		
+		random_country = {
+			limit = {
+				tag = CHK
+				exists = yes
+				neighbour = FROM
+				ai = yes
+				vassal_of = THIS
+			}
+		annex_to = FROM
+		}
+		
+		any_owned = {
+			limit = { is_core = LUA }
+			remove_core = SIA
+			secede_province = LUA
+		}
+		any_owned = {
+			limit = { is_core = CHK }
+			remove_core = SIA
+			secede_province = CHK
+		}
+		any_owned = {
+			limit = { is_core = WIA }
+			remove_core = SIA
+			secede_province = WIA
+		}
+		any_owned = {
+			limit = {
+				is_core = CAM
+				CAM = { exists = no }
+			}
+			secede_province = FROM
+		}
+		any_owned = {
+			limit = {
+				is_core = CAM
+				CAM = { exists = yes }
+			}
+			secede_province = CAM
+		}
+		any_owned = {
+			limit = {
+				is_core = DAI
+				DAI = { exists = no }
+			}
+			secede_province = FROM
+		}
+		any_owned = {
+			limit = {
+				is_core = DAI
+				DAI = { exists = yes }
+			}
+			secede_province = DAI
+		}
+		ai_chance = {
+			factor = 95
+			modifier = {
+				factor = 0.25
+				part_of_sphere = yes
+				NOT = { in_sphere = FROM }
+			}
+		}
+	}
+	
+	option = {
+		name = "EVT95652OPTB"
+		FROM = { country_event = 95653 }
+		prestige = 10
+		any_pop = {
+			limit = { is_primary_culture = yes }
+			militancy = -3
+		}
+		ai_chance = {
+			factor = 5
+			modifier = {
+				factor = 0
+				in_sphere = FROM
+			}
+			modifier = {
+				factor = 4
+				civilized = yes
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 95653
+	title = "EVTNAME95653"
+	desc = "EVTDESC95653"
+	picture = "deliberation"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT95653OPTA"
+		prestige = -10
+		relation = { who = FROM value = -200 }
+		diplomatic_influence = { who = FROM value = -100 }
+		casus_belli = {
+			target = SIA
+			type = free_peoples
+			months = 60
+		}
+		casus_belli = {
+			target = SIA
+			type = cut_down_to_size
+			months = 60
+		}
+		war = {
+			target = SIA
+			attacker_goal = { casus_belli = cut_down_to_size }
+		}
+	}
+}
+
+country_event = {
+	id = 95654
+	title = "EVTNAME95654"
+	desc = "EVTDESC95654"
+	picture = "treaty"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT95654OPTA"
+		prestige = 20
+		relation = { who = SIA value = 200 }
+		diplomatic_influence = { who = SIA value = 100 }
+		diplomatic_influence = { who = LUA value = 200 }
+		diplomatic_influence = { who = WIA value = 200 }	
+		any_owned = {
+			limit = {
+				OR = {
+					region = SIA_1358
+					region = SIA_1392
+					region = SIA_1355
+				}
+			}
+			secede_province = SIA
+		}
+	}
+}
+
+# Vietnamese Unequal Treaty
+
+country_event = {
+	id = 95655
+	title = "EVTNAME95655" #The Unequal Treaty
+	desc = "EVTDESC95655"
+	picture = "Opiumwar"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT95655OPTA"
+		FROM = { country_event = 95656 }
+		prestige = -10
+		random_owned = {
+			limit = { owner = { has_country_modifier = uncivilized_isolationism }}
+			owner = {
+				remove_country_modifier = uncivilized_isolationism
+				add_country_modifier = {
+					name = "western_influences"
+					duration = -1
+				}
+			}
+		}
+		random_owned = {
+			limit = { NOT = { owner = { is_culture_group = east_asian } } }
+			owner = {
+				remove_country_modifier = isolationist_foreign_naval_officers
+				remove_country_modifier = isolationist_foreign_naval_schools
+				remove_country_modifier = isolationist_foreign_officers
+				remove_country_modifier = isolationist_foreign_training
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					NOT = { owns = 1380 }
+					owns = 1375
+				}
+			}
+			owner = {
+				any_owned = {
+					limit = { region = DAI_1375 }
+					secede_province = FROM
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { owns = 1380 } }
+			owner = {
+				any_owned = {
+					limit = { region = DAI_1380 }
+					secede_province = FROM
+				}
+			}
+		}
+		ai_chance = { factor = 100 }
+	}
+	
+	option = {
+		name = "EVT95655OPTB"
+		FROM = { country_event = 95657 }
+		war_exhaustion = 20
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+country_event = {
+	id = 95656
+	title = "EVTNAME95656"
+	desc = "EVTDESC95656"
+	news = yes
+	news_title = "EVTNAME95656_NEWS_TITLE"
+	news_desc_long = "EVTDESC95656_NEWS_LONG"
+	news_desc_medium = "EVTDESC95656_NEWS_MEDIUM"
+	news_desc_short = "EVTDESC95656_NEWS_SHORT"
+	picture = "asian_administration"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT95656OPTA"
+		clr_country_flag = negotiate_unequal_treaty
+		FROM = { clr_country_flag = negotiate_unequal_treaty }
+		any_country = {
+			limit = {
+				alliance_with = THIS
+				war_with = FROM
+			}
+			end_war = FROM
+		}
+		end_war = FROM
+	}
+}
+
+country_event = { #The Dai Viet Emperor has Refused!
+	id = 95657
+	title = "EVTNAME95657"
+	desc = "EVTDESC95657"
+	picture = "Opiumwar"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT95657OPTA"
+		FROM = { clr_country_flag = negotiate_unequal_treaty }
+		casus_belli = {
+			target = FROM
+			type = humiliate
+			months = 100
+		}
+	}
+}
+
+
+#Protectorate over Luang Prabang and the Black Flag Army
+country_event = {
+	id = 95659
+	title = "EVTNAME95659"
+	desc = "EVTDESC95659"
+	picture = "black_flag_army"
+	
+	trigger = {
+		LUA = {
+			exists = yes
+			part_of_sphere = no
+			ai = yes
+			is_vassal = no
+			neighbour = THIS
+		}
+		year = 1870
+		is_greater_power = yes
+		owns = 1374
+		NOT = { is_culture_group = east_asian }
+		NOT = { is_culture_group = southeast_asian }
+	}
+	
+	fire_only_once = yes
+	mean_time_to_happen = { months = 12 }
+	
+	option = {
+		name = "EVT95659OPTA"
+		inherit = LUA
+		ai_chance = { factor = 100 }
+	}
+	
+	option = {
+		name = "EVT95659OPTB"
+		badboy = -1
+		ai_chance = { factor = 0 }
+	}
+}
+
+#Franco-Siamese War
+country_event = {
+	id = 95660
+	title = "EVTNAME95660"
+	desc = "EVTDESC95660"
+	picture = "ships_to_bangkok"
+	
+	trigger = {
+		owns = 1356
+		1356 = { is_colonial = yes }
+		is_greater_power = yes
+		SIA = {
+			civilized = no
+			ai = yes
+			neighbour = THIS
+		OR = {
+			any_owned_province = { is_core = WIA }
+			any_owned_province = { is_core = LUA }
+			any_owned_province = { is_core = CHK }
+			}
+		}
+		revolution_n_counterrevolution = 1
+	}
+	
+	fire_only_once = yes
+	mean_time_to_happen = { 
+		months = 36 
+		modifier = {
+			factor = 0.9
+			year = 1885
+		}
+		
+		modifier = {
+			factor = 0.2
+			year = 1890
+		}
+	}
+	
+	option = {
+		name = "EVT95660OPTA"
+		set_country_flag = take_laos
+		relation = { who = SIA value = -400 }
+		diplomatic_influence = { who = SIA value = -400 }
+		casus_belli ={
+			target = SIA
+			type = cut_down_to_size
+			months = 50
+		}
+		ai_chance = { factor = 100 }
+	}
+	
+	option = {
+		name = "EVT95660OPTB"
+		prestige = -5
+		ai_chance = { factor = 0 }
+	}
+}
+
+#Ending of Franco-Siamese War
+country_event = {
+	id = 95661
+	title = "EVTNAME95661"
+	desc = "EVTDESC95661"
+	picture = "ships_to_bangkok"
+	
+	trigger = {
+		is_greater_power = yes
+		war = no
+		has_country_flag = take_laos
+		truce_with = SIA
+		SIA = { is_disarmed = yes }
+	}
+	
+	fire_only_once = yes
+	mean_time_to_happen = { days = 1 }
+	
+	option = {
+		name = "EVT95661OPTA"
+		any_country = {
+			limit = {
+				primary_culture = lao
+				vassal_of = SIA
+			}
+			annex_to = SIA
+		}
+		random_country = {
+			limit = { tag = SIA civilized = no }
+			years_of_research = 4
+		}
+		SIA = {
+			any_owned = { 
+			limit = {
+				OR = {
+					is_core = WIA 
+					is_core = LUA
+					is_core = CHK
+					}
+				}
+			secede_province = THIS
+			}
+		}
+	}
+}
+

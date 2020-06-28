@@ -1,0 +1,258 @@
+political_decisions = {
+	eng_ai_annex_egypt = {
+		picture = "suezcanal"
+		potential = { 
+			capital_scope = { continent = europe }
+			is_greater_power = yes
+			owns = 1755
+			exists = EGY
+			has_global_flag = berlin_conference
+			NOT = { has_country_flag = ai_annex_egypt }
+		}
+
+		allow = {
+			is_greater_power = yes
+			EGY = {
+				civilized = no
+				ai = yes
+				OR = {
+					part_of_sphere = no
+					in_sphere = THIS
+				}
+			}
+			OR = {
+				EGY = {
+					NOT = { vassal_of = TUR }
+				}
+				AND = {
+					EGY = { vassal_of = TUR }
+					TUR = { 
+						is_greater_power = no
+						ai = yes
+					}
+				}
+			}
+		}
+		
+		effect = {
+			leave_alliance = EGY
+			diplomatic_influence = {
+				who = EGY 
+				value = -400
+			}
+			casus_belli = {
+				target = EGY
+				type = annex_africa_full
+				months = 60
+			}
+			war = {
+				target = EGY
+				attacker_goal = { casus_belli = annex_africa_full }		
+				defender_goal = { casus_belli = status_quo }
+			}	
+			set_country_flag = ai_annex_egypt
+		}
+	}
+		
+	form_kingdom_of_egypt = {
+		picture = "egyptian_constitution"
+		potential = {
+			capital_scope = { continent = europe }
+			NOT = { tag = TUR }
+			is_greater_power = yes
+			OR = {
+				government = prussian_constitutionalism
+				government = hms_government
+			}
+			OR = {
+				EGY = {
+					all_core = {
+						owned_by = THIS
+					}	
+				}
+				EGY = { vassal_of = THIS }
+			}
+			year = 1900
+			NOT = { has_global_flag = form_kingdom_of_egypt }
+		}
+		
+		allow = {
+			is_greater_power = yes
+			mass_politics = 1
+			OR = {
+				EGY = {
+					all_core = {
+						owned_by = THIS
+					}	
+				}
+				EGY = { vassal_of = THIS }
+			}
+			OR = {
+				any_owned_province = {
+					is_core = EGY
+					average_militancy = 6
+				}
+				EGY = { vassal_of = THIS }
+				has_global_flag = egyptian_revolution
+				year = 1919
+			}
+		}
+		
+		effect = {
+			set_global_flag = form_kingdom_of_egypt
+			badboy = -8
+			any_owned = {
+				limit = {
+					is_core = EGY
+					NOT = { province_id = 1755 }
+					NOT = { is_core = SUD }
+				}
+				secede_province = UTI
+			}
+			EGY = { inherit = UTI }
+			create_vassal = EGY
+			EGY = {
+				prestige = -80
+				civilized = yes
+				government = hms_government
+				political_reform = wealth_weighted_voting
+				political_reform = appointed
+				political_reform = no_slavery
+				plurality = -5
+				
+				any_owned = {
+					limit = { is_core = SUD }
+					secede_province = THIS
+				}
+				
+				random_owned = {
+					limit = { province_id = 1755 }
+					secede_province = THIS
+					add_core = THIS
+				}
+			}
+			relation = {
+				who = EGY
+				value = 200
+			}
+			diplomatic_influence = {
+				who = EGY
+				value = 400
+			}
+			create_alliance = EGY
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	enact_ismail_pasha_reforms = {
+		picture = ismail_pasha
+		potential = {
+			tag = EGY
+			civilized = no
+			TUR = { ai = yes }
+			is_canal_enabled = 2
+			NOT = { has_country_flag = enact_ismail_pasha_reforms }
+		}
+		allow = {
+			war = no
+		}
+		
+		effect = {
+			set_country_flag = enact_ismail_pasha_reforms
+			prestige = 15
+			#Bonus for AI
+			random_owned = {
+				limit = {
+					owner = {
+						ai = yes 
+						vassal_of = TUR
+					}
+				}
+				TUR = { 
+					release = EGY 
+					release_vassal = EGY 
+				}
+			}
+			add_country_modifier = {
+				name = ismail_pasha_reforms
+				duration = 6205
+			}
+			any_pop = {
+				limit = { is_primary_culture = yes }
+				consciousness = -2
+			}
+		}
+	}
+	
+	establish_the_egyptian_railways = {
+		picture = robert_stephenson
+		potential = {
+			tag = EGY
+			civilized = no
+			year = 1851
+			NOT = { has_country_flag = establish_the_egyptian_railways }
+		}
+		
+		allow = {
+			war = no
+			money = 155100
+		}
+		
+		effect = {
+			prestige = 5
+			treasury = -155000
+			economic_reform = yes_transport_improv
+			build_railway_in_capital = {
+				in_whole_capital_state = yes # no = just in main capital province.
+				limit_to_world_greatest_level = yes
+			}
+			set_country_flag = establish_the_egyptian_railways
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	reclaim_hejaz = {
+		picture = the_holy_city
+		potential = {
+			war = no
+			has_global_flag = oriental_crisis
+			OR = { 
+				AND = { 
+					tag = EGY
+					has_global_flag = abandoned_holy_land
+				}
+				AND = {
+					tag = TUR
+					OR = { 
+						EGY = { has_country_flag = surrendered_to_OE }
+						owns = 913
+					}
+				}	
+			}
+			exists = HDJ
+			NOT = { has_country_flag = reclaim_hejaz }
+		}
+		
+		allow = {
+			war = no 
+			owns = 913
+			HDJ = {
+				ai = yes
+				exists = yes
+				is_vassal = no
+				neighbour = THIS
+			}
+		}
+		
+		effect = {
+			prestige = 5
+			badboy = 2
+			inherit = HDJ
+			set_country_flag = reclaim_hejaz
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+}

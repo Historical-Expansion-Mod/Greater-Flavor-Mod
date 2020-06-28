@@ -1,0 +1,338 @@
+political_decisions = {
+	declare_neutrality = {
+		potential = {
+			tag = SWI
+			NOT = {
+				has_country_modifier = neutrality
+				has_country_flag = abandoned_neutrality
+				has_country_flag = neutrality_violated
+			}	
+		}
+		allow = {
+			NOT = { any_owned_province = { is_core = THIS } }
+			NOT = { badboy = 1 }
+		}
+		
+		effect = {
+			add_country_modifier = {
+				name = neutrality
+				duration = -1
+			}
+		}
+		
+		ai_will_do = {
+			factor = 1
+			modifier = { factor = 0 government = fascist_dictatorship }
+			modifier = { factor = 0 government = proletarian_dictatorship }
+		}
+	}
+
+
+	abandon_neutrality = {
+		picture = declare_neutrality
+		potential = {
+			has_country_modifier = neutrality
+			NOT = { has_country_flag = abandoned_neutrality }
+		}
+		
+		allow = {
+			prestige = 20
+		}
+		
+		effect = {
+			set_country_flag = abandoned_neutrality
+			prestige = -20
+			badboy = 5
+			remove_country_modifier = neutrality
+		}
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = {
+					OR = {
+						badboy = 0.75
+						government = fascist_dictatorship
+						government = proletarian_dictatorship
+					}
+				}
+			}
+		}
+	}
+	
+	violate_neutrality = {
+		picture = declare_neutrality
+		alert = no
+		potential = {
+			ai = no
+			SWI = {
+				neighbour = THIS
+				has_country_modifier = neutrality
+			}
+		}
+		
+		allow = {
+			SWI = { has_country_modifier = neutrality }
+			war_policy = jingoism
+			NOT = {
+				is_sphere_leader_of = SWI
+				truce_with = SWI
+				alliance_with = SWI
+			}
+		}
+		
+		effect = {
+			badboy = 25
+			set_country_flag = swiss_neutrality_violator
+			SWI = {
+				set_country_flag = neutrality_violated
+				remove_country_modifier = neutrality
+				relation = { who = THIS value = -200 }
+			}
+			diplomatic_influence = { who = SWI value = -200 }
+			any_country = {
+				limit = {
+					OR = {
+						alliance_with = SWI
+						is_sphere_leader_of = SWI
+						relation = { who = SWI value = 50 }
+					}
+				}
+				leave_alliance = THIS
+				relation = { who = THIS value = -200 }
+				casus_belli = {
+					target = THIS
+					type = cut_down_to_size
+					months = 60
+				}
+			}
+			casus_belli = {
+				target = SWI
+				type = conquest
+				months = 60
+			}
+		}
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				OR = {
+					NOT = { 
+						tag = FRA
+						owns = 574
+						owns = 392
+						owns = 397
+						owns = 466
+					}
+					NOT = { 
+						tag = BOR
+						owns = 574
+						owns = 392
+						owns = 397
+						owns = 466
+					}
+				}
+			}
+		}
+	}
+	
+	enforce_neutrality = {
+		picture = declare_neutrality
+		potential = {
+			has_country_modifier = neutrality
+			ai = yes
+		}
+		
+		allow = {
+			OR = {
+				any_greater_power = { military_access = THIS }
+				any_neighbor_country = { NOT = { vassal_of = THIS } military_access = THIS }
+				sphere_owner = { military_access = THIS }
+				AND = {
+					num_of_allies = 1
+					NOT = { NCT = { alliance_with = THIS } }
+				}
+				AND = {
+					num_of_allies = 2
+					NCT = { exists = yes alliance_with = THIS }
+				}
+				war = yes
+			}
+		}
+		
+		effect = {
+			any_country = {
+				limit = { NOT = { vassal_of = THIS } OR = { military_access = THIS alliance_with = THIS } }
+				relation = { who = THIS value = -125 }
+			}
+			any_country = { limit = { alliance_with = THIS NOT = { vassal_of = THIS } } leave_alliance = THIS }
+			any_country = { limit = { war_with = THIS } end_war = THIS }
+			any_country = { limit = { military_access = THIS NOT = { vassal_of = THIS } } end_military_access = THIS }
+		}
+	}
+	
+	enforce_neutrality_on_player = {
+		picture = declare_neutrality
+		potential = {
+			ai = yes
+			exists = yes
+			SWI = {
+				has_country_modifier = neutrality
+				ai = no
+				OR = {
+					any_greater_power = { military_access = SWI }
+					any_neighbor_country = { NOT = { vassal_of = SWI } military_access = SWI }
+					sphere_owner = { military_access = SWI }
+					AND = {
+						num_of_allies = 1
+						NOT = { NCT = { alliance_with = SWI } }
+					}
+					AND = {
+						num_of_allies = 2
+						NCT = { exists = yes alliance_with = SWI }
+					}
+					war = yes
+				}
+			}
+		}
+		
+		allow = {
+			
+		}
+		
+		effect = {
+			any_country = {
+				limit = { NOT = { vassal_of = SWI } OR = { military_access = SWI alliance_with = SWI } }
+				relation = { who = SWI value = -125 }
+			}
+			any_country = { limit = { alliance_with = SWI NOT = { vassal_of = SWI } } leave_alliance = SWI }
+			any_country = { limit = { war_with = SWI } end_war = SWI }
+			any_country = { limit = { military_access = SWI NOT = { vassal_of = SWI } } end_military_access = SWI }
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	swiss_partition = {
+		picture = declare_neutrality
+		potential = {
+			SWI = {
+				all_core = {
+					OR = {
+						owned_by = THIS
+						owner = { vassal_of = THIS }
+					}
+				}
+			}
+			NOT = { tag = SWI }
+			has_country_flag = swiss_neutrality_violator
+			is_greater_power = yes
+			NOT = { has_country_flag = swiss_partition }
+		}
+		
+		allow = {
+			war = no
+			NOT = { badboy = 25 }
+		}
+		
+		effect = {
+			set_country_flag = swiss_partition
+			random_owned = {
+				limit = {
+					owner = { is_culture_group = french }
+				}
+				owner = {
+					add_accepted_culture = swiss_french 
+					any_owned = {
+						limit = { 
+							is_core = SWI
+							region = SWI_607
+						}
+						add_province_modifier = {
+							name = core_integration
+							duration = -1
+						}
+					}
+				}
+			}
+			
+			random_owned = {
+				limit = {
+					owner = { is_culture_group = italian }
+				}
+				owner = { 
+					add_accepted_culture = swiss_italian
+					add_accepted_culture = romansh
+					any_owned = {
+						limit = {
+							is_core = SWI
+							region = SWI_2568
+						}
+						add_province_modifier = {
+							name = core_integration
+							duration = -1
+						}
+					}
+				}
+			}
+			
+			random_owned = {
+				limit = {
+					owner = { is_culture_group = germanic }
+				}
+				owner = { 
+					add_accepted_culture = swiss_german
+					any_owned = {
+						limit = { 
+							is_core = SWI
+							region = SWI_603
+						}
+						add_province_modifier = {
+							name = core_integration
+							duration = -1
+						}
+					}
+				}
+			}
+			#French
+			random_country = {
+				limit = { tag = FRA exists = yes NOT = { has_country_flag = swiss_neutrality_violator } }
+				country_event = 500060
+			}
+			#Italian
+			random_country = {
+				limit = { tag = ITA exists = yes owns = 722 NOT = { has_country_flag = swiss_neutrality_violator } }
+				country_event = 500060
+			}
+			random_country = {
+				limit = { tag = SAR exists = yes owns = 722 NOT = { has_country_flag = swiss_neutrality_violator } }
+				country_event = 500060
+			}
+			random_country = {
+				limit = { tag = SVY exists = yes owns = 722 NOT = { has_country_flag = swiss_neutrality_violator } }
+				country_event = 500060
+			}
+			#German
+			random_country = {
+				limit = { tag = GER exists = yes owns = 587 NOT = { has_country_flag = swiss_neutrality_violator } }
+				country_event = 500060
+			}
+			random_country = {
+				limit = { tag = SGF exists = yes owns = 587 NOT = { has_country_flag = swiss_neutrality_violator } }
+				country_event = 500060
+			}
+			random_country = {
+				limit = { tag = NGF exists = yes owns = 587 NOT = { has_country_flag = swiss_neutrality_violator } }
+				country_event = 500060
+			}
+			random_country = {
+				limit = { tag = GCF exists = yes owns = 587 NOT = { has_country_flag = swiss_neutrality_violator } }
+				country_event = 500060
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+}

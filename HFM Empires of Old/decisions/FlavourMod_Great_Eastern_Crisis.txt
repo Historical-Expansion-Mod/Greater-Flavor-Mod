@@ -1,0 +1,420 @@
+political_decisions = {
+	constantinople_conference = {
+		picture = "constantinople_conference"
+		potential = { 
+			tag = RUS
+			#has_global_flag = treaty_of_paris_1856
+			has_global_flag = great_eastern_crisis
+			has_country_flag = started_the_great_eastern_crisis
+			NOT = {
+				has_global_flag = constantinople_conference
+				has_country_flag = eastern_crisis_dismantle_ottomans
+				has_global_flag = great_eastern_crisis_refused
+			}
+		}
+		
+		allow = {
+			war = no
+			NOT = {
+				has_country_flag = constantinople_conference
+				has_country_flag = eastern_crisis_dismantle_ottomans
+			}
+		}
+		
+		effect = {
+			set_country_flag = constantinople_conference
+			set_global_flag = constantinople_conference
+			badboy = -1
+			TUR = {
+				set_variable = {
+					which = great_eastern_crisis_supporter
+					value = 0
+				}
+				country_event = 99823
+			}
+			#Constantinople Conference
+			any_country = {
+				limit = {
+					is_greater_power = yes
+					capital_scope = { continent = europe }
+					NOT = {
+						tag = THIS
+						tag = TUR
+						tag = RUS
+					}
+				}
+				add_country_modifier = {
+					name = great_eastern_crisis
+					duration = -1
+				}
+			}
+		}
+		
+		ai_will_do = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				OR = {
+					AND = {
+						has_global_flag = treaty_of_paris_russia
+						badboy = 0.8
+					}
+					AND = { 
+						has_global_flag = treaty_of_paris_russia
+						exists = NGF
+						TUR = { NOT = { alliance_with = NGF } }
+					}
+					AND = { 
+						has_global_flag = treaty_of_paris_russia
+						exists = GER
+						TUR = { NOT = { alliance_with = GER } }
+					}
+					AND = {
+						has_global_flag = treaty_of_paris_russia
+						exists = GCF
+						TUR = { NOT = { alliance_with = GCF } }
+					}
+				}
+			}
+		}
+	}
+	
+	eastern_crisis_dismantle_ottomans = {
+		picture = "eastern_crisis_dismantle_ottomans"
+		potential = { 
+			tag = RUS
+			has_global_flag = treaty_of_paris_russia
+			has_global_flag = great_eastern_crisis
+			has_country_flag = started_the_great_eastern_crisis
+			NOT = {
+				has_country_flag = constantinople_conference
+				has_country_flag = eastern_crisis_dismantle_ottomans
+				has_global_flag = great_eastern_crisis_refused
+			}
+		}
+		
+		allow = {
+			war = no
+			NOT = {
+				has_country_flag = constantinople_conference
+				has_country_flag = eastern_crisis_dismantle_ottomans
+			}
+		}
+		
+		effect = {
+			set_global_flag = russia_liberate_balkans
+			set_country_flag = eastern_crisis_dismantle_ottomans
+			badboy = 3
+			prestige = 20
+			any_country = {
+				limit = {
+					exists = yes
+					NOT = { alliance_with = RUS }
+					OR = {
+						tag = SER
+						tag = ROM
+						tag = MON
+						tag = BUL
+					}
+				}
+				create_alliance = RUS
+				country_event = 99829
+			}
+			TUR = { country_event = 99826 }
+		}
+		
+		ai_will_do = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				has_recently_lost_war = yes
+			}
+			modifier = {
+				factor = 0
+				war_exhaustion = 15
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					AND = {
+						exists = NGF
+						TUR = { alliance_with = NGF }
+					}
+					AND = { 
+						exists = GER
+						TUR = { alliance_with = GER }
+					}
+					AND = { 
+						exists = GCF
+						TUR = { alliance_with = GCF }
+					}
+				}
+			}
+			modifier = {
+				factor = 0
+				badboy = 0.8
+			}
+		}
+	}
+	
+	the_reichstadt_agreement = {
+		picture = "congress_of_berlin"
+		potential = { 
+			OR = {
+				tag = GER
+				tag = GCF
+				tag = AUS
+				tag = KUK
+				tag = DNB
+			}
+			is_greater_power = yes
+			is_disarmed = no
+			OR = {
+				owns = 771
+				771 = { owner = { vassal_of = THIS } }
+			}
+			OR = {
+				TUR = { owns = 783 }
+				BOS = { vassal_of = TUR }
+			}
+			OR = {
+				AND = { 
+					has_global_flag = constantinople_conference
+					RUS = { NOT = { war_with = TUR } }
+				}
+				has_global_flag = russia_liberate_balkans
+			}
+			NOT = {
+				has_global_flag = the_reichstadt_agreement
+				has_global_flag = great_eastern_crisis_refused
+				has_global_flag = great_eastern_crisis_war_demanded_turks
+			}
+		}
+		
+		allow = {
+			NOT = { 
+				war_with = RUS 
+				truce_with = RUS
+			}
+			military_score = 100
+		}
+		
+		effect = {
+			set_global_flag = the_reichstadt_agreement
+			RUS = { country_event = 99822 }
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	the_treaty_of_san_stefano_const = {
+		picture = "congress_of_berlin"
+		potential = { 
+			tag = RUS
+			has_global_flag = constantinople_conference
+			TUR = { has_country_flag = lost_russo_turkish_war }
+			truce_with = TUR
+			has_country_flag = started_the_great_eastern_crisis
+			NOT = { has_global_flag = the_treaty_of_san_stefano_const }
+		}
+		
+		allow = {
+			war = no
+			truce_with = TUR
+		}
+		
+		effect = {
+			set_global_flag = the_treaty_of_san_stefano_const
+			prestige = 15
+			war_exhaustion = -5
+			any_pop = {
+				limit = {
+					has_pop_religion = orthodox
+				}
+				militancy = -10
+				consciousness = -10
+			}
+			TUR = {
+				any_pop = {
+					limit = {
+						location = { 
+							OR = {
+								is_core = ROM
+								is_core = BUL
+								is_core = SER
+								is_core = BOS
+								is_core = GRE
+								is_core = MON
+							}
+						}
+						is_culture_group = turko_semitic 
+					}
+					reduce_pop = 0.9
+				}
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	call_the_congress_of_berlin = {
+		picture = "congress_of_berlin"
+		potential = { 
+			NOT = { tag = RUS }
+			has_global_flag = the_treaty_of_san_stefano_const
+			OR = {
+				AND = {
+					tag = ENG
+					is_disarmed = no
+				}
+				AND = { 
+					ENG = { is_disarmed = yes }
+					OR = { primary_culture = french is_culture_group = germanic }
+				}
+			}
+			is_greater_power = yes
+			capital_scope = { continent = europe }
+			NOT = { tag = TUR }
+			NOT = { has_global_flag = berlin_congress_to_be_held }
+		}
+		
+		allow = {
+			NOT = { any_greater_power = { war_with = THIS } }
+			NOT = { truce_with = RUS }
+		}
+		
+		effect = {
+			prestige = 20
+			TUR = {
+				set_variable = {
+					which = berlin_congress_support_OE
+					value = 0
+				}
+				set_variable = {
+					which = berlin_congress_support_balkans
+					value = 0
+				}
+				country_event = 99831
+			}
+			RUS = { country_event = 99830 }
+			any_country = {
+				limit = {
+					is_greater_power = yes
+					capital_scope = { continent = europe }
+					NOT = {
+						tag = THIS
+						tag = TUR
+						tag = RUS
+					}
+				}
+				country_event = 90064
+			}
+			set_global_flag = berlin_congress_to_be_held
+			set_country_flag = attending_berlin_congress
+			set_country_flag = hosting_berlin_congress
+			TUR = {
+				change_variable = {
+					which = berlin_congress_support_OE
+					value = 1
+				}
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	turks_defy_congress = {
+		picture = "eastern_crisis_dismantle_ottomans"
+		potential = { 
+			tag = RUS
+			has_global_flag = constantinople_conference
+			has_country_flag = oe_refused_congress
+			TUR = { has_country_flag = lost_russo_turkish_war }
+			truce_with = TUR
+			has_country_flag = started_the_great_eastern_crisis
+			has_global_flag = the_treaty_of_san_stefano
+			NOT = { has_country_flag = turks_defy_congress }
+		}
+		
+		allow = {
+			war = no
+			truce_with = TUR
+		}
+		
+		effect = {
+			set_country_flag = turks_defy_congress
+			prestige = 100
+			badboy = -2
+			war = {
+				target = TUR
+				attacker_goal = { casus_belli = cut_down_to_size_ottoman }
+				call_ally = yes
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	dismantle_ottomans = {
+		picture = "eastern_crisis_dismantle_ottomans"
+		potential = { 
+			tag = RUS
+			TUR = { has_country_flag = lost_russo_turkish_war }
+			truce_with = TUR
+			OR = {
+				has_country_flag = turks_defy_congress
+				has_country_flag = eastern_crisis_dismantle_ottomans
+			}
+			NOT = { has_global_flag = dismantle_ottomans }
+		}
+		
+		allow = {
+			war = no
+			truce_with = TUR
+		}
+		
+		effect = {
+			set_global_flag = dismantle_ottomans
+			badboy = 5
+			prestige = 15
+			any_pop = {
+				limit = {
+					has_pop_religion = orthodox
+				}
+				militancy = -10
+				consciousness = -10
+			}
+			TUR = {
+				any_pop = {
+					limit = {
+						location = { 
+							OR = {
+								is_core = ROM
+								is_core = BUL
+								is_core = SER
+								is_core = BOS
+								is_core = GRE
+								is_core = MON
+								is_core = ARM
+							}
+						}
+						is_culture_group = turko_semitic 
+					}
+					reduce_pop = 0.85
+				}
+			}
+			TUR = {
+				any_pop = {
+					limit = {
+						location = { province_id = 860 }
+						is_culture_group = turko_semitic 
+					}
+					reduce_pop = 0.8
+				}
+			}
+			TUR = { country_event = 99832 }
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+}

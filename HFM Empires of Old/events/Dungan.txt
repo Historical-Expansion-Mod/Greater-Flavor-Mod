@@ -1,0 +1,521 @@
+#########################################################
+#														#
+#       Events for the Panthay and                      #
+#       Dungan Rebellion in China		                #
+#														#
+#########################################################
+
+province_event = {
+	id = 80120
+	title = "EVTNAME80120" #Hui Unrest in $STATENAME$
+	desc = "EVTDESC80120"
+	
+	trigger = {
+		OR = {
+			owned_by = QNG
+			owner = { substate_of = QNG }
+		}
+		OR = {
+			controlled_by = QNG
+			controller = { substate_of = QNG }
+		}
+		NOT = { has_province_modifier = anti_manchu_sentiment }
+		QNG = {
+			has_global_flag = hong
+			has_country_flag = mandate
+		}
+		OR = { 
+			AND = {	
+				region = CHI_1601 # Yunnan
+				owner = { NOT = { has_global_flag = panthay_rebellion } }
+			}
+			AND = {
+				OR = {
+					region = CHI_1600 # Urumqui
+					region = CHI_1594 # Kashgar
+					region = CHI_1490 # Gansu
+					region = CHI_1559 # Shaanxi
+				}
+				owner = { NOT = { has_global_flag = dungan_rebellion } }
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 60
+		modifier = {
+			factor = 0.5
+			owner = { has_global_flag = panthay_rebellion }
+		}
+		modifier = {
+			factor = 0.5
+			owner = { has_global_flag = dungan_rebellion }
+		}
+		modifier = {
+			factor = 0.5
+			any_neighbor_province = { has_province_modifier = anti_manchu_sentiment }
+		}
+	}
+	
+	option = {
+		name = "EVT80120OPTA"
+		add_province_modifier = {
+			name = anti_manchu_sentiment
+			duration = 3650
+		}
+		any_pop = {
+			limit = { has_pop_religion = sunni }
+			reduce_pop = 0.99
+			militancy = 10
+			consciousness = 10
+		}
+		any_pop = {
+			limit = { NOT = { has_pop_religion = sunni } }
+			consciousness = 4
+		}
+	}
+	
+	option = {
+		name = "EVT80120OPTB"
+		state_scope = {
+			any_owned = {
+				add_province_modifier = {
+					name = anti_manchu_sentiment
+					duration = 1825
+				}
+			}
+			any_pop = {
+				limit = { has_pop_religion = sunni }
+				militancy = 5
+				consciousness = 5
+			}
+			any_pop = {
+				limit = { NOT = { has_pop_religion = sunni } }
+				consciousness = 2
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 80121
+	title = "EVTNAME80121" #Panthay Rebellion
+	desc = "EVTDESC80121"
+	picture = "panthay_rebellion"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = QNG
+		war_with = TPG
+		YNN = {
+			substate_of = THIS
+			NOT = { num_of_revolts = 1 }
+			ai = yes
+		}
+		1602 = {
+			owned_by = YNN
+			controlled_by = YNN
+			OR = {
+				has_province_modifier = anti_manchu_sentiment
+				average_militancy = 3
+			}
+		}
+		OR = {
+			has_global_flag = tpg_war_started
+			year = 1857
+		}
+		NOT = { has_global_flag = panthay_rebellion }
+	}
+	
+	mean_time_to_happen = {
+		months = 4
+		modifier = {
+			factor = 0.1
+			war = yes
+		}
+	}
+	
+	option = {
+		name = "EVT80121OPTA"
+		set_global_flag = panthay_rebellion
+		release_vassal = YNN
+		YNN = {
+			capital = 1602
+			any_pop = {
+				consciousness = -5
+				militancy = -5
+			}
+			add_country_modifier = { name = taiping_losing_boost duration = 150 }		
+		}
+		any_country = {
+			limit = { war_with = YNN }
+			end_war = YNN
+		}
+		YNN = { change_tag = PGG }
+		PGG = { government = absolute_monarchy religion = sunni set_country_flag = sunni_country clr_country_flag = mahayana_country }
+		casus_belli = {
+			target = PGG
+			type = make_puppet
+			months = 12
+		}
+		war = {
+			target = PGG
+			attacker_goal = { casus_belli = make_puppet }
+			defender_goal = { casus_belli = status_quo }
+		}
+		ai_chance = { factor = 100 }
+	}
+}
+
+country_event = {
+	id = 80122
+	title = "EVTNAME80122" #Panthay Rebellion Crushed
+	desc = "EVTDESC80122"
+	picture = "panthay_rebellion"
+	
+	trigger = {
+		tag = QNG
+		OR = { 
+			has_global_flag = panthay_rebellion
+			truce_with = PGG
+		}
+		is_our_vassal = PGG
+	}
+	
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	option = {
+		name = "EVT80126OPTA"
+		clr_global_flag = panthay_rebellion
+		prestige = 10
+		plurality = -2
+		PGG = { change_tag = YNN }
+		YNN = {
+			government = colonial_company
+			religion = mahayana
+			set_country_flag = mahayana_country
+			clr_country_flag = sunni_country
+			any_owned = {
+				remove_province_modifier = anti_manchu_sentiment
+				any_pop = {
+					limit = { has_pop_religion = sunni }
+					reduce_pop = 0.7
+					militancy = -4
+				}
+			}
+		}
+		inherit = YNN
+		PGG = { all_core = { remove_core = PGG } }
+	}
+}
+
+country_event = {
+	id = 80123
+	title = "EVTNAME80123" #Panthay Rebellion Victorious!
+	desc = "EVTDESC80123"
+	news = yes
+	news_title = "EVTNAME80123_NEWS_TITLE"
+	news_desc_long = "EVTDESC80123_NEWS_LONG"
+	news_desc_medium = "EVTDESC80123_NEWS_MEDIUM"
+	news_desc_short = "EVTDESC80123_NEWS_SHORT"
+	picture = "panthay_rebellion"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = PGG
+		has_global_flag = panthay_rebellion
+		is_vassal = no
+		NOT = { war_with = QNG }
+	}
+	
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	option = {
+		name = "EVT80123OPTA"
+		prestige = 10
+		QNG = { prestige = -10 plurality = -2 }
+		clr_global_flag = panthay_rebellion
+		PGG = { all_core = { remove_core = YNN } }
+	}
+}
+
+country_event = {
+	id = 80125
+	title = "EVTNAME80125" #Dungan Revolt
+	desc = "EVTDESC80125"
+	picture = "dungan_revolt_xinhai"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = QNG
+		XIN = { 
+			substate_of = THIS
+			NOT = { num_of_revolts = 1 }
+			ai = yes
+		}		
+		1594 = {
+			owned_by = XIN
+			controlled_by = XIN
+			OR = {
+				has_province_modifier = anti_manchu_sentiment
+				average_militancy = 4
+			}
+		}
+		OR = {
+			has_global_flag = tpg_war_started
+			year = 1860
+		}
+		NOT = { has_global_flag = dungan_rebellion }
+	}
+	
+	mean_time_to_happen = {
+		months = 6
+		modifier = {
+			factor = 4
+			war = no
+		}
+		modifier = {
+			factor = 0.1
+			has_global_flag = ever_victorious_army
+		}
+	}
+	
+	option = {
+		name = "EVT80125OPTA"
+		set_global_flag = dungan_rebellion
+		plurality = -2
+		release_vassal = XIN
+		any_country = {
+			limit = { war_with = XIN }
+			end_war = XIN
+		}
+		XIN = { change_tag = UYG }
+		UYG = {
+			government = absolute_monarchy
+			primary_culture = uighur
+			add_accepted_culture = tajik
+			add_accepted_culture = kazak
+			add_accepted_culture = kirgiz
+			capital = 1594
+			any_pop = {
+				consciousness = -5
+				militancy = -5
+			}
+			relation = { who = RUS value = 400 }
+		}
+		casus_belli = {
+			target = UYG
+			type = make_puppet
+			months = 30
+		}
+		war = {
+			target = UYG
+			attacker_goal = {
+				casus_belli = make_puppet
+			}		
+			defender_goal = {
+				casus_belli = status_quo
+			}
+		}
+		ai_chance = {
+			factor = 100
+		}
+	}
+	
+	option = {
+		name = "EVT80125OPTB"
+		set_global_flag = dungan_rebellion
+		release_vassal = XIN
+		XIN = { change_tag = UYG }
+		UYG = {
+			primary_culture = uighur
+			add_accepted_culture = tajik
+			add_accepted_culture = kazak
+			add_accepted_culture = kirgiz
+			capital = 1594
+			any_pop = {
+				consciousness = -5
+				militancy = -5
+			}
+			relation = { who = RUS value = 400 }
+		}
+		casus_belli = {
+			target = UYG
+			type = make_puppet
+			months = 30
+		}
+		war = {
+			target = UYG
+			attacker_goal = {
+				casus_belli = make_puppet
+			}		
+			defender_goal = {
+				casus_belli = status_quo
+			}
+		}
+		change_tag_no_core_switch = UYG
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 80126
+	title = "EVTNAME80126" #Dungan Revolt Crushed
+	desc = "EVTDESC80126"
+	picture = "dungan_revolt_xinhai"
+	
+	trigger = {
+		tag = QNG
+		has_global_flag = dungan_rebellion
+		is_our_vassal = UYG
+	}
+	
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	option = {
+		name = "EVT80126OPTA"
+		#clr_global_flag = dungan_rebellion
+		prestige = 10
+		plurality = -2
+		UYG = { 
+			change_tag = XIN
+			end_war = QNG
+		}
+		XIN = {
+			any_owned = {
+				remove_province_modifier = anti_manchu_sentiment
+				any_pop = {
+					limit = { has_pop_religion = sunni }
+					reduce_pop = 0.60
+					militancy = -4
+				}
+			}
+			primary_culture = beifaren
+			add_accepted_culture = uighur
+			remove_accepted_culture = tajik
+			remove_accepted_culture = kazak
+			remove_accepted_culture = kirgiz
+			capital = 1600
+		}
+	}
+}
+
+country_event = {
+	id = 80127
+	title = "EVTNAME80127" #Dungan Revolt Victorious!
+	desc = "EVTDESC80127"
+	news = yes
+	news_title = "EVTNAME80127_NEWS_TITLE"
+	news_desc_long = "EVTDESC80127_NEWS_LONG"
+	news_desc_medium = "EVTDESC80127_NEWS_MEDIUM"
+	news_desc_short = "EVTDESC80127_NEWS_SHORT"
+	picture = "dungan_revolt_xinhai"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = UYG
+		has_global_flag = dungan_rebellion
+		is_vassal = no
+		NOT = { war_with = QNG }
+	}
+	
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	option = {
+		name = "EVT80123OPTA"
+		prestige = 10
+		QNG = { prestige = -10 }
+		#clr_global_flag = dungan_rebellion
+	}
+}
+
+country_event = {
+	id = 80128
+	title = "EVTNAME80128" #Dungan Revolt -1895 in Qinghai
+	desc = "EVTDESC80128"
+	picture = "dungan_rebellion_qinghai"
+	
+	trigger = {
+		OR = {
+			tag = QNG
+			tag = TPG
+		}
+		OR = {
+			XBI = { ai = yes substate_of = THIS }
+			AND = {
+				XBI = { exists = no }
+				owns = 1557
+			}
+		}
+		year = 1870
+		OR = {
+			XBI = { average_militancy = 4 }
+			1557 = { average_militancy = 4 }
+			AND = { 
+				THIS = { civilization_progress = 0.4 }
+				year = 1885
+			}
+		}
+		has_global_flag = dungan_rebellion
+		NOT = { has_country_flag = qinghai_revolt_dungan }
+	}
+	
+	mean_time_to_happen = { 
+		months = 25
+		
+		modifier = {
+			factor = 0.8
+			year = 1890
+		}
+		
+		modifier = {
+			factor = 0.01
+			year = 1895
+		}
+		
+		modifier = {
+			factor = 0.1
+			OR = { 
+				civilization_progress = 0.75
+				civilized = yes
+			}
+		}
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = "EVT80128OPTA"
+		set_country_flag = qinghai_revolt_dungan
+		plurality = -2
+		any_country = {
+			limit = { war_with = XBI }
+			end_war = XBI
+		}
+		any_greater_power = { diplomatic_influence = { who = XBI value = -400 } }
+		random_owned = { limit = { owner = { owns = 1557 } } owner = { release = XBI } }
+		random_owned = { limit = { owner = { NOT = { owns = 1557 } } } owner = { release_vassal = XBI } }
+		relation = { who = XBI value = -400 }
+		XBI = { government = absolute_monarchy }
+		war = {
+			target = XBI
+			attacker_goal = {
+				casus_belli = conquest_any
+			}		
+			defender_goal = {
+				casus_belli = status_quo
+			}
+		}
+	}
+}
+

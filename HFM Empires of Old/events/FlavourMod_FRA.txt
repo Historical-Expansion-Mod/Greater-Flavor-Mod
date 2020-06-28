@@ -1,0 +1,569 @@
+#French Tonkin Campaign
+country_event = {
+	id = 99949
+	title = "EVTNAME99949" #The Death of Henri Riviere
+	desc = "EVTDESC99949"
+	picture = "henri_riviere"
+	
+	trigger = {
+		primary_culture = french
+			is_greater_power = yes
+			capital = 425
+		exists = DAI
+		has_country_flag = tonkin_campaign
+		NOT = { has_country_flag = tonkin_campaign_started }
+	}
+	
+	mean_time_to_happen =  {
+		months = 12
+
+		modifier = {
+			factor = 0.5
+			year = 1881
+		}
+		
+		modifier = {
+			factor = 0.1
+			year = 1883
+		}
+	}
+
+	option = {
+		name = "EVT99949OPTA"
+		random_country = {
+			limit = {
+				tag = DAI
+				civilized = no
+				exists = yes
+				ai = yes
+			}
+			country_event = 99955
+		}
+		set_country_flag = tonkin_campaign_started
+	}
+}
+
+country_event = {
+	id = 99954
+	title = "EVTNAME95501"
+	desc = "$FROM_COUNTRY$ declared war!"
+	picture = "scramble_for_africa"
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT97642OPTA"
+		FROM = {
+			war = {
+				target = THIS
+				attacker_goal = { casus_belli = annex_africa_full }
+				defender_goal = { casus_belli = status_quo }
+				call_ally = no
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 99959
+	title = "EVTNAME95501"
+	desc = "$FROM_COUNTRY$ has established a protectorate over our nation"
+	picture = "scramble_for_africa"
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT99993OPTA"
+		FROM = { inherit = THIS }
+	}
+}
+
+
+#Tonkin Campaign
+country_event = {
+	id = 99955
+	title = "EVTNAME99955"
+	desc = "EVTDESC99949"
+	picture = "henri_riviere"
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT97642OPTA"
+		FROM = {
+			war = {
+				target = THIS
+				attacker_goal = { casus_belli = establish_protectorate_casus_belli }
+				defender_goal = { casus_belli = status_quo }
+				call_ally = no
+			}
+		}
+		random_country = {
+			limit = {
+				tag = HQJ
+				exists = yes
+			}
+			add_country_modifier = {
+				name = fanatic_army
+				duration = -1
+			}
+		}
+	}
+}
+
+#French Claims on Wallonia - Wallonia Owner's Response
+country_event = {
+	id = 99984
+	title = "EVTNAME99984"
+	desc = "EVTDESC99984"
+
+	is_triggered_only = yes
+	major = yes
+
+	option = {
+		name = "EVT99984OPTA"
+		set_country_flag = walloon_crisis
+		set_country_flag = walloon_owner
+		FROM = { country_event = 99986 }
+		FROM = {
+			relation = { who = THIS value = -400 }
+			diplomatic_influence = { who = THIS value = -400 }
+		}
+		any_country = {	limit = { is_greater_power = yes NOT = { alliance_with = FROM } capital_scope = { continent = europe } NOT = { tag = FRA tag = BOR } }
+			country_event = 99985
+		}
+		ai_chance = { factor = 1 }
+	}
+	
+	
+	option = {
+		name = "EVT99984OPTB"
+		prestige = -50
+		relation = { who = FROM value = 100 }
+		release_vassal = WLL
+		FROM = { inherit = WLL }
+		any_pop = {
+			limit = { 
+				OR = {
+					is_primary_culture = yes
+					is_accepted_culture = yes
+				}
+			}
+			militancy = 10
+		}
+		ai_chance = { factor = 0 }
+	}
+}
+
+#French Claims on Wallonia - GP involvement
+country_event = {
+	id = 99985
+	title = "EVTNAME99985"
+	desc = "EVTDESC99985"
+	picture = "german_rhine"
+
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		name = "EVT99985OPTA"
+		set_country_flag = support_walloon_owner
+		random_owned = {
+			limit = { exists = FRA }
+			owner = { 
+				leave_alliance = FRA 
+				relation = { who = FRA value = -250 }
+			}
+		}	
+		random_owned = {
+			limit = { exists = BOR }
+			owner = { 
+				leave_alliance = BOR 
+				relation = { who = BOR value = -250 }
+			}
+		}
+		create_alliance = FROM
+		relation = { who = FROM value = 400 }
+		ai_chance = {
+			factor = 80 
+			modifier = {
+				factor = 0
+				OR = { 
+					alliance_with = FRA
+					alliance_with = BOR
+				}
+			}
+			modifier = {
+				factor = 75
+				OR = { 
+					relation = { who = FRA value = 175 }
+					relation = { who = BOR value = 175 }
+				}	
+			}
+			modifier = {
+				factor = 40
+				NOT = { relation = { who = FROM value = 0 } }
+			}
+		}
+	}
+	
+	option = {
+		name = "EVT99985OPTB"
+		ai_chance = {
+			factor = 0 
+			modifier = {
+				factor = 100
+				OR = { 
+					alliance_with = FRA
+					alliance_with = BOR
+				}
+			}
+			modifier = {
+				factor = 10
+				OR = { 
+					relation = { who = FRA value = 175 }
+					relation = { who = BOR value = 175 }
+				}	
+			}
+		}
+	}
+}
+
+#French Claims on Wallonia - France Back Down or War
+country_event = {
+	id = 99986
+	title = "EVTNAME99986"
+	desc = "EVTDESC99986"
+	picture = "german_rhine"
+
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		name = "EVT99986OPTA"
+		war = {
+			target = FROM
+			attacker_goal = { casus_belli = acquire_core_state state_province_id = 394 }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = yes
+		}
+		ai_chance = {
+			factor = 80 
+			modifier = {
+				factor = 0
+				war_exhaustion = 50 
+			}
+			modifier = {
+				factor = 75
+				rank = 1
+			}
+			modifier = {
+				factor = 40
+				any_greater_power = {
+					alliance_with = THIS
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = "EVT99986OPTB"
+		prestige = -25
+		badboy = -6
+		WLL = {
+			all_core = {
+				remove_core = THIS
+			}
+		}
+		any_country = {
+			limit = {
+				has_country_flag = support_walloon_owner
+			}
+			country_event = 99987
+		}
+		ai_chance = {
+			factor = 0 
+			modifier = {
+				factor = 100
+				war_exhaustion = 50 
+			}
+			modifier = {
+				factor = 100
+				NOT = {
+					any_greater_power = {
+						alliance_with = THIS
+					}
+				}
+			}
+		}
+	}
+}
+
+
+#French Claims on Wallonia - No War
+country_event = {
+	id = 99987
+	title = "EVTNAME99987"
+	desc = "EVTDESC99987"
+	picture = "german_rhine"
+	major = yes
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT99987OPTA"
+		prestige = 15
+		any_country = {
+			limit = {
+				has_country_flag = walloon_owner
+			}
+			leave_alliance = THIS
+		}
+	}
+}
+
+#France/Austria - Remove Jewish as accepted pops
+country_event = {
+	id = 99989
+	title = "EVTNAME99989"
+	desc = "EVTDESC99989"
+	picture = "jewish_persecution"
+	
+	trigger = {
+		OR = {
+			tag = FRA
+			tag = BOR
+			tag = AUS
+			tag = DNB
+			tag = KUK
+			tag = SGF
+			tag = GER
+			tag = GCF
+		}	
+		OR = {
+			accepted_culture = ashkenazi
+			accepted_culture = sephardic
+		}
+		OR = {
+			government = fascist_dictatorship
+			government = presidential_dictatorship
+			government = proletarian_dictatorship
+		}
+		NOT = { has_country_flag = jewish_persecution }
+	}
+	
+	mean_time_to_happen =  {
+		months = 1
+	}
+
+	option = {
+		name = "EVT99989OPTA"
+		remove_accepted_culture = ashkenazi
+		remove_accepted_culture = sephardic
+		any_pop = {
+			limit = { 
+				has_pop_religion = jewish
+			}
+			militancy = 5
+			consciousness = 5
+		}
+		set_country_flag = jewish_persecution
+	}
+}
+
+#Carribean Federation - French Islands are seized
+country_event = {
+	id = 99992
+	title = "EVTNAME99992"
+	desc = "EVTDESC99992"
+	major = yes
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT99992OPTA"
+		prestige = -15
+		any_owned = {
+			limit = {
+				OR = {
+					region = ENG_2224
+					region = ENG_2228
+					region = ENG_203
+					region = ENG_1979
+					region = UCA_2186
+					region = UCA_2197
+				}
+			}
+			add_core = CRB
+			secede_province = CRB
+		}
+	}
+}
+
+#The Rhine Crisis - France loses
+country_event = {
+	id = 99993
+	title = "EVTNAME99993"
+	desc = "EVTDESC99993"
+	major = yes
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT99993OPTA"
+		prestige = -15
+		set_country_flag = lost_the_rhine_crisis
+		remove_country_modifier = rhine_crisis
+	}
+}
+
+#The Rhine Crisis - France Wins
+country_event = {
+	id = 99994
+	title = "EVTNAME99994"
+	desc = "EVTDESC99994"
+	major = yes
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT99993OPTA"
+		prestige = 5
+		set_global_flag = left_bank_french_victory
+		badboy = 5
+		diplomatic_influence = {
+			who = RHI
+			value = 400
+		}
+		create_alliance = RHI
+		create_vassal = RHI
+		remove_country_modifier = rhine_crisis
+		
+		any_country = {
+			limit = {
+				owns = 570
+				truce_with = THIS
+			}
+			country_event = 99995
+		}
+		
+		any_country = {
+			limit = {
+				owns = 571
+				truce_with = THIS
+			}
+			country_event = 99995
+		}
+	}
+}
+
+#The Rhine Crisis - France Wins / Seceding Mainz & Kaiserslautern to Rhineland
+country_event = {
+	id = 99995
+	title = "EVTNAME99995"
+	desc = "EVTDESC99995"
+	major = yes
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT99993OPTA"
+		prestige = -15
+		any_owned = {
+			limit = { is_core = RHI }
+			secede_province = RHI
+		}
+	}
+}
+
+#French Government - Changing to Kingdom
+country_event = {
+	id = 99500
+	title = "EVTNAME60040"
+	desc = "EVTDESC60040"
+	picture = "Monarchy"
+	
+	trigger = {
+		tag = FRA
+		government = french_bourbon
+		civilized = yes	
+		vote_franschise = none_voting
+	}
+	
+	mean_time_to_happen = {
+		days = 14
+	}
+	
+	option = {
+		name = "EVTOPTA60040"
+		clr_country_flag = everywhere_genocide_only
+		clr_country_flag = non_colonial_genocide_only
+		clr_country_flag = colonial_genocide_only
+		clr_country_flag = preparations_to_kill
+		remove_country_modifier = preparations_to_kill
+		clr_country_flag = communist_gov
+		set_country_flag = absolute_monarchy_gov
+		clr_country_flag = semi_constitutional_monarchy_gov
+		clr_country_flag = constitutional_monarchy_gov
+		clr_country_flag = democracy_gov
+		clr_country_flag = presidential_dictatorship_gov
+		clr_country_flag = fascist_gov
+		clr_country_flag = anarcho_liberal_gov
+		change_tag = BOR
+		government = absolute_monarchy
+		all_core = { add_core = BOR remove_core = FRA }
+	}
+}
+
+
+#France wants to purchase Annam
+country_event = {
+	id = 999600
+	title = "EVTNAME999600"
+	desc = "EVTDESC999600"
+	picture = "administration"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT99840OPTA"	
+		treasury = 100000
+		FROM = { 
+			random_owned = { limit = { owner = { ai = no } } owner = { treasury = -100000 } }
+			random_owned = {
+				limit = { owner = { ai = yes NOT = { check_variable = { which = owed_cash_money value = 1 } } } }
+				owner = { set_variable = { which = owed_cash_money value = 100 } }
+			}
+			random_owned = {
+				limit = { owner = { ai = yes check_variable = { which = owed_cash_money value = 9 } } }
+				owner = { change_variable = { which = owed_cash_money value = 100 } }
+			}
+		}
+		random_owned = {
+			limit = { province_id = 1375 }
+			state_scope = { any_owned = { secede_province = FROM } }
+		}
+		
+		random_owned = {
+			limit = { province_id = 1338 }
+			FROM = {
+				any_owned = {
+					limit = { region = SIA_1355 }
+					secede_province = THIS
+				}
+			}
+		}
+		
+		relation = { 
+			who = FROM
+			value = 150
+		}
+		ai_chance = { factor = 100 }
+	}
+	
+	option = {
+		name = "EVT99840OPTB"	
+		relation = {
+			who = FROM 
+			value = -200
+		}
+		ai_chance = { factor = 0 }
+	}
+}

@@ -1,0 +1,788 @@
+political_decisions = {
+	annex_united_baltic_duchy = {
+		picture = "annex_united_baltic_duchy"
+		potential = { 
+			OR = {
+				tag = GCF
+				tag = GER
+			}
+			is_greater_power = yes
+			UBD = {
+				vassal_of = THIS 
+				ai = yes
+				exists = yes
+			}
+			OR = {
+				government = absolute_monarchy
+				government = prussian_constitutionalism
+				government = hms_government
+			}
+			NOT = { has_global_flag = annex_baltic_duchy }
+		}
+		
+		allow = {
+			war = no 
+			has_recently_lost_war = no
+			is_sphere_leader_of = UBD
+			nationalism_n_imperialism = 1
+			OR = {
+				RUS = {
+					OR = {
+						government = fascist_dictatorship
+						government = proletarian_dictatorship
+					}
+					is_greater_power = yes
+				}
+				AND = { 
+					UBD = { 
+						vassal_of = THIS 
+						NOT = { has_country_modifier = drang_nach_osten_country }
+					}
+					has_country_flag = incorporate_the_baltic_states
+				}
+			}
+			OR = {
+				government = absolute_monarchy
+				government = prussian_constitutionalism
+				government = hms_government
+			}
+			NOT = { war_policy = pacifism }
+		}
+		
+		effect = {
+			badboy = 2
+			diplomatic_influence = { who = UBD value = -400 }
+			release = UBD
+			leave_alliance = UBD
+			any_pop = {
+				limit = { is_culture_group = baltic }
+				militancy = 8
+			}
+			inherit = UBD
+			set_global_flag = annex_baltic_duchy
+			relation = { who = RUS value = -50 }
+			any_owned = {
+				limit = { is_core = UBD }
+				add_core = THIS
+				add_province_modifier = {
+					name = immigration_boom_baltic
+					duration = 1825
+				}
+				add_province_modifier = {
+					name = drang_nach_osten
+					duration = -1
+				}
+			}
+			any_pop = {
+				limit = {
+					location = { is_core = UBD }
+					has_pop_culture = volga_german
+				}
+				reduce_pop = 1.1
+			}
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	incorporate_the_baltic_states = {
+		picture = "annex_united_baltic_duchy"
+		potential = {
+			is_greater_power = yes	
+			OR = { 
+				tag = GER
+				tag = GCF
+			}
+			exists = UBD
+			UBD = {
+				OR = { 
+					is_vassal = no
+					is_substate = no
+					vassal_of = THIS
+				}
+				primary_culture = volga_german
+				in_sphere = THIS
+			}
+			NOT = { has_country_flag = incorporate_the_baltic_states }
+		}
+		
+		allow = {
+			war = no
+			nationalism_n_imperialism = 1
+		}
+		
+		effect = {
+			badboy = 2
+			prestige = 10
+			create_vassal = UBD
+			UBD = {
+				any_pop = {
+					limit = { NOT = { is_culture_group = germanic } }
+					militancy = 3
+				}
+				add_country_modifier = {
+					name = drang_nach_osten_country
+					duration = 1825
+				}
+			}
+			random_owned = { limit = { owner = { vote_franschise = none_voting } }
+				UBD = { 
+					government = colonial_company 
+					political_reform = none_voting 
+				} 
+			}
+			random_owned = { limit = { owner = { NOT = { vote_franschise = none_voting } } UBD = { government = dominion } } }
+			set_country_flag = incorporate_the_baltic_states
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	latvia_rename = {
+		picture = gtfo
+		potential = {
+			OR = {
+				AND = {
+					is_culture_group = germanic
+					OR = {
+						AND = { owns = 356 NOT = { has_global_flag = german_renamed_daugavpils } }
+						AND = { owns = 354 NOT = { has_global_flag = german_renamed_lativa } }
+						
+					}
+				}
+				AND = {
+					OR = { 
+						primary_culture = latvian
+						is_culture_group = baltic
+					}
+					OR = {
+						AND = { owns = 356 NOT = { has_global_flag = latvian_renamed_daugavpils } }
+						AND = { owns = 354 NOT = { has_global_flag = latvian_renamed_lativa } }
+					}
+				}
+				AND = {
+					is_culture_group = east_slavic
+					OR = {
+						AND = { owns = 356 NOT = { has_global_flag = russian_renamed_daugavpils } }
+						AND = { owns = 354 NOT = { has_global_flag = russian_renamed_lativa } }
+					}
+				}
+			}
+		}
+		
+		allow = {
+			war = no
+		}
+		
+		effect = {
+			###German###
+			random_owned = {
+				limit = {
+					province_id = 356
+					owner = {
+						is_culture_group = germanic
+					}
+				}
+				356 = { change_province_name = "Dünaburg"  }
+				owner = { 
+					set_global_flag = german_renamed_daugavpils 
+					clr_global_flag = latvian_renamed_daugavpils
+					clr_global_flag = russian_renamed_daugavpils
+				}
+			}
+			random_owned = {
+				limit = {
+					province_id = 354
+					owner = {
+						is_culture_group = germanic
+					}
+				}
+				355 = { change_province_name = "Wolmar" }
+				357 = {
+					change_province_name = "Mitau"
+					state_scope = {
+						change_region_name = "Kurland-Semgallen"
+					}
+				}
+				358 = { change_province_name = "Windau" }
+				359 = { change_province_name = "Libau" }	
+				owner = { 
+					set_global_flag = german_renamed_lativa 
+					clr_global_flag = latvian_renamed_lativa 
+					clr_global_flag = russian_renamed_lativa 
+				}
+			}
+			
+			###Latvian###
+			random_owned = {
+				limit = {
+					province_id = 356
+					owner = {
+						OR = { 
+							primary_culture = latvian
+							is_culture_group = baltic
+						}
+					}
+				}
+				356 = { change_province_name = "Daugavpils"  }
+				owner = { 
+					set_global_flag = latvian_renamed_daugavpils
+					clr_global_flag = german_renamed_daugavpils
+					clr_global_flag = russian_renamed_daugavpils
+				}
+			}
+			random_owned = {
+				limit = {
+					province_id = 354
+					owner = {
+						primary_culture = latvian
+					}
+				}
+				355 = { change_province_name = "Valmiera" }
+				357 = {
+					change_province_name = "Jelgava"
+					state_scope = {
+						change_region_name = "Latvijas"
+					}
+				}
+				358 = { change_province_name = "Ventspils" }
+				359 = { change_province_name = "Liepaja" }	
+				owner = { 
+					set_global_flag = latvian_renamed_lativa
+					clr_global_flag = german_renamed_lativa
+					clr_global_flag = russian_renamed_lativa 
+				}
+			}
+			
+			###Russian###
+			random_owned = {
+				limit = {
+					province_id = 356
+					owner = {
+						is_culture_group = east_slavic
+					}
+				}
+				356 = { change_province_name = "Daugavpils"  }
+				owner = { 
+					set_global_flag = russian_renamed_daugavpils
+					clr_global_flag = german_renamed_daugavpils
+					clr_global_flag = latvian_renamed_daugavpils
+				}
+			}
+			random_owned = {
+				limit = {
+					province_id = 354
+					owner = {
+						is_culture_group = east_slavic
+					}
+				}
+				355 = { change_province_name = "Vol'mar" }
+				357 = {
+					change_province_name = "Elgava"
+					state_scope = {
+						change_region_name = "Kurlyandiya"
+					}
+				}
+				358 = { change_province_name = "Vindava" }
+				359 = { change_province_name = "Liepaja" }	
+				owner = {
+					set_global_flag = russian_renamed_lativa
+					clr_global_flag = latvian_renamed_lativa 
+					clr_global_flag = german_renamed_lativa
+				}
+			}
+		}
+		
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	estonia_rename = {
+		picture = gtfo
+		potential = {
+			OR = {
+				AND = {
+					OR = {
+						is_culture_group = germanic
+						is_culture_group = scandinavian
+					}
+					owns = 349 NOT = { has_global_flag = german_renamed_estonia }
+				}
+				AND = {
+					OR = {
+						primary_culture = estonian
+						is_culture_group = baltic
+						AND = {
+							is_culture_group = scandinavian
+							accepted_culture = estonian
+						}
+					}
+					owns = 349 NOT = { has_global_flag = estonian_renamed_estonia }
+				}
+				AND = {
+					is_culture_group = east_slavic
+					owns = 349 NOT = { has_global_flag = russian_renamed_estonia }
+				}
+			}
+		}
+		
+		allow = {
+			war = no
+		}
+		
+		effect = {
+			###German###
+			random_owned = {
+				limit = {
+					province_id = 349
+					owner = {
+						OR = {
+							is_culture_group = germanic
+							is_culture_group = scandinavian
+						}
+					}
+				}
+				349 = { change_province_name = "Reval" }
+				350 = {
+					change_province_name = "Narwa"
+					state_scope = {
+						change_region_name = "Livland"
+					}
+				}
+				351 = { change_province_name = "Pernau" }
+				352 = { change_province_name = "Dorpat" }
+				353 = { change_province_name = "Ösel" }
+				owner = { 
+					set_global_flag = german_renamed_estonia 
+					clr_global_flag = estonian_renamed_estonia 
+					clr_global_flag = russian_renamed_estonia 
+				}
+			}
+			
+			###estonian###
+			random_owned = {
+				limit = {
+					province_id = 349
+					owner = {
+						OR = { 
+							primary_culture = estonian
+							is_culture_group = baltic
+							AND = {
+								is_culture_group = scandinavian
+								accepted_culture = estonian
+							}
+						}
+					}
+				}
+				349 = { change_province_name = "Tallinn" }
+				350 = {
+					change_province_name = "Narva"
+					state_scope = {
+						change_region_name = "Eesti"
+					}
+				}
+				351 = { change_province_name = "Parnu" }
+				352 = { change_province_name = "Tartu" }
+				353 = { change_province_name = "Saaremaa" }
+				owner = { 
+					set_global_flag = estonian_renamed_estonia
+					clr_global_flag = german_renamed_estonia
+					clr_global_flag = russian_renamed_estonia 
+				}
+			}
+			
+			###Russian###
+			random_owned = {
+				limit = {
+					province_id = 349
+					owner = {
+						is_culture_group = east_slavic
+					}
+				}
+				349 = { change_province_name = "Revel" }
+				350 = {
+					change_province_name = "Narva"
+					state_scope = {
+						change_region_name = "Liflyandiya"
+					}
+				}
+				351 = { change_province_name = "Pernov" }
+				352 = { change_province_name = "Derpt" }
+				353 = { change_province_name = "Ösel" }
+				owner = {
+					set_global_flag = russian_renamed_estonia
+					clr_global_flag = estonian_renamed_estonia 
+					clr_global_flag = german_renamed_estonia
+				}
+			}
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	lithuania_rename = {
+		picture = gtfo
+		potential = {
+			OR = {
+				AND = {
+					is_culture_group = germanic
+					OR = {
+						AND = { owns = 360 NOT = { has_global_flag = german_renamed_vilnius } }
+						AND = { owns = 361 NOT = { has_global_flag = german_renamed_lithuania } }
+						AND = { owns = 947 NOT = { has_global_flag = german_renamed_lithuania_pinsk } }
+					}
+				}
+				AND = {
+					OR = { 
+						primary_culture = lithuanian
+						is_culture_group = baltic
+						tag = PLC
+					}
+					OR = {
+						AND = { owns = 360 NOT = { has_global_flag = lithuanian_renamed_vilnius } }
+						AND = { owns = 361 NOT = { has_global_flag = lithuanian_renamed_lithuania } }
+						AND = { owns = 947 NOT = { has_global_flag = lithuanian_renamed_lithuania_pinsk } }
+					}
+				}
+				AND = {
+					is_culture_group = east_slavic
+					OR = {
+						AND = { owns = 360 NOT = { has_global_flag = russian_renamed_vilnius } }
+						AND = { owns = 361 NOT = { has_global_flag = russian_renamed_lithuania } }
+						AND = { owns = 947 NOT = { has_global_flag = russian_renamed_lithuania_pinsk } }
+					}
+				}
+				AND = {
+					is_culture_group = polish_culture_group
+					NOT = { tag = PLC }
+					OR = {
+						AND = { owns = 361 NOT = { has_global_flag = polish_renamed_vilnius } }
+						AND = { owns = 361 NOT = { has_global_flag = polish_renamed_lithuania } }
+						AND = { owns = 947 NOT = { has_global_flag = polish_renamed_lithuania_pinsk } }
+					}
+				}
+			}
+		}
+		
+		allow = {
+			war = no
+		}
+		
+		effect = {
+			###German###
+			random_owned = {
+				limit = {
+					province_id = 361
+					owner = {
+						is_culture_group = germanic
+					}
+				}
+				361 = { 
+					change_province_name = "Kauen" 
+					state_scope = {
+						change_region_name = "Litauen"
+					}
+				}		
+				362 = { change_province_name = "Mariampol" }	
+				363 = { change_province_name = "Ponewesch" }
+				364 = { change_province_name = "Schaulen" }		
+				365 = { change_province_name = "Krottingen" }		
+				owner = { 
+					set_global_flag = german_renamed_lithuania 
+					clr_global_flag = lithuanian_renamed_lithuania 
+					clr_global_flag = russian_renamed_lithuania 
+					clr_global_flag = polish_renamed_lithuania 
+				}
+			}
+			
+			###German - Vilnius###
+			random_owned = {
+				limit = {
+					province_id = 360
+					owner = {
+						is_culture_group = germanic
+					}
+				}
+				360 = { change_province_name = "Wilna" }
+				owner = { 
+					set_global_flag = german_renamed_vilnius
+					clr_global_flag = lithuanian_renamed_vilnius
+					clr_global_flag = russian_renamed_vilnius
+					clr_global_flag = polish_renamed_vilnius
+				}
+			}
+			
+			###German - Pinsk###
+			random_owned = {
+				limit = {
+					province_id = 938
+					owner = {
+						is_culture_group = germanic
+					}
+				}
+				938 = { change_province_name = "Lida" }
+				947 = { change_province_name = "Wilejka" }
+				owner = { 
+					set_global_flag = german_renamed_lithuania_pinsk
+					clr_global_flag = lithuanian_renamed_lithuania_pinsk
+					clr_global_flag = russian_renamed_lithuania_pinsk
+					clr_global_flag = polish_renamed_lithuania_pinsk
+				}
+			}
+			
+			###Lithuanian###
+			random_owned = {
+				limit = {
+					province_id = 361
+					owner = {
+						OR = { 
+							primary_culture = lithuanian
+							is_culture_group = baltic
+							tag = PLC
+						}
+					}
+				}
+				361 = { 
+					change_province_name = "Kaunas" 
+					state_scope = {
+						change_region_name = "Lietuvos"
+					}
+				}		
+				362 = { change_province_name = "Marijampole" }	
+				363 = { change_province_name = "Panevežys" }
+				364 = { change_province_name = "Šiauliai" }		
+				365 = { change_province_name = "Palanga" }		
+				owner = { 
+					set_global_flag = lithuanian_renamed_lithuania
+					clr_global_flag = german_renamed_lithuania
+					clr_global_flag = russian_renamed_lithuania 
+					clr_global_flag = polish_renamed_lithuania
+				}
+			}
+			
+			###Lithuanian - Vilnius###
+			random_owned = {
+				limit = {
+					province_id = 360
+					owner = {
+						OR = { 
+							primary_culture = lithuanian
+							is_culture_group = baltic
+							tag = PLC
+						}
+					}
+				}
+				360 = { change_province_name = "Vilnius" }
+				owner = { 
+					set_global_flag = lithuanian_renamed_vilnius
+					clr_global_flag = german_renamed_vilnius
+					clr_global_flag = russian_renamed_vilnius
+					clr_global_flag = polish_renamed_vilnius
+				}
+			}
+			
+			###Lithuanian - Pinsk###
+			random_owned = {
+				limit = {
+					province_id = 938
+					owner = {
+						OR = { 
+							primary_culture = lithuanian
+							is_culture_group = baltic
+							tag = PLC
+						}
+					}
+				}
+				938 = { change_province_name = "Lyda" }
+				947 = { change_province_name = "Pastovys" }
+				owner = { 
+					set_global_flag = lithuanian_renamed_lithuania_pinsk
+					clr_global_flag = german_renamed_lithuania_pinsk
+					clr_global_flag = russian_renamed_lithuania_pinsk 
+					clr_global_flag = polish_renamed_lithuania_pinsk
+				}
+			}
+			
+			###Russian###
+			random_owned = {
+				limit = {
+					province_id = 361
+					owner = {
+						is_culture_group = east_slavic
+					}
+				}
+				361 = { 
+					change_province_name = "Kovno"
+					state_scope = {
+						change_region_name = "Vilenskaya"
+					}
+				}		
+				362 = { change_province_name = "Mariyampole" }	
+				363 = { change_province_name = "Ponevezh" }
+				364 = { change_province_name = "Shyaulyai" }		
+				365 = { change_province_name = "Palanga" }		
+				owner = { 
+					set_global_flag = russian_renamed_lithuania
+					clr_global_flag = german_renamed_lithuania
+					clr_global_flag = lithuanian_renamed_lithuania
+					clr_global_flag = polish_renamed_lithuania
+				}
+			}
+			
+			###Russian - Vilnius###
+			random_owned = {
+				limit = {
+					province_id = 360
+					owner = {
+						is_culture_group = east_slavic
+					}
+				}
+				360 = { change_province_name = "Vilna" }
+				owner = { 
+					set_global_flag = russian_renamed_vilnius
+					clr_global_flag = german_renamed_vilnius
+					clr_global_flag = lithuanian_renamed_vilnius
+					clr_global_flag = polish_renamed_vilnius
+				}
+			}
+			
+			###Russian - Pinsk###
+			random_owned = {
+				limit = {
+					province_id = 938
+					owner = {
+						is_culture_group = east_slavic
+					}
+				}
+				938 = { change_province_name = "Lida" }
+				947 = { change_province_name = "Pastavy" }
+				owner = { 
+					set_global_flag = russian_renamed_lithuania_pinsk
+					clr_global_flag = lithuanian_renamed_lithuania_pinsk
+					clr_global_flag = german_renamed_lithuania_pinsk
+					clr_global_flag = polish_renamed_lithuania_pinsk
+				}
+			}
+			
+			###Polish###
+			random_owned = {
+				limit = {
+					province_id = 361
+					owner = {
+						is_culture_group = polish_culture_group
+						NOT = { tag = PLC }
+					}
+				}
+				361 = { 
+					change_province_name = "Kowno" 
+					state_scope = {
+						change_region_name = "Litwa"
+					}
+				}		
+				362 = { change_province_name = "Mariampol" }	
+				363 = { change_province_name = "Poniewiez" }
+				364 = { change_province_name = "Szawle" }		
+				365 = { change_province_name = "Polaga" }		
+				owner = { 
+					set_global_flag = polish_renamed_lithuania
+					clr_global_flag = german_renamed_lithuania
+					clr_global_flag = lithuanian_renamed_lithuania
+					clr_global_flag = russian_renamed_lithuania
+				}
+			}
+			
+			###Polish - Vilnius###
+			random_owned = {
+				limit = {
+					province_id = 360
+					owner = {
+						is_culture_group = polish_culture_group
+						NOT = { tag = PLC }
+					}
+				}
+				360 = { change_province_name = "Wilno" }
+				owner = { 
+					set_global_flag = polish_renamed_vilnius
+					clr_global_flag = german_renamed_vilnius
+					clr_global_flag = lithuanian_renamed_vilnius
+					clr_global_flag = russian_renamed_vilnius
+				}
+			}
+			
+			###Polish - Pinsk###
+			random_owned = {
+				limit = {
+					province_id = 938
+					owner = {
+						is_culture_group = polish_culture_group
+						NOT = { tag = PLC }
+					}
+				}
+				938 = { change_province_name = "Lida" }
+				947 = { change_province_name = "Postawy" }
+				owner = { 
+					set_global_flag = polish_renamed_lithuania_pinsk
+					clr_global_flag = lithuanian_renamed_lithuania_pinsk
+					clr_global_flag = german_renamed_lithuania_pinsk
+					clr_global_flag = russian_renamed_lithuania_pinsk
+				}
+			}
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	ober_ost = {
+		picture = ober_ost
+		potential = {
+			OR = {
+				tag = GCF
+				tag = GER
+			}
+			has_global_flag = annex_baltic_duchy
+			NOT = { has_global_flag = ober_ost_lit }
+			is_greater_power = yes
+			LIT = {
+				all_core = {
+					OR = {
+						owned_by = THIS
+						owner = {
+							OR = {
+								in_sphere = THIS
+								vassal_of = THIS
+								}
+							war = no
+						}
+					}
+				}
+			}
+		}
+		
+		allow = {
+			war = no
+			revolution_n_counterrevolution = 1
+			698 = { owned_by = THIS }
+			LIT = {
+				all_core = {
+					OR = {
+						owned_by = THIS
+						owner = {
+							OR = {
+								in_sphere = THIS
+								vassal_of = THIS
+								}
+							war = no
+						}
+					}
+				}
+			}
+			NOT = { war_policy = pacifism }
+		}
+		
+		effect = {
+			badboy = 1
+			any_pop = { limit = { has_pop_culture = lithuanian } militancy = 5 }
+			698 = { remove_core = LIT } #Memel
+			set_global_flag = ober_ost_lit
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+
+}

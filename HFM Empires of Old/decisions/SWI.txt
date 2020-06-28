@@ -1,0 +1,359 @@
+political_decisions = {
+
+	integrate_neuchatel = {
+		picture = declare_republic_of_neuchatel
+		potential = {
+			tag = SWI
+			exists = yes
+			NCT = { exists = yes vassal_of = SWI }
+			OR = {
+				has_country_flag = neuchatel_crisis_escalated
+				year = 1860
+			}
+		}
+		
+		allow = {
+			war = no
+			NCT = { war = no }
+			has_country_flag = neuchatel_crisis_escalated
+			OR = {
+				AND = {
+					NCT = { 
+						OR = {
+							NOT = { sphere_owner = { primary_culture = north_german } }
+							NOT = { part_of_sphere = yes }
+						}
+					}
+					any_neighbor_country = {
+						exists = yes
+						has_country_flag = neuchatel_crisis_escalated
+						OR = {
+							tag = PRU
+							tag = NGF
+							tag = GER
+						}
+						NOT = { has_country_modifier = preparations_for_war }
+					}
+				}
+				AND = {
+					NCT = { 
+						OR = {
+							NOT = { sphere_owner = { primary_culture = north_german } }
+							NOT = { part_of_sphere = yes }
+						}
+					}
+					any_neighbor_country = {
+						exists = yes
+						OR = {
+							tag = PRU
+							tag = NGF
+							tag = GER
+						}
+						NOT = { has_country_modifier = preparations_for_war }
+					}
+				}
+			}
+		}
+		
+		effect = {
+			clr_country_flag = neuchatel_crisis_escalated
+			any_country = { clr_country_flag = neuchatel_crisis_escalated }
+			any_country = { limit = { has_country_flag = supports_switzerland } leave_alliance = SWI clr_country_flag = supports_switzerland }
+			any_country = { release = NCT leave_alliance = NCT release_vassal = NCT }
+			
+			inherit = NCT
+			608 = { remove_core = NGF }
+			608 = { remove_core = GER }
+			608 = { remove_core = PRU }
+			608 = { remove_core = NCT }
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	integrate_neuchatel_prussia = {
+		picture = declare_republic_of_neuchatel
+		potential = {
+			OR = {
+				tag = PRU
+				tag = GER
+				tag = NGF
+			}
+			has_country_flag = neuchatel_crisis_escalated
+			NCT = { exists = yes }
+		}
+		
+		allow = {
+			war = no
+			NCT = { war = no }
+			NCT = {
+				exists = yes NOT = { vassal_of = SWI } 
+				OR = {
+					in_sphere = THIS
+					NOT = { part_of_sphere = yes }
+				}
+			}
+		}
+		
+		effect = {
+			clr_country_flag = neuchatel_crisis_escalated
+			any_country = { clr_country_flag = neuchatel_crisis_escalated }
+			any_country = { limit = { has_country_flag = supports_switzerland } leave_alliance = SWI clr_country_flag = supports_switzerland }
+			any_country = { release = NCT leave_alliance = NCT release_vassal = NCT }
+			inherit = NCT
+			608 = { remove_core = NCT }
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	force_neuchatel_issue = {
+		picture = declare_republic_of_neuchatel
+		potential = {
+			OR = {
+				tag = PRU
+				tag = GER
+				tag = NGF
+			}
+			OR = {
+				NOT = { has_country_flag = neuchatel_crisis_escalated }
+				year = 1860
+			}
+			NCT = { exists = yes }
+		}
+		
+		allow = {
+			war = no
+			nationalism_n_imperialism = 1
+			608 = { is_core = THIS }
+		}
+		
+		effect = {
+			country_event = 34615
+			set_country_flag = neuchatel_crisis_escalated
+		}
+		ai_will_do = { factor = 1 }
+	}
+
+	call_geneva_convention = {
+		picture = call_geneva_convention
+		potential = {
+			tag = SWI
+			owns = 607
+			NOT = {
+				has_global_flag = geneva_convention_held
+			}
+		}
+		
+		allow = {
+			any_greater_power = {
+				war_exhaustion = 5
+			}
+			empiricism = 1
+		}
+		
+		effect = {
+			add_country_modifier = {
+				name = signed_the_geneva_convention
+				duration = -1
+			}
+			set_global_flag = geneva_convention_held
+			prestige = 10
+		}
+	}
+	
+	sign_the_geneva_convention = {
+		alert = no
+		potential = {
+			civilized = yes
+			has_global_flag = geneva_convention_held
+			NOT = { has_country_modifier = signed_the_geneva_convention }
+		}
+		
+		allow = {
+			NOT = {
+				badboy = 1
+				has_country_modifier = withdrew_from_geneva_convention
+			}
+			OR = {
+				NOT = {has_country_modifier = law_changed_by_force }
+				ai = no
+			}
+		}
+		
+		effect = {
+			remove_country_modifier = educational_reform
+			remove_country_modifier = military_reform
+			remove_country_modifier = western_influences
+			remove_country_modifier = uncivilized_isolationism
+			remove_country_modifier = trade_restrictions
+			remove_country_modifier = sayings_of_the_dutch
+			remove_country_modifier = rangaku
+			remove_country_modifier = western_presence
+			remove_country_modifier = isolationist_foreign_naval_officers
+			remove_country_modifier = isolationist_foreign_naval_schools
+			remove_country_modifier = isolationist_foreign_officers
+			remove_country_modifier = isolationist_foreign_training
+			any_owned = {
+				remove_province_modifier = western_presence
+				remove_province_modifier = foreign_smugglers
+				remove_province_modifier = foreign_trading_post
+				remove_province_modifier = local_opium_habit
+				remove_province_modifier = european_military_mission
+				remove_province_modifier = legation_quarter
+				remove_province_modifier = kettler_denkmal
+				remove_province_modifier = extraterritoriality_granted
+				remove_province_modifier = boxer_presence
+				remove_province_modifier = boxer_agitation
+			}
+			add_country_modifier = {
+				name = signed_the_geneva_convention
+				duration = -1
+			}
+			badboy = -1
+		}
+	}
+	
+	withdraw_signature_geneva_convetion = {
+		alert = no
+		picture = sign_the_geneva_convention
+		
+		potential = {
+			has_global_flag = geneva_convention_held
+			has_country_modifier = signed_the_geneva_convention
+			OR = {
+				ruling_party_ideology = reactionary
+				ruling_party_ideology = fascist
+				ruling_party_ideology = communist
+				}
+			OR = {
+				government = absolute_monarchy
+				government = fascist_dictatorship
+				government = presidential_dictatorship
+				government = proletarian_dictatorship
+			}
+		}
+		allow = {
+			has_country_modifier = signed_the_geneva_convention
+		}
+		effect = {
+			badboy = 5
+			add_country_modifier = {
+				name = withdrew_from_geneva_convention
+				duration = 1825
+			}
+			remove_country_modifier = signed_the_geneva_convention
+		}
+		ai_will_do = { factor = 0 }
+	}
+	
+	build_gotthard_tunnel = {
+	picture = build_gotthard_tunnel
+		potential = {
+			tag = SWI
+			owns = 606
+			NOT = {
+				has_country_flag = gotthard_tunnel_built
+			}
+		}
+		
+		allow = {
+			invention = machine_tools
+			steel_railroad = 1
+			money = 10000
+		}
+		
+		effect = {
+			money = -10000
+			606 = { infrastructure = 4 }
+			prestige = 5
+			set_country_flag = gotthard_tunnel_built
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	swiss_banking_and_industry = {
+		picture = institute_central_bank
+		potential = {
+			tag = SWI
+			NOT = { has_country_modifier = swiss_banking }
+		}
+		
+		allow = {
+			government = democracy
+			NOT = { num_of_ports = 1 }
+			#NOT = { unemployment_by_type = { type = craftsmen value = 0.01 } }
+			has_country_modifier = central_bank_established
+			industrial_score = 70
+			modern_central_bank_system = 1
+			OR = {
+				management_strategy = 1
+				neoclassical_theory = 1
+				economic_responsibility = 1
+			}
+		}
+		
+		effect = {
+			add_country_modifier = { name = land_of_opportunity duration = 730 }
+			add_country_modifier = { name = swiss_banking duration = -1 }	
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	
+	enact_freedom_of_religion = {
+		picture = preacher
+		potential = {
+			tag = SWI
+			NOT = { has_country_flag = freedom_of_religion }
+		}
+		
+		allow = {
+			government = democracy
+			OR = {
+				religious_policy = pro_atheism
+				AND = {
+					religious_policy = secularized
+					upper_house = { ideology = liberal value = 0.2 }
+				}
+				AND = {
+					religious_policy = pluralism
+					upper_house = { ideology = liberal value = 0.35 }
+				}
+			}
+		}
+		
+		effect = {
+			set_country_flag = is_swiss
+			set_country_flag = freedom_of_religion
+			add_country_modifier = { name = freedom_of_religion duration = -1 }
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	removing_neuchatel_cores = {
+		picture = declare_republic_of_neuchatel
+		potential = {
+			tag = SWI
+			exists = yes
+			owns = 608
+			608 = {
+				OR = {
+					is_core = NCT
+					is_core = PRU
+					is_core = NGF
+					is_core = GER 
+				}
+			}
+		}
+		
+		allow = { war = no }
+		
+		effect = {
+			608 = { remove_core = NCT }
+			608 = { remove_core = PRU }
+			608 = { remove_core = NGF }
+			608 = { remove_core = GER }
+			any_country = { clr_country_flag = neuchatel_crisis_escalated }
+		}
+		ai_will_do = { factor = 1 }
+	}
+}

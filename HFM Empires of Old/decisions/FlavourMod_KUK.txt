@@ -1,0 +1,320 @@
+political_decisions = {
+	build_the_northern_railway = { #Vienna-Prague Railway
+		picture = whistlestop_tour
+		potential = {
+			OR = {
+				tag = AUS
+				tag = KUK
+			}
+			NOT = { has_global_flag = build_the_northern_railway }
+		}
+		allow = {
+			money = 10000
+			owns = 625
+		}
+		effect = {
+			set_global_flag = build_the_northern_railway
+			treasury = -10000
+			703 = { infrastructure = 1 }
+			2584 = { infrastructure = 1 }
+			689 = { infrastructure = 1 }
+			631 = { infrastructure = 1 }
+			619 = { infrastructure = 1 }
+			625 = { infrastructure = 1 }
+		}
+		
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
+	build_the_southern_railway = { #Vienna-Prague Railway
+		picture = whistlestop_tour
+		potential = {
+			OR = {
+				tag = AUS
+				tag = KUK
+			}
+			early_railroad = 1
+			NOT = { has_global_flag = build_the_southern_railway }
+		}
+		allow = {
+			money = 10000
+			early_railroad = 1
+			owns = 768
+			owns = 767
+			owns = 616
+			owns = 736
+		}
+		
+		effect = {
+			set_global_flag = build_the_southern_railway
+			treasury = -10000
+			620 = { infrastructure = 1 }
+			617 = { infrastructure = 1 }
+			616 = { infrastructure = 1 }
+			767 = { infrastructure = 1 }
+			768 = { infrastructure = 1 }
+			625 = { infrastructure = 1 }
+			769 = { infrastructure = 1 }
+			736 = { infrastructure = 1 }
+		}
+		
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
+	embraced_jews_in_austria = {
+	picture = embrace_the_jews
+		potential = {
+			OR = {
+				tag = AUS
+				tag = KUK
+				tag = DNB
+			}
+			has_global_flag = franz_joseph_i
+			NOT = { has_country_flag = embraced_jews }
+		}
+		
+		allow = {
+			war = no
+			year = 1850
+			OR = {
+				government = absolute_monarchy
+				government = prussian_constitutionalism
+				government = hms_government
+			}
+		}
+		
+		effect = {
+			set_country_flag = embraced_jews
+			any_pop = {
+				limit = { 
+					NOT = { has_pop_religion = jewish }
+				}
+				militancy = 1
+				consciousness = 2
+			}
+			add_accepted_culture = ashkenazi
+			any_pop = {
+				limit = { 
+					culture = ashkenazi
+					location = { province_id = 619 } #Vienna
+				}
+				militancy = -10
+				consciousness = -10
+				reduce_pop = 2
+			}
+			any_pop = {
+				limit = { 
+					has_pop_religion = jewish
+				}
+				militancy = -10
+				consciousness = -10
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	peace_of_prague = { #Lets AI Austria Take Sigmaringen if they win brother's war/white peace AI Prussia
+		picture = gtfo
+		potential = {
+			tag = AUS
+			ai = yes
+			PRU = { ai = yes }
+			OR = {
+				SGM = {
+					exists = yes
+					vassal_of = PRU
+				}
+				SGM = {
+					exists = yes
+					is_vassal = no
+				}
+				AND = {
+					NOT = { exists = SGM }
+					594 = { owned_by = PRU } #Sigmaringen 
+				}
+			}
+			NOT = { 
+				exists = NGF
+				exists = SGF
+				exists = GER 
+				exists = GCF
+				has_country_flag = brothers_war_loser
+			}
+			OR = { 
+				BAV = { in_sphere = THIS }
+				BAD = { in_sphere = THIS }
+			}
+			NOT = { has_country_flag = ai_demand_sigmaringen }
+		}
+		
+		allow = {
+			war = no
+			truce_with = PRU
+			PRU = {
+				has_recently_lost_war = yes 
+				war_exhaustion = 40
+			}
+			OR = {
+				has_country_modifier = brothers_war_aggressor
+				has_country_flag = brothers_war_winner
+			}
+			NOT = { exists = NGF }
+		}
+		
+		effect = {
+			set_country_flag = ai_demand_sigmaringen
+			war_exhaustion = -25
+			badboy = 5
+			remove_country_modifier = brothers_war_aggressor
+			any_country = {
+				limit = {
+					tag = PRU
+					truce_with = THIS
+				}
+				country_event = 99810
+			}	
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
+	leipzig_congress = {
+		picture = german_confederation
+		potential = {
+			OR = {
+				tag = KUK
+				tag = AUS
+			}
+			NOT = {
+				exists = GCF
+				exists = GER
+				exists = RHI
+			}
+			OR = {
+				FRA = { has_country_flag = annexed_rhineland }
+				BOR = { has_country_flag = annexed_rhineland }
+			}
+			NOT = { has_global_flag = leipzig_congress }
+		}
+		
+		allow = {
+			war = no
+			is_greater_power = yes
+			nationalism_n_imperialism = 1
+		}
+		
+		effect = {
+			badboy = 5
+			CRO = { all_core = { add_core = HUN } }
+			any_owned = {
+				limit = {
+					OR = {
+						is_core = HUN
+						is_core = CRO
+					}
+					NOT = { is_core = DLM }
+				}
+				remove_core = KUK
+			}
+			KUK = { all_core = { add_core = AUS } }
+			GER = { all_core = { add_core = GCF } }
+			RHI = { all_core = { add_core = GCF } }
+			GCF = { all_core = { remove_core = GER } }
+			change_tag = GCF
+			inherit = NGF
+			inherit = SGF
+			add_accepted_culture = north_german
+			add_accepted_culture = siebenburger
+			add_accepted_culture = volga_german
+			remove_accepted_culture = hungarian
+			set_global_flag = leipzig_congress
+			set_global_flag = 3hurrahs
+			any_country = {
+				limit = {
+					is_culture_group = germanic
+					exists = no
+					NOT = { tag = PRU }
+					NOT = { tag = BAN }
+					NOT = { tag = UBD }
+					NOT = { has_country_flag = post_colonial_country }
+					OR = {
+						all_core = { owned_by = THIS }
+						tag = NGF
+						tag = SGF
+					}
+				}
+				country_event = 11105
+			}
+			any_country = {
+				limit = {
+					is_culture_group = germanic
+					exists = yes
+					OR = {
+						is_culture_group = germanic
+						AND = { 
+							is_culture_group = germanic
+							in_sphere = THIS
+						}
+						tag = SCH
+						AND = {
+							tag = BAV
+							ai = yes
+						}
+						AND = {
+							tag = PRU
+							ai = yes
+						}
+					}
+					NOT = {
+						tag = KUK
+						tag = AUS
+						tag = DNB
+						tag = BAN
+						tag = UBD
+						tag = VLG
+						tag = LIE
+						tag = SIE
+						capital_scope = { continent = africa }
+						capital_scope = { continent = west_africa }
+						capital_scope = { continent = central_africa }
+						capital_scope = { continent = east_africa }
+						capital_scope = { continent = south_west_africa }
+						capital_scope = { continent = asia }
+					}
+					NOT = { 
+						vassal_of = FRA 
+						vassal_of = BOR
+					}
+					OR = {
+						is_vassal = no
+						vassal_of = THIS
+						vassal_of = PRU
+					}
+					NOT = { has_country_flag = post_colonial_country }
+				}
+				country_event = 11101
+			}
+			random_country = {
+				limit = {
+					primary_culture = french
+					is_greater_power = yes
+					capital = 425
+				}	
+				country_event = 72752
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	#silvesterpatent = {
+	#
+	#}
+}

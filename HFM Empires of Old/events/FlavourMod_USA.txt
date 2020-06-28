@@ -1,0 +1,769 @@
+#99900 Singapore Free Port
+#99901 Singapore Migration
+#99902 Australia Immigration
+#99903 California Gold Rush
+#99904 Australia Gold Rush
+#99905 China Research Fix
+#99906 German New Guinea
+#99907-11 Don Pacifico Affair
+#99920-22 Military Aid Events
+#99930 Splendid Isolation GB
+
+
+#The California Gold Rush
+country_event = {
+	id = 99903
+	title = "EVTNAME99903" #The California Gold Rush
+	desc = "EVTDESC99903"
+	picture = "california_gold_rush"
+	
+	trigger = {
+		year = 1848
+		OR = { 
+			has_country_flag = hasmanifestdestiny
+			has_country_flag = manifest_destiny_refuted
+		}
+		war = no
+		owns = 104
+		AND = {
+			104 = { is_colonial = no produces = precious_metal }
+			89 = { produces = precious_metal }
+			90 = { produces = precious_metal }			
+		}
+		NOT = { has_global_flag = cali_gold_rush }
+	}
+	
+	fire_only_once = yes
+
+	option = {
+		name = "EVT99903OPTA"
+		any_pop = {
+			limit = {
+				location = { is_core = CAL }
+				culture = native_american_minor
+			}
+				reduce_pop = 0.05
+			}
+			random_owned = {
+				limit = { owner = { primary_culture = yankee } }
+				owner = {
+					any_pop = {
+						limit = {
+							location = { is_core = CAL }
+							culture = yankee
+						}
+						reduce_pop = 1.5
+					}
+					104 = { assimilate = yes }
+					89 = { assimilate = yes }
+					90 = { assimilate = yes }
+				}
+			}
+			random_owned = {
+				limit = { owner = { primary_culture = mexican } }
+				owner = {
+					any_pop = {
+						limit = {
+							location = { is_core = CAL }
+							culture = mexican
+						}
+						reduce_pop = 1.5
+					}
+					any_pop = {
+						limit = {
+							location = { is_core = CAL }
+							culture = yankee
+						}
+						reduce_pop = 0.2
+					}
+				}
+			}
+			
+			84 = { 
+				add_province_modifier = {
+					name = california_gold_rush
+					duration = 365
+				}			
+			}
+			104 = { 
+				add_province_modifier = {
+					name = california_gold_rush
+					duration = 365
+				}			
+			}
+			89 = { 
+				add_province_modifier = {
+					name = california_gold_rush
+					duration = 365
+				}			
+			}
+			90 = { 
+				add_province_modifier = {
+					name = california_gold_rush
+					duration = 365
+				}			
+			}
+			set_global_flag = cali_gold_rush
+	}
+}
+
+#The Texan Statehood
+country_event = {
+	id = 99935
+	title = "EVTNAME99935" #The Texan Statehood
+	desc = "EVTDESC99935"
+	picture = "texas_state"
+	
+	trigger = {
+		tag = USA
+		owns = 133
+		TEX = {
+			exists = no			
+		}
+		NOT = { year = 1870 }
+		NOT = { 
+			has_country_flag = texan_state_flag
+		}
+	}
+
+	option = {
+		name = "EVT99935OPTA"
+		TEX = { 
+			all_core = {
+				limit = {  
+					empty = no 
+				}
+				
+				add_province_modifier = {
+					name = lone_star
+					duration = 465
+				}				
+			}
+		}
+		MEX = {
+			any_pop = {
+				limit = {
+					location = {
+						is_core = TEX
+					}
+					culture = texan
+					NOT = { 
+						type = soldiers 
+						type = bureaucrats
+						type = aristocrats
+					}
+				}
+				reduce_pop = 4
+			}
+			any_pop = {
+				limit = {
+					location = {
+						is_core = CAL
+					}
+					culture = mexican
+				}
+				reduce_pop = 0.5
+			}
+			any_pop = {
+				limit = {
+					location = {
+						is_core = CAL
+					}
+					culture = native_american_minor
+				}
+				reduce_pop = 0.2
+			}			
+		}
+		relation = {
+			who = MEX
+			value = -50
+		}		
+		set_country_flag = texan_state_flag
+	}
+}
+
+country_event = {
+	id = 110060
+	title = "EVTNAME110060" #The Bear Flag Revolt
+	desc = "EVTDESC110060"
+	picture = "MEX_Bear_Flag_Revolt"	
+	
+	trigger = {
+		tag = MEX
+		owns = 104
+		war_with = USA
+		USA = { has_country_flag = hasmanifestdestiny }
+		NOT = { has_global_flag = bear_flag_revolt }
+	}
+	
+	mean_time_to_happen = { days = 1 }
+	
+	option = {
+		name = "EVT110060OPTA"
+		release = CAL
+		any_owned = { limit = { is_core = CAL } secede_province = CAL  }
+		war = {
+			target = CAL
+			attacker_goal = { casus_belli = annex_core_country }
+			defender_goal = { casus_belli = status_quo }
+		}
+		
+		any_country = {
+			limit = {
+				tag = USA
+			}
+			relation = {
+				who = CAL
+				value = 200
+			}
+			diplomatic_influence = {
+				who = CAL
+				value = 400
+			}			
+			military_access = CAL
+			create_alliance = CAL
+		}
+		
+		any_country = {
+			limit = {
+				tag = USA
+				ai = yes
+			}
+			treasury = 20000
+		}
+		
+		set_global_flag = bear_flag_revolt
+		ai_chance = { factor = 100 }
+	}
+	
+	option = {
+		name = "EVT110060OPTB"
+		CAL = { any_owned = {remove_core = MEX } }
+		release = CAL
+		prestige = -50
+		set_global_flag = bear_flag_revolt
+		ai_chance = { factor = 0 }
+	}
+
+}
+
+country_event = {
+	id = 99971
+	title = "EVTNAME99971" #The Treaty of New York
+	desc = "EVTDESC99971"
+	picture = "treaty"
+	major = yes
+	
+	trigger = {
+		tag = USA
+		has_global_flag = treaty_of_new_york
+		war = no
+		NOT = { has_country_flag = pacific_states }
+		has_country_flag = mormon_exodus
+	}
+
+	option = {
+		name = "EVT99971OPTA"
+		prestige = -25
+		any_pop = {
+			limit = {
+				culture = french_canadian
+			}
+			move_pop = 249
+		}
+		add_accepted_culture = anglo_canadian
+		CAN_46 = { is_slave = no }
+		MEX_100 = { add_core = CAL }
+		2148 = { add_core = CAL }
+		107 = { add_core = TEX }
+		128 = { add_core = TEX }
+		129 = { add_core = TEX }
+		109 = { add_core = TEX }
+		103 = { add_core = TEX }
+		105 = { add_core = TEX }
+		110 = { add_core = DES }
+		108 = { add_core = DES }
+		release_vassal = CAL
+		release_vassal = TEX
+		release_vassal = DES
+		create_alliance = CAL
+		create_alliance = DES
+		create_alliance = TEX
+		diplomatic_influence = {
+			who = CAL
+			value = 400
+		}
+		diplomatic_influence = {
+			who = TEX
+			value = 400
+		}
+		diplomatic_influence = {
+			who = DES
+			value = 400
+		}
+		set_country_flag = pacific_states
+	}
+}
+
+# 3rd Wave of US Migration
+country_event = {
+	id = 99805
+	title = "EVTNAME99805"
+	desc = "EVTDESC99805"
+	picture = "migration_usa"
+	
+	trigger = {
+		year = 1880
+		tag = USA
+		is_greater_power = yes
+		slavery = no_slavery
+		war = no
+		is_disarmed = no
+		NOT = { war_exhaustion = 10 }
+		government = democracy
+		NOT = { has_country_flag = 3rd_wave_usa }
+	}
+	
+	mean_time_to_happen = { months = 1 }
+	
+	fire_only_once = yes
+	
+	option = {
+		name = "EVTOPTA19300"
+		prestige = 5
+		set_country_flag = 3rd_wave_usa
+		any_pop = {
+			limit = {
+				type = bureaucrats
+				location = {
+					OR = {
+						#Illinois
+						province_id = 163 #Chicago
+						#New York
+						province_id = 232 #New York
+						#Pennsylvania
+						province_id = 223 #Philadelphia
+						#New York
+						province_id = 233 #Long Island
+						province_id = 236 #Buffalo
+						#Texas
+						province_id = 133 #Austin
+					}
+				}
+			}
+			reduce_pop = 0.8
+		}
+		any_owned = {
+			limit = {
+				OR = {
+					#Illinois
+					province_id = 163 #Chicago
+					#New York
+					province_id = 232 #New York
+					#Pennsylvania
+					province_id = 223 #Philadelphia
+				}
+			}
+			life_rating = 12
+			add_province_modifier = {
+				name = gateway_to_america
+				duration = 1095
+			}			
+		}
+		any_owned = {
+			limit = {
+				OR = {
+					#New York
+					province_id = 233 #Long Island
+					province_id = 236 #Buffalo
+				}
+			}
+			life_rating = 10
+			add_province_modifier = {
+				name = gateway_to_america
+				duration = 720
+			}			
+		}
+		any_owned = {
+			limit = {
+				OR = {
+					#Iowa
+					province_id = 151 #Des Moines
+					province_id = 153 #Cedar Rapids
+				}
+			}
+			life_rating = 5
+			add_province_modifier = {
+				name = gateway_to_america
+				duration = 720
+			}			
+		}		
+		any_owned = {
+			limit = {
+				OR = {
+					#Michigan
+					province_id = 173 #Detriot
+					#Missouri
+					province_id = 146 #St Louis
+					#Iowa
+					province_id = 154 #Sioux City
+				}
+			}
+			life_rating = 5
+			add_province_modifier = {
+				name = gateway_to_america
+				duration = 1460
+			}			
+		}			
+		any_owned = {
+			limit = {
+				OR = {
+					#Washington
+					province_id = 78 #Seattle
+					#Oregon
+					province_id = 81 #Portland
+					#New Jesery
+					province_id = 231 #Camden
+					province_id = 230 #Trenton
+					province_id = 229 #Newark
+					#Pennsylvania
+					province_id = 227 #Pittsburgh
+					#Massachusetts
+					province_id = 243 #Boston
+					#Missouri
+					province_id = 149 #Jefferson City
+					province_id = 150 #Kansas City
+					#Nebraska
+					province_id = 125 #Hastings
+					#Minnesota
+					province_id = 155 #Minneapolis
+					#Wisconsin
+					province_id = 159 #Milwaukee
+				}
+			}
+			life_rating = 5
+			add_province_modifier = {
+				name = gateway_to_america
+				duration = 730
+			}			
+		}
+		any_owned = {
+			limit = {
+				OR = {
+					#Michigan
+					province_id = 173 #Detriot
+					#Missouri
+					province_id = 147 #Joplin
+					#Illinois
+					province_id = 164 #Rockford
+					province_id = 165 #Champaign
+					#New York
+					province_id = 238 #Syarcuse
+					#Indiana
+					province_id = 169 #Indianapolis
+				}
+			}
+			add_province_modifier = {
+				name = gateway_to_america
+				duration = 365
+			}			
+		}
+		any_owned = {
+			limit = {
+				OR = {
+					#Maryland
+					province_id = 219 #Baltimore
+					#Colorado
+					province_id = 106 #Denver
+					#Arizona
+					province_id = 100 #Phoenix
+					#Oklahoma
+					province_id = 131 #Oklahoma City
+					#Michigan
+					province_id = 174 #Grand Rapids
+					province_id = 175 #Saginaw
+					province_id = 176 #Traverse City
+					#Louisana
+					province_id = 139 #New Orleans
+					#West Virginia
+					province_id = 218 #Wheeling
+					province_id = 217 #Green Bank
+					#Ohio
+					province_id = 178 #Cleveland
+					#Georgia
+					province_id = 201 #Atlanta
+					#Dakotas
+					province_id = 117 #Bismarck
+					province_id = 120 #Sioux Falls
+					#Kansas
+					province_id = 126 #Topeka
+					province_id = 127 #Goodland
+					#Nebraska
+					province_id = 123 #Omaha
+					#Minnesota
+					province_id = 158 #Duluth
+					province_id = 156 #Granite Falls
+					#Wisconsin
+					province_id = 162 #Madison
+					province_id = 167 #Springfield
+					#Kentucky
+					province_id = 184 #Louisvile
+				}
+			}
+			add_province_modifier = {
+				name = gateway_to_america
+				duration = 365
+			}			
+		}
+		163 = { #Chicago
+			add_province_modifier = {
+				name = baby_boom
+				duration = 547 
+			}
+			life_rating = 3
+		}
+		89 = { #Los Angeles
+			add_province_modifier = {
+				name = gateway_to_america
+				duration = 365 
+			}
+		}
+		
+	}
+}
+
+country_event = {
+
+	id = 530001
+	title = "EVTNAME530001"
+	desc = "EVTDESC530001"
+	picture = "newyorkfire"
+
+	trigger = {
+		tag = USA
+		year = 1845
+		owns = 232 #NewYork
+		NOT = { has_country_flag = great_new_york_fire }
+	}
+
+	fire_only_once = yes
+
+	mean_time_to_happen =  {
+		months = 5
+
+		modifier = {
+		 factor = 0.75
+		 year = 1845
+		}
+	}
+	
+	immediate = {
+		232 = { 
+			infrastructure = -1
+			any_pop = {
+				consciousness = 1.5
+			}
+		}
+		set_country_flag = great_new_york_fire
+	}
+
+	option = {
+		name = "EVTOPTA530001"
+		treasury = -35000
+		232 = { infrastructure = 1 }
+		random_list = {
+			50 = { 
+				232 = { 
+					add_province_modifier = { 
+						name = rebuilding_city 
+						duration = 90 
+					}
+				} 
+			}
+			50 = { 
+				232 = {
+					add_province_modifier = {
+						name = rebuilding_city
+						duration = 60 
+					}
+				} 
+			}
+		}
+		ai_chance = {
+			factor = 100
+			modifier = {
+				factor = 0
+				NOT = { money = 50100 }
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTB530001"
+		treasury = -20000
+		random_list = {
+			33 = { 232 = { 
+				add_province_modifier = { 
+					name = rebuilding_city 
+					duration = 60 
+						} 
+					} 
+				}
+			33 = { 232 = { 
+				add_province_modifier = { 
+					name = rebuilding_city 
+					duration = 45 
+						} 
+					} 
+				}
+			33 = { 232 = { 
+				add_province_modifier = { 
+					name = rebuilding_city 
+					duration = 30 
+						} 
+					} 
+				}
+			}
+			
+		ai_chance = {
+			factor = 10
+			modifier = {
+				factor = 0
+				NOT = { money = 20100 }
+				}
+			}
+		}
+		
+	option = {
+		name = "EVTOPTC530001"
+		prestige = -15
+		232 = {
+			any_pop = {
+				consciousness = 1.5
+			}
+		}
+		ai_chance = {
+			factor = 0
+			modifier = {
+				factor = 100
+				NOT = { money = 10000 }
+			}
+		}
+	}
+
+}
+
+country_event = {
+
+	id = 530002
+	title = "EVTNAME530002"
+	desc = "EVTDESC530002"
+	picture = "chicagofire"
+
+	trigger = {
+		tag = USA
+		year = 1871
+		owns = 163 #Chicago
+		NOT = { year = 1873 }
+	}
+
+	fire_only_once = yes
+
+	mean_time_to_happen =  {
+		months = 8
+
+		modifier = {
+		factor = 0.65
+		year = 1871
+		}
+	}
+
+	immediate = {
+		163 = { 
+			infrastructure = -1
+			any_pop = {
+				consciousness = 1.5
+			}
+		}
+		set_country_flag = great_new_york_fire
+	}
+
+	option = {
+		name = "EVTOPTA530001"
+		treasury = -55000
+		163 = { infrastructure = 1 }
+		random_list = {
+			50 = { 
+				163 = { 
+					add_province_modifier = { 
+						name = rebuilding_city 
+						duration = 90 
+					}
+				} 
+			}
+			50 = { 
+				163 = {
+					add_province_modifier = {
+						name = rebuilding_city
+						duration = 60 
+					}
+				} 
+			}
+		}
+		ai_chance = {
+			factor = 100
+			modifier = {
+				factor = 0
+				NOT = { money = 50100 }
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTB530001"
+		treasury = -35000
+		random_list = {
+			33 = { 232 = { 
+				add_province_modifier = { 
+					name = rebuilding_city 
+					duration = 60 
+						} 
+					} 
+				}
+			33 = { 232 = { 
+				add_province_modifier = { 
+					name = rebuilding_city 
+					duration = 45 
+						} 
+					} 
+				}
+			33 = { 232 = { 
+				add_province_modifier = { 
+					name = rebuilding_city 
+					duration = 30 
+						} 
+					} 
+				}
+			}
+			
+		ai_chance = {
+			factor = 10
+			modifier = {
+				factor = 0
+				NOT = { money = 20100 }
+				}
+			}
+		}
+		
+	option = {
+		name = "EVTOPTC530001"
+		prestige = -15
+		ai_chance = {
+			factor = 0
+			modifier = {
+				factor = 100
+				NOT = { money = 15000 }
+			}
+		}
+	}
+}

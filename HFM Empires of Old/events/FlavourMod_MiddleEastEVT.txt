@@ -1,0 +1,586 @@
+#Sykes-Picot Agreement - Receiving GP
+country_event = {
+	id = 99972
+	title = "EVTNAME99972"
+	desc = "EVTDESC99972"
+	picture = "skyes_picot"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT99972OPTA"
+		prestige = 10
+		badboy = 8
+		any_pop = {
+			limit = {
+				OR = {
+					religion = sunni
+					religion = shiite
+				}
+			}
+			consciousness = 8	
+			militancy = 8
+		}
+		FROM = { country_event = 99973 }
+		set_country_flag = sykes_picot_agreed
+		
+		ai_chance = {
+			factor = 95
+			modifier = {
+				factor = 0
+				alliance_with = TUR
+			}
+			modifier = {
+				factor = 0
+				any_greater_power = { war_with = THIS }
+			}
+			modifier = {
+				factor = 0.5
+				war_exhaustion = 50
+			}
+			modifier = {
+				factor = 0.8
+				war_exhaustion = 40
+			}
+			modifier = {
+				factor = 0
+				badboy = 17
+			}
+		}
+	}
+	
+	option = {
+		name = "EVT99972OPTB"
+		badboy = -1
+		prestige = -10
+		FROM = { country_event = 99974 }
+		
+		ai_chance = {
+			factor = 5
+			modifier = {
+				factor = 10
+				alliance_with = TUR
+			}
+			modifier = {
+				factor = 10
+				any_greater_power = {	war_with = THIS }
+			}
+			modifier = {
+				factor = 5
+				war_exhaustion = 50
+			}
+			modifier = {
+				factor = 2
+				war_exhaustion = 40
+			}
+			modifier = {
+				factor = 10
+				badboy = 17
+			}
+		}
+	}
+}
+
+#Sykes-Picot Agreement - 2nd Great Power Agrees
+country_event = {
+	id = 99973
+	title = "EVTNAME99973"
+	desc = "EVTDESC99973"
+	picture = "skyes_picot"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT99973OPTA"
+		war = {
+			target = TUR
+			attacker_goal = { casus_belli = cb_sykes_picot }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = yes
+		}
+		FROM = {
+			war = {
+				target = TUR
+				attacker_goal = { casus_belli = cb_sykes_picot }
+				defender_goal = { casus_belli = status_quo }
+				call_ally = yes
+			}
+		}
+		TUR = {
+			country_event = 99975
+		}
+	}
+}
+
+#Sykes-Picot Agreement - 2nd Great Power Rejects Proposal
+country_event = {
+	id = 99974
+	title = "EVTNAME99974"
+	desc = "EVTDESC99974"
+	picture = "skyes_picot"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT99974OPTA"
+		badboy = 5
+		relation = {
+			who = FROM
+			value = -50
+		}
+		leave_alliance = FROM
+		TUR = {
+			country_event = 99975
+		}
+		war = {
+			target = TUR
+			attacker_goal = { casus_belli = cb_sykes_picot }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = yes
+		}
+		set_country_flag = sykes_only
+		
+		ai_chance = {
+			factor = 70
+		}
+	}
+	
+	option = {
+		name = "EVT99974OPTB"
+		badboy = -3
+		prestige = -20
+		
+		ai_chance = {
+			factor = 30
+		}
+	}
+}
+
+#Sykes-Picot Agreement - Turkey's Response
+country_event = {
+	id = 99975
+	title = "EVTNAME99975"
+	desc = "EVTDESC99975"
+	picture = "skyes_picot"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT99975OPTA"
+		prestige = 15
+		
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	option = {
+		name = "EVT99975OPTB"
+		prestige = -25
+		country_event = 99976
+		
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+#Sykes-Picot Agreement - Turkish Defeat
+country_event = {
+	id = 99976
+	title = "EVTNAME99976"
+	desc = "EVTDESC99976"
+	picture = "skyes_picot"
+	major = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT99976OPTA"
+		prestige = -10
+		895 = { add_core = CLC }
+		EGY_903 = {	remove_core = TUR }
+		EGY_897 = {	remove_core = TUR }
+		EGY_915 = {	remove_core = TUR }
+		EGY_910 = {	remove_core = TUR }
+		EGY_921 = {	remove_core = TUR }
+		TUR_923 = {	remove_core = TUR }
+		TUR_931 = {	remove_core = TUR }
+		TUR_935 = {	remove_core = TUR }
+		
+		#Release all of Ottoman Middle East
+		
+		###UNITED KINGDOM SPHERE OF INFLUENCE###
+		random_country = {
+			limit = {
+				exists = yes
+				tag = ENG
+				OR = {
+					truce_with = THIS
+					has_country_flag = sykes_picot_agreed
+				}
+			}
+			end_war = THIS
+		}
+		
+		#Return any Persian cores
+		random_owned = {
+			limit = {
+				OR = {
+					is_core = PER
+					PER = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				any_owned = {
+					limit = { is_core = PER }
+					secede_province = PER
+				}
+				release = PER
+			}
+			ENG = { diplomatic_influence = { who = PER value = 400 } }
+		}
+		#Egypt
+		random_owned = {
+			limit = {
+				OR = { 
+					AND = { 
+						is_core = EGY
+						NOT = { exists = EGY }
+					}
+					EGY = { vassal_of = TUR }
+				}
+			}
+			owner = { any_owned = { limit = { is_core = EGY } secede_province = EGY } release = EGY }
+			ENG = { diplomatic_influence = { who = EGY value = 400 } }
+		}
+		#Iraq
+		random_owned = {
+			limit = {
+				OR = { 
+					AND = { 
+						is_core = IRQ
+						NOT = { exists = IRQ }
+					}
+					IRQ = { vassal_of = TUR }
+				}
+			}
+			owner = { any_owned = { limit = { is_core = IRQ } secede_province = IRQ } release = IRQ  }
+			ENG = {
+				inherit = IRQ
+				any_owned = {
+					limit = {
+						OR = { 
+							province_id = 930
+							province_id = 932
+							province_id = 933
+						}
+					}	
+					remove_core = IRQ
+				}
+				release_vassal = IRQ
+				diplomatic_influence = { who = IRQ value = 400 }
+				create_alliance = IRQ
+				any_owned = {
+					limit = {
+						OR = {
+							province_id = 930
+							province_id = 932
+							province_id = 933
+						}
+					}	
+					add_core = IRQ
+				}
+			}
+			IRQ = { government = absolute_monarchy }
+		}
+		#Kuwait
+		random_owned = {
+			limit = {
+				OR = { 
+					AND = { 
+						is_core = KWT
+						NOT = { exists = KWT }
+					}
+					KWT = { vassal_of = TUR }
+				}
+			}
+			owner = { any_owned = { limit = { is_core = KWT } secede_province = KWT } release_vassal = KWT  }
+			ENG = { diplomatic_influence = { who = KWT value = 400 } create_vassal = KWT }
+			KWT = { government = absolute_monarchy }
+		}
+		#Jordan
+		random_owned = {
+			limit = {
+				OR = { 
+					AND = { 
+						is_core = JOR
+						NOT = { exists = JOR }
+					}
+					JOR = { vassal_of = TUR }
+				}
+			}
+			owner = { any_owned = { limit = { is_core = JOR } secede_province = JOR } release_vassal = JOR  }
+			ENG = { diplomatic_influence = { who = JOR value = 400 } create_vassal = JOR }
+			JOR = { government = absolute_monarchy }
+		}
+		#Palestine
+		random_owned = {
+			limit = {
+				OR = { 
+					AND = { 
+						is_core = PLS
+						NOT = { exists = PLS }
+					}
+					PLS = { vassal_of = TUR }
+				}
+			}
+			owner = { any_owned = { limit = { is_core = PLS } secede_province = PLS } }
+			ENG = { diplomatic_influence = { who = PLS value = 400 } inherit = PLS }
+		}
+		#Arabia
+		random_owned = {
+			limit = {
+				OR = { 
+					AND = { 
+						is_core = NEJ
+						NOT = { exists = NEJ }
+					}
+					NEJ = { vassal_of = TUR }
+				}
+			}
+			owner = { any_owned = { limit = { is_core = NEJ } secede_province = NEJ } }
+			ENG = { diplomatic_influence = { who = NEJ value = 400 } }
+		}
+		random_owned = {
+			limit = {
+				OR = { 
+					AND = { 
+						is_core = HAL
+						NOT = { exists = HAL }
+					}
+					HAL = { vassal_of = TUR }
+				}
+			}
+			owner = { any_owned = { limit = { is_core = HAL } secede_province = HAL } }
+			ENG = { diplomatic_influence = { who = HAL value = 400 } }
+		}
+		random_owned = {
+			limit = {
+				OR = { 
+					AND = { 
+						is_core = HDJ
+						NOT = { exists = HDJ }
+					}
+					HDJ = { vassal_of = TUR }
+				}
+			}
+			owner = { any_owned = { limit = { is_core = HDJ } secede_province = HDJ } }
+			ENG = { diplomatic_influence = { who = HDJ value = 400 } }
+		}		
+		#Oman
+		random_owned = {
+			limit = {
+				OR = { 
+					AND = { 
+						is_core = OMA
+						NOT = { exists = OMA }
+					}
+					OMA = { vassal_of = TUR }
+				}
+			}
+			owner = { any_owned = { limit = { is_core = OMA } secede_province = OMA } }
+			ENG = { diplomatic_influence = { who = OMA value = 400 } }
+		}
+		#Yemen
+		random_owned = {
+			limit = {
+				OR = { 
+					AND = { 
+						is_core = YEM
+						NOT = { exists = YEM }
+					}
+					YEM = { vassal_of = TUR }
+				}
+			}
+			owner = { any_owned = { limit = { is_core = YEM } secede_province = YEM } }
+			ENG = { diplomatic_influence = { who = YEM value = 400 } create_vassal = YEM }
+		}
+		random_owned = {
+			limit = {
+				OR = { 
+					AND = { 
+						is_core = NYE
+						NOT = { exists = NYE }
+					}
+					NYE = { vassal_of = TUR }
+				}
+			}
+			owner = { any_owned = { limit = { is_core = NYE } secede_province = NYE } }
+			ENG = { diplomatic_influence = { who = NYE value = 400 } }
+		}
+		#Cyprus
+		random_owned = {
+			limit = {
+				OR = { 
+					AND = { 
+						is_core = CYP
+						NOT = { exists = CYP }
+					}
+					CYP = { vassal_of = TUR }
+				}
+			}
+			owner = { any_owned = { limit = { is_core = CYP } secede_province = CYP } release_vassal = CYP  }
+			ENG = { diplomatic_influence = { who = CYP value = 400 } create_vassal = CYP }
+			CYP = { government = dominion }
+		}
+		
+		###2ND GP SPHERE OF INFLUENCE###
+		random_owned = {
+			limit = {
+				OR = { 
+					AND = { 
+						is_core = LBN
+						NOT = { exists = LBN }
+					}
+					LBN = { vassal_of = TUR }
+				}
+			}
+			owner = { any_owned = { limit = { is_core = LBN } secede_province = LBN } }
+			random_country = {
+				limit = {
+					OR = {
+						AND = {
+							has_country_flag = sykes_picot_agreed
+							NOT = { tag = ENG }
+						}
+						has_country_flag = sykes_only
+					}
+				}
+				diplomatic_influence = { who = LBN value = 400 } create_vassal = LBN
+				LBN = { government = absolute_monarchy }
+			}
+		}
+		
+		random_owned = {
+			limit = {
+				OR = { 
+					AND = { 
+						is_core = CLC
+						NOT = { exists = CLC }
+					}
+					CLC = { vassal_of = TUR }
+				}
+			}
+			owner = { any_owned = { limit = { is_core = CLC } secede_province = CLC } }
+			random_country = {
+				limit = {
+					OR = {
+						AND = {
+							has_country_flag = sykes_picot_agreed
+							NOT = { tag = ENG }
+						}
+						has_country_flag = sykes_only
+					}
+				}
+				diplomatic_influence = { who = CLC value = 400 } inherit = CLC
+				CLC = { government = absolute_monarchy }
+			}
+		}
+		
+		random_owned = {
+			limit = {
+				OR = { 
+					AND = { 
+						is_core = SYR
+						NOT = { exists = SYR }
+					}
+					SYR = { vassal_of = TUR }
+				}
+			}
+			owner = { any_owned = { limit = { is_core = SYR } secede_province = SYR } }
+			random_country = {
+				limit = {
+					OR = {
+						AND = {
+							has_country_flag = sykes_picot_agreed
+							NOT = { tag = ENG }
+						}
+						has_country_flag = sykes_only
+					}
+				}
+				inherit = SYR
+				any_owned = {
+					limit = {
+						OR = { 
+							province_id = 905
+							province_id = 900
+						}
+					}	
+					remove_core = SYR
+				}
+				release_vassal = SYR
+				diplomatic_influence = { who = SYR value = 400 }
+				create_alliance = SYR
+				any_owned = {
+					limit = {
+						OR = {
+							province_id = 930
+							province_id = 932
+							province_id = 933
+						}
+					}	
+					add_core = SYR
+				}
+				SYR = { government = absolute_monarchy }
+			}
+		}
+		
+		any_country = {
+			limit = {
+				exists = yes
+				is_greater_power = yes
+				NOT = { tag = ENG }
+				has_country_flag = sykes_picot_agreed
+			}
+			country_event = 999761
+		}
+		
+		any_country = {
+			limit = {
+				exists = yes
+				war_with = THIS
+				alliance_with = ENG
+			}
+			end_war = TUR
+		}
+		
+		any_pop = {
+			limit = { has_pop_culture = turkish }
+			militancy = 8
+		}
+	}
+}
+
+country_event = {
+	id = 999761
+	title = "EVTNAME99976"
+	desc = "EVTDESC99761"
+	picture = "skyes_picot"
+	major = yes
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT36717OPTA"
+		prestige = 15
+		diplomatic_influence = {
+			who = SYR
+			value = 400
+		}
+		diplomatic_influence = {
+			who = LBN
+			value = 400
+		}
+	}
+}

@@ -1,0 +1,894 @@
+#################################################################################
+#																				#
+#  	Supporting Patriots living in your cores within a neighboring country		#
+#																				#
+#################################################################################
+
+country_event = {
+	id = 800100
+	title = "EVTNAME800100" # Funding Patriots?
+	desc = "EVTDESC800100"
+	picture = "recruits"
+	
+	trigger = {
+		war = no
+		is_vassal = no
+		is_disarmed = no
+		civilized = yes
+		money = 25000
+		nationalism_n_imperialism = 1
+		OR = {
+			war_policy = jingoism
+			war_policy = pro_military
+		}
+		any_neighbor_country = {
+			any_owned_province = {
+				is_core = THIS
+				NOT = { has_province_modifier = nationalist_agitation }
+				any_neighbor_province = { owned_by = THIS }
+			}
+			NOT = {
+				is_sphere_leader_of = THIS
+				is_cultural_union = THIS
+				alliance_with = THIS
+				war_with = THIS
+				truce_with = THIS
+				relation = {
+					who = THIS
+					value = 100
+				}
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 90
+		modifier = {
+			factor = 0.6
+			invention = terrorism
+		}
+		modifier = {
+			factor = 0.8
+			invention = separatism
+		}
+		modifier = {
+			factor = 1.2
+			OR = {
+				government = democracy
+				government = hms_government
+			}
+		}
+		modifier = {
+			factor = 0.8
+			government = fascist_dictatorship
+		}
+		modifier = {
+			factor = 1.5
+			NOT = { invention = national_fraternity }
+		}
+		modifier = {
+			factor = 1.2
+			militancy = 2
+		}
+		modifier = {
+			factor = 1.5
+			militancy = 4
+		}
+		modifier = {
+			factor = 2
+			militancy = 6
+		}
+		modifier = {
+			factor = 1.25
+			war_policy = pro_military
+		}
+		modifier = {
+			factor = 1.5
+			is_greater_power = no
+			is_secondary_power = no
+		}
+		modifier = {
+			factor = 0.6
+			any_neighbor_country = {
+				any_owned_province = {
+					is_core = THIS
+					NOT = { has_province_modifier = nationalist_agitation }
+					any_neighbor_province = { owned_by = THIS }
+				}
+				NOT = {
+					relation = { who = THIS value = -100 }
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "EVT800100OPTA"
+		treasury = -50000
+		random_country = {
+			limit = {
+				neighbour = THIS
+				any_owned_province = {
+					is_core = THIS
+					any_neighbor_province = { owned_by = THIS }
+					NOT = { has_province_modifier = nationalist_agitation }
+				}
+				NOT = {
+					is_sphere_leader_of = THIS
+					is_cultural_union = THIS
+					alliance_with = THIS
+					war_with = THIS
+					truce_with = THIS
+					relation = {
+						who = THIS
+						value = 100
+					}
+				}
+			}
+			any_owned = {
+				limit = {
+					is_core = THIS
+					any_neighbor_province = { owned_by = THIS }
+				}
+				add_province_modifier = {
+					name = nationalist_agitation
+					duration = 1095
+				}
+			}
+			any_pop = {
+				limit = {
+					location = { is_core = THIS }
+					is_primary_culture = no
+					is_accepted_culture = no
+				}
+				militancy = 5
+			}
+			relation = {
+				who = THIS
+				value = -50
+			}
+			random = {
+				chance = 25
+				country_event = 800101 #Discovered
+			}			
+		}						
+		ai_chance = {
+			factor = 60
+			modifier = {
+				factor = 0.5
+				badboy = 0.8
+			}
+			modifier = {
+				factor = 0.5
+				war_policy = pro_military
+			}
+		}
+	}
+	option = {
+		name = "EVT800100OPTB"
+		any_pop = {
+			limit = { is_primary_culture = yes }
+			scaled_militancy = {
+				factor = 2
+				issue = jingoism
+			}
+			scaled_militancy = {
+				factor = 2
+				ideology = reactionary
+			}
+		}	
+		ai_chance = {
+			factor = 40
+			modifier = {
+				factor = 1.25
+				militancy = 2
+			}
+			modifier = {
+				factor = 1.25
+				militancy = 4
+			}
+			modifier = {
+				factor = 1.25
+				militancy = 6
+			}
+			modifier = {
+				factor = 1.5
+				badboy = 0.8
+			}
+			modifier = {
+				factor = 0.5
+				war_policy = jingoism
+			}	
+		}
+	}
+}
+
+country_event = {
+	id = 800101
+	title = "EVTNAME800101" # Notification that neighbour is supporting dissent
+	desc = "EVTDESC800101"
+	picture = "arrested"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT800101OPTA"
+		relation = {
+			who = FROM
+			value = -50
+		}
+		casus_belli = {
+			target = FROM
+			type = cut_down_to_size
+			months = 12
+		}
+		random_owned = {
+			limit = {
+				owner = { is_greater_power = yes }
+			}
+			random_country = {
+				limit = {
+					tag = FROM
+					part_of_sphere = no
+				}
+				add_casus_belli = {
+					target = THIS
+					type = add_to_sphere
+					months = 12
+				}
+			}
+		}
+		any_pop = {
+			limit = { is_primary_culture = yes }
+			dominant_issue = {
+				factor = 0.05
+				value = jingoism
+			}		
+			scaled_militancy = {
+				factor = -2
+				issue = jingoism
+			}
+		}
+		FROM = { country_event = 800102 }	
+		ai_chance = {
+			factor = 75
+			modifier = {
+				factor = 0.5
+				is_greater_power = no
+				FROM = { is_greater_power = yes }
+			}
+			modifier = {
+				factor = 0.75
+				militancy = 2
+			}
+			modifier = {
+				factor = 0.75
+				militancy = 4
+			}
+			modifier = {
+				factor = 0.75
+				militancy = 6
+			}
+			modifier = {
+				factor = 1.5
+				war_policy = jingoism
+			}
+			modifier = {
+				factor = 1.25
+				war_policy = pro_military
+			}
+		}
+	}
+	option = {
+		name = "EVT800101OPTB"
+		prestige = -5
+		any_pop = {
+			limit = { is_primary_culture = yes }		
+			scaled_militancy = {
+				factor = 1
+				issue = jingoism
+			}
+		}		
+		ai_chance = {
+			factor = 25
+			modifier = {
+				factor = 1.5
+				is_greater_power = no
+				FROM = { is_greater_power = yes }
+			}
+			modifier = {
+				factor = 1.25
+				militancy = 2
+			}
+			modifier = {
+				factor = 1.25
+				militancy = 4
+			}
+			modifier = {
+				factor = 1.25
+				militancy = 6
+			}
+			modifier = {
+				factor = 2
+				war_policy = pacifism
+			}
+			modifier = {
+				factor = 1.5
+				war_policy = anti_military
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 800102
+	title = "EVTNAME800102" # We Have Been Discovered
+	desc = "EVTDESC800102"
+	picture = "arrested"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT800102OPTA"
+		badboy = 2
+		random_owned = {
+			limit = {
+				owner = { is_greater_power = yes }
+			}
+			owner = {
+				diplomatic_influence = {
+					who = FROM
+					value = -50
+				}
+			}
+		}
+		any_pop = {
+			limit = { is_primary_culture = yes }
+			dominant_issue = {
+				factor = 0.05
+				value = jingoism
+			}
+		}
+	}
+}
+
+#########################################################################################
+#																						#
+#  Events returning a colony's independence if it's under rebel control for too long	#
+#																						#
+#########################################################################################
+
+province_event = {
+	id = 97175
+	title = "EVTNAME97175" #Chaos in $STATENAME$
+	desc = "EVTDESC97175"
+	news = yes
+	news_desc_long = "EVTDESC97175_NEWS_LONG"
+	news_desc_medium = "EVTDESC97175_NEWS_MEDIUM"
+	news_desc_short = "EVTDESC97175_NEWS_SHORT"
+	
+	trigger = {
+		OR = {
+			is_colonial = yes
+			is_overseas = yes
+		}
+		state_scope = {
+			NOT = {
+				any_owned_province = {
+					OR = {
+						NOT = { controlled_by = REB }
+						country_units_in_province = THIS
+					}
+				}
+			}
+		}
+		NOT = { has_province_modifier = colonial_chaos }
+	}
+	
+	mean_time_to_happen = {
+		months = 18
+	}
+	
+	option = {
+		name = "EVT97175OPTA"
+		owner = { prestige = -10 }
+		state_scope = {
+			any_owned = {
+				limit = {
+					is_colonial = yes
+					controlled_by = REB
+					NOT = { country_units_in_province = THIS }
+				}
+				add_province_modifier = {
+					name = colonial_chaos
+					duration = -1
+				}
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 97180 #Annexation Event
+	title = "EVTNAME97180" #Return of Our Lands
+	desc = "EVTDESC97180"
+	picture = "rebellion"
+
+	trigger = {
+		civilized = no
+		is_vassal = no
+		any_neighbor_country = {
+			any_owned_province = {
+				has_province_modifier = colonial_chaos
+				controlled_by = REB
+				province_control_days = 90
+				is_core = THIS
+				OR = {
+					AND = {
+						port = yes
+						province_control_days = 120
+					}
+					any_neighbor_province = {
+						owned_by = THIS
+					}
+				}
+				state_scope = {
+					NOT = {
+						any_owned_province = {
+							is_core = THIS
+							NOT = { controlled_by = REB }
+						}
+					}
+				}
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVT97180OPTA"
+		random_country = {
+			limit = {
+				neighbour = THIS
+				any_owned_province = {
+					has_province_modifier = colonial_chaos
+					controlled_by = REB
+					province_control_days = 90
+					is_core = THIS
+					OR = {
+						AND = {
+							is_coastal = yes
+							province_control_days = 120
+						}
+						any_neighbor_province = {
+							owned_by = THIS
+						}
+					}
+					state_scope = {
+						NOT = {
+							any_owned_province = {
+								is_core = THIS
+								NOT = { controlled_by = REB }
+							}
+						}
+					}
+				}
+			}
+			prestige = -20
+			leave_alliance = THIS
+			relation = { who = THIS value = -100 }
+			diplomatic_influence = { who = THIS value = -100 }
+			casus_belli = {
+				target = THIS
+				type = humiliate
+				months = 12
+			}
+		}	
+		any_neighbor_country = {
+			any_state = {
+				limit = {
+					any_owned_province = {
+						has_province_modifier = colonial_chaos
+						controlled_by = REB
+						province_control_days = 90
+						is_core = THIS
+						OR = {
+							AND = {
+								is_coastal = yes
+								province_control_days = 120
+							}
+							any_neighbor_province = {
+								owned_by = THIS
+							}
+						}
+					}
+					NOT = {
+						any_owned_province = {
+							is_core = THIS
+							NOT = { controlled_by = REB }
+						}
+					}
+				}
+				any_owned = {
+					limit = { is_core = THIS }
+					remove_province_modifier = colonial_chaos
+					any_pop = {
+						militancy = -4
+					}
+					secede_province = THIS
+					change_controller = THIS
+				}
+			}
+		}
+		ai_chance = {
+			factor = 100
+		}
+	}
+	option = {
+		name = "EVT97180OPTB"
+		any_pop = {
+			limit = { is_primary_culture = yes }
+			militancy = 3
+		}
+		random_country = {
+			limit = {
+				neighbour = THIS
+				any_owned_province = {
+					has_province_modifier = colonial_chaos
+					controlled_by = REB
+					province_control_days = 90
+					is_core = THIS
+					OR = {
+						AND = {
+							is_coastal = yes
+							province_control_days = 120
+						}
+						any_neighbor_province = {
+							owned_by = THIS
+						}
+					}
+					state_scope = {
+						NOT = {
+							any_owned_province = {
+								is_core = THIS
+								NOT = { controlled_by = REB }
+							}
+						}
+					}
+				}
+			}
+			relation = {
+				who = THIS
+				value = 20
+			}
+		}
+		any_neighbor_country = {
+			any_owned = {
+				limit = {
+					has_province_modifier = colonial_chaos
+					controlled_by = REB
+					province_control_days = 90
+					is_core = THIS
+					OR = {
+						AND = {
+							is_coastal = yes
+							province_control_days = 120
+						}
+						any_neighbor_province = {
+							owned_by = THIS
+						}
+					}
+					state_scope = {
+						NOT = {
+							any_owned_province = {
+								is_core = THIS
+								NOT = { controlled_by = REB }
+							}
+						}
+					}
+				}
+				remove_province_modifier = colonial_chaos
+				any_pop = {
+					militancy = -8
+				}
+			}
+		}
+		ai_chance = {
+			factor = 0
+		}
+	}
+}	
+
+province_event = {
+	id = 97181
+	title = "EVTNAME97181" #Colonial Uprising in $STATENAME$
+	desc = "EVTDESC97181"
+	
+	trigger = {
+		OR = {
+			is_colonial = yes
+			is_overseas = yes
+		}
+		controlled_by = REB
+		state_scope = {
+			NOT = {
+				any_owned_province = {
+					country_units_in_province = THIS
+				}
+			}
+		}
+		has_province_modifier = colonial_chaos
+		any_core = {
+			NOT = { is_primary_culture = THIS }
+			is_cultural_union = no
+			exists = no
+		}
+		NOT = { 
+			any_core = {
+				NOT = { is_primary_culture = THIS }
+				is_cultural_union = no
+				civilized = no
+				exists = yes
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 6
+	}
+	
+	option = {
+		name = "EVT97181OPTA"
+		owner = { prestige = -20 }
+		state_scope = {
+			any_owned = {
+				limit = {
+					OR = {
+						is_colonial = yes
+						is_overseas = yes
+					}
+					controlled_by = REB
+					NOT = { country_units_in_province = THIS }
+					has_province_modifier = colonial_chaos
+				}
+				add_province_modifier = {
+					name = loss_of_control
+					duration = 5
+				}
+			}
+		}
+		any_country = {
+			limit = {
+				any_core = {
+					owned_by = THIS
+					has_province_modifier = loss_of_control
+				}
+				is_cultural_union = no
+				exists = no
+			}
+			country_event = 97182
+		}
+	}
+}
+
+country_event = {
+	id = 97182
+	title = "EVTNAME97182"
+	desc = "EVTDESC97182"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTDESC97182"
+		FROM = {
+			any_owned = {
+				limit = {
+					is_core = THIS
+					has_province_modifier = loss_of_control
+				}
+				secede_province = THIS
+			}
+		}
+		add_casus_belli = {
+			target = FROM
+			type = humiliate
+			months = 24
+		}
+		random_owned = {
+			limit = {
+				FROM = {
+					nationalism_n_imperialism = 1
+					has_global_flag = berlin_conference
+				}
+				owner = {
+					civilized = no
+					NOT = { number_of_states = 12 }
+				}
+			}
+			owner = {
+				add_casus_belli = {
+					target = FROM
+					type = establish_protectorate_BC_casus_belli
+					months = 60
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				FROM = {
+					nationalism_n_imperialism = 1
+					has_global_flag = berlin_conference
+				}
+				owner = {
+					civilized = no
+					number_of_states = 12
+				}
+			}
+			owner = {
+				add_casus_belli = {
+					target = FROM
+					type = demand_concession_BC_casus_belli
+					months = 60
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				FROM = {
+					nationalism_n_imperialism = 1
+					NOT = { has_global_flag = berlin_conference }
+				}
+				owner = {
+					civilized = no
+					NOT = { number_of_states = 7 }
+					NOT = { capital_scope = { continent = africa } }
+				}
+			}
+			owner = {
+				add_casus_belli = {
+					target = FROM
+					type = establish_protectorate_NI_casus_belli
+					months = 60
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				FROM = {
+					nationalism_n_imperialism = 1
+					NOT = { has_global_flag = berlin_conference }
+				}
+				owner = {
+					civilized = no
+					number_of_states = 7
+					NOT = { capital_scope = { continent = africa } }
+				}
+			}
+			owner = {
+				add_casus_belli = {
+					target = FROM
+					type = demand_concession_NI_casus_belli
+					months = 60
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				FROM = {
+					OR = { 
+						NOT = { nationalism_n_imperialism = 1 }
+						THIS = { capital_scope = { continent = africa } }
+					}
+					NOT = { has_global_flag = berlin_conference }
+				}
+				owner = {
+					civilized = no
+					NOT = { number_of_states = 2 }
+				}
+			}
+			owner = {
+				add_casus_belli = {
+					target = FROM
+					type = establish_protectorate_casus_belli
+					months = 60
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				FROM = {
+					OR = { 
+						NOT = { nationalism_n_imperialism = 1 }
+						THIS = { capital_scope = { continent = africa } }
+					}
+					NOT = { has_global_flag = berlin_conference }
+				}
+				owner = {
+					civilized = no
+					number_of_states = 2
+				}
+			}
+			owner = {
+				add_casus_belli = {
+					target = FROM
+					type = demand_concession_casus_belli
+					months = 60
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					civilized = yes
+					NOT = { number_of_states = 2 }
+				}
+			}
+			owner = {
+				add_casus_belli = {
+					target = FROM
+					type = conquest
+					months = 60
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					civilized = yes
+					number_of_states = 2
+				}
+			}
+			owner = {
+				add_casus_belli = {
+					target = FROM
+					type = acquire_state
+					months = 60
+				}
+			}
+		}
+	}
+}
+
+province_event = {
+	id = 97185
+	title = "EVTNAME97185"
+	desc = "EVTDESC97185"
+	
+	trigger = {
+		OR = {
+			is_colonial = yes
+			is_overseas = yes
+		}
+		has_province_modifier = colonial_chaos
+		controlled_by = THIS
+		state_scope = {
+			NOT = {
+				any_owned_province = {
+					controlled_by = REB
+				}
+			}
+		}
+	}
+	
+	mean_time_to_happen = { days = 1 }
+	
+	option = {
+		name = "EVT97185OPTA"
+		state_scope = {
+			any_owned = {
+				limit = {
+					OR = {
+						is_colonial = yes
+						is_overseas = yes
+					}
+					controlled_by = THIS
+					has_province_modifier = colonial_chaos
+				}
+				remove_province_modifier = colonial_chaos
+			}
+		}
+	}
+}

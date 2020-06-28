@@ -1,0 +1,1104 @@
+political_decisions = {
+
+	organize_colonial_armies = {
+		picture = begin_line_of_advantage
+		potential = {
+			civilized = yes
+			colonial_nation = yes
+			any_owned_province = { is_colonial = yes is_overseas = yes }
+			NOT = { has_country_flag = colonial_armies }
+		}
+		
+		allow = {
+			naval_logistics = 1
+			invention = bell_n_greys_telephones
+			money = 11000
+		}
+		
+		effect = {
+			set_country_flag = colonial_armies
+			treasury = -10000
+		}
+		ai_will_do = {  factor = 1 }
+	}
+	
+	commission_warship = {
+		picture = ironclad_commissions
+		potential = {
+			any_owned_province = { has_building = naval_base }
+			NOT = { iron_steamers = 1 }
+			OR = {
+				any_greater_power = { invention = ironclads raider_group_doctrine = 1 }
+				any_neighbor_country = { invention = ironclads raider_group_doctrine = 1 }
+				sphere_owner = { invention = ironclads raider_group_doctrine = 1 }
+				overlord = { invention = ironclads raider_group_doctrine = 1 }
+			}
+			NOT = { has_country_flag = lacking_writing_system }
+			NOT = { has_country_flag = warship_commissioned }
+		}
+		
+		allow = {
+			money = 51000
+			NOT = { is_disarmed = yes }
+			NOT = { has_country_modifier = warship_commissioned }
+			any_owned_province = { has_building = naval_base is_core = THIS }
+			war = no
+			OR = {
+				ai = no
+				NOT = { total_amount_of_ships = 3 }
+				AND = {
+					num_of_ports = 3
+					NOT = { check_variable = { which = ironclad_commision value = 1 } }
+				}
+				AND = {
+					num_of_ports = 6
+					NOT = { check_variable = { which = ironclad_commision value = 3 } }
+				}
+				AND = {
+					num_of_ports = 12
+					NOT = { check_variable = { which = ironclad_commision value = 10 } }
+				}
+				AND = {
+					num_of_ports = 18
+					NOT = { check_variable = { which = ironclad_commision value = 20 } }
+				}
+				AND = {
+					num_of_ports = 24
+					NOT = { check_variable = { which = ironclad_commision value = 25 } }
+				}
+				AND = {
+					num_of_ports = 30
+					NOT = { check_variable = { which = ironclad_commision value = 30 } }
+				}
+			}
+		}
+		
+		effect = {
+			random_owned = { limit = { owner = { NOT = { has_global_flag = warship_commissioned } } } set_global_flag = warship_commissioned }
+			set_country_flag = warship_commissioned
+			treasury = -50000
+			any_country = { limit = { exists = no has_country_flag = warship_commissioned } clr_country_flag = warship_commissioned }
+			random_owned = { limit = { owner = { NOT = { has_country_flag = warship_variable } } } owner = { set_country_flag = warship_variable } }
+			random_owned = {
+				limit = { owner = { NOT = { has_country_flag = warship_variable } } }
+				owner = { set_variable = { which = ironclad_commision value = 0 } }
+			}
+			random_owned = {
+				limit = { owner = { has_country_flag = warship_variable NOT = { total_amount_of_ships = 1 } } }
+				owner = { set_variable = { which = ironclad_commision value = 0 } }
+			}
+		}	
+		
+		ai_will_do = {
+			factor = 1
+			
+			#modifier = { factor = 0 NOT = { number_of_states = 6 } colonial_nation = no }
+		}
+	}
+	
+	take_on_warship_commission = {
+		picture = ironclad_commissions
+		potential = {
+			any_owned_province = { has_building = naval_base }
+			OR = {
+				has_global_flag = warship_commissioned
+				any_neighbor_country = { has_country_flag = warship_commissioned }
+			}
+			invention = ironclads
+			raider_group_doctrine = 1
+			NOT = { has_global_flag = warship_commission_being_fulfilled }
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+			OR = {
+				AND = {
+					ai = no
+					steamer_convoy = 24
+					artillery = 10
+					canned_food = 10
+				}
+				ai = yes
+			}
+			NOT = {
+				has_country_modifier = warship_commissioned
+				is_disarmed = yes
+				check_variable = { which = owed_steamers value = 1 }
+				check_variable = { which = owed_artillery value = 1 }
+				check_variable = { which = owed_canned_food value = 1 }
+			}
+		}
+		
+		effect = {
+			clr_global_flag = warship_commissioned
+			set_global_flag = warship_commission_being_fulfilled
+			any_country = { limit = { exists = yes has_country_flag = warship_commissioned } set_global_flag = warship_commissioned }
+			add_country_modifier = { name = warship_commissioned duration = 1095 }
+			random_owned = {
+				limit = { owner = { ai = no } }
+				owner = {
+					steamer_convoy = -24
+					artillery = -10
+					canned_food = -10
+				}
+			}
+			random_owned = {
+				limit = { owner = { ai = yes } }
+				owner = {
+					set_variable = { which = owed_steamers value = 20 }
+					set_variable = { which = owed_artillery value = 10 }
+					set_variable = { which = owed_canned_food value = 10 }
+				}
+			}
+			treasury = 50000
+			random_country = {
+				limit = { has_country_flag = warship_commissioned exists = yes }
+				clr_country_flag = warship_commissioned
+				relation = { who = THIS value = 5 }
+				country_event = 6016812
+			}
+		}
+		ai_will_do = {
+			factor = 1
+			
+			modifier = { factor = 0 NOT = { month = 6 } }
+		}
+	}
+	
+	commodity_production_in_uzbekistan = {
+		picture = commodities_in_central_asia
+		potential = {
+			owns = 1200
+			owns = 1198
+			owns = 1195
+			NOT = { has_global_flag = uzbekistan_commodities }
+		}
+		
+		allow = {
+			war = no
+			money = 50000
+			OR = {
+				market_determined_exchange_rates = 1
+				AND = {
+					economic_policy = planned_economy
+					modern_central_bank_system = 1
+					investment_banks = 1
+				}
+			}
+		}
+		
+		effect = {
+			set_global_flag = uzbekistan_commodities
+			treasury = -50000
+			1200 = { trade_goods = cotton }
+			1198 = { trade_goods = cotton }
+			1195 = { trade_goods = silk }
+			1199 = { trade_goods = silk }
+			1202 = { trade_goods = tobacco } #kokand
+		}
+		ai_will_do = {  factor = 1 }
+	}
+	
+	
+	commodity_production_in_kyrgyzstan = {
+		picture = commodities_in_central_asia
+		potential = {
+			owns = 1203
+			owns = 1190
+			owns = 1189
+			NOT = { has_global_flag = kyrgyzstan_commodities }
+		}
+		
+		allow = {
+			war = no
+			money = 50000
+			OR = {
+				market_determined_exchange_rates = 1
+				AND = {
+					economic_policy = planned_economy
+					modern_central_bank_system = 1
+					investment_banks = 1
+				}
+			}
+		}
+		
+		effect = {
+			set_global_flag = kyrgyzstan_commodities
+			treasury = -50000
+			1203 = { trade_goods = coal }
+			1190 = { trade_goods = cotton }
+			1189 = { trade_goods = coal } #Bishkek
+		}
+		ai_will_do = {  factor = 1 }
+	}
+	
+	commodity_production_in_turkmenia = {
+		picture = commodities_in_central_asia
+		potential = {
+			owns = 1206 
+			owns = 1196
+			owns = 1205 
+			NOT = { has_global_flag = turkmenia_commodities }
+		}
+		
+		allow = {
+			war = no
+			money = 50000
+			OR = {
+				market_determined_exchange_rates = 1
+				AND = {
+					economic_policy = planned_economy
+					modern_central_bank_system = 1
+					investment_banks = 1
+				}
+			}
+		}
+		
+		effect = {
+			set_global_flag = turkmenia_commodities
+			treasury = -50000
+			1206 = { trade_goods = cotton }
+			1196 = { trade_goods = cotton }
+		}
+		ai_will_do = {  factor = 1 }
+	}
+	
+	commodity_production_in_tajikstan = {
+		picture = commodities_in_central_asia
+		potential = {
+			owns = 1208
+			owns = 1201
+			NOT = { has_global_flag = tajikstan_commodities }
+		}
+		
+		allow = {
+			war = no
+			money = 50000
+			OR = {
+				market_determined_exchange_rates = 1
+				AND = {
+					economic_policy = planned_economy
+					modern_central_bank_system = 1
+					investment_banks = 1
+				}
+			}
+		}
+		
+		effect = {
+			set_global_flag = tajikstan_commodities
+			treasury = -50000
+			1208 = { trade_goods = cotton }
+			1201 = { trade_goods = precious_metal }
+		}
+		ai_will_do = {  factor = 1 }
+	}
+	
+	commodity_production_in_philippines = {
+		picture = map_phillipines
+		potential = {
+			owns = 2565
+			owns = 1457
+			owns = 1458
+			NOT = { has_global_flag = philippines_commodities }
+		}
+		
+		allow = {
+			war = no
+			money = 50000
+			OR = {
+				market_determined_exchange_rates = 1
+				AND = {
+					economic_policy = planned_economy
+					modern_central_bank_system = 1
+					investment_banks = 1
+				}
+			}
+		}
+		
+		effect = {
+			set_global_flag = philippines_commodities
+			treasury = -50000
+			2565 = { trade_goods = tobacco }
+			1457 = { trade_goods = coffee }
+			1458 = { trade_goods = coffee }
+		}
+		ai_will_do = {  factor = 1 }
+	}
+	
+	commodity_production_in_new_zealand = {
+		picture = map_new_zealand
+		potential = {
+			owns = 2510
+			owns = 2571
+			owns = 2514
+			owns = 2516
+			owns = 2512
+			owns = 2524
+			NOT = { has_global_flag = new_zealand_commodities }
+			has_global_flag = north_island_renamed
+		}
+		
+		allow = {
+			war = no
+			modern_central_bank_system = 1
+			investment_banks = 1
+		}
+		
+		effect = {
+			set_global_flag = new_zealand_commodities
+			2510 = { trade_goods = oil }
+			2571 = { trade_goods = cattle }
+			2514 = { trade_goods = coal }
+			2516 = { trade_goods = timber }
+			2512 = { trade_goods = wool }
+			2524 = { trade_goods = coal }
+		}
+		ai_will_do = {  factor = 1 }
+	}
+	
+	north_island_renaming = {
+		picture = map_new_zealand
+		potential = {
+			tag = ENG
+			owns = 2510
+			owns = 2511
+			owns = 2512
+			owns = 2513
+			owns = 2514
+			owns = 2515
+			owns = 2516
+			has_global_flag = treaty_of_waitangi
+			NOT = { primary_culture = maori }
+			NOT = { has_global_flag = north_island_renamed }
+		}
+		
+		allow = {
+			war = no
+			OR = {
+				AND = {
+					2512 = { is_colonial = no }
+					2515 = { is_colonial = no }
+				}
+				year = 1850
+			}
+		}
+		
+		effect = {
+			set_global_flag = north_island_renamed
+			2510 = { change_province_name = "New Plymouth" life_rating = 2 }
+			2511 = { change_province_name = "Napier" life_rating = 1 }
+			2512 = { change_province_name = "Wellington" life_rating = 3 }
+			2513 = { change_province_name = "Dunedin" life_rating = 1 trade_goods = precious_metal }
+			2515 = { change_province_name = "Christchurch" life_rating = 8 }
+			2516 = { change_province_name = "Nelson" life_rating = 2 }
+			#2524 = { change_province_name = "Hamilton" life_rating = 2 }
+			2509 = { life_rating = 8 }
+			2571 = { life_rating = 5 }
+			2514 = { life_rating = 2 }
+			any_pop = { limit = { location = { is_core = NZL } culture = australian } reduce_pop = 2.5 }
+			any_pop = { limit = { location = { is_core = NZL } culture = british strata = poor} reduce_pop = 1.8 }
+			any_pop = { limit = { location = { is_core = NZL } culture = maori } literacy = -0.8 reduce_pop = 0.9 }
+			
+			any_pop = {
+				limit = { has_pop_culture = maori location = { is_core = NZL } }
+				ideology = { value = reactionary factor = 0.10 }
+				militancy = 3
+			}
+			
+			any_owned = {
+				limit = {
+					is_core = NZL
+				}
+				add_province_modifier = {
+					name = colonial_recruitment
+					duration = 365
+				}
+			}
+			NZL = { all_core = { remove_core = ENG } }
+		}
+		ai_will_do = {  factor = 1 }
+	}
+	
+	breaking_the_tea_monopoly = {
+		picture = tea_production
+		
+		potential = {
+			owns = 1251
+			NOT = { has_global_flag = tea_monopoly_broken }
+			OR = {
+				AND = { year = 1850 NOT = { has_global_flag = tea_monopoly_broken_1 } }
+				AND = {
+					year = 1870
+					has_global_flag = tea_monopoly_broken_1
+					NOT = { has_global_flag = tea_monopoly_broken_2 }
+				}
+				AND = {
+					year = 1890
+					has_global_flag = tea_monopoly_broken_2
+					NOT = { has_global_flag = tea_monopoly_broken_3 }
+				}
+				AND = {
+					year = 1910
+					has_global_flag = tea_monopoly_broken_3
+				}
+			}
+		}
+		
+		
+		allow = {
+			war = no
+			
+		}
+		
+		effect = {
+			random_country = { limit = { OR = { tag = CHI tag = QNG } exists = yes } relation = { who = THIS value = -10 } }
+			random_owned = {
+				limit = { owner = { has_global_flag = tea_monopoly_broken_3 NOT = { has_global_flag = tea_monopoly_broken } } }
+				owner = {
+					2566 = { trade_goods = tea }
+					1304 = { trade_goods = tea }
+					1319 = { trade_goods = tea }
+					1316 = { trade_goods = tea }
+					1302 = { trade_goods = tea }
+					1261 = { trade_goods = tea }
+					1262 = { trade_goods = tea }
+					1628 = { trade_goods = tea }
+					1624 = { trade_goods = tea }
+					1222 = { trade_goods = tea }
+					2640 = { trade_goods = tea }
+					1231 = { trade_goods = tea }
+					1228 = { trade_goods = tea }
+					1225 = { trade_goods = tea }
+					1246 = { trade_goods = tea }
+					1300 = { trade_goods = tea }
+					1306 = { trade_goods = tea }
+					1307 = { trade_goods = tea }
+					1295 = { trade_goods = tea }
+					1233 = { trade_goods = tea }
+					1635 = { trade_goods = tea }
+					1632 = { trade_goods = tea }
+					1636 = { trade_goods = tea }
+					1252 = { trade_goods = tea }
+					1275 = { trade_goods = iron }
+					1515 = { trade_goods = fruit }
+					
+					set_global_flag = tea_monopoly_broken
+					clr_global_flag = tea_monopoly_broken_1
+					clr_global_flag = tea_monopoly_broken_2
+					clr_global_flag = tea_monopoly_broken_3
+					
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						has_global_flag = tea_monopoly_broken_2
+						NOT = { 
+							has_global_flag = tea_monopoly_broken_3
+							has_global_flag = tea_monopoly_broken
+						} 
+					} 
+				}
+				owner = {
+					1297 = { trade_goods = tea }
+					1266 = { trade_goods = tea }
+					1290 = { trade_goods = tea }
+					1593 = { trade_goods = tea }
+					1248 = { trade_goods = tea }
+					1318 = { trade_goods = tea }
+					1350 = { trade_goods = tea }
+					1359 = { trade_goods = tea }
+					1407 = { trade_goods = tea }
+					1301 = { trade_goods = tea }
+					1278 = { trade_goods = tea }
+					1274 = { trade_goods = tea }
+					1327 = { trade_goods = tea }
+					1236 = { trade_goods = tea }
+					1569 = { trade_goods = tea }
+					1502 = { trade_goods = tea }
+					1662 = { trade_goods = tea }
+					1565 = { trade_goods = tea }
+					1540 = { trade_goods = tea }
+					1547 = { trade_goods = tea }
+					1474 = { trade_goods = tea }
+					1524 = { trade_goods = tea }
+					1283 = { trade_goods = silk } #Golkonda/Narainpet
+					set_global_flag = tea_monopoly_broken_3
+				}
+			}
+			
+			random_owned = {
+				limit = {
+					owner = {
+						has_global_flag = tea_monopoly_broken_1
+						NOT = { 
+							has_global_flag = tea_monopoly_broken_2
+							has_global_flag = tea_monopoly_broken
+						} 
+					}
+				}
+				owner = {
+					1311 = { trade_goods = tea }
+					1317 = { trade_goods = tea }
+					1303 = { trade_goods = tea }
+					1326 = { trade_goods = tea }
+					1308 = { trade_goods = tea }
+					1312 = { trade_goods = tea }
+					1537 = { trade_goods = tea }
+					1541 = { trade_goods = tea }
+					set_global_flag = tea_monopoly_broken_2
+				}
+			}
+		
+			random_owned = { limit = { owner = { NOT = { has_global_flag = tea_monopoly_broken_1 has_global_flag = tea_monopoly_broken } } }
+				owner = {
+					1258 = { trade_goods = tea }
+					1259 = { trade_goods = tea }
+					1260 = { trade_goods = tea }
+					1328 = { trade_goods = tea }
+					ENG_1251 = { any_owned = { add_province_modifier = { name = plantation duration = -1 } } }
+					ENG_1252 = { any_owned = { add_province_modifier = { name = plantation duration = -1 } } }
+					set_global_flag = tea_monopoly_broken_1
+				}
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	plantations_in_ruanda_urundi = {
+		picture = tea_production
+		
+		potential = {
+			AND = {
+				owns = 2034
+				owns = 2035
+			}
+			OR = {
+				2034 = { NOT = { has_province_modifier = plantation } }
+				2035 = { NOT = { has_province_modifier = plantation } }
+			}
+		}
+		
+		
+		allow = {
+			war = no
+			investment_banks = 1
+		}
+		
+		effect = {
+			2034 = { add_province_modifier = { name = plantation duration = -1 } }
+			2035 = { add_province_modifier = { name = plantation duration = -1 } }
+			random_owned = {
+				limit = { owner = { NOT = { has_global_flag = rwandan_life_rating } } }
+				2034 = { life_rating = 23 }
+				2035 = { life_rating = 23 }
+				owner = { set_global_flag = rwandan_life_rating  }
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	asian_rgo_normalization = {
+		picture = coffee_in_colombia
+		potential = {
+			OR = {
+				1485 = { owned_by = THIS NOT = { has_province_modifier = plantation } }
+				2681 = { owned_by = THIS NOT = { has_province_modifier = plantation } }
+				any_owned_province = {
+					is_core = HND
+					NOT = { terrain = small_island }
+					NOT = { terrain = desert }
+					NOT = { terrain = semidesert }
+					NOT = { terrain = dryhills }
+					NOT = { province_id = 1320 }
+					NOT = { terrain = coral_island }
+					NOT = { has_province_modifier = plantation }
+				}
+				any_owned_province = {
+					is_core = PHL
+					NOT = { terrain = small_island }
+					NOT = { terrain = desert }
+					NOT = { terrain = semidesert }
+					NOT = { terrain = dryhills }
+					NOT = { province_id = 2517 }
+					NOT = { province_id = 1464 }
+					NOT = { continent = polynesia }
+					NOT = { terrain = coral_island }
+					NOT = { has_province_modifier = plantation } 
+				}
+				any_owned_province = {
+					is_core = INO
+					NOT = { terrain = small_island }
+					NOT = { terrain = desert }
+					NOT = { terrain = semidesert }
+					NOT = { terrain = dryhills }
+					NOT = { terrain = coral_island }
+					NOT = { has_province_modifier = plantation } 
+				}
+				any_owned_province = {
+					is_core = MLY
+					NOT = { terrain = small_island }
+					NOT = { terrain = desert }
+					NOT = { terrain = semidesert }
+					NOT = { terrain = dryhills }
+					NOT = { has_province_modifier = plantation } 
+				}
+				any_owned_province = { 
+					is_core = SRI
+					NOT = { terrain = small_island }
+					NOT = { terrain = desert }
+					NOT = { terrain = semidesert }
+					NOT = { terrain = dryhills }
+					NOT = { has_province_modifier = plantation } 
+				}
+				any_owned_province = { 
+					is_core = PAK
+					NOT = { terrain = small_island }
+					NOT = { terrain = desert }
+					NOT = { terrain = semidesert }
+					NOT = { terrain = dryhills }
+					NOT = { has_province_modifier = plantation } 
+				}
+				any_owned_province = { 
+					is_core = KOR
+					NOT = { terrain = small_island }
+					NOT = { terrain = desert }
+					NOT = { terrain = semidesert }
+					NOT = { terrain = dryhills }
+					NOT = { province_id = 1637 }
+					NOT = { has_province_modifier = plantation }
+				}
+			}
+			year = 1870
+		}
+		
+		allow = {
+			war = no
+			OR = {
+				investment_banks = 1
+				sphere_owner = { investment_banks = 1 }
+				year = 1900
+			}
+		}
+		
+		effect = {
+			any_owned = {
+				limit = {
+					NOT = { has_province_modifier = plantation }
+					OR = {
+						province_id = 1485
+						province_id = 2681
+					}
+				}
+				add_province_modifier = { name = plantation duration = -1 }
+			}
+			any_owned = {
+				limit = {
+					NOT = { has_province_modifier = plantation }
+					is_core = HND
+					NOT = { terrain = small_island }
+					NOT = { terrain = desert }
+					NOT = { terrain = semidesert }
+					NOT = { terrain = dryhills }
+					NOT = { province_id = 1320 }
+					NOT = { terrain = coral_island }
+				}
+				add_province_modifier = { name = plantation duration = -1 }
+			}
+			any_owned = {
+				limit = {
+					NOT = { has_province_modifier = plantation }
+					is_core = PHL
+					NOT = { terrain = small_island }
+					NOT = { terrain = desert }
+					NOT = { terrain = semidesert }
+					NOT = { terrain = dryhills }
+					NOT = { province_id = 2517 }
+					NOT = { province_id = 1464 }
+					NOT = { terrain = coral_island }
+					NOT = { continent = polynesia }
+				}
+				add_province_modifier = { name = plantation duration = -1 }
+			}
+			any_owned = {
+				limit = {
+					NOT = { has_province_modifier = plantation }
+					is_core = INO
+					NOT = { terrain = small_island }
+					NOT = { terrain = desert }
+					NOT = { terrain = semidesert }
+					NOT = { terrain = dryhills }
+					NOT = { terrain = coral_island }
+				}
+				add_province_modifier = { name = plantation duration = -1 }
+			}
+			any_owned = {
+				limit = {
+					NOT = { has_province_modifier = plantation }
+					is_core = MLY
+					NOT = { terrain = small_island }
+					NOT = { terrain = desert }
+					NOT = { terrain = semidesert }
+					NOT = { terrain = dryhills }
+				}
+				add_province_modifier = { name = plantation duration = -1 }
+			}
+			any_owned = {
+				limit = {
+					NOT = { has_province_modifier = plantation }
+					is_core = SRI
+					NOT = { terrain = small_island }
+					NOT = { terrain = desert }
+					NOT = { terrain = semidesert }
+					NOT = { terrain = dryhills }
+				}
+				add_province_modifier = { name = plantation duration = -1 }
+			}
+			any_owned = {
+				limit = {
+					NOT = { has_province_modifier = plantation }
+					is_core = PAK
+					NOT = { terrain = small_island }
+					NOT = { terrain = desert }
+					NOT = { terrain = semidesert }
+					NOT = { terrain = dryhills }
+				}
+				add_province_modifier = { name = plantation duration = -1 }
+			}
+			any_owned = {
+				limit = {
+					NOT = { has_province_modifier = plantation }
+					is_core = KOR
+					NOT = { terrain = small_island }
+					NOT = { terrain = desert }
+					NOT = { terrain = semidesert }
+					NOT = { terrain = dryhills }
+					NOT = { province_id = 1637 }
+				}
+				add_province_modifier = { name = plantation duration = -1 }
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	africa_rgo_normalization = {
+		picture = coffee_in_colombia
+		potential = {
+			any_owned_province = {
+					OR = {
+						continent = africa 
+						continent = south_west_africa 
+						continent = east_africa
+						continent = west_africa
+						continent = central_africa
+					}
+					NOT = { terrain = small_island }
+					NOT = { terrain = desert }
+					NOT = { terrain = semidesert }
+					NOT = { terrain = dryhills }
+					NOT = { has_province_modifier = plantation }
+					NOT = { province_id = 2590 }
+					NOT = { province_id = 1689 }
+					NOT = { province_id = 1954 }
+					NOT = { province_id = 1955 }
+					NOT = { province_id = 2123 }
+					NOT = { province_id = 2124 }
+					NOT = { province_id = 1177 }
+					NOT = { region = ENG_2125 }
+					NOT = { region = POR_2134 }
+					NOT = { region = ENG_2132 }
+			}
+			year = 1870
+		}
+		
+		allow = {
+			war = no
+			investment_banks = 1
+		}
+		
+		effect = {
+			any_owned = {
+				limit = {
+					OR = {
+						continent = africa 
+						continent = south_west_africa 
+						continent = east_africa
+						continent = central_africa
+						continent = west_africa
+					}
+					NOT = { terrain = small_island }
+					NOT = { terrain = desert }
+					NOT = { terrain = semidesert }
+					NOT = { terrain = dryhills }
+					NOT = { has_province_modifier = plantation }
+					NOT = { province_id = 2590 }
+					NOT = { province_id = 1689 }
+					NOT = { province_id = 1954 }
+					NOT = { province_id = 1955 }
+					NOT = { province_id = 2123 }
+					NOT = { province_id = 2124 }
+					NOT = { province_id = 1177 }
+					NOT = { region = ENG_2125 }
+					NOT = { region = POR_2134 }
+					NOT = { region = ENG_2132 }
+				}
+				add_province_modifier = { name = plantation duration = -1 }
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	colonial_legacy = {
+		picture = begin_line_of_advantage
+		potential = {
+			civilized = no
+			tech_school = unciv_tech_school
+		}
+		
+		allow = {
+			war = no
+			literacy = 0.15
+		}
+		
+		effect = {
+			civilized = yes
+			clr_country_flag = lacking_writing_system
+			random_owned = { limit = { owner = { ai = yes } } owner = { add_country_modifier = { name = law_changed_by_force duration = 3 } } }
+			random_owned = { 
+				limit = { owner = { has_country_flag = activate_experimental_railroad } NOT = { experimental_railroad = 1 } }
+				owner = { activate_technology = experimental_railroad  clr_country_flag = activate_experimental_railroad }
+			}
+			random_list = {
+				34 = { add_country_modifier = { name = global_baby_boom duration = 3650 } }
+				33 = { add_country_modifier = { name = global_baby_boom duration = 3285 } }
+				33 = { add_country_modifier = { name = global_baby_boom duration = 4015 } }
+			}
+			remove_country_modifier = assegai
+			remove_country_modifier = educational_reform
+			remove_country_modifier = military_reform
+			remove_country_modifier = western_influences
+			remove_country_modifier = uncivilized_isolationism
+			remove_country_modifier = trade_restrictions
+			remove_country_modifier = sayings_of_the_dutch
+			remove_country_modifier = rangaku
+			remove_country_modifier = western_presence
+			remove_country_modifier = isolationist_foreign_naval_officers
+			remove_country_modifier = isolationist_foreign_naval_schools
+			remove_country_modifier = isolationist_foreign_officers
+			remove_country_modifier = isolationist_foreign_training
+			any_owned = {
+				remove_province_modifier = western_presence
+				remove_province_modifier = foreign_smugglers
+				remove_province_modifier = foreign_trading_post
+				remove_province_modifier = local_opium_habit
+				remove_province_modifier = european_military_mission
+				remove_province_modifier = legation_quarter
+				remove_province_modifier = kettler_denkmal
+				remove_province_modifier = extraterritoriality_granted
+				remove_province_modifier = boxer_presence
+				remove_province_modifier = boxer_agitation
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	end_of_natural_dyes = {
+		picture = tea_production
+		potential = {
+			OR = {
+				any_greater_power = { invention = synthetic_dye }
+				any_neighbor_country = { invention = synthetic_dye }
+				sphere_owner = { invention = synthetic_dye }
+				overlord = { invention = synthetic_dye }
+				invention = synthetic_dye
+			}
+			any_owned_province = {
+				trade_goods = dye
+				controlled_by = THIS
+				province_control_days = 200
+				unemployment_by_type = { type = farmers value = 0.2 }
+			}
+			year = 1900
+		}
+		
+		allow = {
+			war = no
+		}
+		
+		effect = {
+			random_owned = {
+				limit = {
+					province_id = 1310
+					trade_goods = dye
+					controlled_by = THIS
+					province_control_days = 182
+					unemployment_by_type = { type = farmers value = 0.2 }
+				}
+				trade_goods = silk
+			}
+			random_owned = {
+				limit = {
+					province_id = 1309 
+					trade_goods = dye
+					controlled_by = THIS
+					province_control_days = 182
+					unemployment_by_type = { type = farmers value = 0.2 }
+				}
+				trade_goods = coffee
+			}
+			random_owned = {
+				limit = {
+					province_id = 1254 
+					trade_goods = dye
+					controlled_by = THIS
+					province_control_days = 182
+					unemployment_by_type = { type = farmers value = 0.2 }
+				}
+				trade_goods = tropical_wood
+			}
+			random_owned = {
+				limit = {
+					province_id = 1257 
+					trade_goods = dye
+					controlled_by = THIS
+					province_control_days = 182
+					unemployment_by_type = { type = farmers value = 0.2 }
+				}
+				trade_goods = tropical_wood
+			}
+			random_owned = {
+				limit = {
+					province_id = 1251  
+					trade_goods = dye
+					controlled_by = THIS
+					province_control_days = 182
+					unemployment_by_type = { type = farmers value = 0.2 }
+				}
+				trade_goods = silk
+			}
+			random_owned = {
+				limit = {
+					province_id = 1241   
+					trade_goods = dye
+					controlled_by = THIS
+					province_control_days = 182
+					unemployment_by_type = { type = farmers value = 0.2 }
+				}
+				trade_goods = silk
+			}
+			random_owned = {
+				limit = {
+					province_id = 1272   
+					trade_goods = dye
+					controlled_by = THIS
+					province_control_days = 182
+					unemployment_by_type = { type = farmers value = 0.2 }
+				}
+				trade_goods = silk
+			}
+			random_owned = {
+				limit = {
+					province_id = 1280   
+					trade_goods = dye
+					controlled_by = THIS
+					province_control_days = 182
+					unemployment_by_type = { type = farmers value = 0.2 }
+				}
+				trade_goods = silk
+			}
+			random_owned = {
+				limit = {
+					province_id = 1277    
+					trade_goods = dye
+					controlled_by = THIS
+					province_control_days = 182
+					unemployment_by_type = { type = farmers value = 0.2 }
+				}
+				trade_goods = fruit
+			}
+			random_owned = {
+				limit = {
+					province_id = 1276     
+					trade_goods = dye
+					controlled_by = THIS
+					province_control_days = 182
+					unemployment_by_type = { type = farmers value = 0.2 }
+				}
+				trade_goods = fruit
+			}
+			random_owned = {
+				limit = {
+					province_id = 1275   
+					trade_goods = dye
+					controlled_by = THIS
+					province_control_days = 182
+					unemployment_by_type = { type = farmers value = 0.2 }
+				}
+				trade_goods = coal
+			}
+			random_owned = {
+				limit = {
+					province_id = 1270     
+					trade_goods = dye
+					controlled_by = THIS
+					province_control_days = 182
+					unemployment_by_type = { type = farmers value = 0.2 }
+				}
+				trade_goods = iron
+			}
+			random_owned = {
+				limit = {
+					province_id = 2152     
+					trade_goods = dye
+					controlled_by = THIS
+					province_control_days = 182
+					unemployment_by_type = { type = farmers value = 0.2 }
+				}
+				trade_goods = coal
+			}
+			random_owned = { #https://www.mapsofindia.com/maps/india/india-map-silk.gif
+				limit = {
+					province_id = 1273
+					trade_goods = dye
+					controlled_by = THIS
+					province_control_days = 182
+					unemployment_by_type = { type = farmers value = 0.2 }
+				}
+				trade_goods = silk
+			}
+			random_owned = { #https://www.mapsofindia.com/maps/india/india-map-silk.gif
+				limit = {
+					province_id = 1240
+					trade_goods = dye
+					controlled_by = THIS
+					province_control_days = 182
+					unemployment_by_type = { type = farmers value = 0.2 }
+				}
+				trade_goods = silk
+			} 
+			random_owned = { #Scope the potential production better for Sulawesi/France?
+				limit = {
+					trade_goods = dye
+					controlled_by = THIS
+					province_control_days = 182
+					unemployment_by_type = { type = farmers value = 0.2 }
+				}
+				random_list = {
+					25 = { trade_goods = coffee }
+					25 = { trade_goods = cotton }
+					25 = { trade_goods = grain }
+					25 = { trade_goods = tobacco }
+				}
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+}
+

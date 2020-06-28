@@ -1,0 +1,179 @@
+#99900 Singapore Free Port
+#99901 Singapore Migration
+#99902 Australia Immigration
+#99903 Unciv Research Fix
+#99904 Australia Gold Rush
+#99905 China Research Fix
+#99906 German New Guinea
+#99907-11 Don Pacifico Affair
+
+#Military Aid - GP Receives Request
+country_event = {
+
+	id = 99920
+	title = "EVTNAME99920" #Military Aid for $FROMCOUNTRY$?
+	desc = "EVTDESC99920"
+	picture = "administration"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT99920OPTA"
+		FROM = {  country_event = { id=99921 days=5 } }
+		treasury = -15000
+		set_country_flag = sent_military_aid
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				war_policy = jingoism
+			}
+			modifier = {
+				factor = 0.5
+				war_policy = anti_military
+			}
+			modifier = {
+				factor = 0.1
+				war_policy = pacifism
+			}
+		}
+	}
+
+	option = {
+		name = "EVT99920OPTB"
+		FROM = { country_event = { id=99922 days=5 } }
+		diplomatic_influence = {
+			who = FROM
+			value = -50
+		}
+		prestige = -20
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0.5
+				war_policy = jingoism
+			}
+			modifier = {
+				factor = 1.25
+				war_policy = anti_military
+			}
+			modifier = {
+				factor = 2
+				war_policy = pacifism
+			}
+		}
+	}
+}
+
+#Military Aid - GP Accepts
+country_event = {
+
+	id = 99921
+	title = "EVTNAME99921" #$FROMCOUNTRY$ Accepts
+	desc = "EVTDESC99921"
+	picture = "administration"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Onwards to Victory!"
+		relation = {
+			who = FROM
+			value = 50
+		}
+		set_country_flag = received_military_aid
+		add_country_modifier = {
+			name = military_aid
+			duration = 730
+		}
+	}
+}
+
+
+#Military Aid - GP Refuses
+country_event = {
+	id = 99922
+	title = "EVTNAME800015" #$FROMCOUNTRY$ Refuses to Intervene
+	desc = "EVTDESC99922"
+	picture = "administration"
+
+	is_triggered_only = yes
+
+	option = {
+		set_country_flag = military_aid_refused
+		name = "Curse Them! We will fight on!"
+		relation = {
+			who = FROM
+			value = -50
+		}
+		prestige = 5
+	}
+}
+
+country_event = {
+	id = 99923
+	title = "Payments for Military Aid" #Pay up your debts
+	desc = "Our debts from the military supplies, arms and advisors incurred during the war must now be paid off."
+	picture = "administration"
+	
+	trigger = {
+		has_country_flag = received_military_aid
+		war = no
+		money = 5000
+	}
+	
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		clr_country_flag = received_military_aid
+		clr_country_flag = requested_military_aid
+		name = "We must repay our debts."
+		treasury = -15000
+	}
+}
+
+country_event = {
+	id = 99924
+	title = "The War is Over" #Resetting Decision Flag
+	desc = "The War is over and our Great Power 'ally' did not aid us in our time of need. We can either hope to turn to another great power who will help us, or perhaps we have no choice to remain aligned and maintain the status quo?"
+	picture = "administration"
+	
+	trigger = {
+		part_of_sphere = yes
+		has_country_flag = received_military_aid
+		war = no
+	}
+	
+	mean_time_to_happen = {
+		months = 3
+	}
+
+	option = {
+		clr_country_flag = military_aid_refused
+		clr_country_flag = requested_military_aid
+		name = "The Status Quo is best."
+		prestige = -5
+		
+		ai_chance = {
+			factor = 0.9
+		}
+	}
+	
+	option = {
+		clr_country_flag = military_aid_refused
+		clr_country_flag = requested_military_aid
+		name = "Curse them, we will go our own path!"
+		prestige = 5
+		sphere_owner = {
+			diplomatic_influence = {
+				who = THIS
+				value = -200
+			}
+		}
+		ai_chance = {
+			factor = 0.1
+		}
+	}
+}

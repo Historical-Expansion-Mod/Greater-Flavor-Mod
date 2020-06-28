@@ -1,0 +1,280 @@
+#Taking events from 11100 to 11200
+#The Rise of Tewodros
+country_event = {
+	id = 111000
+	title = "EVTNAME111000"
+	desc = "EVTDESC111000"
+	picture = "ethiopian_soldiers_marching"
+	
+	trigger = {
+		owns = 1855
+		OR = {
+			tag = GON
+			tag = TIG
+			tag = SHW
+		}
+		year = 1839
+		NOT = { exists = ETH }
+	}
+	
+	fire_only_once = yes
+		
+	mean_time_to_happen = {
+		months = 40
+		
+		modifier = {
+			factor = 0.8
+			year = 1843
+		}
+		
+		modifier = {
+			factor = 0.6
+			year = 1845
+		}
+		
+		modifier = {
+			factor = 0.4
+			year = 1846
+		}
+	}
+	
+	option = {
+		name = "EVT111000OPTA"
+		prestige = -20
+		set_country_flag = tewodros_rules
+		add_country_modifier = { name = tewodros_reforms duration = 1825 }
+		GON = { all_core = { add_core = THIS } }
+		TIG = { any_owned = { limit = { is_core = TIG } add_core = THIS } }
+		SHW = { all_core = { add_core = THIS } }
+		any_pop = { limit = { has_pop_culture = amhara } militancy = -1 }
+		random_owned = {
+			limit = {
+				owner = { tag = GON ai = yes }
+			}
+			owner = {
+				war = {
+					target = SHW
+					attacker_goal = {
+						casus_belli = acquire_all_cores
+						country = GON
+					}
+				}
+			}
+		}
+		
+		ai_chance = { factor = 100 }
+	}
+	
+	option = {
+		name = "EVT111000OPTB" #Resist him
+		any_pop = { limit = { has_pop_culture = amhara } militancy = 6 }
+		add_country_modifier = { name = national_confusion duration = 730 }
+		capital_scope = { change_controller = REB }
+		ai_chance = { factor = 0 }
+	}
+}
+
+#The Coronation of Tewodros
+country_event = {
+	id = 111001
+	title = "EVTNAME111001"
+	desc = "EVTDESC111001"
+	picture = "tewodros"
+	
+	trigger = {
+		has_country_flag = tewodros_rules
+		owns = 1852
+		owns = 1853
+		war = no
+		OR = {
+			AND = { 
+				owns = 1857
+				owns = 1859	
+			}
+			AND = {
+				year = 1855
+				ai = yes
+				OR = {
+					owns = 1857
+					owns = 1859	
+				}
+			}
+		}
+		NOT = { tag = ETH }
+		ETH = { exists = no }
+	}
+	
+	fire_only_once = yes
+
+	mean_time_to_happen = { days = 14 }
+	
+	option = {
+		name = "EVT111001OPTA"
+		set_global_flag = is_negusa_nagast
+		remove_country_modifier = tewodros_reforms
+		remove_country_modifier = zemene_mesafint
+		add_country_modifier = { name = disunited_country duration = 5475 }
+		add_country_modifier = { name = tewodros_ii duration = 9125 }
+		any_country = {
+			limit = {
+				OR = {
+					tag = GON
+					tag = TIG
+					tag = SHW
+				}
+			}
+			remove_country_modifier = zemene_mesafint
+		}
+		capital = 1853
+		1853 = { change_province_name = "Magdala" }
+		change_tag = ETH
+		GON = { all_core = { remove_core = GON } }
+		SHW = { all_core = { remove_core = SHW } }
+		TIG = { all_core = { remove_core = TIG } }
+		ENG_1848 = { add_core = TIG }
+		any_pop = { limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } } militancy = -4 }
+	}
+}
+
+#The British Expedition to Abyssinia
+country_event = {
+	id = 111002
+	title = "EVTNAME111002"
+	desc = "EVTDESC111003"
+	picture = "tewodros"
+	
+	trigger = {
+		tag = ETH
+		ENG = { 
+			is_greater_power = yes
+			owns = 1251
+		}	
+		has_country_modifier = tewodros_ii
+		year = 1860
+		owns = 1851
+		NOT = { has_country_flag = abyssinian_captives }
+	}
+	
+	fire_only_once = yes
+
+	mean_time_to_happen = { months = 16 }
+	
+	option = {
+		name = "EVTOPTA111002"
+		prestige = 10
+		badboy = 0.5
+		relation = { 
+			who = ENG 
+			value = -100
+		}
+		ENG = { country_event = 111003 }
+		set_country_flag = abyssinian_captives
+	}
+}
+
+#The British Response
+country_event = {
+	id = 111003
+	title = "EVTNAME111003"
+	desc = "EVTDESC111003"
+	picture = "abyssinian_captives"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTA111003"
+		prestige = 5
+		casus_belli = {
+			target = ETH
+			type = humiliate
+			months = 24
+		}
+		casus_belli = {
+			target = ETH
+			type = war_reparations
+			months = 24
+		}
+		war = {
+			target = ETH
+			attacker_goal = {
+				casus_belli = humiliate
+			}
+			attacker_goal = {
+				casus_belli = war_reparations
+			}
+			defender_goal = {
+				casus_belli = humiliate
+			}
+		}
+		ai_chance = { factor = 100 }
+	}
+	
+	option = {
+		name = "EVTOPTB111003"
+		prestige = -35
+		diplomatic_influence = {
+			who = ETH
+			value = 400
+		}
+		relation = {
+			who = ETH
+			value = 100
+		}
+		FROM = { 
+			military_reform = yes_foreign_training 
+			military_reform = yes_foreign_weapons
+		}
+		ai_chance = { factor = 0 }
+	}
+}
+
+#The Death of Tewodros
+country_event = {
+	id = 111004
+	title = "EVTNAME111004"
+	desc = "EVTDESC111004"
+	picture = "battle_of_magdala"
+	
+	trigger = {
+		tag = ETH
+		has_country_flag = abyssinian_captives
+		OR = {
+			AND = {
+				war_with = ENG
+				NOT = { controls = 1853 }
+			}
+			AND = {
+				truce_with = ENG
+				has_recently_lost_war = yes
+			}
+			war_exhaustion = 25
+		}
+		NOT = { has_country_flag = battle_of_magdala }
+	}
+	
+	fire_only_once = yes
+
+	mean_time_to_happen = { months = 16 }
+	
+	option = {
+		name = "EVTOPTA111004"
+		prestige = -5
+		war_exhaustion = 15
+		remove_country_modifier = tewodros_ii
+		set_country_flag = battle_of_magdala
+		ENG = { country_event = 111005 }
+	}
+}
+
+country_event = {
+	id = 111005
+	title = "EVTNAME111004"
+	desc = "EVTDESC111004"
+	picture = "battle_of_magdala"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTA111005"
+	}
+}

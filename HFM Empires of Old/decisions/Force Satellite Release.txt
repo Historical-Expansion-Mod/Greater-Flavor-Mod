@@ -1,0 +1,172 @@
+political_decisions = {
+
+	force_vassal_freedom = {
+	picture = force_vassal_freedom
+		potential = {
+			civilized = yes
+			is_vassal = yes
+			is_substate = no
+			any_greater_power = {
+				is_sphere_leader_of = THIS
+				NOT = { is_our_vassal = THIS }
+				nationalism_n_imperialism = 1
+			}
+			NOT = { tag = LBG }
+			NOT = { tag = NCT }
+			NOT = { has_country_modifier = no_freedom }
+			NOT = { has_country_flag = freedom_attempt_made }
+		}
+
+		allow = {
+			OR = {
+				average_militancy = 2
+				revolt_percentage = .25
+				capital_scope = { controlled_by_rebels = yes }
+			}
+		}
+
+		effect = {
+			set_country_flag = freedom_attempt_made
+			sphere_owner = { country_event = 800012 }
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { num_of_cities = 4 }
+				NOT = { revolt_percentage = .25 }
+				NOT = { average_militancy = 3 }
+				NOT = { capital_scope = { controlled_by_rebels = yes } }
+			}
+			modifier = {
+				factor = 0
+				num_of_cities = 4
+				any_greater_power = {
+					is_sphere_leader_of = THIS
+					NOT = { is_our_vassal = THIS }
+					NOT = { neighbour = THIS }
+				}
+				NOT = { revolt_percentage = .25 }
+				NOT = { average_militancy = 4 }
+				NOT = { capital_scope = { controlled_by_rebels = yes } }
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					tag = CAN
+					tag = AST
+					tag = NZL
+				}
+				overlord = { tag = ENG }
+				NOT = { revolt_percentage = .25 }
+				NOT = { average_militancy = 4 }
+				NOT = { capital_scope = { controlled_by_rebels = yes } }
+			}
+		}
+	}
+	
+	vassal_rebellion = {
+		potential = {
+			ai = yes
+			is_vassal = yes
+			has_country_flag = refused_independence_request
+			NOT = { has_country_modifier = no_freedom }
+			NOT = { has_country_flag = freedom_attempt_made }
+		}
+		
+		allow = {
+			war = no
+			NOT = {
+				war_exhaustion = 5
+				sphere_owner = { is_our_vassal = THIS }
+				num_of_revolts = 1
+			}
+			OR = {
+				part_of_sphere = yes
+				overlord = { NOT = { brigades_compare = 1 } }
+				any_greater_power = { alliance_with = THIS }
+			}
+		}
+		
+		effect = {
+			add_country_modifier = {
+				name = no_freedom
+				duration = 7300
+			}
+			any_pop = {
+				limit = {
+					OR = {
+						is_primary_culture = yes
+						is_accepted_culture = yes
+					}
+				}
+				militancy = -6
+			}
+			random_country = {
+				limit = { is_our_vassal = THIS }
+				country_event = 98610
+			}
+		}
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { total_amount_of_divisions = 3 }
+			}
+			modifier = {
+				factor = 0
+				part_of_sphere = yes
+				NOT = {
+					any_greater_power = {
+						alliance_with = THIS
+						NOT = { is_our_vassal = THIS }
+					}
+				}
+				NOT = {
+					overlord = {
+						brigades_compare = 1.5
+						NOT = {
+							OR = {
+								revolt_percentage = 0.50
+								national_provinces_occupied = 0.20
+							}
+						}
+					}
+				}
+			}
+			modifier = {
+				factor = 0
+				part_of_sphere = yes
+				NOT = {
+					any_greater_power = {
+						alliance_with = THIS
+						NOT = { is_our_vassal = THIS }
+					}
+				}
+				sphere_owner = {
+					OR = {
+						war = yes
+						war_exhaustion = 10
+					}
+				}
+			}
+			modifier = {
+				factor = 0
+				any_greater_power = {
+					alliance_with = THIS
+					NOT = { is_our_vassal = THIS }
+				}
+				NOT = {
+					any_greater_power = {
+						alliance_with = THIS
+						NOT = { is_our_vassal = THIS }
+						war = no
+						NOT = { war_exhaustion = 10 }
+					}
+				}
+			}
+		}
+	}
+}

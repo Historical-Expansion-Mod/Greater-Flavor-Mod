@@ -1,0 +1,204 @@
+political_decisions = {
+	restore_mexican_empire = {
+		potential = {
+			tag = MEX
+			government = democracy
+			NOT = { has_country_flag = we_have_tried_this_once }
+			OR = { 
+				FRA = {
+					exists = yes
+					OR = {
+						government = absolute_monarchy
+						government = prussian_constitutionalism
+						government = hms_government
+					}
+				}
+				BOR = {
+					exists = yes
+					OR = {
+						government = absolute_monarchy
+						government = prussian_constitutionalism
+						government = hms_government
+					}
+				}
+			}
+		}
+		allow = {
+			war = no
+			OR = {
+				ruling_party_ideology = conservative
+				ruling_party_ideology = reactionary
+			}
+			average_militancy = 3
+		}
+		
+		effect = {
+			government = hms_government
+			any_pop = {
+				scaled_militancy = {
+					ideology = liberal
+					factor = 8
+				}
+			}
+			random_country = {
+				limit = {
+					primary_culture = french
+					capital = 425
+				}	
+				relation = {
+					who = THIS
+					value = 100
+				}
+				diplomatic_influence = {
+					who = THIS
+					value = 100
+				}
+			}
+			set_country_flag = we_have_tried_this_once
+		}
+	}
+
+	treaty_of_guadalupe_hidalgo = {
+		picture = treaty_of_guadalupe_hidalgo
+		potential = {
+			tag = USA
+			has_country_flag = hasmanifestdestiny
+			NOT = { has_country_flag = treaty_of_guadalupe_hidalgo }
+			MEX = { is_greater_power = no NOT = { has_country_flag = manifest_destiny_refuted } }
+		}
+
+		allow = {
+			OR = {
+				money = 100000
+				ai = yes
+			}
+			OR = {
+				2172 = { controlled_by = USA }
+				MEX = {
+					all_core = {
+						OR = {
+							owned_by = USA
+							controlled_by = USA
+							NOT = { is_core = USA }
+						}
+					}
+				}
+				AND = {
+					MEX = {
+						ai = yes
+						war_exhaustion = 0.65
+					}
+					ai = yes
+					war = no
+					truce_with = MEX
+					has_recently_lost_war = no
+				}
+			}
+			NOT = {
+				any_owned_province = { controlled_by = MEX }
+				any_owned_province = {
+					controller = { alliance_with = MEX }
+				}
+			}
+		}
+
+		effect = {
+			set_country_flag = treaty_of_guadalupe_hidalgo
+			MEX = { country_event = 44825 }
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
+	refute_manifest_destiny = {
+		picture = manifest_destiny
+		potential = {
+			exists = yes
+			OR = {
+				tag = MEX
+				tag = TEX
+				tag = DES
+				tag = CAL
+			}
+			USA = { has_country_flag = hasmanifestdestiny }
+			NOT = {
+				has_country_flag = treaty_of_guadalupe_hidalgo
+				has_country_flag = manifest_destiny_refuted
+			}
+		}
+		
+		allow = {
+			war = no
+			NOT = { has_recently_lost_war = yes }
+			OR = {
+				AND = {
+					is_greater_power = yes
+					invention = manifest_destiny
+				}
+				AND = {
+					truce_with = USA
+					USA = { has_recently_lost_war = yes }
+				}
+			}
+			all_core = { owned_by = THIS }
+		}
+		
+		effect = {
+			set_country_flag = manifest_destiny_refuted
+			prestige = 10
+			USA = {
+				prestige = -10
+				relation = { who = THIS value = -200 }
+			}
+			
+			any_owned = {
+				limit = {
+					is_core = USA
+					is_core = THIS
+				}
+				remove_core = USA
+			}
+			
+			random_owned = {
+				limit = { owner = { OR = { tag = DES tag = CAL } } }
+					owner = {
+					any_owned = {
+						limit = {
+							is_core = MEX
+							is_core = THIS
+						}
+				remove_core = MEX
+					}
+				}
+			}
+			
+			random_owned = {
+				limit = { owner = { primary_culture = texan } }
+					owner = {
+					any_owned = {
+						limit = {
+							is_core = MEX
+							is_core = THIS
+						}
+				remove_core = MEX
+					}
+				}
+			}
+			
+			random_owned = {
+				limit = { owner = { primary_culture = mexican } }
+				owner = {
+					129 = { add_core = MEX }
+					128 = { add_core = MEX }
+					103 = { add_core = MEX }
+					107 = { add_core = MEX }
+					108 = { add_core = MEX }
+					109 = { add_core = MEX }
+					110 = { add_core = MEX }
+				}
+			}
+		}
+	}
+}

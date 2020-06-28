@@ -1,0 +1,528 @@
+#99900 Singapore Free Port
+#99901 Singapore Migration
+#99902 Australia Immigration
+#99903 California Gold Rush
+#99904 Australia Gold Rush
+#99905 China Research Fix
+#99906 German New Guinea
+#99907-11 Don Pacifico Affair
+#99920-22 Military Aid Events
+#99930 Splendid Isolation GB
+
+
+#The Abdication of Ferdinand I
+country_event = {
+	id = 99990
+	title = "EVTNAME99990"
+	desc = "EVTDESC99990"
+	major = yes
+	
+	trigger = {
+		tag = AUS
+		has_global_flag = hungarian_revolution_occurred
+		war_with = HUN
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
+		NOT = { has_global_flag = franz_joseph_i }
+		NOT = { year = 1870 }
+	}
+	
+	mean_time_to_happen =  {
+		months = 6
+
+		modifier = {
+			factor = 0.5
+			war_exhaustion = 15
+		}
+		
+		modifier = {
+			factor = 0.1
+			war_exhaustion = 20
+		}
+		
+		modifier = {
+			factor = 0.5
+			RUS = {
+				war_with = HUN
+			}
+		}
+		
+		modifier = {
+			factor = 0.1
+			PRU = {
+				war_with = THIS
+			}
+		}
+	}
+
+	option = {
+		name = "EVT99990OPTA"
+		prestige = -10
+		war_exhaustion = -25
+		add_country_modifier = {
+			name = emergency_wartime_austria
+			duration = 1085
+		}
+		set_global_flag = franz_joseph_i 
+	}
+}
+
+
+#Loser of the Brother's War
+country_event = {
+	id = 99996
+	title = "EVTNAME99996"
+	desc = "EVTDESC99996"
+	major = yes
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT99996OPTA"
+		war_exhaustion = -5
+		relation = { #Normalize Relations with victor
+			who = FROM
+			value = 200
+		}
+		random_country = {
+			limit = {
+				tag = FROM
+			}
+			set_country_flag = brothers_war_winner
+			remove_country_modifier = brothers_war_aggressor
+		}
+		any_country = {
+			limit = {
+				exists = yes
+				is_greater_power = no
+				is_culture_group = THIS
+				NOT = { vassal_of = THIS }
+				is_substate = no
+			}
+			relation = {
+				who = THIS
+				value = -400
+			}
+			diplomatic_influence = {
+				who = THIS
+				value = -400
+			}
+			diplomatic_influence = {
+				who = FROM
+				value = 400
+			}
+			leave_alliance = THIS
+			end_military_access = THIS
+			create_alliance = FROM
+		}
+		add_country_modifier = {
+			name = diplomatic_isolation
+			duration = 1825
+		}
+		remove_country_modifier = brothers_war_aggressor
+		set_country_flag = brothers_war_loser
+	}
+}
+
+#Peace of Prague (Austria AI Only)
+country_event = {
+	id = 99810
+	title = "EVTNAME99810"
+	desc = "EVTDESC99810"
+	major = yes
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPT99810"
+		war_exhaustion = 10
+		prestige = -250
+		relation = { #Normalize Relation
+			who = FROM
+			value = 200
+		}
+		any_country = {
+			limit = {
+				exists = yes
+				is_greater_power = no
+				OR = { 
+					is_culture_group = THIS
+					tag = LBG
+				}
+				in_sphere = THIS
+				is_substate = no
+			}
+			relation = {
+				who = THIS
+				value = -400
+			}
+			country_event = 99811
+			leave_alliance = THIS
+			end_military_access = THIS
+			create_alliance = FROM
+		}
+
+		# Rhineland is released, if still owned by Prussia
+		random_country = {
+			limit = {
+				tag = RHI
+				exists = yes
+				vassal_of = PRU
+			}
+			PRU = { release_vassal = RHI }
+			FROM = {
+				diplomatic_influence = {
+					who = RHI
+					value = 400
+				}
+				create_vassal = RHI
+			}
+			RHI = { prestige = -100 }
+		}
+		random_owned = {
+			limit = {
+				province_id = 575 #Koln
+				owned_by = PRU
+				NOT = { exists = RHI }
+			}
+			PRU = { release = RHI }
+			FROM = {
+				diplomatic_influence = {
+					who = RHI
+					value = 400
+				}
+				create_vassal = RHI
+				create_alliance = RHI
+			}
+			RHI = { prestige = -100 }
+		}
+		
+		# Westfalen is released, if still owned by Prussia
+		random_country = {
+			limit = {
+				tag = WES
+				exists = yes
+				vassal_of = PRU
+			}
+			PRU = { release_vassal = WES }
+			FROM = {
+				diplomatic_influence = {
+					who = WES
+					value = 400
+				}
+				create_vassal = WES
+				create_alliance = WES
+			}
+			WES = { prestige = -100 }
+		}
+		random_owned = {
+			limit = {
+				province_id = 580 #Dortmund
+				owned_by = PRU
+				NOT = { exists = WES }
+			}
+			owner = { release = WES }
+			FROM = {
+				diplomatic_influence = {
+					who = WES
+					value = 400
+				}
+				create_vassal = WES
+			}
+			WES = { prestige = -100 }
+		}
+		
+		
+		#Siliesia is scededed to Austria
+		random_owned = {
+			limit = {
+				province_id = 682 #Breslau
+				owned_by = PRU
+				NOT = { exists = SLS }
+			}
+			owner = {
+				any_owned = {
+					limit = { is_core = SLS }
+					secede_province = AUS
+				}
+			}
+		}
+		
+		#Sigmaringen is seceded to Austria
+		random_owned = {
+			limit = {
+				province_id = 594 #Sigmaringen
+				owned_by = PRU
+				NOT = { exists = SGM }
+			}
+			owner = {
+				any_owned = {
+					limit = { province_id = 594 }
+					secede_province = AUS
+				}
+			}
+		}
+		
+		random_country = {
+			limit = {
+				exists = yes
+				tag = SGM
+			}
+			annex_to = AUS
+		}
+		
+		# Saxony Province is given to Saxony
+		random_owned = {
+			limit = {
+				province_id = 687 #Gorlitz
+				owned_by = PRU
+				PRU = { truce_with = SAX }
+				SAX = { exists = yes }
+			}
+			owner = {
+				any_owned = {
+					limit = { region = SAX_558 }
+					secede_province = SAX
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = { has_country_modifier = zollervein }
+			}
+			owner = { remove_country_modifier = zollervein }
+		}
+	}
+}
+
+country_event = {
+	id = 99811
+	title = "EVTNAME99810"
+	desc = "EVTDESC99810"
+	picture = "administration"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT99996OPTA"
+		random_country = {
+			limit = {
+				has_country_flag = ai_demand_sigmaringen
+			}
+			diplomatic_influence = {
+				who = THIS
+				value = 400
+			}
+			relation = {
+				who = THIS
+				value = 400
+			}
+		}
+		FROM = {
+			diplomatic_influence = {
+				who = THIS
+				value = -400
+			}
+			release_vassal = THIS
+			leave_alliance = THIS
+		}
+	}
+}
+
+country_event = {
+	id = 99812
+	title = "EVTNAME99812"
+	desc = "EVTDESC99812"
+	picture = "hungarian_revolution_1848"
+	
+	trigger = {
+		tag = KUK
+		owns = 641
+		war = no
+		is_greater_power = no
+		OR = { 
+			is_secondary_power = no
+			is_disarmed = yes
+		}
+		NOT = { has_global_flag = 2nd_hungarian_revoultion }
+	}
+
+	mean_time_to_happen = {
+		months = 2
+	}
+
+	option = {
+		name = "EVT99812OPTA"
+		release = HUN
+		any_owned = {
+			limit = {
+				OR = {
+					is_core = HUN
+					is_core = CRO
+				}
+				NOT = { is_core = DLM }
+			}
+			secede_province = HUN
+		}
+		relation = { who = HUN value = -100 }
+		any_pop = {
+			limit = { is_primary_culture = yes }
+			militancy = -5
+		}
+		HUN = {
+			capital = 641
+			political_reform = mandatory_service 
+			government = hms_government
+			political_reform = non_secret_ballots
+			political_reform = universal_weighted_voting
+			political_reform = population_equal_weight
+			political_reform = free_press
+			political_reform = yes_meeting
+			clr_country_flag = communist_gov
+			clr_country_flag = absolute_monarchy_gov
+			clr_country_flag = semi_constitutional_monarchy_gov
+			set_country_flag = constitutional_monarchy_gov
+			clr_country_flag = democracy_gov
+			clr_country_flag = presidential_dictatorship_gov
+			clr_country_flag = fascist_gov
+			clr_country_flag = anarcho_liberal_gov
+			small_arms = 400
+			regular_clothes = 400
+			leadership = 40
+			canned_food = 500
+			treasury = 35000
+			add_country_modifier = {
+				name = begin_revolution
+				duration = 365
+			}
+			add_country_modifier = {
+				name = no_more_war
+				duration = 20
+			}
+			any_pop = {
+				limit = { has_pop_culture = hungarian }
+				militancy = -8
+			}
+			any_owned = {
+				limit = { is_core = ROM }
+				any_pop = {
+					limit = { has_pop_culture = romanian }
+					militancy = 6
+				}
+				add_province_modifier = {
+					name = nationalist_agitation
+					duration = 1095
+				}
+			}
+			any_owned = {
+				limit = { is_core = SER }
+				any_pop = {
+					limit = { has_pop_culture = serb }
+					militancy = 6
+				}
+				add_province_modifier = {
+					name = nationalist_agitation
+					duration = 1095
+				}
+			}
+		}
+		add_country_modifier = {
+			name = no_more_war
+			duration = 20
+		}
+		HUN = { country_event = { id=998120 days=20} }
+		set_global_flag = 2nd_hungarian_revoultion
+	}
+}
+
+country_event = {
+	id = 998120
+	title = "EVTNAME99813"
+	desc = "EVTDESC99813"
+	picture = "administration"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT998121OPTA"
+		KUK = {
+			release_vassal = HUN
+			war = {
+				target = HUN
+				attacker_goal = { casus_belli = annex_core_country }
+				defender_goal = { casus_belli = status_quo }
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 99813
+	title = "EVTNAME99813"
+	desc = "EVTDESC99813"
+	picture = "administration"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT99813OPTA"
+		prestige = 5
+		any_greater_power = {
+			limit = {
+				NOT = { 
+					tag = PRU
+				}
+				alliance_with = THIS
+			}
+			leave_alliance = THIS
+		}
+		relation = {
+			who = FROM
+			value = 100
+		}
+		AUS_729 = { add_core = ITA }
+		create_alliance = FROM
+		war = {
+			target = AUS
+			attacker_goal = { 
+				casus_belli = acquire_core_state
+				state_province_id = 729 
+			}
+			call_ally = yes
+		}
+		set_country_flag = prussian_italian_alliance
+		
+		ai_chance = {
+			factor = 80
+			modifier = {
+				factor = 2
+				NOT = { war_exhaustion = 1 }
+			}
+		}		
+	}
+	
+	option = {
+		name = "EVT99813OPTB"
+		prestige = -5
+		clr_country_flag = prussian_italian_alliance
+		
+		ai_chance = {
+			factor = 20
+			modifier = {
+				factor = 0
+				NOT = { war_exhaustion = 10 }
+			}
+			modifier = {
+				factor = 2
+				war_exhaustion = 10
+			}
+			modifier = {
+				factor = 4
+				war_exhaustion = 20
+			}
+		}
+	}
+}

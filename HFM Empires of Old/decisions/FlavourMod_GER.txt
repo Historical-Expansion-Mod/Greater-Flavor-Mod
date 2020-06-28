@@ -1,0 +1,1079 @@
+political_decisions = {
+	build_reichstag = {
+		picture = "reichstag"
+		potential = { 
+			OR = {
+				tag = GER
+				tag = GCF
+			}
+			NOT = {
+				has_country_flag = built_reichstag
+			}
+		}
+		allow = {
+			war = no
+			is_greater_power = yes
+			revolution_n_counterrevolution = 1
+			money = 15000
+		}
+		effect = {
+			treasury = -20000
+			capital_scope = {
+				add_province_modifier = {
+					name = the_reichstag
+					duration = -1
+				}
+			}
+			any_pop = {
+				limit = {
+					is_primary_culture = yes
+					is_accepted_culture = yes
+				}
+				militancy = -0.5
+			}
+			set_country_flag = built_reichstag
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	berlin_baghdad_railway = {
+		picture = "berlin_baghdad"
+		potential = { 
+			OR = {
+				tag = GER
+				tag = GCF
+			}
+			integral_rail_system = 1
+			is_greater_power = yes
+			NOT = {
+				has_global_flag = BerlinBaghdadRail
+			}
+		}
+		allow = {
+			TUR = {
+				war = no
+				owns = 926 #Baghdad
+				is_vassal = no
+				OR = {
+					government = absolute_monarchy
+					government = prussian_constitutionalism
+					government = hms_government
+					alliance_with = THIS
+				}
+				NOT = {
+					alliance_with = ENG
+					alliance_with = FRA
+					alliance_with = BOR
+					alliance_with = RUS
+				}
+			}
+		}
+		effect = {
+			country_event = 33005
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	franco_prussian_war_memorial = {
+		picture = "franco_prussian_memorial"
+		potential = {
+			OR = {
+				tag = GER
+				tag = GCF
+			}
+			ALS = { exists = no }
+			NOT = {
+				OR = {
+					has_global_flag = franco_prussian_memorial
+					has_global_flag = franco_prussian_memorial2
+				}
+			}
+			412 = { 
+				OR = {
+					owned_by = THIS
+					owner = { vassal_of = THIS }
+				}
+			}
+		}
+		allow = {
+			war = no
+			OR = { 
+				AND = { 
+					truce_with = FRA
+					FRA = { has_recently_lost_war = yes }
+				}
+				AND = { 
+					truce_with = BOR
+					BOR = { has_recently_lost_war = yes }
+				}
+			}
+		}
+		effect = {
+			badboy = -1
+			any_pop = {
+				limit = { is_culture_group = THIS }
+				consciousness = -0.5
+			}
+			random_country = {
+				limit = {
+					primary_culture = french
+					is_greater_power = yes
+					capital = 425
+				}	
+				country_event = 99932
+			}
+			set_global_flag = franco_prussian_memorial
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	franco_prussian_war_memorial2 = {  #Alternate Non-EMS Dispatch Unification Through an AI Freeing ALS, Allows AUS/BAV to use as well
+		picture = "franco_prussian_memorial"
+		potential = { 
+			is_greater_power = yes
+			is_culture_group = germanic
+			ALS = { exists = yes }
+			NOT = { has_global_flag = franco_prussian_memorial }
+		}
+		allow = {
+			war = no
+			412 = {
+				owner = {
+					OR = {
+						is_vassal = no
+						vassal_of = THIS
+					}
+					NOT = { 
+						vassal_of = FRA 
+						vassal_of = BOR 
+					}
+					war = no
+					is_greater_power = no
+				}
+			}
+			OR = {
+				FRA = { exists = yes truce_with = THIS }
+				BOR = { exists = yes truce_with = THIS }
+			}
+		}
+		
+		effect = {
+			badboy = -1
+			any_pop = {
+				limit = { is_culture_group = THIS }
+				consciousness = -0.5
+			}
+			random_country = {
+				limit = {
+					primary_culture = french
+					is_greater_power = yes
+					capital = 425
+				}	
+				country_event = 99933
+			}			
+			diplomatic_influence = { who = ALS value = 400 }
+			ALS = {
+				any_pop = {
+					limit = {
+						location = {
+							OR = {
+								province_id = 412
+								province_id = 410
+								province_id = 409
+							}
+						}
+						has_pop_culture = french
+						OR = {
+							strata = middle
+							strata = rich
+							type = soldiers
+						}					
+					}
+					move_pop = 406
+				}
+				create_alliance = THIS				
+			}
+			set_global_flag = franco_prussian_memorial
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	treaty_of_vienna = {
+		picture = "form_germany"
+		potential = { 
+			OR = { 
+				tag = GER
+				AND = {
+					tag = GCF
+					NOT = { capital = 619 }
+				}
+			}
+			war = yes
+			OR = {
+				war_with = KUK
+				war_with = AUS
+			}
+			OR = {
+				AUS = {
+					exists = yes
+					ai = yes
+					is_greater_power = no
+				}
+				KUK = {
+					exists = yes
+					ai = yes
+					is_greater_power = no
+				}
+			}
+			has_global_flag = austrian_refused_unification
+			NOT = {
+				has_global_flag = treaty_of_vienna
+			}
+		}
+		allow = {
+			controls = 619
+			controls = 612
+			controls = 625
+			controls = 622
+			controls = 616
+			OR = {
+				AUS = {
+					exists = yes
+					national_provinces_occupied = 0.35
+					war_exhaustion = 35
+				}
+				KUK = {
+					exists = yes
+					national_provinces_occupied = 0.5
+					war_exhaustion = 35
+				}
+			}
+		}
+		effect = {
+			badboy = 5
+			any_pop = {
+				limit = { is_culture_group = THIS }
+				consciousness = -2
+				militancy = -2
+			}
+			random_country = {
+				limit = {
+					OR = {
+						tag = AUS
+						tag = KUK
+					}
+					exists = yes
+				}
+				country_event = 31520
+			}
+			random_country = {
+				limit = {
+					exists = yes
+					tag = GLM
+				}
+				all_core = { remove_core = AUS }
+			}
+			random_country = {
+				limit = {
+					exists = yes
+					tag = HUN
+				}
+				any_owned = {
+					limit = { is_core = AUS }
+					add_core = THIS
+				}
+			}
+			set_global_flag = treaty_of_vienna
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	bohemian_question = {
+		picture = "czech_autonomy"
+		potential = { 
+			OR = {
+				tag = GER
+				tag = GCF
+			}
+			NOT = { capital = 619 } #Vienna
+			war = no
+			NOT = { tag = KUK }
+			NOT = { tag = AUS }
+			NOT = { tag = CZH }
+			NOT = { tag = DNB }
+			NOT = {
+				exists = BOH
+				has_country_flag = no_bohemia_independence
+			}
+			is_possible_vassal = BOH
+			revolution_n_counterrevolution = 1
+		}
+		allow = {
+			war = no
+			any_state = {
+				any_owned_province = {
+					is_core = BOH
+					culture = czech
+					is_primary_culture = no
+				}
+				average_militancy = 7
+			}
+		}
+		effect = {
+			badboy = -5
+			prestige = -20
+			AUS_626 = { remove_core = BOH }
+			release_vassal = BOH
+			BOH = {
+				any_pop = {
+					limit = { has_pop_culture = czech }
+					militancy = -8
+				}
+				all_core = { remove_core = GER }
+			}
+			any_pop = {
+				limit = { has_pop_culture = czech }
+				militancy = -3
+			}
+			any_pop = {
+				limit = {
+					NOT = { has_pop_culture = czech }
+					is_primary_culture = no
+				}
+				militancy = 1
+			}
+			relation = { who = BOH value = 50 }
+			diplomatic_influence = { who = BOH value = 400 }
+		}
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				GER = {
+					NOT = { badboy = 0.8 }
+				}
+			}
+		}
+	}
+	
+	greater_germany_hungarian_border_treaty = {
+		picture = gtfo
+		potential = {
+			NOT = { has_country_flag = greater_germany_hungarian_border_treaty_tried }
+			OR = { 
+				tag = GER
+				tag = GCF 
+			}
+			HUN = { is_vassal = no }
+			OR = {
+				AND = {
+					tag = HUN
+					OR = {
+						is_secondary_power = yes
+						is_greater_power = yes
+					}
+					state_n_government = 1
+					AUS = { is_secondary_power = no is_greater_power = no }
+				}
+				AND = {
+					is_greater_power = yes
+					state_n_government = 1
+					HUN = { 
+						in_sphere = THIS
+						is_greater_power = no 
+					}
+				}
+			}
+			NOT = { has_global_flag = german_confederation_austrian }
+			NOT = { 
+				exists = AUS 
+				exists = KUK
+			}
+			exists = HUN
+			OR = {
+				623 = { is_core = THIS }
+				624 = { is_core = HUN }
+			}
+			OR = {
+				AND = {
+					623 = { owned_by = THIS }
+					624 = { owned_by = HUN }
+				}
+				AND = {
+					623 = { owned_by = THIS }
+					624 = { owned_by = THIS }
+				}
+				AND = {
+					623 = { owned_by = HUN }
+					624 = { owned_by = HUN }
+				}
+			}
+		}
+		
+		allow = {
+			war = no
+			state_n_government = 1
+			OR = { 
+				AND = {
+					tag = GER
+					AUS_619 = { owned_by = THIS }
+					AUS_623 = { owned_by = HUN }
+					AUS_641 = { owned_by = HUN }
+				}
+				AND = {
+					tag = GCF
+					AUS_619 = { owned_by = THIS }
+					AUS_623 = { owned_by = HUN }
+					AUS_641 = { owned_by = HUN }
+				}
+				AND = {
+					tag = HUN
+					AUS_619 = { owned_by = GER }
+					AUS_623 = { owned_by = THIS }
+					AUS_641 = { owned_by = THIS }
+				}
+				AND = {
+					tag = HUN
+					AUS_619 = { owned_by = GCF }
+					AUS_623 = { owned_by = THIS }
+					AUS_641 = { owned_by = THIS }
+				}
+			}
+		}
+		
+		effect = {
+			set_country_flag = greater_germany_hungarian_border_treaty_tried
+			random_country = {
+				limit = {
+					OR = {
+						tag = THIS
+						tag = HUN
+					}
+					exists = yes
+					neighbour = THIS
+				}
+				country_event = 60055559	
+			}
+			624 = { add_core = THIS }
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	ger_ai_banat = {
+		picture = "treaty_signing"
+		potential = { 
+			OR = {
+				government = absolute_monarchy
+				government = prussian_constitutionalism
+				government = hms_government
+			}
+			OR = {
+				tag = PRU
+				tag = NGF
+				tag = GER
+				tag = GCF
+			}
+			BAN = {
+				exists = yes
+				in_sphere = THIS
+				NOT = { vassal_of = THIS }
+			}
+			OR = {
+				ROM = {
+					ai = yes
+					exists = yes
+					truce_with = THIS
+				}
+				HUN = {
+					ai = yes
+					exists = yes
+					truce_with = THIS
+				}
+				KUK = {
+					ai = yes
+					exists = yes
+					truce_with = THIS
+				}
+			}
+			NOT = { has_country_flag = ger_ai_banat }
+		}
+		allow = {
+			war = no
+			has_recently_lost_war = no
+		}
+		
+		effect = {
+			badboy = 5
+			create_vassal = BAN
+			792 = {	add_core = BAN	secede_province = THIS	}
+			2538 = { secede_province = THIS	}
+			791 = {	secede_province = THIS	}
+			any_owned = {
+				limit = { is_core = BAN }
+				secede_province = BAN
+			}
+			792 = {	secede_province = BAN }
+			2538 = { secede_province = BAN }
+			791 = {	secede_province = BAN }
+			set_country_flag = ger_ai_banat
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	dutch_prussian_alliance = {
+		picture = "treaty_signing"
+		potential = { 
+			is_greater_power = yes
+			primary_culture = north_german
+			387 = { is_core = NET }
+			NET = { war_with = BEL }
+			NOT = { has_global_flag = dutch_prussian_alliance }
+		}
+		allow = {
+			OR = {	
+				war_with = BEL
+				truce_with = BEL
+			}
+			NET = { war_with = BEL }
+		}
+		
+		effect = {
+			badboy = 3
+			prestige = 10
+			NET = { country_event = 99961 }
+			set_global_flag = dutch_prussian_alliance
+		}
+	}
+	
+	treaty_of_amsterdamn = {
+		picture = "treaty_signing"
+		potential = {
+			is_greater_power = yes
+			primary_culture = north_german
+			NOT = { exists = BEL }
+			387 = { owned_by = NET }
+			has_global_flag = dutch_prussian_alliance_accepted
+			NOT = { has_global_flag = treaty_of_amsterdamn }
+		}
+		allow = {
+			war = no
+			NOT = { exists = BEL }
+			387 = { owned_by = NET }
+		}
+		
+		effect = {
+			badboy = 3
+			prestige = 10
+			NET = { country_event = 99958 }
+			set_global_flag = treaty_of_amsterdamn
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	the_jade_purchase = {
+		picture = "wilhelmshaven"
+		potential = {
+			tag = PRU
+			NOT = { has_country_flag = has_asked_for_jade }
+			NOT = { owns = 3259 }
+		}
+		
+		allow = {
+			is_greater_power = yes
+			money = 15000
+			OR = {
+				nationalism_n_imperialism = 1
+				battleship_column_doctrine = 1
+				SWH = { exists = no }
+				year = 1853
+			}
+		}
+		
+		effect = {
+			set_country_flag = has_asked_for_jade
+			random_owned = {
+				limit = {
+					owner = { ai = yes }
+				}
+				owner = {
+					activate_technology = post_nelsonian_thought
+					activate_technology = naval_design_bureaus
+				}
+			}
+			OLD = { country_event = 40001 }
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	rhineland_reacquire = {
+		picture = "rhineland"
+		potential = {
+			is_culture_group = germanic
+			is_greater_power = yes
+			NOT = { tag = KUK }
+			NOT = { tag = UBD }
+			RHI = {
+				exists = yes
+				has_country_flag = rhine_vassal
+			}
+			NOT = { has_country_flag = rhineland_reacquired }
+		}
+		
+		allow = {
+			war = no
+			OR = {
+				AND = {
+					owns = 412 #Metz
+					RHI = { OR = { vassal_of = FRA vassal_of = BOR } }
+				}
+				RHI = {
+					is_vassal = no
+					in_sphere = THIS
+				}
+			}
+			OR = { truce_with = FRA truce_with = BOR }
+		}
+		
+		effect = {
+			set_country_flag = rhineland_reacquired
+			inherit = RHI
+			badboy = -3
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	claim_liechenstein = {
+	picture = form_germany
+		potential = {
+			OR = { 
+				tag = GER
+				tag = GCF
+			}
+			is_greater_power = yes
+			OR = {
+				owns = 614
+				owns = 603
+			}
+			LIE = {
+				exists = yes
+				ai = yes
+			}
+			NOT = { has_country_flag = claim_liechenstein }
+		}
+		
+		allow = {
+			war = no
+			LIE = {
+				in_sphere = THIS
+				exists = yes
+				OR = {
+					NOT = { vassal_of = AUS }
+					vassal_of = THIS
+				}
+			}
+		}
+		
+		effect = {
+			set_country_flag = claim_liechenstein
+			LIE = {
+				country_event = 11101
+				all_core = { add_core = THIS }
+			}
+		}
+
+		ai_will_do = { factor = 1 }
+	}
+	
+	become_schleswig = {
+		picture = gtfo
+		potential = {
+			tag = SWH
+			any_owned_province = { is_core = HOL }
+			exists = HOL
+		}
+		
+		allow = {
+			owns = 369
+			owns = 370
+			NOT = { owns = 529 }
+		}
+		
+		effect = {
+			capital = 370
+			prestige = -5
+			all_core = { remove_core = THIS }
+			random_owned = {
+				limit = {
+					province_id = 369 #Kiel
+					owned_by = THIS
+					HOL = { exists = yes }
+				}
+				state_scope = {
+					any_owned = {
+						secede_province = HOL
+					}
+				}
+			}
+			change_tag = SCH
+			political_reform = unitary
+			clr_country_flag = crown_from_the_gutter
+			clr_country_flag = secondary_union_formation
+			HOL = {
+				capital = 369
+			}
+		}
+		
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	begin_austro_prussian_war = {
+		picture = austro_prussian_war
+		potential = {
+			tag = PRU
+			nationalism_n_imperialism = 1
+			year = 1860
+			NOT = { alliance_with = AUS }
+			NOT = { war_exhaustion = 1 }
+			exists = AUS
+			369 = { NOT = { owned_by = DEN } }
+			NOT = { truce_with = AUS }
+			NOT = { has_country_flag = brothers_war_winner }
+			NOT = { has_country_flag = begin_austro_prussian_war }
+			NOT = { has_country_flag = prussian_italian_alliance }
+		}
+		
+		allow = {
+			war = no
+			AUS = { war = no }
+			military_score = 100
+			has_recently_lost_war = no
+		}
+		
+		effect = {
+			set_country_flag = begin_austro_prussian_war
+			war = {
+				target = AUS
+				attacker_goal = { casus_belli = unification_humiliate_cb }
+				defender_goal = { casus_belli = unification_humiliate_cb }
+				call_ally = yes
+			}
+		}
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				OR = {
+					AND = { 
+						NOT = { year = 1866 }
+						NOT = { exists = ITA }
+					}
+					AND = {
+						NOT = { year = 1860 }
+						exists = ITA
+					}
+				}
+			}
+		}
+	}
+	
+	duchy_of_lorraine = {
+		picture = duchy_of_lorraine
+		potential = {
+			is_culture_group = germanic
+			is_greater_power = yes
+			owns = 411
+			owns = 412
+			OR = {
+				government = absolute_monarchy
+				government = prussian_constitutionalism
+				government = hms_government
+			}
+			411 = { province_control_days = 365 }
+			NOT = { has_country_flag = duchy_of_lorraine }
+		}
+		
+		allow = {
+			war = no
+			413 = { OR = { has_pop_culture = north_german has_pop_culture = south_german } }
+			411 = { OR = { has_pop_culture = north_german has_pop_culture = south_german } }
+			414 = { OR = { has_pop_culture = north_german has_pop_culture = south_german } }
+			OR = {
+				413 = { OR = { culture = south_german culture = north_german } }
+				411 = { OR = { culture = south_german culture = north_german } }
+				414 = { OR = { culture = south_german culture = north_german } }
+			}
+			OR = {
+				colonial_policy = settlement
+				has_country_flag = prussian_settlement_commission
+			}
+		}
+		
+		effect = {
+			set_country_flag = duchy_of_lorraine
+			FRA_411 = { add_core = LOR }
+			412 = {
+				add_core = LOR
+				remove_core = ALS
+			}
+			LOR = {
+				primary_culture = north_german
+				add_accepted_culture = south_german
+			}
+			random_owned = {
+				limit = { owner = { government = hms_government } }
+				LOR = { government = hms_government }
+			}
+			random_owned = {
+				limit = { owner = { government = absolute_monarchy } }
+				LOR = { government = absolute_monarchy }
+			}
+			random_owned = {
+				limit = { owner = { government = prussian_constitutionalism } }
+				LOR = { government = prussian_constitutionalism }
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	wilhelmshaven_imperial_shipyard = {
+		picture = wilhelmshaven_imperial_shipyard
+		potential = {
+			NOT = { has_global_flag = wilhelmshaven_imperial_shipyard_built }
+			tag = GER
+			owns = 3259
+			NOT = { capital = 599 }
+			year = 1870
+			NOT = { 3259 = { state_scope = { has_building = steamer_shipyard } } }
+		}
+		
+		allow = {
+			is_greater_power = yes
+			invention = steamer_shipyard_construction
+			steamers = 1
+			money = 51000
+		}
+		
+		effect = {
+			set_global_flag = wilhelmshaven_imperial_shipyard_built
+			treasury = -50000
+			3259 = { state_scope = {  any_owned = { naval_base = -6 } } }
+			3259 = { naval_base = 3 }
+			random_owned = {
+				limit = {
+					province_id = 3259 #Wilhelmshaven
+					state_scope = { NOT = { has_building = steamer_shipyard } }
+				}
+				
+				owner = { 
+					capital = 3259
+					build_factory_in_capital_state = steamer_shipyard
+				}
+			}
+			random_owned = {
+				limit = {
+					province_id = 549 #Berlin
+					owned_by = PRU
+				}
+				PRU = { capital = 549 }
+			}
+			random_owned = {
+				limit = {
+					province_id = 549 #Berlin
+					owned_by = NGF
+				}
+				NGF = { capital = 549 }
+			}
+			random_owned = {
+				limit = {
+					province_id = 599 #Munich
+					owned_by = GCF
+					owner = { NOT = { has_global_flag = german_confederation_austrian } }
+				}
+				owner = { capital = 599 }
+			}
+			random_owned = {
+				limit = {
+					province_id = 549 #Berlin
+					owned_by = GER
+					owner = { primary_culture = north_german }
+				}
+				GER = { capital = 549 }
+			}
+			random_owned = {
+				limit = {
+					province_id = 619 #Vienna
+					owned_by = GCF
+				}
+				GCF = { capital = 619 }
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	danzig_imperial_shipyard = {
+		picture = danzig_imperial_shipyard
+		potential = {
+			NOT = { has_global_flag = danzig_imperial_shipyard_built }
+			OR = {
+				tag = PRU
+				tag = GER
+				tag = NGF
+			}
+			NOT = { capital = 599 }
+			year = 1870
+			owns = 690
+			battleship_column_doctrine = 1
+			NOT = { 690 = { state_scope = { has_building = steamer_shipyard } } }
+		}
+		
+		allow = {
+			is_greater_power = yes
+			invention = steamer_shipyard_construction
+			money = 41000
+		}
+		
+		effect = {
+			set_global_flag = danzig_imperial_shipyard_built
+			treasury = -50000
+			690 = { state_scope = {  any_owned = { naval_base = -6 } } }
+			690 = { naval_base = 3 }
+			random_owned = {
+				limit = {
+					province_id = 690 #Westpreußen
+					state_scope = {
+						NOT = { has_building = steamer_shipyard }
+					}
+				}
+				
+				owner = { 
+					capital = 690
+					build_factory_in_capital_state = steamer_shipyard
+				}
+			}
+			random_owned = {
+				limit = {
+					province_id = 549 #Berlin
+					owned_by = PRU
+				}
+				owner = { capital = 549 }
+			}
+			random_owned = {
+				limit = {
+					province_id = 549 #Berlin
+					owned_by = NGF
+				}
+				owner = { capital = 549 }
+			}
+			random_owned = {
+				limit = {
+					province_id = 549 #Berlin
+					owned_by = GER
+					owner = { primary_culture = north_german }
+				}
+				owner = { capital = 549 }
+			}
+			random_owned = {
+				limit = {
+					province_id = 599 #Munich
+					owned_by = GCF
+					owner = { NOT = { has_global_flag = german_confederation_austrian } }
+				}
+				owner = { capital = 599 }
+			}
+			random_owned = {
+				limit = {
+					province_id = 619 #Vienna
+					owned_by = GCF
+				}
+				owner = { capital = 619 }
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+		
+	prussian_settlement_commission = {
+		picture = prussian_settlement_commission
+		potential = {
+			is_culture_group = germanic
+			is_greater_power = yes
+			NOT = { tag = KUK }
+			NOT = { tag = DNB }
+			owns = 699
+			owns = 690
+			owns = 682
+			owns = 695
+			year = 1880
+			NOT = { has_country_flag = prussian_settlement_commission }
+		}
+		
+		allow = {
+			revolution_n_counterrevolution = 1
+			war = no
+			money = 150100
+			owns = 699
+			owns = 690
+			owns = 682
+			owns = 695
+			owns = 552
+			OR = {
+				citizens_rights = primary_culture_only
+				citizens_rights = culture_voting_only
+			}
+			NOT = { accepted_culture = polish }
+		}
+		
+		effect = {
+			set_country_flag = prussian_settlement_commission
+			set_global_flag = germanization
+			political_reform = settlement
+			treasury = -150000
+			552 = { #Cottbus
+				add_province_modifier = {
+					name = discriminatory_school_system
+					duration = 7300
+				}
+				add_province_modifier = {
+					name = drang_nach_osten
+					duration = -1
+				}
+			}
+			any_owned = {
+				limit = {
+					OR = {
+						region = PRU_682 #Lower Silesia
+						region = PRU_701 #Posen
+						region = PRU_690 #Westpreußen
+						
+					}
+				}
+				add_province_modifier = {
+					name = drang_nach_osten
+					duration = -1
+				}
+				add_province_modifier = {
+					name = minority_building_restrictions
+					duration = 3650
+				}				
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+}

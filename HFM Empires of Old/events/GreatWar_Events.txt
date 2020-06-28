@@ -1,0 +1,8457 @@
+### Events 96000-96081 used
+
+#########################################################
+#														#
+#           "Great War" Set-up Events					#
+#														#
+#########################################################
+
+#Initiation (GP with Mass Politics declares war on another GP)
+country_event = {
+
+	id = 96000
+	title = "EVTNAME96000" #War is Upon Us
+	desc = "EVTDESC96000"
+	picture = "greatwar"
+
+	trigger = {
+		war = yes
+		OR = {
+			has_country_flag = dismantle_declared
+			is_greater_power = yes
+			AND = {
+				any_greater_power = {
+					has_country_flag = in_great_war
+					alliance_with = THIS
+				}
+				any_greater_power = {
+					has_country_flag = in_great_war
+					war_with = THIS
+				}
+			}
+		}
+		OR = {
+			has_country_flag = coalition_member
+			mass_politics = 1
+			any_greater_power = {
+				has_country_flag = in_great_war
+				war_with = THIS
+			}
+		}
+		NOT = { has_country_modifier = great_war }
+		NOT = { has_country_flag = in_great_war }
+		any_greater_power = {
+			war_with = THIS
+			has_country_flag = in_great_war
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA96000" #We shall be victorious!
+		set_country_flag = great_war_has_happened
+		set_country_flag = in_great_war
+		war_exhaustion = -20
+		any_pop = {
+			militancy = -3
+			dominant_issue = {
+				factor = 0.05
+				value = jingoism
+			}
+		}
+		random_country = {
+			limit = {
+				THIS = { is_greater_power = yes }
+				OR = {
+					is_greater_power = yes
+					has_country_flag = dismantle_declared
+				}
+				war_with = THIS
+				NOT = { has_country_flag = enemy_of_my_enemy }
+			}
+			country_event = 96025
+		}	
+		add_country_modifier = {
+			name = great_war
+			duration = -1
+		}
+	}
+}
+
+#AI Countries involved in a Great War will call in their allies
+country_event = {
+	id = 96001
+	title = "EVTNAME96001"
+	desc = "EVTDESC96001"
+
+	trigger = {
+		ai = yes
+		war = yes
+		NOT = { has_country_flag = calling_all_allies }
+		OR = {
+			is_greater_power = yes
+			is_secondary_power = yes
+			has_country_flag = dismantle_declared
+		}
+		OR = {
+			AND = {
+				has_country_flag = dismantle_declared
+				has_country_modifier = great_war
+			}
+			AND = {
+				is_greater_power = yes
+				has_country_modifier = great_war
+			}
+			AND = {
+				any_greater_power = {
+					has_country_modifier = great_war
+					alliance_with = THIS
+				}
+				any_greater_power = {
+					has_country_modifier = great_war
+					war_with = THIS
+				}
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 7
+	}
+
+	option = {
+		name = "EVT96001OPTA"
+		set_country_flag = calling_all_allies
+		random_country = {
+			limit = {
+				alliance_with = THIS
+				war = no
+			}
+			THIS = {
+				war = {
+					attacker_goal = {
+						casus_belli = call_allies_cb
+					}
+					call_ally = yes
+				}
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 96002
+	title = "EVTNAME96002"
+	desc = "EVTDESC96002"
+
+	trigger = {
+		ai = yes
+		war = no
+		has_country_flag = calling_all_allies
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVT96002OPTA"
+		clr_country_flag = calling_all_allies
+	}
+}
+
+country_event = {
+	id = 96003
+	title = "EVTNAME96003"
+	desc = "EVTDESC96003"
+
+	trigger = {
+		ai = yes
+		war = yes
+		has_country_flag = calling_all_allies
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "EVT96003OPTA"
+		clr_country_flag = calling_all_allies
+		clr_country_flag = enemy_of_my_enemy
+		random_country = {
+			limit = {
+				ai = yes
+				THIS = { is_greater_power = yes }
+				is_greater_power = yes
+				war_with = THIS
+				NOT = { has_country_flag = enemy_of_my_enemy }
+			}
+			country_event = 96025
+		}
+	}
+}
+
+country_event = {
+	id = 96004
+	title = "EVTNAME96004" #The Demands of War
+	desc = "EVTDESC96004"
+	picture = "food_shortage"
+
+	trigger = {
+		war = yes
+		has_country_modifier = great_war
+		NOT = { has_country_modifier = great_war2 }
+	}
+
+	mean_time_to_happen = {
+		months = 30
+		modifier = {
+			factor = 1.5
+			NOT = { national_provinces_occupied = .05 }
+			any_greater_power = {
+				has_country_modifier = great_war
+				war_with = THIS
+				national_provinces_occupied = .05
+			}
+		}
+		modifier = {
+			factor = 0.5
+			national_provinces_occupied = .25
+			NOT = { national_provinces_occupied = .50 }
+		}
+		modifier = {
+			factor = 0.25
+			national_provinces_occupied = .50
+		}
+		modifier = {
+			factor = 0.8
+			war_exhaustion = 20
+		}
+		modifier = {
+			factor = 0.8
+			war_exhaustion = 40
+		}
+		modifier = {
+			factor = 0.8
+			blockade = 0.25
+			NOT = { blockade = 0.50 }
+		}
+		modifier = {
+			factor = 0.8
+			blockade = 0.50
+			NOT = { blockade = 1 }
+		}
+		modifier = {
+			factor = 0.5
+			blockade = 1
+		}
+		modifier = {
+			factor = 0.8
+			revolt_percentage = 0.25
+		}
+		modifier = {
+			factor = 0.8
+			NOT = { total_amount_of_divisions = 1 }
+		}
+	}
+
+	option = {
+		name = "EVTOPTA96004" #We will win this war!
+		remove_country_modifier = great_war
+		add_country_modifier = {
+			name = great_war2
+			duration = -1
+		}
+		any_pop = {
+			dominant_issue = {
+				factor = 0.02
+				value = pacifism
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 96005
+	title = "EVTNAME96005" #Is It All For Nothing?
+	desc = "EVTDESC96005"
+	picture = "demonstration"
+
+	trigger = {
+		war = yes
+		has_country_modifier = great_war2
+		NOT = { has_country_modifier = great_war3 }
+	}
+
+	mean_time_to_happen = {
+		months = 30
+		modifier = {
+			factor = 1.5
+			NOT = { national_provinces_occupied = .05 }
+			any_greater_power = {
+				has_country_modifier = great_war
+				war_with = THIS
+				national_provinces_occupied = .05
+			}
+		}
+		modifier = {
+			factor = 0.5
+			national_provinces_occupied = .25
+			NOT = { national_provinces_occupied = .50 }
+		}
+		modifier = {
+			factor = 0.25
+			national_provinces_occupied = .50
+		}
+		modifier = {
+			factor = 0.8
+			war_exhaustion = 20
+		}
+		modifier = {
+			factor = 0.8
+			war_exhaustion = 40
+		}
+		modifier = {
+			factor = 0.8
+			blockade = 0.25
+			NOT = { blockade = 0.50 }
+		}
+		modifier = {
+			factor = 0.8
+			blockade = 0.50
+			NOT = { blockade = 1 }
+		}
+		modifier = {
+			factor = 0.5
+			blockade = 1
+		}
+		modifier = {
+			factor = 0.8
+			revolt_percentage = 0.25
+		}
+		modifier = {
+			factor = 0.8
+			NOT = { total_amount_of_divisions = 1 }
+		}
+	}
+
+	option = {
+		name = "EVTOPTA96005" #Do not lose hope!
+		remove_country_modifier = great_war2
+		any_pop = {
+			dominant_issue = {
+				factor = 0.05
+				value = pacifism
+			}
+		}
+		add_country_modifier = {
+			name = great_war3
+			duration = 365
+		}
+	}
+}
+
+country_event = {
+	id = 96006
+	title = "EVTNAME96006" #Total Collapse
+	desc = "EVTDESC96006"
+	news = yes
+	news_title = "EVTNAME96006_NEWS_TITLE"
+	news_desc_long = "EVTDESC96006_NEWS_LONG"
+	news_desc_medium = "EVTDESC96006_NEWS_MEDIUM"
+	news_desc_short = "EVTDESC96006_NEWS_SHORT"
+	picture = "rebellion"
+
+	trigger = {
+		war = yes
+		OR = {
+			has_country_modifier = great_war
+			has_country_modifier = great_war2
+			has_country_modifier = great_war3
+		}
+		OR = {
+			AND = {
+				any_owned_province = {
+					is_capital = yes
+					controlled_by = THIS
+				}
+				national_provinces_occupied = .75
+			}
+			AND = {
+				any_owned_province = {
+					is_capital = yes
+					NOT = { controlled_by = THIS }
+				}
+				national_provinces_occupied = .50
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA96006" #Disaster!
+		set_country_flag = total_collapse
+		remove_country_modifier = great_war
+		remove_country_modifier = great_war2
+		remove_country_modifier = great_war3
+		war_exhaustion = 30
+		add_country_modifier = {
+			name = no_more_war
+			duration = 1095
+		}
+		any_pop = {
+			dominant_issue = {
+				factor = 0.10
+				value = pacifism
+			}
+		}
+	}
+}			
+
+
+#########################################################
+#														#
+#        		End of the Great War					#
+#														#
+#########################################################
+
+# Generic "dismantling" of Great Powers who are disarmed after a Great War
+country_event = {
+
+	id = 96010
+	title = "EVTNAME96010" #The Treaty of $CAPITAL$
+	desc = "EVTDESC96010"
+	news = yes
+	news_desc_long = "EVTDESC96010_NEWS_LONG"
+	news_desc_medium = "EVTDESC96010_NEWS_MEDIUM"
+	news_desc_short = "EVTDESC96010_NEWS_SHORT"
+	picture = "greatpowers"
+	major = yes
+
+	trigger = {
+		war = no
+		OR = {
+			has_country_modifier = great_war
+			has_country_modifier = great_war2
+			has_country_modifier = great_war3
+			has_country_flag = in_great_war
+			has_country_flag = ultimatum_accepted
+			has_country_flag = dismantling_treaty
+		}
+		OR = {
+			is_greater_power = yes
+			is_secondary_power = yes
+			colonial_nation = yes
+		}
+		NOT = {
+			tag = GCF
+			tag = GER
+			tag = NGF
+			tag = SGF
+			tag = PRU
+			tag = RUS
+			tag = USA
+			tag = ENG
+			tag = FRA
+			tag = BOR
+			tag = AUS
+			tag = KUK
+			tag = DNB
+			tag = TUR
+			tag = JAP
+			tag = TKG
+		}
+		OR = {
+			has_country_flag = ultimatum_accepted
+			has_country_flag = dismantling_treaty
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 10
+	}
+
+	option = {
+		name = "EVTOPTA96010" #We welcome peace
+		clr_country_flag = dismantle_declared
+		clr_country_flag = in_great_war
+		clr_country_flag = calling_all_allies
+		clr_country_flag = enemy_of_my_enemy
+		clr_country_flag = total_collapse
+		clr_country_flag = ultimatum_accepted
+		clr_country_flag = will_not_surrender
+		clr_country_flag = dismantling_treaty
+		remove_country_modifier = great_war
+		remove_country_modifier = great_war2
+		remove_country_modifier = great_war3
+		war_exhaustion = 40
+
+		#if over the badboy limit, reduce infamy to 24.99, otherwise reduce infamy by 10
+		random_owned = {
+			limit = {
+				owner = { NOT = { badboy = 1 } }
+			}
+			owner = {
+				badboy = -10
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = { badboy = 1 }
+			}
+			owner = { badboy = -1000 }
+			owner = { badboy = 24.99 }
+		}
+
+		#remove the ultimatum_refused global, if this is an Infamy war
+		random_owned = {
+			limit = { owner = { has_country_modifier = international_pariah } }
+			owner = { clr_global_flag = ultimatum_refused }
+		}
+
+		#prestige hit
+		prestige_factor = -0.5
+		
+		#if any Congress Poland cores owned, re-add cores to Russia
+		any_owned = {
+			limit = {
+				OR = {
+					region = RUS_706
+					region = RUS_715
+					province_id = 707
+					province_id = 719
+				}
+				NOT = { province_id = 703 }
+				NOT = { is_core = RUS }
+				owner = { truce_with = RUS }
+			}
+			add_core = RUS
+		}
+				
+		#if any Polish cores owned, re-add cores to Germany
+		any_owned = {
+			limit = {
+				OR = {
+					region = PRU_690
+					region = PRU_701
+					province_id = 684
+					province_id = 685
+				}
+				NOT = { is_core = GER }
+				owner = {
+					OR = {
+						truce_with = PRU
+						truce_with = NGF
+						truce_with = GER
+					}
+				}
+			}
+			add_core = GER
+		}
+		
+		#if any Polish cores owned, re-add cores to German Confederation
+		any_owned = {
+			limit = {
+				OR = {
+					region = PRU_690
+					region = PRU_701
+					province_id = 684
+					province_id = 685
+				}
+				NOT = { is_core = GCF }
+				owner = {
+					truce_with = GCF
+				}
+			}
+			add_core = GCF
+		}
+
+		#remove cores on overseas provinces
+		any_owned = {
+			limit = {
+				is_overseas = yes
+				is_core = THIS
+			}
+			remove_core = THIS
+		}
+
+		#normalize relations with treaty members
+		any_country = {
+			limit = {
+				exists = yes
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			relation = { who = THIS value = 200 }
+		}
+		
+		#release all cores to anyone with a truce
+		any_country = {
+			limit = {
+				exists = yes
+				any_core = { owned_by = THIS }
+				NOT = { this_culture_union = THIS }
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			all_core = {
+				limit = {
+					is_core = THIS
+					state_scope = {
+						NOT = { any_owned_province = { is_capital = yes } }
+					}
+				}
+				remove_core = THIS
+			}
+			country_event = 96014
+		}
+
+		#release all vassals
+		any_country = {
+			limit = { vassal_of = THIS }
+			leave_alliance = THIS
+			country_event = 96015
+		}
+
+		#release Czechoslovakia, if possible
+		any_country = {
+			limit = {
+				tag = CZH
+				exists = no
+				THIS = {
+					owns = 625
+					owns = 633
+				}
+				NOT = { exists = BOH }
+				NOT = { exists = SLV }
+			}
+			set_global_flag = czechoslovakia_formed
+			BOH = { all_core = { add_core = CZH } }
+			SLV = { all_core = { add_core = CZH } }
+			2584 = { add_core = CZH }
+			689 = { add_core = CZH }
+			all_core = {
+				limit = {
+					is_core = THIS
+					state_scope = {
+						NOT = { any_owned_province = { is_capital = yes } }
+					}
+				}
+				remove_core = THIS
+			}
+			country_event = 96012
+		}
+
+		#release Indonesia, if possible
+		any_country = {
+			limit = {
+				tag = INO
+				exists = no
+				THIS = {
+					owns = 1413
+					owns = 1403
+				}
+				NOT = { exists = BOH }
+				NOT = { exists = SLV }
+			}
+			all_core = {
+				limit = {
+					is_core = THIS
+					state_scope = { NOT = { any_owned_province = { is_capital = yes } } }
+				}
+				remove_core = THIS
+			}
+			country_event = 96012
+		}
+
+		#release non-existing countries			
+		any_country = {
+			limit = {
+				OR = {
+					civilized = yes
+					tag = JAP
+					tag = KOR
+					tag = SIA
+					tag = MOR
+					tag = ALD
+					tag = TUN
+					tag = EGY
+				}
+				any_core = { owned_by = THIS }
+				exists = no
+				is_cultural_union = no
+				NOT = {
+					AND = {
+						is_primary_culture = THIS
+						culture_has_union_tag = yes
+					}
+				}
+				NOT = { has_country_flag = post_colonial_country }
+			}
+			all_core = {
+				limit = {
+					is_core = THIS
+					state_scope = {
+						NOT = { any_owned_province = { is_capital = yes } }
+					}
+				}
+				remove_core = THIS
+			}
+			country_event = 96012
+		}
+		any_country = {
+			limit = {
+				any_core = { owned_by = THIS }
+				exists = no
+				is_cultural_union = no
+				is_primary_culture = THIS
+				culture_has_union_tag = yes
+			}
+			random = {
+				chance = 50
+				country_event = 96018
+			}
+		}
+
+		#give cores back to neighboring, non-allied countries
+		any_neighbor_country = {
+			limit = {
+				any_core = { owned_by = THIS }
+				NOT = { alliance_with = THIS }
+				NOT = { truce_with = THIS }
+				NOT = { this_culture_union = THIS }
+			}
+			country_event = 96013
+		}
+
+		#give colonies without cores to truce GP's
+		random_owned = {
+			limit = {
+				OR = {
+					is_overseas = yes
+					is_colonial = yes
+					NOT = { is_core = THIS }
+				}
+			}
+			any_country = {
+				limit = {
+					ai = no
+					is_greater_power = yes
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96011
+			}
+			any_country = {
+				limit = {
+					NOT = {
+						any_greater_power = {
+							ai = no
+							truce_with = THIS
+						}
+					}
+					ai = yes
+					is_greater_power = yes
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96016
+			}
+			any_country = {
+				limit = {
+					NOT = {
+						any_greater_power = {
+							ai = no
+							truce_with = THIS
+						}
+					}
+					is_greater_power = no
+					is_secondary_power = yes
+					is_vassal = no
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96017
+			}
+		}
+
+		#add fascism and punitive effects
+		random_owned = {
+			limit = {
+				owner = {
+					is_ideology_enabled = fascist
+					NOT = { government = fascist_dictatorship }
+				}
+			}
+			owner = {
+				soldiers = {
+					limit = { is_primary_culture = yes }
+					ideology = {
+						value = fascist
+						factor = 0.2
+					}
+				}
+				officers = {
+					limit = { is_primary_culture = yes }
+					ideology = {
+						value = fascist
+						factor = 0.4
+					}
+				}
+				any_pop = {
+					limit = {
+						is_primary_culture = yes
+						NOT = {
+							OR = {
+								type = soldiers
+								type = officers
+							}
+						}
+					}
+					ideology = {
+						value = fascist
+						factor = 0.1
+					}
+				}
+			}
+		}
+		add_country_modifier = {
+			name = punitive_effects
+			duration = 1825
+		}
+		add_country_modifier = {
+			name = no_more_war
+			duration = 3650
+		}
+	}
+}
+
+# Player GP's get first pick of colonies/overseas territories
+country_event = {
+	
+	id = 96011
+	title = "EVTNAME96016" #The $FROMCOUNTRY_ADJ$ Colonies
+	desc = "EVTDESC96016"
+	picture = "treaty"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA96016" #We will take what we can
+		clr_country_flag = not_want_colonies
+		badboy = 4
+		FROM = {
+			random_state = {
+				limit = { any_owned_province = { NOT = { is_core = FROM } OR = { is_colonial = yes is_overseas = yes NOT = { is_core = ALD } } port = yes } }
+				random_list = {
+					50 = { any_owned = { secede_province = THIS } }
+					50 = { }
+				}
+			}
+			country_event = 96019
+		}
+	}
+
+	option = {
+		name = "EVTOPTB96016" #Our only interest is limiting $FROMCOUNTRY_ADJ$ power
+		clr_country_flag = not_want_colonies
+		badboy = 2
+		FROM = {
+			random_state = {
+				limit = { any_owned_province = { NOT = { is_core = FROM } OR = { is_colonial = yes is_overseas = yes } port = yes } }
+				random_list = {
+					25 = { any_owned = { secede_province = THIS } }
+					75 = { }
+				}
+			}
+			country_event = 96019
+		}
+	}
+
+	option = {
+		name = "EVTOPTC96016" #We have no interest in their colonies
+		set_country_flag = not_want_colonies
+		badboy = -2
+		FROM = { country_event = 96019 }
+	}
+}
+
+# Countries gaining independence as a result of dismantling
+country_event = {
+	
+	id = 96012
+	title = "EVTNAME96012"
+	desc = "EVTDESC96012"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA96031" #Great
+		FROM = {
+			any_state = {
+				limit = {
+					any_owned_province = { is_core = THIS }
+					NOT = { any_owned_province = { is_capital = yes } }
+				}
+				any_owned = {
+					limit = { is_core = THIS }
+					secede_province = THIS
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = { num_of_cities = 20 }
+			}
+			owner = {
+				any_neighbor_country = {
+					limit = {
+						any_core = { owned_by = THIS }
+						NOT = { tag = FROM }
+						NOT = { alliance_with = FROM }
+					}
+					country_event = 96022
+				}
+			}
+			any_country = {
+				limit = {
+					exists = no
+					is_cultural_union = no
+					NOT = { is_culture_group = FROM }
+					NOT = {
+						THIS = { is_cultural_union = yes }
+						is_culture_group = THIS
+					}
+					any_core = { owned_by = THIS }
+				}
+				country_event = 96012
+			}
+		}
+		any_neighbor_country = {
+			limit = {
+				OR = {
+					truce_with = FROM
+					AND = {
+						FROM = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}				
+			create_alliance = THIS
+		}
+		any_country = {
+			limit = {
+				OR = {
+					truce_with = FROM
+					AND = {
+						FROM = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+				is_greater_power = yes
+			}
+			diplomatic_influence = {
+				who = THIS
+				value = 100
+			}
+			relation = {
+				who = THIS
+				value = 100
+			}
+		}
+		any_country = {
+			limit = {
+				OR = {
+					truce_with = FROM
+					AND = {
+						FROM = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+				is_greater_power = no
+			}
+			relation = {
+				who = THIS
+				value = 100
+			}
+		}
+		FROM = {
+			diplomatic_influence = {
+				who = THIS
+				value = -200
+			}
+			relation = {
+				who = THIS
+				value = -100
+			}
+		}
+		set_country_flag = newly_released_nation
+	}
+}
+
+# Countries not involved in the Great War but unfriendly to the defeated country can get cores returned
+country_event = {
+	
+	id = 96013
+	title = "EVTNAME96013" #The Breakup of $FROMCOUNTRY$
+	desc = "EVTDESC96013"
+	picture = "treaty"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA96013" #We will attend the talks
+		FROM = {
+			any_owned = {
+				limit = {
+					is_core = THIS
+					is_capital = no
+				}
+				secede_province = THIS
+			}
+			relation = {
+				who = THIS
+				value = -50
+			}
+			diplomatic_influence = {
+				who = THIS
+				value = -50
+			}
+		}			
+		any_country = {
+			limit = {
+				OR = {
+					truce_with = FROM
+					AND = {
+						FROM = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+				is_greater_power = yes
+			}
+			diplomatic_influence = {
+				who = THIS
+				value = 50
+			}
+			relation = {
+				who = THIS
+				value = 50
+			}
+		}
+		any_country = {
+			limit = {
+				OR = {
+					truce_with = FROM
+					AND = {
+						FROM = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+				is_greater_power = no
+			}
+			relation = {
+				who = THIS
+				value = 25
+			}
+		}
+		ai_chance = {
+			factor = 90
+		}
+	}
+	
+	option = {
+		name = "EVTOPTB96013" #We will not attend
+		FROM = {
+			relation = {
+				who = THIS
+				value = 50
+			}
+		}
+		ai_chance = {
+			factor = 10
+			modifier = {
+				factor = 2
+				alliance_with = FROM
+			}
+			modifier = {
+				factor = 3
+				in_sphere = FROM
+			}
+		}
+	}
+}
+
+# Any country involved in the Great War will automatically get all its cores returned
+country_event = {
+	
+	id = 96014
+	title = "EVTNAME96014" #The Breakup of $FROMCOUNTRY$
+	desc = "EVTDESC96014"
+	picture = "treaty"
+
+	is_triggered_only = yes
+	
+	immediate = {
+		FROM = {
+			any_state = {
+				limit = {
+					any_owned_province = { is_core = THIS }
+				}
+				any_owned = {
+					limit = {
+						is_core = THIS
+						is_capital = no
+					}
+					secede_province = THIS
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "EVTOPTA96014" #We simply wish our lands back
+	}
+}
+
+# All vassals will automatically gain independence
+country_event = {
+	
+	id = 96015
+	title = "EVTNAME96015" #$COUNTRY_ADJ$ Freedom (release vassals)
+	desc = "EVTDESC96015"
+	picture = "treaty"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA96015" #$COUNTRY$ shall be free
+		FROM = { release_vassal = THIS }
+		random_country = {
+			limit = {
+				OR = {
+					truce_with = FROM
+					AND = {
+						FROM = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+				is_greater_power = yes
+			}
+			diplomatic_influence = {
+				who = THIS
+				value = 50
+			}
+		}
+		any_country = {
+			limit = {
+				OR = {
+					truce_with = FROM
+					AND = {
+						FROM = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+				is_greater_power = yes
+			}
+			diplomatic_influence = {
+				who = THIS
+				value = 50
+			}
+			relation = {
+				who = THIS
+				value = 200
+			}
+			random = {
+				chance = 50
+				create_alliance = THIS
+			}
+		}
+		any_country = {
+			limit = {
+				OR = {
+					truce_with = FROM
+					AND = {
+						FROM = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+				is_greater_power = no
+			}
+			relation = {
+				who = THIS
+				value = 200
+			}
+		}
+		FROM = {
+			relation = {
+				who = THIS
+				value = -200
+			}
+			diplomatic_influence = {
+				who = THIS
+				value = -200
+			}
+			leave_alliance = THIS
+		}
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0.5
+				is_culture_group = FROM
+			}
+			modifier = {
+				factor = 0.75
+				neighbour = FROM
+			}
+		}
+	}
+
+	option = {
+		name = "EVTOPTB96015" #$FROMCOUNTRY$ is our ally
+		FROM = { 
+			release_vassal = THIS
+			create_alliance = THIS
+			relation = {
+				who = THIS
+				value = 100
+			}
+			diplomatic_influence = {
+				who = THIS
+				value = 100
+			}
+		}
+		any_country = {
+			limit = {
+				OR = {
+					truce_with = FROM
+					AND = {
+						FROM = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+				is_greater_power = yes
+			}
+			diplomatic_influence = {
+				who = THIS
+				value = 50
+			}
+		}
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 1.5
+				is_culture_group = FROM
+			}
+			modifier = {
+				factor = 0.5
+				NOT = { is_culture_group = FROM }
+				NOT = { is_culture_group = neo_european_cultures }
+			}
+			modifier = {
+				factor = 1.25
+				neighbour = FROM
+			}
+		}
+	}
+}
+
+# colonies will be divvied up among those countries who have a truce
+country_event = {
+	
+	id = 96016
+	title = "EVTNAME96016" #The $FROMCOUNTRY_ADJ$ Colonies
+	desc = "EVTDESC96016"
+	picture = "treaty"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA96016" #We will take what we can
+		clr_country_flag = not_want_colonies
+		badboy = 4
+		FROM = {
+			random_state = {
+				limit = { any_owned_province = { NOT = { is_core = FROM } OR = { is_colonial = yes is_overseas = yes } port = yes } }
+				random_list = {
+					50 = { any_owned = { secede_province = THIS } }
+					50 = { }
+				}
+			}
+		}
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0.5
+				colonial_nation = no
+			}
+			modifier = {
+				factor = 0
+				NOT = { num_of_ports = 1 }
+			}
+			modifier = {
+				factor = 0.5
+				capital_scope = {
+					NOT = { continent = europe }
+				}
+			}
+			modifier = {
+				factor = 0
+				badboy = 0.88
+			}
+		}
+	}
+
+	option = {
+		name = "EVTOPTB96016" #Our only interest is limiting $FROMCOUNTRY_ADJ$ power
+		clr_country_flag = not_want_colonies
+		badboy = 2
+		FROM = {
+			random_state = {
+				limit = { any_owned_province = { NOT = { is_core = FROM } OR = { is_colonial = yes is_overseas = yes } port = yes } }
+				random_list = {
+					40 = { any_owned = { secede_province = THIS } }
+					60 = { }
+				}
+			}
+		}
+		ai_chance = {
+			factor = 25
+			modifier = {
+				factor = 0
+				badboy = 0.96
+			}
+		}
+	}
+
+	option = {
+		name = "EVTOPTC96016" #We have no interest in their colonies
+		set_country_flag = not_want_colonies
+		badboy = -2
+		ai_chance = {
+			factor = 25
+			modifier = {
+				factor = 0
+				colonial_nation = yes
+			}
+			modifier = {
+				factor = 2
+				capital_scope = {
+					NOT = { continent = europe }
+				}
+			}
+		}
+	}
+}
+
+country_event = {
+	
+	id = 96017
+	title = "EVTNAME96016" #The $FROMCOUNTRY_ADJ$ Colonies
+	desc = "EVTDESC96017"
+	picture = "treaty"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA96016" #We will take what we can
+		clr_country_flag = not_want_colonies
+		badboy = 2
+		FROM = {
+			random_state = {
+				limit = { any_owned_province = { NOT = { is_core = FROM } OR = { is_colonial = yes is_overseas = yes } port = yes } }
+				random_list = {
+					10 = { any_owned = { secede_province = THIS } }
+					90 = { }
+				}
+			}
+		}
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				NOT = { num_of_ports = 1 }
+			}
+			modifier = {
+				factor = 0.5
+				capital_scope = {
+					NOT = { continent = europe }
+				}
+			}
+			modifier = {
+				factor = 0
+				badboy = 0.96
+			}			
+		}
+	}
+
+	option = {
+		name = "EVTOPTC96016" #We have no interest in their colonies
+		set_country_flag = not_want_colonies
+		badboy = -2
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 1.5
+				capital_scope = {
+					NOT = { continent = europe }
+				}
+			}
+		}
+	}
+}
+
+# A 50% chance that any non-existing country with the same primary culture will get released
+country_event = {
+	
+	id = 96018
+	title = "EVTNAME96018"
+	desc = "EVTDESC96018"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA96031" #Great
+		FROM = {
+			any_state = {
+				limit = {
+					NOT = { any_owned_province = { is_capital = yes } }
+					any_owned_province = {
+						is_core = THIS
+						is_colonial = yes
+					}
+				}
+				any_owned = {
+					limit = { is_core = THIS }
+					secede_province = THIS
+				}
+			}
+			any_state = {
+				limit = {
+					NOT = { any_owned_province = { is_capital = yes } }
+					any_owned_province = {
+						is_core = THIS
+						is_colonial = no
+						OR = {
+							THIS = {
+								NOT = { primary_culture = FROM }
+							}
+							any_neighbor_province = {
+								NOT = { owned_by = FROM }
+							}
+						}
+					}
+				}
+				any_owned = {
+					limit = { is_core = THIS }
+					secede_province = THIS
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = { num_of_cities = 20 }
+			}
+			any_country = {
+				limit = {
+					neighbour = THIS
+					any_core = { owned_by = THIS }
+					NOT = { tag = FROM }
+					NOT = { alliance_with = FROM }
+				}
+				country_event = 96022
+			}
+			any_country = {
+				limit = {
+					exists = no
+					is_cultural_union = no
+					NOT = { is_culture_group = FROM }
+					any_core = { owned_by = THIS }
+				}
+				country_event = 96012
+			}
+		}
+		any_country = {
+			limit = {
+				OR = {
+					truce_with = FROM
+					AND = {
+						FROM = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+				is_greater_power = yes
+			}
+			diplomatic_influence = {
+				who = THIS
+				value = 100
+			}
+			relation = {
+				who = THIS
+				value = 100
+			}
+		}
+		any_country = {
+			limit = {
+				OR = {
+					truce_with = FROM
+					AND = {
+						FROM = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+				is_greater_power = no
+			}
+			relation = {
+				who = THIS
+				value = 100
+			}
+		}
+		FROM = {
+			diplomatic_influence = {
+				who = THIS
+				value = -200
+			}
+			relation = {
+				who = THIS
+				value = -100
+			}
+		}
+	}
+}
+
+# Now AI countries with a truce get colonies
+
+country_event = {
+
+	id = 96019
+	title = "EVTNAME96019"
+	desc = "EVTDESC96019"
+	picture = "treaty"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT96019OPTA"
+		any_country = {
+			limit = {
+				ai = yes
+				is_greater_power = yes
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			country_event = 96016
+		}
+		any_country = {
+			limit = {
+				is_greater_power = no
+				is_secondary_power = yes
+				is_vassal = no
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			country_event = 96017
+		}
+	}
+}
+
+# Countries that end the Great War and are not disarmed
+country_event = {
+
+	id = 96020
+	title = "EVTNAME96020" #The War is Over (Won)
+	desc = "EVTDESC96020"
+	picture = "war_ended"
+
+	trigger = {
+		war = no
+		OR = {
+			has_country_modifier = great_war
+			has_country_modifier = great_war2
+			has_country_modifier = great_war3
+			has_country_flag = in_great_war
+		}
+		NOT = { has_country_flag = dismantling_treaty }
+		NOT = { has_country_flag = ultimatum_accepted }
+	}
+
+	mean_time_to_happen = {
+		days = 3
+	}
+
+	option = {
+		name = "EVTOPTA96020" #Long live $COUNTRY$!
+		clr_country_flag = dismantle_declared
+		clr_country_flag = in_great_war
+		clr_country_flag = calling_all_allies
+		clr_country_flag = enemy_of_my_enemy
+		clr_country_flag = total_collapse
+		remove_country_modifier = great_war
+		remove_country_modifier = great_war2
+		remove_country_modifier = great_war3
+		war_exhaustion = 20
+		any_pop = {
+			militancy = -3
+			dominant_issue = {
+				factor = 0.10
+				value = pacifism
+			}
+		}
+		add_country_modifier = {
+			name = no_more_war
+			duration = 1095
+		}
+	}
+}
+
+# Countries that end the Great War and are disarmed, but are not great powers or secondary powers
+country_event = {
+
+	id = 96021
+	title = "EVTNAME96020" #The War is Over (Lost)
+	desc = "EVTDESC96020"
+	picture = "war_ended"
+
+	trigger = {
+		war = no
+		OR = {
+			has_country_modifier = great_war
+			has_country_modifier = great_war2
+			has_country_modifier = great_war3
+			has_country_flag = in_great_war
+			has_country_flag = ultimatum_accepted
+			has_country_flag = dismantling_treaty
+		}
+		OR = {
+			has_country_flag = ultimatum_accepted
+			has_country_flag = dismantling_treaty
+		}
+		NOT = {
+			tag = GER
+			tag = NGF
+			tag = SGF
+			tag = PRU
+			tag = GCF
+			tag = RUS
+			tag = USA
+			tag = ENG
+			tag = BOR
+			tag = FRA
+			tag = AUS
+			tag = KUK
+			tag = TUR
+			tag = JAP
+		}
+		is_greater_power = no
+		is_secondary_power = no
+		colonial_nation = no
+	}
+
+	mean_time_to_happen = {
+		days = 3
+	}
+
+	option = {
+		name = "EVTOPTA96020" #Long live $COUNTRY$!
+		clr_country_flag = dismantle_declared
+		clr_country_flag = dismantling_treaty
+		clr_country_flag = in_great_war
+		clr_country_flag = enemy_of_my_enemy
+		clr_country_flag = calling_all_allies
+		clr_country_flag = total_collapse
+		clr_country_flag = ultimatum_accepted
+		clr_country_flag = will_not_surrender
+		remove_country_modifier = great_war
+		remove_country_modifier = great_war2
+		remove_country_modifier = great_war3
+		war_exhaustion = 40
+
+		#add fascism and punitive effects
+		random_owned = {
+			limit = {
+				owner = {
+					is_ideology_enabled = fascist
+					NOT = { government = fascist_dictatorship }
+				}
+			}
+			owner = {
+				soldiers = {
+					limit = { is_primary_culture = yes }
+					ideology = {
+						value = fascist
+						factor = 0.2
+					}
+				}
+				officers = {
+					limit = { is_primary_culture = yes }
+					ideology = {
+						value = fascist
+						factor = 0.4
+					}
+				}
+				any_pop = {
+					limit = {
+						is_primary_culture = yes
+						NOT = {
+							OR = {
+								type = soldiers
+								type = officers
+							}
+						}
+					}
+					ideology = {
+						value = fascist
+						factor = 0.1
+					}
+				}
+			}
+		}
+		add_country_modifier = {
+			name = punitive_effects
+			duration = 1825
+		}
+		add_country_modifier = {
+			name = no_more_war
+			duration = 3650
+		}
+	}
+}
+
+# Countries not involved in the Great War can get a single state returned to them, from new countries
+country_event = {
+	
+	id = 96022
+	title = "EVTNAME96013" #The Breakup of $FROMCOUNTRY$
+	desc = "EVTDESC96022"
+	picture = "treaty"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA96031" #Wonderful!
+		FROM = {
+			random_state = {
+				limit = {
+					NOT = { any_owned_province = { is_capital = yes } }
+					any_owned_province = {
+						is_core = THIS
+						any_neighbor_province = { owned_by = THIS }
+					}
+				}
+				any_owned = {
+					limit = { is_core = THIS }
+					secede_province = THIS
+				}
+			}
+		}			
+	}
+}
+
+
+#################################################################
+#																#
+#  "Enemy of my Enemy" - Seeking out allies for the Great War	#
+#																#
+#################################################################
+
+# Initiation event (are there allies to seek out?)
+country_event = {
+	
+	id = 96025
+	title = "EVTNAME96025" #Enemy of my Enemy
+	desc = "EVTDESC96025"
+	picture = "administration"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA96025" #Do it
+		set_country_flag = enemy_of_my_enemy
+		clr_country_flag = calling_all_allies
+		any_country = {
+			limit = {
+				exists = yes
+				OR = {
+					is_vassal = no
+					vassal_of = THIS
+				}
+				NOT = {
+					war_with = THIS
+					truce_with = FROM
+					alliance_with = FROM
+					alliance_with = THIS
+					in_sphere = FROM
+					has_country_flag = great_war_temp_alliance
+				}
+				OR = {
+					in_sphere = THIS
+					vassal_of = THIS
+					NOT = {
+						relation = {
+							who = FROM
+							value = -100
+						}
+					}
+					any_core = {
+						owner = { war_with = THIS }
+					}
+					AND = {
+						any_neighbor_country = { war_with = FROM }
+						OR = {
+							is_greater_power = yes
+							is_secondary_power = yes
+						}
+						relation = {
+							who = THIS
+							value = 0
+						}
+					}
+					AND = {
+						government = proletarian_dictatorship
+						THIS = { government = proletarian_dictatorship }
+						FROM = { NOT = { government = proletarian_dictatorship } }
+					}
+					AND = {
+						government = fascist_dictatorship
+						THIS = { government = fascist_dictatorship }
+						FROM = { NOT = { government = fascist_dictatorship } }
+					}
+					AND = {
+						government = bourgeois_dictatorship
+						THIS = { government = bourgeois_dictatorship }
+						FROM = { NOT = { government = bourgeois_dictatorship } }
+					}
+					AND = {
+						OR = {
+							government = democracy
+							government = hms_government
+						}
+						THIS = {
+							OR = {
+								government = democracy
+								government = hms_government
+							}
+						}
+						FROM = {
+							OR = {
+								government = fascist_dictatorship
+								government = proletarian_dictatorship
+								badboy = 1
+							}
+						}
+					}
+				}
+			}
+			country_event = 96030
+		}
+		ai_chance = {
+			factor = 100
+		}
+	}
+
+	option = {
+		name = "EVTOPTB96025" #We don't need more allies
+		set_country_flag = enemy_of_my_enemy
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+# Response from approached countries
+country_event = {
+	
+	id = 96030
+	title = "EVTNAME96030" #The Shadow of War
+	desc = "EVTDESC96030"
+	picture = "administration"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA96030" #We will ally with $FROMCOUNTRY$
+		create_alliance = FROM
+		random_country = {
+			limit = {
+				tag = FROM
+				ai = no
+			}
+			country_event = 96031
+		}
+		random_country = {
+			limit = {
+				tag = FROM
+				is_greater_power = yes
+				THIS = {
+					is_greater_power = no
+					part_of_sphere = no
+				}
+			}
+			diplomatic_influence = {
+				who = THIS
+				value = 200
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = { is_greater_power = yes }
+				FROM = {
+					is_greater_power = no
+					part_of_sphere = no
+				}
+			}
+			owner = {
+				diplomatic_influence = {
+					who = FROM
+					value = 200
+				}
+			}
+		}
+		relation = {
+			who = FROM
+			value = 200
+		}
+		any_country = {
+			limit = { war_with = FROM }
+			relation = {
+				who = THIS
+				value = -100
+			}
+		}
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 3
+				OR = {
+					any_neighbor_country = {
+						war_with = FROM
+						any_owned_province = { is_core = THIS }
+					}
+					any_greater_power = {
+						war_with = FROM
+						any_owned_province = { is_core = THIS }
+					}
+				}
+			}
+			modifier = {
+				factor = 0.5
+				NOT = {
+					FROM = { neighbour = THIS }
+				}	
+				NOT = {
+					any_neighbor_country = { war_with = FROM }
+				}
+			}
+			modifier = {
+				factor = 1.25
+				FROM = { neighbour = THIS }	
+				NOT = {
+					any_neighbor_country = { war_with = FROM }
+				}
+			}
+			modifier = {
+				factor = 0.1
+				FROM = {
+					any_owned_province = { is_core = THIS }
+				}
+			}
+			modifier = {
+				factor = 0
+				NOT = {
+					relation = {
+						who = FROM
+						value = -100
+					}
+				}
+			}
+			modifier = {
+				factor = 0.5
+				NOT = {
+					relation = {
+						who = FROM
+						value = 0
+					}
+				}
+			}
+			modifier = {
+				factor = 0.25
+				war_policy = pacifism
+			}
+			modifier = {
+				factor = 0.5
+				war_policy = anti_military
+			}
+			modifier = {
+				factor = 1.5
+				num_of_revolts = 10
+			}
+			modifier = {
+				factor = 1.5
+				is_greater_power = yes
+			}
+			modifier = {
+				factor = 0.5
+				is_greater_power = no
+				is_secondary_power = no
+			}
+			modifier = {
+				factor = 0.5
+				is_disarmed = yes
+			}
+			modifier = {
+				factor = 2
+				OR = {
+					government = democracy
+					government = hms_government
+				}
+				FROM = {
+					OR = {
+						government = democracy
+						government = hms_government
+					}
+				}
+				any_greater_power = {
+					war_with = FROM
+					OR = {
+						government = proletarian_dictatorship
+						government = fascist_dictatorship
+					}
+				}
+			}
+			modifier = {
+				factor = 2
+				government = proletarian_dictatorship
+				FROM = { government = proletarian_dictatorship}		
+			}
+			modifier = {
+				factor = 1.5
+				government = proletarian_dictatorship
+				any_greater_power = {
+					war_with = FROM
+					government = fascist_dictatorship
+				}
+			}
+			modifier = {
+				factor = 2
+				government = fascist_dictatorship
+				FROM = { government = fascist_dictatorship }		
+			}
+			modifier = {
+				factor = 1.5
+				government = fascist_dictatorship
+				any_greater_power = {
+					war_with = FROM
+					government = proletarian_dictatorship
+				}
+			}
+			modifier = {
+				factor = 2
+				government = bourgeois_dictatorship
+				FROM = { government = bourgeois_dictatorship }		
+			}
+			modifier = {
+				factor = 0
+				government = proletarian_dictatorship
+				FROM = { government = fascist_dictatorship }		
+			}
+			modifier = {
+				factor = 0
+				government = fascist_dictatorship
+				FROM = { government = proletarian_dictatorship }		
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTB96030" #We refuse
+		FROM = {
+			relation = {
+				who = THIS
+				value = -20
+			}
+		}
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0.5
+				relation = {
+					who = FROM
+					value = 50
+				}
+			}
+			modifier = {
+				factor = 0.1
+				OR = {
+					vassal_of = FROM
+					in_sphere = FROM
+				}
+			}
+			modifier = {
+				factor = 0.5
+				relation = {
+					who = FROM
+					value = 100
+				}
+			}
+			modifier = {
+				factor = 0.5
+				war_policy = pro_military
+			}
+			modifier = {
+				factor = 0.25
+				war_policy = jingoism
+			}
+			modifier = {
+				factor = 1.5
+				OR = {
+					government = democracy
+					government = hms_government
+				}
+				NOT = { ruling_party_ideology = communist }
+				FROM = { government = proletarian_dictatorship }
+			}
+			modifier = {
+				factor = 2
+				OR = {
+					government = democracy
+					government = hms_government
+				}
+				NOT = { ruling_party_ideology = fascist }
+				FROM = { government = fascist_dictatorship }
+			}
+			modifier = {
+				factor = 1.5
+				government = proletarian_dictatorship
+				FROM = {
+					OR = {
+						government = democracy
+						government = hms_government
+					}
+				}		
+			}
+			modifier = {
+				factor = 1.5
+				government = proletarian_dictatorship
+				FROM = { government = bourgeois_dictatorship }		
+			}
+			modifier = {
+				factor = 1.5
+				government = bourgeois_dictatorship
+				FROM = { government = proletarian_dictatorship }		
+			}
+			modifier = {
+				factor = 2
+				government = fascist_dictatorship
+				FROM = {
+					OR = {
+						government = democracy
+						government = hms_government
+					}
+				}		
+			}
+		}
+	}
+}
+
+# Notification of alliance (for human players only)
+country_event = {
+	
+	id = 96031
+	title = "EVTNAME96031" #$FROMCOUNTRY$ Has Agreed
+	desc = "EVTDESC96031"
+	picture = "administration"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA96031" #Great
+	}
+}
+
+
+
+#########################################################
+#														#
+#      Dismantling of specific Great Powers				#
+#														#
+#########################################################
+
+#Dismantling Germany/NGF/SGF/Prussia
+country_event = {
+
+	id = 96035
+	title = "EVTNAME96010" #The Treaty of $CAPITAL$
+	desc = "EVTDESC96010"
+	news = yes
+	news_desc_long = "EVTDESC96010_NEWS_LONG"
+	news_desc_medium = "EVTDESC96010_NEWS_MEDIUM"
+	news_desc_short = "EVTDESC96010_NEWS_SHORT"
+	picture = "treaty_of_versailles"
+	major = yes
+
+	trigger = {
+		war = no
+		OR = {
+			has_country_modifier = great_war
+			has_country_modifier = great_war2
+			has_country_modifier = great_war3
+			has_country_flag = in_great_war
+			has_country_flag = ultimatum_accepted
+			has_country_flag = dismantling_treaty
+		}
+		OR = {
+			tag = GER
+			tag = GCF
+			tag = NGF
+			tag = SGF
+			tag = PRU
+		}
+		OR = {
+			has_country_flag = ultimatum_accepted
+			has_country_flag = dismantling_treaty
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA96010" #We welcome peace
+		clr_country_flag = dismantle_declared
+		clr_country_flag = dismantling_treaty
+		clr_country_flag = in_great_war
+		clr_country_flag = enemy_of_my_enemy
+		clr_country_flag = total_collapse
+		clr_country_flag = ultimatum_accepted
+		remove_country_modifier = great_war
+		remove_country_modifier = great_war2
+		remove_country_modifier = great_war3
+		war_exhaustion = 40
+
+		#if over the badboy limit, reduce infamy to 24.99, otherwise reduce infamy by 10
+		random_owned = {
+			limit = {
+				owner = { NOT = { badboy = 1 } }
+			}
+			owner = {
+				badboy = -10
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = { badboy = 1 }
+			}
+			owner = { badboy = -1000 }
+			owner = { badboy = 24.99 }
+		}
+
+		#remove the ultimatum_refused global, if this is an Infamy war
+		random_owned = {
+			limit = {
+				owner = { has_country_modifier = international_pariah }
+			}
+			owner = {
+				clr_global_flag = ultimatum_refused
+			}
+		}
+
+		#prestige hit
+		prestige_factor = -0.5
+		
+		#if Schleswig owned, re-add cores for Denmark
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 370
+					province_id = 371
+				}
+			}
+			add_core = DEN
+		}
+		
+		#add core to Danzig, if owned
+		random_owned = {
+			limit = {
+				province_id = 690
+				NOT = { is_core = DZG }
+			}
+			add_core = DZG
+		}
+		
+		#remove cores from Polish provinces if any owned
+		random_owned = {
+			limit = {
+				OR = {
+					is_core = POL
+					is_core = PLC
+				}
+			}
+			PRU_690 = { remove_core = THIS }
+			PRU_701 = {
+				remove_core = THIS
+				add_core = PZN
+			}
+			684 = { remove_core = THIS }
+			685 = { remove_core = THIS }
+		}
+		
+		#if any Congress Poland cores owned, re-add cores to Russia
+		any_owned = {
+			limit = {
+				OR = {
+					region = RUS_706
+					region = RUS_715
+					province_id = 707
+					province_id = 719
+				}
+				NOT = { province_id = 703 }
+				NOT = { is_core = RUS }
+				owner = { truce_with = RUS }
+			}
+			add_core = CPL
+			add_core = RUS
+		}
+
+		#remove cores on overseas provinces
+		any_owned = {
+			limit = {
+				is_overseas = yes
+				is_core = THIS
+			}
+			remove_core = THIS
+		}
+		
+		#remove all GER/SGF cores from Austria
+		random_owned = {
+			limit = {
+				OR = {
+					owner = { tag = GER }
+					owner = { tag = GCF }
+				}
+			}
+			BAD_586 = { remove_core = AUS }
+			WUR_589 = { remove_core = AUS }
+			BAV_599 = { remove_core = AUS }
+			BAV_595 = { remove_core = AUS }
+			owner = {
+				all_core = {
+					limit = { is_core = AUS }
+					remove_core = GER
+					remove_core = GCF
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = { tag = SGF }
+			}
+			BAD_586 = { remove_core = AUS }
+			WUR_589 = { remove_core = AUS }
+			BAV_599 = { remove_core = AUS }
+			BAV_595 = { remove_core = AUS }
+			owner = {
+				all_core = {
+					limit = { is_core = AUS }
+					remove_core = SGF
+				}
+			}
+		}
+		
+		#remove cores from Alsace-Lorraine if France has a truce	
+		random_country = {
+			limit = {
+				exists = yes
+				tag = FRA
+				truce_with = THIS
+			}
+			FRA_412 = {
+				remove_core = GER
+				remove_core = GCF
+				remove_core = ELS
+				remove_core = LOR
+				add_core = FRA
+			}
+		}
+		
+		random_country = {
+			limit = {
+				exists = yes
+				tag = BOR
+				truce_with = THIS
+			}
+			FRA_412 = {
+				remove_core = GER
+				remove_core = GCF
+				remove_core = ELS
+				remove_core = LOR
+				add_core = BOR
+			}
+		}
+		
+		#if France has a truce, and the Rhineland is not owned, release Westfalen as its puppet
+		random_country = {
+			limit = {
+				exists = yes
+				tag = FRA
+				truce_with = THIS
+				THIS = {
+					NOT = {
+						any_owned_province = {
+							OR = {
+								region = PRU_575
+								region = PRU_570
+								region = PRU_578
+							}
+						}
+					}
+				}
+				THIS = { owns = 581 }
+			}
+			PRU_581 = { add_core = WES }
+			THIS = {
+				any_owned = {
+					limit = { is_core = WES }
+					secede_province = FRA
+				}
+			}
+			release_vassal = WES
+			diplomatic_influence = {
+				who = WES
+				value = 200
+			}
+			THIS = {
+				diplomatic_influence = {
+					who = WES
+					value = -200
+				}
+			}
+		}
+		
+		random_country = {
+			limit = {
+				exists = yes
+				tag = BOR
+				truce_with = THIS
+				THIS = {
+					NOT = {
+						any_owned_province = {
+							OR = {
+								region = PRU_575
+								region = PRU_570
+								region = PRU_578
+							}
+						}
+					}
+				}
+				THIS = { owns = 581 }
+			}
+			PRU_581 = { add_core = WES }
+			THIS = {
+				any_owned = {
+					limit = { is_core = WES }
+					secede_province = BOR
+				}
+			}
+			release_vassal = WES
+			diplomatic_influence = {
+				who = WES
+				value = 200
+			}
+			THIS = {
+				diplomatic_influence = {
+					who = WES
+					value = -200
+				}
+			}
+		}
+
+		#if France has a truce and owns any Rhineland province, release the Rhineland as its puppet
+		random_country = {
+			limit = {
+				exists = yes
+				tag = FRA
+				any_owned_province = {
+					OR = {
+						region = PRU_575
+						region = PRU_570
+						region = PRU_578
+					}
+				}
+				THIS = {
+					any_owned_province = {
+						OR = {
+							region = PRU_575
+							region = PRU_570
+							region = PRU_578
+						}
+					}
+				}
+			}
+			PRU_575 = { add_core = RHI }
+			PRU_570 = { add_core = RHI }
+			PRU_578 = { add_core = RHI }
+			THIS = {
+				any_owned = {
+					limit = {
+						NOT = { region = PRU_578 }
+						is_core = RHI
+					}
+					secede_province = FRA
+				}
+			}
+			release_vassal = RHI
+			diplomatic_influence = {
+				who = RHI
+				value = 200
+			}
+			THIS = {
+				diplomatic_influence = {
+					who = RHI
+					value = -200
+				}
+			}
+		}
+		
+		random_country = {
+			limit = {
+				exists = yes
+				tag = BOR
+				any_owned_province = {
+					OR = {
+						region = PRU_575
+						region = PRU_570
+						region = PRU_578
+					}
+				}
+				THIS = {
+					any_owned_province = {
+						OR = {
+							region = PRU_575
+							region = PRU_570
+							region = PRU_578
+						}
+					}
+				}
+			}
+			PRU_575 = { add_core = RHI }
+			PRU_570 = { add_core = RHI }
+			PRU_578 = { add_core = RHI }
+			THIS = {
+				any_owned = {
+					limit = {
+						NOT = { region = PRU_578 }
+						is_core = RHI
+					}
+					secede_province = BOR
+				}
+			}
+			release_vassal = RHI
+			diplomatic_influence = {
+				who = RHI
+				value = 200
+			}
+			THIS = {
+				diplomatic_influence = {
+					who = RHI
+					value = -200
+				}
+			}
+		}
+		
+		#release Danzig as ally, if controlled
+		any_country = {
+			limit = {
+				tag = DZG
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			country_event = 96060
+		}
+		
+		#Give Eupen-Malmedy to Belgium
+		random_country = {
+			limit = { 
+				owns = 395 
+				NOT = { tag = THIS }
+				}
+			country_event = 96091
+			}
+		
+		#if France has no truce, add Rhineland cores
+		random_country = {
+			limit = {
+				exists = yes
+				tag = FRA
+				NOT = { truce_with = THIS }
+				THIS = {
+					OR = {
+						owns = 575
+						owns = 570
+						owns = 578
+					}
+				}
+			}
+			PRU_575 = { add_core = RHI }
+			PRU_570 = { add_core = RHI }
+			PRU_578 = { add_core = RHI }
+		}	
+		
+		#if Bourbon France has no truce, add Rhineland cores
+		random_country = {
+			limit = {
+				exists = yes
+				tag = BOR
+				NOT = { truce_with = THIS }
+				THIS = {
+					OR = {
+						owns = 575
+						owns = 570
+						owns = 578
+					}
+				}
+			}
+			PRU_575 = { add_core = RHI }
+			PRU_570 = { add_core = RHI }
+			PRU_578 = { add_core = RHI }
+		}	
+
+		#add Polish cores is POL has a truce
+		random_country = {
+			limit = {
+				tag = POL
+				exists = yes
+				truce_with = THIS
+			}
+			693 = { add_core = POL }
+			696 = { add_core = POL }
+			683 = { add_core = POL }
+			682 = { add_core = POL }
+			684 = { add_core = POL }
+			685 = { add_core = POL }
+			2584 = { add_core = POL }
+		}
+		
+		random_country = {
+			limit = {
+				tag = PLC
+				exists = yes
+				truce_with = THIS
+			}
+			693 = { add_core = PLC }
+			696 = { add_core = PLC }
+			683 = { add_core = PLC }
+			682 = { add_core = PLC }
+			684 = { add_core = PLC }
+			685 = { add_core = PLC }
+			2584 = { add_core = PLC }
+		}
+
+		random_country = {
+			limit = {
+				tag = RUS
+				exists = yes
+				truce_with = THIS
+				owns = 360
+			}
+			695 = { add_core = RUS }
+			697 = { add_core = RUS }
+			698 = { add_core = RUS }
+		}
+		
+		#if Austria has a truce, release Bavaria as its puppet
+		random_country = {
+			limit = {
+				tag = AUS
+				truce_with = THIS
+				THIS = { owns = 599 }
+			}
+			THIS = {
+				any_owned = {
+					limit = { region = BAV_599 }
+					add_core = BAV
+					secede_province = AUS
+				}
+			}
+			release_vassal = BAV
+			diplomatic_influence = {
+				who = BAV
+				value = 200
+			}
+			THIS = {
+				diplomatic_influence = {
+					who = BAV
+					value = -200
+				}
+			}
+		}
+		random_country = {
+			limit = {
+				tag = KUK
+				truce_with = THIS
+				THIS = { owns = 599 }
+			}
+			THIS = {
+				any_owned = {
+					limit = { region = BAV_599 }
+					add_core = BAV
+					secede_province = KUK
+				}
+			}
+			release_vassal = BAV
+		}
+
+		#if Denmark has a truce, it gets Schleswig back
+		random_country = {
+			limit = {
+				tag = DEN
+				truce_with = THIS
+				THIS = {
+					OR = {
+						owns = 370
+						owns = 371
+					}
+				}
+			}
+			370 = {
+				add_core = DEN
+				remove_core = GER
+				remove_core = GCF
+			}
+			371 = {
+				add_core = DEN
+				remove_core = GER
+				remove_core = GCF
+			}
+		}
+
+		#normalize relations with treaty members
+		any_country = {
+			limit = {
+				exists = yes
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			relation = { who = THIS value = 200 }
+		}
+
+		#release all cores to anyone with a truce
+		any_country = {
+			limit = {
+				exists = yes
+				any_core = { owned_by = THIS }
+				NOT = { this_culture_union = THIS }
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			all_core = {
+				limit = {
+					is_core = THIS
+					state_scope = {
+						NOT = { any_owned_province = { is_capital = yes } }
+					}
+				}
+				remove_core = THIS
+			}
+			country_event = 96014
+		}
+
+		#release all vassals
+		any_country = {
+			limit = { vassal_of = THIS }
+			leave_alliance = THIS
+			country_event = 96015
+		}
+
+		#release Czechoslovakia, if possible
+		any_country = {
+			limit = {
+				tag = CZH
+				exists = no
+				THIS = {
+					owns = 625
+					owns = 633
+				}
+				NOT = { exists = BOH }
+				NOT = { exists = SLV }
+			}
+			set_global_flag = czechoslovakia_formed
+			BOH = { all_core = { add_core = CZH } }
+			SLV = { all_core = { add_core = CZH } }
+			2584 = { add_core = CZH }
+			689 = { add_core = CZH }
+			all_core = {
+				limit = {
+					is_core = THIS
+					state_scope = {
+						NOT = { any_owned_province = { is_capital = yes } }
+					}
+				}
+				remove_core = THIS
+			}
+			country_event = 96012
+		}
+		
+		#release LUX as ally, if controlled
+		random_owned = {
+			limit = {
+				province_id = 397
+				LUX = { exists = no }
+			}
+			397 = {
+				add_core = LUX
+				remove_core = GER
+				remove_core = GCF
+			}
+			LUX = { country_event = 96060 }
+		}
+
+		#release non-existing countries	that aren't German	
+		any_country = {
+			limit = {
+				OR = {
+					civilized = yes
+					tag = JAP
+					tag = KOR
+					tag = SIA
+					tag = MOR
+					tag = ALD
+					tag = TUN
+					tag = EGY
+				}
+				any_core = { owned_by = THIS }
+				exists = no
+				is_cultural_union = no
+				NOT = { is_culture_group = germanic }
+				NOT = { has_country_flag = post_colonial_country }
+			}
+			all_core = {
+				limit = {
+					is_core = THIS
+					state_scope = {
+						NOT = { any_owned_province = { is_capital = yes } }
+					}
+				}
+				remove_core = THIS
+			}
+			country_event = 96012
+		}
+		
+		#give back cores to non-allied countries
+		any_country = {
+			limit = {
+				exists = yes
+				any_core = { owned_by = THIS }
+				NOT = { alliance_with = THIS }
+				NOT = { truce_with = THIS }
+				NOT = { this_culture_union = THIS }
+			}
+			country_event = 96013
+		}
+		
+		#30% chance to release Rhineland as ally, if controlled
+		any_country = {
+			limit = {
+				tag = RHI
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			random = {
+				chance = 30
+				country_event = 96060
+			}
+		}
+		
+		#release Austria as ally, if controlled
+		random_owned = {
+			limit = {
+				province_id = 619
+				AUS = { exists = no }
+				KUK = { exists = no }
+			}
+			AUS_619 = {
+				add_core = AUS
+				remove_core = GER
+				remove_core = GCF
+			}
+			AUS_612 = {
+				add_core = AUS
+				remove_core = GER
+				remove_core = GCF
+			}
+			AUS_613 = {
+				add_core = AUS
+				remove_core = GER
+				remove_core = GCF
+			}
+			AUS = { country_event = 96060 }
+		}
+		
+		#give colonies without cores to truce GP's
+		random_owned = {
+			limit = {
+				OR = {
+					is_overseas = yes
+					is_colonial = yes
+				}
+			}
+			any_country = {
+				limit = {
+					ai = no
+					is_greater_power = yes
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96011
+			}
+			any_country = {
+				limit = {
+					NOT = {
+						any_greater_power = {
+							ai = no
+							truce_with = THIS
+						}
+					}
+					ai = yes
+					is_greater_power = yes
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96016
+			}
+			any_country = {
+				limit = {
+					NOT = {
+						any_greater_power = {
+							ai = no
+							truce_with = THIS
+						}
+					}
+					is_greater_power = no
+					is_secondary_power = yes
+					is_vassal = no
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96017
+			}
+		}
+
+		#add fascism and punitive effects
+		random_owned = {
+			limit = {
+				owner = {
+					is_ideology_enabled = fascist
+					NOT = { government = fascist_dictatorship }
+				}
+			}
+			owner = {
+				soldiers = {
+					limit = { is_primary_culture = yes }
+					ideology = {
+						value = fascist
+						factor = 0.2
+					}
+				}
+				officers = {
+					limit = { is_primary_culture = yes }
+					ideology = {
+						value = fascist
+						factor = 0.4
+					}
+				}
+				any_pop = {
+					limit = {
+						is_primary_culture = yes
+						NOT = {
+							OR = {
+								type = soldiers
+								type = officers
+							}
+						}
+					}
+					ideology = {
+						value = fascist
+						factor = 0.1
+					}
+				}
+			}
+		}
+		add_country_modifier = {
+			name = punitive_effects
+			duration = 1825
+		}
+		add_country_modifier = {
+			name = no_more_war
+			duration = 3650
+		}
+	}
+}
+
+#Dismantling Russia
+country_event = {
+
+	id = 96040
+	title = "EVTNAME96010" #The Treaty of $CAPITAL$
+	desc = "EVTDESC96010"
+	news = yes
+	news_desc_long = "EVTDESC96010_NEWS_LONG"
+	news_desc_medium = "EVTDESC96010_NEWS_MEDIUM"
+	news_desc_short = "EVTDESC96010_NEWS_SHORT"
+	picture = "greatpowers"
+	major = yes
+
+	trigger = {
+		war = no
+		OR = {
+			has_country_modifier = great_war
+			has_country_modifier = great_war2
+			has_country_modifier = great_war3
+			has_country_flag = in_great_war
+			has_country_flag = ultimatum_accepted
+			has_country_flag = dismantling_treaty
+		}
+		tag = RUS
+		OR = {
+			has_country_flag = ultimatum_accepted
+			has_country_flag = dismantling_treaty
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA96010" #We welcome peace
+		clr_country_flag = dismantle_declared
+		clr_country_flag = dismantling_treaty
+		clr_country_flag = in_great_war
+		clr_country_flag = total_collapse
+		clr_country_flag = ultimatum_accepted
+		remove_country_modifier = great_war
+		remove_country_modifier = great_war2
+		remove_country_modifier = great_war3
+		clr_country_flag = enemy_of_my_enemy
+		war_exhaustion = 40
+		
+		#if over the badboy limit, reduce infamy to 24.99, otherwise reduce infamy by 10
+		random_owned = {
+			limit = {
+				owner = { NOT = { badboy = 1 } }
+			}
+			owner = {
+				badboy = -10
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = { badboy = 1 }
+			}
+			owner = { badboy = -1000 }
+			owner = { badboy = 24.99 }
+		}
+
+		#remove the ultimatum_refused global, if this is an Infamy war
+		random_owned = {
+			limit = {
+				owner = { has_country_modifier = international_pariah }
+			}
+			owner = {
+				clr_global_flag = ultimatum_refused
+			}
+		}
+
+		#prestige hit
+		prestige_factor = -0.5
+		
+		#If Japan at truce, apply cores to Haishenwai & Sakhalin
+		random_country = {
+			limit = {
+				tag = JAP
+				exists = yes
+				truce_with = THIS
+			}
+			RUS = {
+				all_core = {
+					limit = { is_core = JAP }
+					remove_core = THIS
+				}
+				any_owned = {
+					limit = { region = JAP_1086 }
+					remove_core = THIS
+					add_core = JAP
+				}
+				any_owned = {
+					limit = { region = CHI_1082 }
+					remove_core = THIS
+					add_core = JAP
+				}
+			}
+		}
+		random_country = {
+			limit = {
+				tag = TKG
+				exists = yes
+				truce_with = THIS
+			}
+			RUS = {
+				all_core = {
+					limit = { is_core = TKG }
+					remove_core = THIS
+				}
+				any_owned = {
+					limit = { region = JAP_1086 }
+					remove_core = THIS
+					add_core = TKG
+				}
+				any_owned = {
+					limit = { region = CHI_1082 }
+					remove_core = THIS
+					add_core = TKG
+				}
+			}
+		}
+		
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 1086
+					province_id = 1087
+					province_id = 1088
+					province_id = 1089
+				}
+			}
+			add_core = KAM
+		}
+
+		#remove cores from Congress Poland provinces if any owned
+		random_owned = {
+			limit = {
+				OR = {
+					is_core = POL
+					is_core = PLC
+				}
+			}
+			RUS_706 = {
+				remove_core = RUS
+				add_core = CPL
+			}
+			RUS_715 = {
+				remove_core = RUS
+				add_core = CPL
+			}
+			707 = {
+				remove_core = RUS
+				add_core = CPL
+			}
+			719 = {
+				remove_core = RUS
+				add_core = CPL
+			}
+		}
+		
+		#if any Polish cores owned, re-add cores to Germany
+		any_owned = {
+			limit = {
+				OR = {
+					region = PRU_690
+					region = PRU_701
+					province_id = 684
+					province_id = 685
+				}
+				NOT = { is_core = GER }
+				owner = {
+					OR = {
+						truce_with = PRU
+						truce_with = NGF
+						truce_with = GER
+					}
+				}
+			}
+			add_core = GER
+		}
+		
+		#if any Polish cores owned, re-add cores to German Confederation
+		any_owned = {
+			limit = {
+				OR = {
+					region = PRU_690
+					region = PRU_701
+					province_id = 684
+					province_id = 685
+				}
+				NOT = { is_core = GCF }
+				owner = {
+					truce_with = GCF
+				}
+			}
+			add_core = GCF
+		}
+
+		#Remove cores from the Baltic States
+		any_owned = {
+			limit = {
+				OR = {
+					is_core = LAT
+					is_core = LIT
+					is_core = EST
+					is_core = UBD
+				}
+			}
+			remove_core = RUS
+		}
+		
+		#Secede Baltic to Germany, if truce
+		any_owned = {
+			limit = {
+				is_core = UBD
+				owner = {
+					truce_with = GER
+				}
+			}
+			secede_province = GER
+		}
+		any_owned = {
+			limit = {
+				is_core = UBD
+				owner = {
+					truce_with = GCF
+				}
+			}
+			secede_province = GCF
+		}
+		
+		#If no truce with Germany, remove UBD cores
+		any_owned = {
+			limit = {
+				OR = {
+					is_core = LAT
+					is_core = LIT
+					is_core = EST
+					is_core = UBD
+				}
+			}
+			remove_core = UBD
+		}
+		
+		#add Finnish cores to Viipuri, if owned
+		random_owned = {
+			limit = {
+				province_id = 339
+			}
+			add_core = FIN
+		}
+		
+		#if Finland has a truce, add Finnish cores to Karelia & Petsamo, if owned
+		any_owned = {
+			limit = {
+				region = RUS_339
+				owner = { truce_with = FIN }
+			}
+			add_core = FIN
+		}
+		random_owned = {
+			limit = {
+				province_id = 982
+				owner = { truce_with = FIN }
+			}
+			add_core = FIN
+        }
+
+		#if Finland is part of SCA & Scandinavia has a truce, it gets Karelia & Petsamo, if owned
+        any_owned = {
+			limit = {
+				region = RUS_339
+				owner = { truce_with = SCA }
+				FIN = {
+					exists = no
+					all_core = {
+						OR = {
+							owned_by = RUS
+							owned_by = SCA
+						}
+					}
+				}
+			}
+		add_core = FIN
+		add_core = SCA
+        }
+		random_owned = {
+			limit = {
+				province_id = 982
+				owner = { truce_with = SCA }
+				FIN = {
+					exists = no
+					all_core = {
+						OR = {
+							owned_by = RUS
+							owned_by = SCA
+						}
+					}
+				}
+			}
+			add_core = FIN
+			add_core = SCA
+		}
+
+		#normalize relations with treaty members
+		any_country = {
+			limit = {
+				exists = yes
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			relation = { who = THIS value = 200 }
+		}
+		#release all cores to anyone with a truce
+		any_country = {
+			limit = {
+				exists = yes
+				any_core = { owned_by = THIS }
+				NOT = { this_culture_union = THIS }
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			all_core = {
+				limit = {
+					is_core = THIS
+					state_scope = {
+						NOT = { any_owned_province = { is_capital = yes } }
+					}
+				}
+				remove_core = THIS
+			}
+			country_event = 96014
+		}
+
+		#If Ukraine exists as a Russian vassal, annex it (for later)
+		any_country = {
+			limit = {
+				tag = UKR
+				vassal_of = RUS
+			}
+			THIS = { inherit = UKR }
+		}
+
+		#release all vassals
+		any_country = {
+			limit = { vassal_of = THIS }
+			leave_alliance = THIS
+			country_event = 96015
+		}
+
+		#If Belarus does not exist, release it 
+		any_country = {
+			limit = {
+				tag = BYE
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			government = democracy
+			political_reform = population_equal_weight
+			political_reform = wealth_weighted_voting
+			political_reform = yes_meeting
+			political_reform = state_press
+			political_reform = no_trade_unions
+			political_reform = gerrymandering
+			political_reform = first_past_the_post
+			political_reform = culture_voting_only
+			ruling_party_ideology = conservative
+			country_event = 96012
+		}
+		
+		#If Estonia, Latvia, Crimea, Ukraine and Lithuania does not exist, release it 
+		any_country = {
+			limit = {
+				OR = {
+					tag = LIT
+					tag = EST
+					tag = LAT
+					tag = CRI
+				}
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			government = democracy
+			political_reform = population_equal_weight
+			political_reform = wealth_weighted_voting
+			political_reform = yes_meeting
+			political_reform = state_press
+			political_reform = no_trade_unions
+			political_reform = gerrymandering
+			political_reform = first_past_the_post
+			political_reform = culture_voting_only
+			ruling_party_ideology = conservative
+			country_event = 96012
+		}
+		
+		#release Bukkhara as a vassal to a European GP
+		any_country = {
+			limit = {
+				tag = BUK
+				exists = no
+				NOT = { has_global_flag = uzbekistan_created }
+				any_core = {
+					owned_by = THIS
+					is_colonial = no
+				}
+			}
+			country_event = 96061
+		}
+		
+		#release Khiva as a vassal to a European GP
+		any_country = {
+			limit = {
+				tag = KHI
+				exists = no
+				NOT = { has_global_flag = uzbekistan_created }
+				any_core = {
+					owned_by = THIS
+					is_colonial = no
+				}
+			}
+			country_event = 96061
+		}
+		
+		#release Kokand as a vassal to a European GP
+		any_country = {
+			limit = {
+				tag = KOK
+				exists = no
+				NOT = { has_global_flag = kyrgyzstan_created }
+				any_core = {
+					owned_by = THIS
+					is_colonial = no
+				}
+			}
+			country_event = 96061
+		}
+
+		#release non-existing countries
+		any_country = {
+			limit = {
+				OR = {
+					civilized = yes
+					tag = JAP
+					tag = KOR
+					tag = SIA
+					tag = MOR
+					tag = ALD
+					tag = TUN
+					tag = EGY
+				}
+				NOT = {
+					tag = AKH
+					tag = ALT
+					tag = TNT
+					tag = DON
+					tag = TAR
+					tag = KMK
+					tag = KAM
+					tag = SIB
+					tag = URA
+					tag = YAK
+					tag = DAG
+					tag = CIR
+					tag = BRY
+					tag = CHY
+					tag = KRL
+					tag = ABK
+					tag = VLG
+				}
+				any_core = { owned_by = THIS }
+				exists = no
+				is_cultural_union = no
+				NOT = { is_culture_group = east_slavic }
+				NOT = { has_country_flag = post_colonial_country }
+			}
+			all_core = {
+				limit = {
+					is_core = THIS
+					state_scope = {
+						NOT = { any_owned_province = { is_capital = yes } }
+					}
+				}
+				remove_core = THIS
+			}
+			country_event = 96012
+		}
+
+		#If Ukraine does not exist, release it as an ally
+		any_country = {
+			limit = {
+				tag = UKR
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			government = democracy
+			political_reform = population_equal_weight
+			political_reform = wealth_weighted_voting
+			political_reform = yes_meeting
+			political_reform = state_press
+			political_reform = no_trade_unions
+			political_reform = gerrymandering
+			political_reform = first_past_the_post
+			political_reform = culture_voting_only
+			ruling_party_ideology = conservative
+			country_event = 96060
+		}
+		
+		#If Ural Republic does not exist, 30% chance to release it as an ally
+		any_country = {
+			limit = {
+				tag = URA
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			random = {
+				chance = 30
+				country_event = 96060
+			}
+		}
+		
+		#give cores to neighboring, non-allied country
+		any_country = {
+			limit = {
+				exists = yes
+				neighbour = THIS
+				any_core = { owned_by = THIS }
+				NOT = { alliance_with = THIS }
+				NOT = { truce_with = THIS }
+				NOT = { this_culture_union = THIS }
+			}
+			country_event = 96013
+		}
+		
+		#If Tannu Tuva does not exist, release it as an ally
+		any_country = {
+			limit = {
+				tag = TNT
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			government = democracy
+			political_reform = population_equal_weight
+			political_reform = wealth_weighted_voting
+			political_reform = yes_meeting
+			political_reform = state_press
+			political_reform = no_trade_unions
+			political_reform = gerrymandering
+			political_reform = first_past_the_post
+			political_reform = culture_voting_only
+			ruling_party_ideology = conservative
+			country_event = 96060
+		}
+		
+		#If MGL does not exist, release it 
+		any_country = {
+			limit = {
+				tag = MGL
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			country_event = 96060
+		}
+		
+		#If Kazakstan does not exist, release it 
+		any_country = {
+			limit = {
+				tag = KAZ
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			government = democracy
+			political_reform = population_equal_weight
+			political_reform = wealth_weighted_voting
+			political_reform = yes_meeting
+			political_reform = state_press
+			political_reform = no_trade_unions
+			political_reform = gerrymandering
+			political_reform = first_past_the_post
+			political_reform = culture_voting_only
+			ruling_party_ideology = conservative
+			country_event = 96060
+		}
+		
+		#If Tajikistan does not exist, release it 
+		any_country = {
+			limit = {
+				tag = TAJ
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			government = democracy
+			political_reform = population_equal_weight
+			political_reform = wealth_weighted_voting
+			political_reform = yes_meeting
+			political_reform = state_press
+			political_reform = no_trade_unions
+			political_reform = gerrymandering
+			political_reform = first_past_the_post
+			political_reform = culture_voting_only
+			ruling_party_ideology = conservative
+			country_event = 96060
+		}
+		
+		#If Kyrgyzstan does not exist, release it 
+		any_country = {
+			limit = {
+				tag = KYR
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			government = democracy
+			political_reform = population_equal_weight
+			political_reform = wealth_weighted_voting
+			political_reform = yes_meeting
+			political_reform = state_press
+			political_reform = no_trade_unions
+			political_reform = gerrymandering
+			political_reform = first_past_the_post
+			political_reform = culture_voting_only
+			ruling_party_ideology = conservative
+			country_event = 96060
+		}
+		
+		#If Uzbekistan does not exist, release it 
+		any_country = {
+			limit = {
+				tag = UZB
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			government = democracy
+			political_reform = population_equal_weight
+			political_reform = wealth_weighted_voting
+			political_reform = yes_meeting
+			political_reform = state_press
+			political_reform = no_trade_unions
+			political_reform = gerrymandering
+			political_reform = first_past_the_post
+			political_reform = culture_voting_only
+			ruling_party_ideology = conservative
+			country_event = 96060
+		}
+		
+		#If Turkmenistan does not exist, release it 
+		any_country = {
+			limit = {
+				tag = TKM
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			government = democracy
+			political_reform = population_equal_weight
+			political_reform = wealth_weighted_voting
+			political_reform = yes_meeting
+			political_reform = state_press
+			political_reform = no_trade_unions
+			political_reform = gerrymandering
+			political_reform = first_past_the_post
+			political_reform = culture_voting_only
+			ruling_party_ideology = conservative
+			country_event = 96060
+		}
+		
+		#If Dagestan does not exist, release it 
+		any_country = {
+			limit = {
+				tag = DAG
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			civilized = yes
+			government = democracy
+			political_reform = population_equal_weight
+			political_reform = wealth_weighted_voting
+			political_reform = yes_meeting
+			political_reform = state_press
+			political_reform = no_trade_unions
+			political_reform = gerrymandering
+			political_reform = first_past_the_post
+			political_reform = culture_voting_only
+			ruling_party_ideology = conservative
+			country_event = 96060
+		}
+		
+		#If Chechnya does not exist, release it 
+		any_country = {
+			limit = {
+				tag = CHY
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			civilized = yes
+			government = democracy
+			political_reform = population_equal_weight
+			political_reform = wealth_weighted_voting
+			political_reform = yes_meeting
+			political_reform = state_press
+			political_reform = no_trade_unions
+			political_reform = gerrymandering
+			political_reform = first_past_the_post
+			political_reform = culture_voting_only
+			ruling_party_ideology = conservative
+			country_event = 96060
+		}
+		
+		#If Circassia does not exist, release it 
+		any_country = {
+			limit = {
+				tag = CIR
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			civilized = yes
+			government = democracy
+			political_reform = population_equal_weight
+			political_reform = wealth_weighted_voting
+			political_reform = yes_meeting
+			political_reform = state_press
+			political_reform = no_trade_unions
+			political_reform = gerrymandering
+			political_reform = first_past_the_post
+			political_reform = culture_voting_only
+			ruling_party_ideology = conservative
+			country_event = 96060
+		}
+		
+		#If Kamchatka does not exist, release it (50% chance)
+		any_country = {
+			limit = {
+				tag = KAM
+				exists = no
+				any_core = {
+					owned_by = THIS
+					is_colonial = no
+				}
+			}
+			random = {
+				chance = 50
+				country_event = 96012
+				government = democracy
+				political_reform = population_equal_weight
+				political_reform = wealth_weighted_voting
+				political_reform = yes_meeting
+				political_reform = state_press
+				political_reform = no_trade_unions
+				political_reform = gerrymandering
+				political_reform = first_past_the_post
+				political_reform = culture_voting_only
+				ruling_party_ideology = conservative
+			}
+		}
+		
+		#If Buryatia does not exist, 50% chance of release it if Kamchatka is free
+		any_country = {
+			limit = {
+				tag = BRY
+				exists = no
+				any_core = { owned_by = THIS }
+				KAM = {
+					exists = yes
+					is_vassal = no
+				}
+			}
+			
+			random = {
+				chance = 50
+				civilized = yes
+				government = democracy
+				political_reform = population_equal_weight
+				political_reform = wealth_weighted_voting
+				political_reform = yes_meeting
+				political_reform = state_press
+				political_reform = no_trade_unions
+				political_reform = gerrymandering
+				political_reform = first_past_the_post
+				political_reform = culture_voting_only
+				ruling_party_ideology = conservative
+				country_event = 96060
+			}
+		}
+		
+		#If Cossack Union does not exist, 50% chance to release if Ukraine is free
+		any_country = {
+			limit = {
+				tag = DON
+				exists = no
+				any_core = { owned_by = THIS }
+				UKR = {
+					exists = yes
+					is_vassal = no
+				}
+			}
+			random = {
+				chance = 50
+				government = democracy
+				political_reform = population_equal_weight
+				political_reform = wealth_weighted_voting
+				political_reform = yes_meeting
+				political_reform = state_press
+				political_reform = no_trade_unions
+				political_reform = gerrymandering
+				political_reform = first_past_the_post
+				political_reform = culture_voting_only
+				ruling_party_ideology = conservative
+				country_event = 96060
+			}
+		}
+		
+		#If Siberia does not exist, 10% to release it and Yakutia and Kamchatka
+		random_owned = {
+			limit = { province_id = 1064 }
+			random = {
+				chance = 10
+				any_country = {
+					limit = {
+						tag = SIB
+						exists = no
+						any_core = { owned_by = THIS }
+					}
+					country_event = 96060
+				}
+				any_country = {
+					limit = {
+						tag = YAK
+						exists = no
+						any_core = { owned_by = THIS }
+					}
+					government = democracy
+				political_reform = population_equal_weight
+				political_reform = wealth_weighted_voting
+				political_reform = yes_meeting
+				political_reform = state_press
+				political_reform = no_trade_unions
+				political_reform = gerrymandering
+				political_reform = first_past_the_post
+				political_reform = culture_voting_only
+				ruling_party_ideology = conservative
+					country_event = 96060
+				}
+				any_country = {
+					limit = {
+						tag = KAM
+						exists = no
+						any_core = { owned_by = THIS }
+					}
+					government = democracy
+				political_reform = population_equal_weight
+				political_reform = wealth_weighted_voting
+				political_reform = yes_meeting
+				political_reform = state_press
+				political_reform = no_trade_unions
+				political_reform = gerrymandering
+				political_reform = first_past_the_post
+				political_reform = culture_voting_only
+				ruling_party_ideology = conservative
+					country_event = 96012
+				}
+			}
+		}
+		
+		#If Ural Republic does not exist, 25% to release it
+		random_owned = {
+			limit = {
+				province_id = 1058
+				THIS = {
+					NOT = { owns = 1064 }
+				}
+			}
+			random = {
+				chance = 25
+				any_country = {
+					limit = {
+						tag = URA
+						exists = no
+						any_core = { owned_by = THIS }
+					}
+					country_event = 96060
+				}
+			}
+		}
+		
+		#give colonies without cores to truce GP's
+		random_owned = {
+			limit = {
+				is_overseas = yes
+			}
+			any_country = {
+				limit = {
+					ai = no
+					is_greater_power = yes
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96011
+			}
+			any_country = {
+				limit = {
+					NOT = {
+						any_greater_power = {
+							ai = no
+							truce_with = THIS
+						}
+					}
+					ai = yes
+					is_greater_power = yes
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96016
+			}
+			any_country = {
+				limit = {
+					NOT = {
+						any_greater_power = {
+							ai = no
+							truce_with = THIS
+						}
+					}
+					is_greater_power = no
+					is_secondary_power = yes
+					is_vassal = no
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96017
+			}
+		}
+
+		#add fascism and punitive effects
+		random_owned = {
+			limit = {
+				owner = {
+					is_ideology_enabled = fascist
+					NOT = { government = fascist_dictatorship }
+				}
+			}
+			owner = {
+				soldiers = {
+					limit = { is_primary_culture = yes }
+					ideology = {
+						value = fascist
+						factor = 0.2
+					}
+				}
+				officers = {
+					limit = { is_primary_culture = yes }
+					ideology = {
+						value = fascist
+						factor = 0.4
+					}
+				}
+				any_pop = {
+					limit = {
+						is_primary_culture = yes
+						NOT = {
+							OR = {
+								type = soldiers
+								type = officers
+							}
+						}
+					}
+					ideology = {
+						value = fascist
+						factor = 0.1
+					}
+				}
+			}
+		}
+		add_country_modifier = {
+			name = punitive_effects
+			duration = 1825
+		}
+		add_country_modifier = {
+			name = no_more_war
+			duration = 3650
+		}
+	}
+}
+
+#Dismantling USA
+country_event = {
+
+	id = 96045
+	title = "EVTNAME96010" #The Treaty of $CAPITAL$
+	desc = "EVTDESC96010"
+	news = yes
+	news_desc_long = "EVTDESC96010_NEWS_LONG"
+	news_desc_medium = "EVTDESC96010_NEWS_MEDIUM"
+	news_desc_short = "EVTDESC96010_NEWS_SHORT"
+	picture = "greatpowers"
+	major = yes
+
+	trigger = {
+		war = no
+		OR = {
+			has_country_modifier = great_war
+			has_country_modifier = great_war2
+			has_country_modifier = great_war3
+			has_country_flag = in_great_war
+			has_country_flag = ultimatum_accepted
+			has_country_flag = dismantling_treaty
+		}
+		tag = USA
+		OR = {
+			has_country_flag = ultimatum_accepted
+			has_country_flag = dismantling_treaty
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA96010" #We welcome peace
+		clr_country_flag = dismantle_declared
+		clr_country_flag = dismantling_treaty
+		clr_country_flag = in_great_war
+		clr_country_flag = enemy_of_my_enemy
+		clr_country_flag = total_collapse
+		clr_country_flag = ultimatum_accepted
+		remove_country_modifier = great_war
+		remove_country_modifier = great_war2
+		remove_country_modifier = great_war3
+		war_exhaustion = 40
+
+		#if over the badboy limit, reduce infamy to 24.99, otherwise reduce infamy by 10
+		random_owned = {
+			limit = {
+				owner = { NOT = { badboy = 1 } }
+			}
+			owner = {
+				badboy = -10
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = { badboy = 1 }
+			}
+			owner = { badboy = -1000 }
+			owner = { badboy = 24.99 }
+		}
+
+		#remove the ultimatum_refused global, if this is an Infamy war
+		random_owned = {
+			limit = {
+				owner = { has_country_modifier = international_pariah }
+			}
+			owner = {
+				clr_global_flag = ultimatum_refused
+			}
+		}
+
+		#prestige hit
+		prestige_factor = -0.5
+
+		#if Russia has a truce, add cores to Alaska
+		random_country = {
+			limit = {
+				tag = RUS
+				truce_with = THIS
+				THIS = { owns = 1 }
+			}
+			USA_1 = { add_core = RUS }
+		}
+		
+		#Add cores back for Mexico
+		any_owned = {
+			limit = {
+				OR = {
+					region = TEX_132
+					region = MEX_103
+					region = MEX_94
+					region = MEX_97
+					region = MEX_85
+					region = MEX_100
+				}
+			}
+			add_core = MEX
+		}
+		
+		
+		#if any Congress Poland cores owned, re-add cores to Russia
+		any_owned = {
+			limit = {
+				OR = {
+					region = RUS_706
+					region = RUS_715
+					province_id = 707
+					province_id = 719
+				}
+				NOT = { province_id = 703 }
+				NOT = { is_core = RUS }
+				owner = { truce_with = RUS }
+			}
+			add_core = RUS
+		}
+				
+		#if any Polish cores owned, re-add cores to Germany
+		any_owned = {
+			limit = {
+				OR = {
+					region = PRU_690
+					region = PRU_701
+					province_id = 684
+					province_id = 685
+				}
+				NOT = { is_core = GER }
+				owner = {
+					OR = {
+						truce_with = PRU
+						truce_with = NGF
+						truce_with = GER
+					}
+				}
+			}
+			add_core = GER
+		}
+		
+		#if any Polish cores owned, re-add cores to German Confederation
+		any_owned = {
+			limit = {
+				OR = {
+					region = PRU_690
+					region = PRU_701
+					province_id = 684
+					province_id = 685
+				}
+				NOT = { is_core = GCF }
+				owner = {
+					truce_with = GCF
+				}
+			}
+			add_core = GCF
+		}
+		
+		#remove cores on overseas provinces
+		any_owned = {
+			limit = {
+				is_overseas = yes
+				is_core = THIS
+			}
+			remove_core = THIS
+		}
+				
+		#normalize relations with treaty members
+		any_country = {
+			limit = {
+				exists = yes
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			relation = { who = THIS value = 200 }
+		}
+
+		#release all cores to anyone with a truce
+		any_country = {
+			limit = {
+				exists = yes
+				any_core = { owned_by = THIS }
+				NOT = { this_culture_union = THIS }
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			all_core = {
+				limit = {
+					is_core = THIS
+					state_scope = {
+						NOT = { any_owned_province = { is_capital = yes } }
+					}
+				}
+				remove_core = THIS
+			}
+			country_event = 96014
+		}
+
+		#release all vassals
+		any_country = {
+			limit = { vassal_of = THIS }
+			leave_alliance = THIS
+			country_event = 96015
+		}
+
+		#Mexico gets back any non_USA cores it's taken automatically
+		any_country = {
+			limit = {
+				exists = yes
+				tag = MEX
+				THIS = {
+					any_owned_province = {
+						is_core = MEX
+						NOT = { is_core = USA }
+					}
+				}
+			}
+			THIS = {
+				any_owned = {
+					limit = {
+						is_core = MEX
+						NOT = { is_core = USA }
+					}
+					secede_province = MEX
+				}
+				diplomatic_influence = {
+					who = MEX
+					value = -100
+				}
+				relation = {
+					who = MEX
+					value = -50
+				}
+			}
+		}
+
+		#release non-existing countries		
+		any_country = {
+			limit = {
+				OR = {
+					civilized = yes
+					tag = JAP
+					tag = KOR
+					tag = SIA
+					tag = MOR
+					tag = ALD
+					tag = TUN
+					tag = EGY
+				}
+				any_core = { owned_by = THIS }
+				exists = no
+				is_cultural_union = no
+				NOT = { is_culture_group = american_cultures }
+				NOT = { has_country_flag = post_colonial_country }
+			}
+			all_core = {
+				limit = {
+					is_core = THIS
+					state_scope = {
+						NOT = { any_owned_province = { is_capital = yes } }
+					}
+				}
+				remove_core = THIS
+			}
+			country_event = 96012
+		}
+
+		#If Texas does not exist, release it (with Arizona & New Mexico)
+		any_country = {
+			limit = {
+				tag = TEX
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			TEX_132 = { remove_core = USA }
+			THIS = {
+				any_owned = {
+					limit = {
+						OR = {
+							region = MEX_103
+							region = MEX_100
+						}
+					}
+					add_core = TEX
+				}
+			}
+			set_country_flag = usstatehood_we_have_applied
+			country_event = 96018
+		}
+
+		#If California does not exist, release it as an ally (with Oregon} 
+		any_country = {
+			limit = {
+				tag = CAL
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			THIS = {
+				any_owned = {
+					limit = { region = USA_81 }
+					add_core = CAL
+				}
+			}
+			set_country_flag = usstatehood_we_have_applied
+			country_event = 96060
+		}
+
+		#If New England does not exist, release it as an ally
+		any_country = {
+			limit = {
+				tag = NEN
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			country_event = 96060
+		}
+
+		#give cores back to any non-allied country (who isn't Mexico)
+		any_country = {
+			limit = {
+				exists = yes
+				any_core = { owned_by = THIS }
+				NOT = { alliance_with = THIS }
+				NOT = { truce_with = THIS }
+				NOT = { tag = MEX }
+			}
+			country_event = 96013
+		}
+
+		#give colonies without cores to truce GP's
+		random_owned = {
+			limit = {
+				is_overseas = yes
+			}
+			any_country = {
+				limit = {
+					ai = no
+					is_greater_power = yes
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96011
+			}
+			any_country = {
+				limit = {
+					NOT = {
+						any_greater_power = {
+							ai = no
+							truce_with = THIS
+						}
+					}
+					ai = yes
+					is_greater_power = yes
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96016
+			}
+			any_country = {
+				limit = {
+					NOT = {
+						any_greater_power = {
+							ai = no
+							truce_with = THIS
+						}
+					}
+					is_greater_power = no
+					is_secondary_power = yes
+					is_vassal = no
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96017
+			}
+		}
+
+		#add fascism and punitive effects
+		random_owned = {
+			limit = {
+				owner = {
+					is_ideology_enabled = fascist
+					NOT = { government = fascist_dictatorship }
+				}
+			}
+			owner = {
+				soldiers = {
+					limit = { is_primary_culture = yes }
+					ideology = {
+						value = fascist
+						factor = 0.2
+					}
+				}
+				officers = {
+					limit = { is_primary_culture = yes }
+					ideology = {
+						value = fascist
+						factor = 0.4
+					}
+				}
+				any_pop = {
+					limit = {
+						is_primary_culture = yes
+						NOT = {
+							OR = {
+								type = soldiers
+								type = officers
+							}
+						}
+					}
+					ideology = {
+						value = fascist
+						factor = 0.1
+					}
+				}
+			}
+		}
+		add_country_modifier = {
+			name = punitive_effects
+			duration = 1825
+		}
+		add_country_modifier = {
+			name = no_more_war
+			duration = 3650
+		}
+	}
+}
+
+#Dismantling the United Kingdom
+country_event = {
+
+	id = 96050
+	title = "EVTNAME96010" #The Treaty of $CAPITAL$
+	desc = "EVTDESC96010"
+	news = yes
+	news_desc_long = "EVTDESC96010_NEWS_LONG"
+	news_desc_medium = "EVTDESC96010_NEWS_MEDIUM"
+	news_desc_short = "EVTDESC96010_NEWS_SHORT"
+	picture = "greatpowers"
+	major = yes
+
+	trigger = {
+		war = no
+		OR = {
+			has_country_modifier = great_war
+			has_country_modifier = great_war2
+			has_country_modifier = great_war3
+			has_country_flag = in_great_war
+			has_country_flag = ultimatum_accepted
+			has_country_flag = dismantling_treaty
+		}
+		tag = ENG
+		OR = {
+			has_country_flag = ultimatum_accepted
+			has_country_flag = dismantling_treaty
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA96010" #We welcome peace
+		clr_country_flag = dismantle_declared
+		clr_country_flag = dismantling_treaty
+		clr_country_flag = in_great_war
+		clr_country_flag = enemy_of_my_enemy
+		clr_country_flag = total_collapse
+		clr_country_flag = ultimatum_accepted
+		remove_country_modifier = great_war
+		remove_country_modifier = great_war2
+		remove_country_modifier = great_war3
+		set_global_flag = british_dismantled
+		war_exhaustion = 40
+
+		#if over the badboy limit, reduce infamy to 24.99, otherwise reduce infamy by 10
+		random_owned = {
+			limit = {
+				owner = { NOT = { badboy = 1 } }
+			}
+			owner = {
+				badboy = -10
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = { badboy = 1 }
+			}
+			owner = { badboy = -1000 }
+			owner = { badboy = 24.99 }
+		}
+
+		#remove the ultimatum_refused global, if this is an Infamy war
+		random_owned = {
+			limit = {
+				owner = { has_country_modifier = international_pariah }
+			}
+			owner = {
+				clr_global_flag = ultimatum_refused
+			}
+		}
+
+		#prestige hit
+		prestige_factor = -0.5
+
+		#Add Spanish cores to Gibraltar
+		random_country = {
+			limit = {
+				tag = SPA
+				exists = yes
+			}
+			517 = {
+				remove_core = ENG
+				add_core = SPA
+			}
+		}
+		random_country = {
+			limit = {
+				tag = SPC
+				exists = yes
+			}
+			517 = {
+				remove_core = ENG
+				add_core = SPC
+			}
+		}
+		
+		#Add French cores, if France is in a truce
+		random_country = {
+			limit = {
+				tag = FRA
+				exists = yes
+				truce_with = THIS
+			}
+			419 = { add_core = FRA }
+		}
+		
+		random_country = {
+			limit = {
+				tag = BOR
+				exists = yes
+				truce_with = THIS
+			}
+			419 = { add_core = BOR }
+		}
+		
+		#if any Congress Poland cores owned, re-add cores to Russia
+		any_owned = {
+			limit = {
+				OR = {
+					region = RUS_706
+					region = RUS_715
+					province_id = 707
+					province_id = 719
+				}
+				NOT = { province_id = 703 }
+				NOT = { is_core = RUS }
+				owner = { truce_with = RUS }
+			}
+			add_core = RUS
+		}
+				
+		#if any Polish cores owned, re-add cores to Germany
+		any_owned = {
+			limit = {
+				OR = {
+					region = PRU_690
+					region = PRU_701
+					province_id = 684
+					province_id = 685
+				}
+				NOT = { is_core = GER }
+				owner = {
+					OR = {
+						truce_with = PRU
+						truce_with = NGF
+						truce_with = GER
+					}
+				}
+			}
+			add_core = GER
+		}
+		
+		#if any Polish cores owned, re-add cores to German Confederation
+		any_owned = {
+			limit = {
+				OR = {
+					region = PRU_690
+					region = PRU_701
+					province_id = 684
+					province_id = 685
+				}
+				NOT = { is_core = GCF }
+				owner = {
+					truce_with = GCF
+				}
+			}
+			add_core = GCF
+		}
+		
+		#remove cores on overseas provinces
+		any_owned = {
+			limit = {
+				is_overseas = yes
+				is_core = THIS
+			}
+			remove_core = THIS
+		}
+
+		#normalize relations with treaty members
+		any_country = {
+			limit = {
+				exists = yes
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			relation = { who = THIS value = 200 }
+		}
+
+		#release all cores to anyone with a truce
+		any_country = {
+			limit = {
+				exists = yes
+				any_core = { owned_by = THIS }
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			all_core = {
+				limit = {
+					is_core = THIS
+					state_scope = {
+						NOT = { any_owned_province = { is_capital = yes } }
+					}
+				}
+				remove_core = THIS
+			}
+			country_event = 96014
+		}
+
+		#release all vassals
+		any_country = {
+			limit = { vassal_of = THIS }
+			all_core = {
+				limit = { is_core = THIS }
+				remove_core = THIS
+			}
+			leave_alliance = THIS
+			country_event = 96015
+		}
+
+		#release 50% of non-existing Indian minors as allies
+		any_country = {
+			limit = {
+				OR = {
+					tag = MAH
+					tag = MUG
+					tag = BNG
+				}
+				any_core = { owned_by = THIS }
+				exists = no
+				civilized = no
+			}
+		}
+		any_country = {
+			limit = {
+				any_core = { owned_by = THIS }
+				exists = no
+				is_cultural_union = no
+				is_culture_group = south_asian
+			}
+			random = {
+				chance = 50
+				country_event = 96060
+			}
+		}
+
+		#free Ireland, Canada, South Africa, Australia and New Zealand
+		any_country = {
+			limit = {
+				OR = {
+					tag = CAN
+					tag = NEW
+					tag = IRE
+					tag = AST
+					tag = NZL
+					tag = SAF
+				}
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			all_core = {
+				limit = { is_core = THIS }
+				remove_core = THIS
+			}
+			country_event = 96060
+		}				
+
+		#release non-existing countries		
+		any_country = {
+			limit = {
+				OR = {
+					civilized = yes
+					tag = JAP
+					tag = KOR
+					tag = SIA
+					tag = MOR
+					tag = ALD
+					tag = TUN
+					tag = EGY
+				}
+				any_core = { owned_by = THIS }
+				exists = no
+				is_cultural_union = no
+				NOT = { is_culture_group = british }
+				NOT = { has_country_flag = post_colonial_country }
+			}
+			all_core = {
+				limit = {
+					is_core = THIS
+					state_scope = {
+						NOT = { any_owned_province = { is_capital = yes } }
+					}
+				}
+				remove_core = THIS
+			}
+			country_event = 96012
+		}
+
+		#give cores back to any non-allied country
+		any_country = {
+			limit = {
+				exists = yes
+				any_core = { owned_by = THIS }
+				NOT = { alliance_with = THIS }
+				NOT = { truce_with = THIS }
+			}
+			country_event = 96013
+		}
+
+		#give colonies to truce GP's
+		random_owned = {
+			limit = {
+				OR = {
+					is_overseas = yes
+					is_colonial = yes
+				}
+			}
+			any_country = {
+				limit = {
+					ai = no
+					is_greater_power = yes
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96011
+			}
+			any_country = {
+				limit = {
+					NOT = {
+						any_greater_power = {
+							ai = no
+							truce_with = THIS
+						}
+					}
+					ai = yes
+					is_greater_power = yes
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96016
+			}
+			any_country = {
+				limit = {
+					NOT = {
+						any_greater_power = {
+							ai = no
+							truce_with = THIS
+						}
+					}
+					is_greater_power = no
+					is_secondary_power = yes
+					is_vassal = no
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96017
+			}
+		}
+
+		#add fascism and punitive effects
+		random_owned = {
+			limit = {
+				owner = {
+					is_ideology_enabled = fascist
+					NOT = { government = fascist_dictatorship }
+				}
+			}
+			owner = {
+				soldiers = {
+					limit = { is_primary_culture = yes }
+					ideology = {
+						value = fascist
+						factor = 0.2
+					}
+				}
+				officers = {
+					limit = { is_primary_culture = yes }
+					ideology = {
+						value = fascist
+						factor = 0.4
+					}
+				}
+				any_pop = {
+					limit = {
+						is_primary_culture = yes
+						NOT = {
+							OR = {
+								type = soldiers
+								type = officers
+							}
+						}
+					}
+					ideology = {
+						value = fascist
+						factor = 0.1
+					}
+				}
+			}
+		}
+		add_country_modifier = {
+			name = punitive_effects
+			duration = 1825
+		}
+		add_country_modifier = {
+			name = no_more_war
+			duration = 3650
+		}
+	}
+}
+
+#Dismantling Japan
+country_event = {
+
+	id = 96051
+	title = "EVTNAME96010" #The Treaty of $CAPITAL$
+	desc = "EVTDESC96010"
+	news = yes
+	news_desc_long = "EVTDESC96010_NEWS_LONG"
+	news_desc_medium = "EVTDESC96010_NEWS_MEDIUM"
+	news_desc_short = "EVTDESC96010_NEWS_SHORT"
+	picture = "greatpowers"
+	major = yes
+
+	trigger = {
+		war = no
+		OR = {
+			has_country_modifier = great_war
+			has_country_modifier = great_war2
+			has_country_modifier = great_war3
+			has_country_flag = in_great_war
+			has_country_flag = ultimatum_accepted
+			has_country_flag = dismantling_treaty
+		}
+		OR = {
+			tag = JAP
+			tag = TKG
+		}
+		OR = {
+			has_country_flag = ultimatum_accepted
+			has_country_flag = dismantling_treaty
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA96010" #We welcome peace
+		clr_country_flag = dismantle_declared
+		clr_country_flag = dismantling_treaty
+		clr_country_flag = in_great_war
+		clr_country_flag = enemy_of_my_enemy
+		clr_country_flag = total_collapse
+		clr_country_flag = ultimatum_accepted
+		remove_country_modifier = great_war
+		remove_country_modifier = great_war2
+		remove_country_modifier = great_war3
+		war_exhaustion = 40
+
+		#if over the badboy limit, reduce infamy to 24.99, otherwise reduce infamy by 10
+		random_owned = {
+			limit = {
+				owner = { NOT = { badboy = 1 } }
+			}
+			owner = {
+				badboy = -10
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = { badboy = 1 }
+			}
+			owner = { badboy = -1000 }
+			owner = { badboy = 24.99 }
+		}
+
+		#remove the ultimatum_refused global, if this is an Infamy war
+		random_owned = {
+			limit = {
+				owner = { has_country_modifier = international_pariah }
+			}
+			owner = {
+				clr_global_flag = ultimatum_refused
+			}
+		}
+
+		#prestige hit
+		prestige_factor = -0.5
+		
+		#If Russia has truce, apply cores to Sakhalin & Kurils
+		random_country = {
+			limit = {
+				tag = RUS
+				truce_with = THIS
+			}
+			JAP = {
+				all_core = {
+					limit = { is_core = RUS }
+					remove_core = THIS
+				}
+				any_owned = {
+					limit = { region = JAP_1086 }
+					remove_core = THIS
+					add_core = RUS
+				}
+			}
+		}
+		
+		#if any Congress Poland cores owned, re-add cores to Russia
+		any_owned = {
+			limit = {
+				OR = {
+					region = RUS_706
+					region = RUS_715
+					province_id = 707
+					province_id = 719
+				}
+				NOT = { province_id = 703 }
+				NOT = { is_core = RUS }
+				owner = { truce_with = RUS }
+			}
+			add_core = RUS
+		}
+				
+		#if any Polish cores owned, re-add cores to Germany
+		any_owned = {
+			limit = {
+				OR = {
+					region = PRU_690
+					region = PRU_701
+					province_id = 684
+					province_id = 685
+				}
+				NOT = { is_core = GER }
+				owner = {
+					OR = {
+						truce_with = PRU
+						truce_with = NGF
+						truce_with = GER
+					}
+				}
+			}
+			add_core = GER
+		}
+		
+		#if any Polish cores owned, re-add cores to German Confederation
+		any_owned = {
+			limit = {
+				OR = {
+					region = PRU_690
+					region = PRU_701
+					province_id = 684
+					province_id = 685
+				}
+				NOT = { is_core = GCF }
+				owner = {
+					truce_with = GCF
+				}
+			}
+			add_core = GCF
+		}
+		
+		#remove cores on overseas provinces
+		any_owned = {
+			limit = {
+				is_overseas = yes
+				is_core = THIS
+			}
+			remove_core = THIS
+		}
+
+		#normalize relations with treaty members
+		any_country = {
+			limit = {
+				exists = yes
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			relation = { who = THIS value = 200 }
+		}
+
+		#release all cores to anyone with a truce
+		any_country = {
+			limit = {
+				exists = yes
+				any_core = { owned_by = THIS }
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			all_core = {
+				limit = {
+					is_core = THIS
+					state_scope = {
+						NOT = { any_owned_province = { is_capital = yes } }
+					}
+				}
+				remove_core = THIS
+			}
+			country_event = 96014
+		}
+
+		#release all vassals
+		any_country = {
+			limit = { vassal_of = THIS }
+			all_core = {
+				limit = { is_core = THIS }
+				remove_core = THIS
+			}
+			leave_alliance = THIS
+			country_event = 96015
+		}
+		
+		#release non-existing countries		
+		any_country = {
+			limit = {
+				OR = {
+					civilized = yes
+					tag = KOR
+					tag = SIA
+					tag = MOR
+					tag = ALD
+					tag = TUN
+					tag = EGY
+				}
+				any_core = { owned_by = THIS }
+				exists = no
+				is_cultural_union = no
+				NOT = { has_country_flag = post_colonial_country }
+			}
+			all_core = {
+				limit = {
+					is_core = THIS
+					state_scope = {
+						NOT = { any_owned_province = { is_capital = yes } }
+					}
+				}
+				remove_core = THIS
+			}
+			country_event = 96012
+		}
+
+		#give cores back to any non-allied country
+		any_country = {
+			limit = {
+				exists = yes
+				any_core = { owned_by = THIS }
+				NOT = { alliance_with = THIS }
+				NOT = { truce_with = THIS }
+			}
+			country_event = 96013
+		}
+
+		#give colonies to truce GP's
+		random_owned = {
+			limit = {
+				OR = {
+					is_overseas = yes
+					is_colonial = yes
+				}
+			}
+			any_country = {
+				limit = {
+					ai = no
+					is_greater_power = yes
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96011
+			}
+			any_country = {
+				limit = {
+					NOT = {
+						any_greater_power = {
+							ai = no
+							truce_with = THIS
+						}
+					}
+					ai = yes
+					is_greater_power = yes
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96016
+			}
+			any_country = {
+				limit = {
+					NOT = {
+						any_greater_power = {
+							ai = no
+							truce_with = THIS
+						}
+					}
+					is_greater_power = no
+					is_secondary_power = yes
+					is_vassal = no
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96017
+			}
+		}
+
+		#add fascism and punitive effects
+		random_owned = {
+			limit = {
+				owner = {
+					is_ideology_enabled = fascist
+					NOT = { government = fascist_dictatorship }
+				}
+			}
+			owner = {
+				soldiers = {
+					limit = { is_primary_culture = yes }
+					ideology = {
+						value = fascist
+						factor = 0.2
+					}
+				}
+				officers = {
+					limit = { is_primary_culture = yes }
+					ideology = {
+						value = fascist
+						factor = 0.4
+					}
+				}
+				any_pop = {
+					limit = {
+						is_primary_culture = yes
+						NOT = {
+							OR = {
+								type = soldiers
+								type = officers
+							}
+						}
+					}
+					ideology = {
+						value = fascist
+						factor = 0.1
+					}
+				}
+			}
+		}
+		add_country_modifier = {
+			name = punitive_effects
+			duration = 1825
+		}
+		add_country_modifier = {
+			name = no_more_war
+			duration = 3650
+		}
+	}
+}
+
+#Dismantling France
+country_event = {
+
+	id = 96055
+	title = "EVTNAME96010" #The Treaty of $CAPITAL$
+	desc = "EVTDESC96010"
+	news = yes
+	news_desc_long = "EVTDESC96010_NEWS_LONG"
+	news_desc_medium = "EVTDESC96010_NEWS_MEDIUM"
+	news_desc_short = "EVTDESC96010_NEWS_SHORT"
+	picture = "greatpowers"
+	major = yes
+
+	trigger = {
+		war = no
+		OR = {
+			has_country_modifier = great_war
+			has_country_modifier = great_war2
+			has_country_modifier = great_war3
+			has_country_flag = in_great_war
+			has_country_flag = ultimatum_accepted
+			has_country_flag = dismantling_treaty
+		}
+		OR = {
+			tag = FRA
+			tag = BOR
+		}
+		OR = {
+			has_country_flag = ultimatum_accepted
+			has_country_flag = dismantling_treaty
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA96010" #We welcome peace
+		clr_country_flag = dismantle_declared
+		clr_country_flag = dismantling_treaty
+		clr_country_flag = in_great_war
+		clr_country_flag = enemy_of_my_enemy
+		clr_country_flag = total_collapse
+		clr_country_flag = ultimatum_accepted
+		remove_country_modifier = great_war
+		remove_country_modifier = great_war2
+		remove_country_modifier = great_war3
+		war_exhaustion = 40
+		set_global_flag = france_dismantled
+
+		#if over the badboy limit, reduce infamy to 24.99, otherwise reduce infamy by 10
+		random_owned = {
+			limit = {
+				owner = { NOT = { badboy = 1 } }
+			}
+			owner = {
+				badboy = -10
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = { badboy = 1 }
+			}
+			owner = { badboy = -1000 }
+			owner = { badboy = 24.99 }
+		}
+
+		#remove the ultimatum_refused global, if this is an Infamy war
+		random_owned = {
+			limit = {
+				owner = { has_country_modifier = international_pariah }
+			}
+			owner = {
+				clr_global_flag = ultimatum_refused
+			}
+		}
+
+		#prestige hit
+		prestige_factor = -0.5
+		
+		#re-establish Breton cores and release them
+		FRA_420 = { add_core = BRT secede_province = BRT }
+		
+		#remove cores from Alsace-Lorraine if Germany has a truce	
+		random_country = {
+			limit = {
+				is_culture_group = germanic
+				truce_with = THIS
+				NOT = { exists = GCF }
+			}
+			FRA_412 = {
+				remove_core = THIS
+				add_core = GER
+			}
+		}
+		random_country = {
+			limit = {
+				tag = GCF
+				truce_with = THIS
+				THIS = { owns = 412 }
+				NOT = { exists = GER }
+			}
+			FRA_412 = { secede_province = GCF 	add_core = GCF }
+		}
+		random_country = {
+			limit = {
+				tag = PRU
+				truce_with = THIS
+				THIS = { owns = 412 }
+				NOT = { exists = GER }
+			}
+			FRA_412 = { secede_province = PRU }
+		}
+		random_country = {
+			limit = {
+				tag = AUS
+				truce_with = THIS
+				THIS = { owns = 412 }
+				NOT = { exists = GER }
+			}
+			FRA_412 = { secede_province = AUS }
+		}
+		random_country = {
+			limit = {
+				tag = KUK
+				truce_with = THIS
+				THIS = { owns = 412 }
+				NOT = { exists = GER }
+			}
+			FRA_412 = { secede_province = KUK }
+		}
+		random_country = {
+			limit = {
+				tag = BAV
+				truce_with = THIS
+				THIS = { owns = 412 }
+				NOT = { exists = GER }
+			}
+			FRA_412 = { secede_province = BAV }
+		}
+		
+		#Remove French Cores if they already have a truce with Italy/Sardinia-Piedmont
+		
+		random_country = {
+			limit = {
+				is_culture_group = italian
+				truce_with = THIS
+				owns = 465
+				owns = 466
+				owns = 472
+				owns = 473
+			}
+			465 = { remove_core = THIS }
+			466 = { remove_core = THIS }
+			472 = { remove_core = THIS }
+			473 = { remove_core = THIS }
+			
+		}
+
+		#Add Italian cores, if Italy is in a truce
+		random_country = {
+			limit = {
+				tag = ITA
+				truce_with = THIS
+			}
+			SAR_466 = {
+				add_core = ITA
+				secede_province = ITA
+			}
+			472 = {
+				add_core = ITA
+				secede_province = ITA
+			}
+			473 = { add_core = ITA secede_province = ITA }
+			
+			454 = { secede_province = ITA }
+			469 = { secede_province = ITA }
+			470 = { secede_province = ITA }
+			471 = { secede_province = ITA }
+		}
+		random_country = {
+			limit = {
+				tag = SAR
+				NOT = { exists = ITA }
+				truce_with = THIS
+			}
+			SAR_466 = { add_core = SAR secede_province = SAR }
+			472 = { add_core = SAR secede_province = SAR }
+			473 = { add_core = SAR secede_province = SAR }
+			
+			454 = { secede_province = SAR }
+			469 = { secede_province = SAR }
+			470 = { secede_province = SAR }
+			471 = { secede_province = SAR }
+		}
+		
+		
+		#Add Belgian cores, if Belgium/Flanders is in a truce
+		random_country = {
+			limit = {
+				owns = 387
+				owns = 392
+				NOT = { owns = 400 }
+				NOT = { owns = 405 }
+				OR = {
+					tag = BEL
+					tag = NET
+					tag = FLA
+				}
+				truce_with = THIS
+			}
+			country_event = 96093
+		}
+
+		#Add Spanish cores, if Spain is in a truce
+		random_country = {
+			limit = {
+				tag = SPA
+				truce_with = THIS
+			}
+			457 = { add_core = SPA secede_province = SPA }
+			460 = { add_core = SPA secede_province = SPA }
+			464 = { add_core = SPA secede_province = SPA }
+		}
+		random_country = {
+			limit = {
+				tag = SPC
+				truce_with = THIS
+			}
+			457 = { add_core = SPC secede_province = SPC }
+			460 = { add_core = SPC secede_province = SPC }
+			464 = { add_core = SPC secede_province = SPC }
+		}
+		
+		#if any Congress Poland cores owned, re-add cores to Russia
+		any_owned = {
+			limit = {
+				OR = {
+					region = RUS_706
+					region = RUS_715
+					province_id = 707
+					province_id = 719
+				}
+				NOT = { province_id = 703 }
+				NOT = { is_core = RUS }
+				owner = { truce_with = RUS }
+			}
+			add_core = RUS
+		}
+				
+		#if any Polish cores owned, re-add cores to Germany
+		any_owned = {
+			limit = {
+				OR = {
+					region = PRU_690
+					region = PRU_701
+					province_id = 684
+					province_id = 685
+				}
+				NOT = { is_core = GER }
+				owner = {
+					OR = {
+						truce_with = PRU
+						truce_with = NGF
+						truce_with = GER
+					}
+				}
+			}
+			add_core = GER
+		}
+		
+		#if any Polish cores owned, re-add cores to German Confederation
+		any_owned = {
+			limit = {
+				OR = {
+					region = PRU_690
+					region = PRU_701
+					province_id = 684
+					province_id = 685
+				}
+				NOT = { is_core = GCF }
+				owner = {
+					truce_with = GCF
+				}
+			}
+			add_core = GCF
+		}
+
+		#normalize relations with treaty members
+		any_country = {
+			limit = {
+				exists = yes
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			relation = { who = THIS value = 200 }
+		}	
+
+		#release all cores to anyone with a truce
+		any_country = {
+			limit = {
+				exists = yes
+				any_core = { owned_by = THIS }
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			all_core = {
+				limit = {
+					is_core = THIS
+					state_scope = {
+						NOT = { any_owned_province = { is_capital = yes } }
+					}
+				}
+				remove_core = THIS
+			}
+			country_event = 96014
+		}
+
+		#release all vassals
+		any_country = {
+			limit = { vassal_of = THIS }
+			leave_alliance = THIS
+			country_event = 96015
+		}
+			
+
+		#release non-existing countries		
+		any_country = {
+			limit = {
+				OR = {
+					civilized = yes
+					tag = JAP
+					tag = KOR
+					tag = SIA
+					tag = EGY
+				}
+				NOT = {
+					tag = GUY
+					tag = ALD
+					tag = TUN
+					tag = BSQ
+					tag = CAT
+				}
+				any_core = { owned_by = THIS }
+				exists = no
+				is_cultural_union = no
+				NOT = { is_culture_group = french }
+				NOT = { has_country_flag = post_colonial_country }
+			}
+			all_core = {
+				limit = {
+					is_core = THIS
+					state_scope = {
+						NOT = { any_owned_province = { is_capital = yes } }
+					}
+				}
+				remove_core = THIS
+			}
+			country_event = 96012
+		}
+
+
+		#give cores to any non-allied country
+		any_country = {
+			limit = {
+				exists = yes
+				any_core = { owned_by = THIS }
+				NOT = { alliance_with = THIS }
+				NOT = { truce_with = THIS }
+			}
+			country_event = 96013
+		}
+
+		#Miquelon goes to the owner of Newfoundland
+		random_country = { 
+			limit = {
+				owns = 74
+				NOT = { owns = 77 }
+				NOT = { tag = FRA }
+				NOT = { tag = BOR }
+			}
+			country_event = 96092
+		}
+		
+		#give colonies without cores to truce GP's
+		random_owned = {
+			limit = {
+				OR = {
+					is_overseas = yes
+					is_colonial = yes
+				}
+				NOT = {
+					is_core = ALD
+					is_core = MOR
+					is_core = TUN
+				}
+				NOT = {
+					capital_scope = { continent = west_africa }
+				}
+			}
+			any_country = {
+				limit = {
+					ai = no
+					is_greater_power = yes
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				#country_event = 96011
+			}
+			any_country = {
+				limit = {
+					NOT = {
+						any_greater_power = {
+							ai = no
+							truce_with = THIS
+						}
+					}
+					ai = yes
+					is_greater_power = yes
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96016
+			}
+			any_country = {
+				limit = {
+					NOT = {
+						any_greater_power = {
+							ai = no
+							truce_with = THIS
+						}
+					}
+					is_greater_power = no
+					is_secondary_power = yes
+					is_vassal = no
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				#country_event = 96017
+			}
+		}
+
+		#add fascism and punitive effects
+		random_owned = {
+			limit = {
+				owner = {
+					is_ideology_enabled = fascist
+					NOT = { government = fascist_dictatorship }
+				}
+			}
+			owner = {
+				soldiers = {
+					limit = { is_primary_culture = yes }
+					ideology = {
+						value = fascist
+						factor = 0.2
+					}
+				}
+				officers = {
+					limit = { is_primary_culture = yes }
+					ideology = {
+						value = fascist
+						factor = 0.4
+					}
+				}
+				any_pop = {
+					limit = {
+						is_primary_culture = yes
+						NOT = {
+							OR = {
+								type = soldiers
+								type = officers
+							}
+						}
+					}
+					ideology = {
+						value = fascist
+						factor = 0.1
+					}
+				}
+			}
+		}
+		add_country_modifier = {
+			name = punitive_effects
+			duration = 1825
+		}
+		add_country_modifier = {
+			name = no_more_war
+			duration = 3650
+		}
+	}
+}
+
+# Dismantling Austria
+country_event = {
+
+	id = 96056
+	title = "EVTNAME96010" #The Treaty of $CAPITAL$
+	desc = "EVTDESC96010"
+	news = yes
+	news_desc_long = "EVTDESC96010_NEWS_LONG"
+	news_desc_medium = "EVTDESC96010_NEWS_MEDIUM"
+	news_desc_short = "EVTDESC96010_NEWS_SHORT"
+	picture = "greatpowers"
+	major = yes
+
+	trigger = {
+		war = no
+		OR = {
+			has_country_modifier = great_war
+			has_country_modifier = great_war2
+			has_country_modifier = great_war3
+			has_country_flag = in_great_war
+			has_country_flag = ultimatum_accepted
+			has_country_flag = dismantling_treaty
+		}
+		OR = {
+			tag = AUS
+			tag = KUK
+			tag = DNB
+		}
+		OR = {
+			has_country_flag = ultimatum_accepted
+			has_country_flag = dismantling_treaty
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 10
+	}
+
+	option = {
+		name = "EVTOPTA96010" #We welcome peace
+		clr_country_flag = dismantle_declared
+		clr_country_flag = dismantling_treaty
+		clr_country_flag = in_great_war
+		clr_country_flag = calling_all_allies
+		clr_country_flag = enemy_of_my_enemy
+		clr_country_flag = total_collapse
+		clr_country_flag = ultimatum_accepted
+		remove_country_modifier = great_war
+		remove_country_modifier = great_war2
+		remove_country_modifier = great_war3
+		war_exhaustion = 40
+
+		#if over the badboy limit, reduce infamy to 24.99, otherwise reduce infamy by 10
+		random_owned = {
+			limit = {
+				owner = { NOT = { badboy = 1 } }
+			}
+			owner = {
+				badboy = -10
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = { badboy = 1 }
+			}
+			owner = { badboy = -1000 }
+			owner = { badboy = 24.99 }
+		}
+
+		#remove the ultimatum_refused global, if this is an Infamy war
+		random_owned = {
+			limit = {
+				owner = { has_country_modifier = international_pariah }
+			}
+			owner = {
+				clr_global_flag = ultimatum_refused
+			}
+		}
+
+		#prestige hit
+		prestige_factor = -0.5
+
+		#lose all cores outside of Austria proper
+		all_core = {
+			limit = {
+				NOT = {
+					region = AUS_612
+					region = AUS_613
+					region = AUS_619
+					region = AUS_734
+				}
+			}
+			remove_core = THIS
+		}
+		
+		#if Schleswig owned, re-add cores for Denmark
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 370
+					province_id = 371
+				}
+			}
+			add_core = DEN
+		}
+		
+		
+		#remove cores from Alsace-Lorraine if owned and France has a truce	
+		random_country = {
+			limit = {
+				tag = FRA
+				exists = yes
+				truce_with = THIS
+				THIS = { owns = 412 }
+			}
+			FRA_412 = {
+				remove_core = GER
+				remove_core = GCF
+				add_core = FRA
+			}
+		}
+		
+		#remove cores from Alsace-Lorraine if owned and France has a truce	
+		random_country = {
+			limit = {
+				tag = BOR
+				exists = yes
+				truce_with = THIS
+				THIS = { owns = 412 }
+			}
+			FRA_412 = {
+				remove_core = GER
+				remove_core = GCF
+				add_core = BOR
+			}
+		}
+
+		#If Russia is at truce, give them Galicia if Poland doesn't exist
+		random_country = {
+			limit = {
+				tag = RUS
+				truce_with = THIS
+				NOT = { exists = POL }
+				NOT = { exists = PLC }
+				THIS = { owns = 702 }
+			}
+			AUS_702 = { add_core = RUS }
+		}
+
+		#Poland gets cores back, if it exists			
+		random_country = {
+			limit = {
+				tag = POL
+				exists = yes
+			}
+			country_event = 96014
+		}
+		
+		#if any Congress Poland cores owned, re-add cores to Russia
+		any_owned = {
+			limit = {
+				OR = {
+					region = RUS_706
+					region = RUS_715
+					province_id = 707
+					province_id = 719
+				}
+				NOT = { province_id = 703 }
+				NOT = { is_core = RUS }
+				owner = { truce_with = RUS }
+			}
+			add_core = RUS
+		}
+				
+		#if any Polish cores owned, re-add cores to Germany
+		any_owned = {
+			limit = {
+				OR = {
+					region = PRU_690
+					region = PRU_701
+					province_id = 684
+					province_id = 685
+				}
+				NOT = { is_core = GER }
+				owner = {
+					OR = {
+						truce_with = PRU
+						truce_with = NGF
+						truce_with = GER
+					}
+				}
+			}
+			add_core = GER
+		}
+		
+		#if any Polish cores owned, re-add cores to German Confederation
+		any_owned = {
+			limit = {
+				OR = {
+					region = PRU_690
+					region = PRU_701
+					province_id = 684
+					province_id = 685
+				}
+				NOT = { is_core = GCF }
+				owner = {
+					truce_with = GCF
+				}
+			}
+			add_core = GCF
+		}
+
+
+		#normalize relations with treaty members
+		any_country = {
+			limit = {
+				exists = yes
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			relation = { who = THIS value = 200 }
+		}
+
+		#release all cores to anyone with a truce
+		any_country = {
+			limit = {
+				exists = yes
+				any_core = { owned_by = THIS }
+				NOT = { this_culture_union = THIS }
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			country_event = 96014
+		}
+
+		#Dismantle SGF, if it's a vassal
+		any_country = {
+			limit = {
+				tag = SGF
+				owns = 599
+				vassal_of = THIS
+			}
+			all_core = { remove_core = SGF }
+			BAV_595 = { add_core = BAV }
+			BAV_599 = { add_core = BAV }
+			BAD_586 = { add_core = BAD }
+			WUR_589 = { add_core = WUR }
+			594 = {
+				add_core = PRU
+				remove_core = WUR
+			}
+			any_country = {
+				limit = {
+					exists = yes
+					any_core = { owned_by = THIS }
+					NOT = { this_culture_union = THIS }
+					truce_with = THIS
+				}
+				country_event = 96014
+			}
+			any_country = {
+				limit = {
+					any_core = { owned_by = SGF }
+					NOT = { tag = BAV }
+					exists = no
+					is_cultural_union = no
+				}
+				all_core = {
+					limit = { owned_by = SGF }
+					secede_province = THIS
+				}
+			}
+			change_tag = BAV
+			leave_alliance = THIS
+			country_event = 96015
+		}				
+
+		#release all vassals
+		any_country = {
+			limit = { vassal_of = THIS }
+			leave_alliance = THIS
+			country_event = 96015
+		}
+		
+		#remove Hungarian cores
+		any_country = {
+			limit = {
+				tag = SLV
+				exists = no
+				HUN = { exists = no }
+				any_core = { owned_by = THIS }
+			}
+			all_core = {
+				limit = { owned_by = THIS }
+				remove_core = HUN
+			}
+		}
+
+		#release Czechoslovakia, if possible
+		any_country = {
+			limit = {
+				tag = CZH
+				exists = no
+				THIS = {
+					owns = 625
+					owns = 633
+				}
+				NOT = { exists = BOH }
+				NOT = { exists = SLV }
+			}
+			set_global_flag = czechoslovakia_formed
+			BOH = { all_core = { add_core = CZH } }
+			SLV = { all_core = { add_core = CZH } }
+			2584 = { add_core = CZH }
+			689 = { add_core = CZH }
+			all_core = {
+				limit = {
+					is_core = THIS
+					state_scope = {
+						NOT = { any_owned_province = { is_capital = yes } }
+					}
+				}
+				remove_core = THIS
+			}
+			country_event = 96012
+		}
+
+		#release non-existing countries			
+		any_country = {
+			limit = {
+				OR = {
+					civilized = yes
+					tag = JAP
+					tag = KOR
+					tag = SIA
+					tag = MOR
+					tag = ALD
+					tag = TUN
+					tag = EGY
+				}
+				any_core = { owned_by = THIS }
+				exists = no
+				NOT = { tag = RUT }
+				NOT = { tag = UKR }
+				is_cultural_union = no
+				NOT = { is_culture_group = germanic }
+				NOT = { has_country_flag = post_colonial_country }
+			}
+			all_core = {
+				limit = {
+					is_core = THIS
+					state_scope = {
+						NOT = { any_owned_province = { is_capital = yes } }
+					}
+				}
+				remove_core = THIS
+			}
+			country_event = 96012
+		}
+
+		# release any acquired German states
+		any_country = {
+			limit = {
+				any_core = { owned_by = THIS }
+				exists = no
+				NOT = { tag = AUS }
+				NOT = { tag = KUK }
+				is_cultural_union = no
+				is_culture_group = germanic
+			}
+			country_event = 96018
+		}
+
+		#give cores back to neighboring, non-allied countries
+		any_neighbor_country = {
+			limit = {
+				any_core = { owned_by = THIS }
+				NOT = { alliance_with = THIS }
+				NOT = { truce_with = THIS }
+				NOT = { this_culture_union = THIS }
+			}
+			country_event = 96013
+		}
+
+		#give colonies without cores to truce GP's
+		random_owned = {
+			limit = {
+				OR = {
+					is_overseas = yes
+					is_colonial = yes
+				}
+			}
+			any_country = {
+				limit = {
+					ai = no
+					is_greater_power = yes
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96011
+			}
+			any_country = {
+				limit = {
+					NOT = {
+						any_greater_power = {
+							ai = no
+							truce_with = THIS
+						}
+					}
+					ai = yes
+					is_greater_power = yes
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96016
+			}
+			any_country = {
+				limit = {
+					NOT = {
+						any_greater_power = {
+							ai = no
+							truce_with = THIS
+						}
+					}
+					is_greater_power = no
+					is_secondary_power = yes
+					is_vassal = no
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96017
+			}
+		}
+
+		#add fascism and punitive effects
+		random_owned = {
+			limit = {
+				owner = {
+					is_ideology_enabled = fascist
+					NOT = { government = fascist_dictatorship }
+				}
+			}
+			owner = {
+				soldiers = {
+					limit = { is_primary_culture = yes }
+					ideology = {
+						value = fascist
+						factor = 0.2
+					}
+				}
+				officers = {
+					limit = { is_primary_culture = yes }
+					ideology = {
+						value = fascist
+						factor = 0.4
+					}
+				}
+				any_pop = {
+					limit = {
+						is_primary_culture = yes
+						NOT = {
+							OR = {
+								type = soldiers
+								type = officers
+							}
+						}
+					}
+					ideology = {
+						value = fascist
+						factor = 0.1
+					}
+				}
+			}
+		}
+		add_country_modifier = {
+			name = punitive_effects
+			duration = 1825
+		}
+		add_country_modifier = {
+			name = no_more_war
+			duration = 3650
+		}
+	}
+}
+
+# Dismantling the Ottoman Empire
+country_event = {
+
+	id = 96057
+	title = "EVTNAME96010" #The Treaty of $CAPITAL$
+	desc = "EVTDESC96010"
+	news = yes
+	news_desc_long = "EVTDESC96010_NEWS_LONG"
+	news_desc_medium = "EVTDESC96010_NEWS_MEDIUM"
+	news_desc_short = "EVTDESC96010_NEWS_SHORT"
+	picture = "greatpowers"
+	major = yes
+
+	trigger = {
+		war = no
+		OR = {
+			has_country_modifier = great_war
+			has_country_modifier = great_war2
+			has_country_modifier = great_war3
+			has_country_flag = in_great_war
+			has_country_flag = ultimatum_accepted
+			has_country_flag = dismantling_treaty
+		}
+		tag = TUR
+		OR = {
+			has_country_flag = ultimatum_accepted
+			has_country_flag = dismantling_treaty
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 10
+	}
+
+	option = {
+		name = "EVTOPTA96010" #We welcome peace
+		clr_country_flag = dismantle_declared
+		clr_country_flag = dismantling_treaty
+		clr_country_flag = in_great_war
+		clr_country_flag = calling_all_allies
+		clr_country_flag = enemy_of_my_enemy
+		clr_country_flag = total_collapse
+		clr_country_flag = ultimatum_accepted
+		remove_country_modifier = great_war
+		remove_country_modifier = great_war2
+		remove_country_modifier = great_war3
+		war_exhaustion = 40
+
+		#if over the badboy limit, reduce infamy to 24.99, otherwise reduce infamy by 10
+		random_owned = {
+			limit = {
+				owner = { NOT = { badboy = 1 } }
+			}
+			owner = {
+				badboy = -10
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = { badboy = 1 }
+			}
+			owner = { badboy = -1000 }
+			owner = { badboy = 24.99 }
+			
+		}
+
+		#remove the ultimatum_refused global, if this is an Infamy war
+		random_owned = {
+			limit = {
+				owner = { has_country_modifier = international_pariah }
+			}
+			owner = {
+				clr_global_flag = ultimatum_refused
+			}
+		}
+
+		#prestige hit
+		prestige_factor = -0.5
+		
+		#Return Eastern Rumelia to Bulgaria
+		random_owned = {
+			limit = {
+				province_id = 815
+				owned_by = TUR
+				NOT = { exists = RUM }
+			}
+			state_scope = {
+				any_owned = {
+					secede_province = RUM
+				}
+			}
+		}
+		
+		ANT = {
+			all_core = {
+				remove_core = ANT
+			}
+		}
+		
+		random_country = {
+			limit = {
+				tag = RUM
+				vassal_of = TUR
+			}
+			TUR = { release_vassal = RUM }
+		}
+		
+		#replace Libyan cores, if owned
+		random_owned = {
+			limit = {
+				province_id = 1731
+				NOT = { is_core = LBY }
+				NOT = { exists = TRI }
+			}
+			TRI = { all_core = { remove_core = TRI } }
+			TRI_1731 = { add_core = LBY }
+		}
+		
+		random_owned = {
+			limit = {
+				province_id = 1735
+				NOT = { is_core = LBY }
+				NOT = { exists = CYR }
+			}
+			CYR = {
+				all_core = { remove_core = CYR }
+			}
+			TRI_1735 = { add_core = LBY }
+		}
+		
+		#if any Congress Poland cores owned, re-add cores to Russia
+		any_owned = {
+			limit = {
+				OR = {
+					region = RUS_706
+					region = RUS_715
+					province_id = 707
+					province_id = 719
+				}
+				NOT = { province_id = 703 }
+				NOT = { is_core = RUS }
+				owner = { truce_with = RUS }
+			}
+			add_core = RUS
+		}
+				
+		#if any Polish cores owned, re-add cores to Germany
+		any_owned = {
+			limit = {
+				OR = {
+					region = PRU_690
+					region = PRU_701
+					province_id = 684
+					province_id = 685
+				}
+				NOT = { is_core = GER }
+				owner = {
+					OR = {
+						truce_with = PRU
+						truce_with = NGF
+						truce_with = GER
+					}
+				}
+			}
+			add_core = GER
+		}
+		
+		#if any Polish cores owned, re-add cores to German Confederation
+		any_owned = {
+			limit = {
+				OR = {
+					region = PRU_690
+					region = PRU_701
+					province_id = 684
+					province_id = 685
+				}
+				NOT = { is_core = GCF }
+				owner = {
+					truce_with = GCF
+				}
+			}
+			add_core = GCF
+		}
+
+
+		#lose all cores outside of Turkey proper
+		any_owned = {
+			limit = {
+				is_core = TUR
+				NOT = {
+					province_id = 900 #Antioch
+					region = TUR_860 #Thrace
+					region = TUR_869 #Izmir
+					region = EGY_843 #Aegean Islands
+					region = TUR_863 #Bursa
+					region = TUR_873 #Konya
+					region = TUR_876 #Ankara
+					region = TUR_880 #Kastamonu
+					region = TUR_882 #Trabizond
+					region = TUR_890 #Van
+					region = TUR_893 #Diyarbakir
+					region = TUR_894 #Adana
+					region = TUR_885 #Kars
+					region = TUR_855 #Cyprus
+				}
+			}
+			remove_core = TUR
+		}
+		any_country = {
+			any_owned = {
+				limit = {
+					is_core = TUR
+					NOT = {
+						province_id = 900 #Antioch
+						region = TUR_860 #Thrace
+						region = TUR_869 #Izmir
+						region = EGY_843 #Aegean Islands
+						region = TUR_863 #Bursa
+						region = TUR_873 #Konya
+						region = TUR_876 #Ankara
+						region = TUR_880 #Kastamonu
+						region = TUR_882 #Trabizond
+						region = TUR_890 #Van
+						region = TUR_893 #Diyarbakir
+						region = TUR_894 #Adana
+						region = TUR_885 #Kars
+						region = TUR_855 #Cyprus
+					}
+				}
+				remove_core = TUR
+			}
+		}
+
+		#normalize relations with treaty members
+		any_country = {
+			limit = {
+				exists = yes
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			relation = { who = THIS value = 200 }
+		}
+
+		#release all cores to anyone with a truce who isn't Greece
+		any_country = {
+			limit = {
+				exists = yes
+				NOT = { tag = GRE }
+				any_core = { owned_by = THIS }
+				NOT = { this_culture_union = THIS }
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			country_event = 96014
+		}
+		
+		#For Greece, given them all cores outside of Turkey
+		random_country = {
+			limit = {
+				exists = yes
+				tag = GRE
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+				owns = 830
+				THIS = { owns = 828 }
+			}
+			828 = {
+				add_core = GRE
+				secede_province = GRE
+				add_province_modifier = {
+					name = nationalist_agitation
+					duration = 1095
+				}
+				any_pop = {
+					limit = { has_pop_culture = turkish }
+					militancy = 10
+				}
+			}
+		}
+		random_country = {
+			limit = {
+				exists = yes
+				tag = GRE
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+				THIS = { owns = 869 }
+			}
+			869 = {
+				secede_province = GRE
+				add_province_modifier = {
+					name = nationalist_agitation
+					duration = 1095
+				}
+				any_pop = {
+					limit = { has_pop_culture = turkish }
+					militancy = 10
+				}
+			}
+		}
+		random_country = {
+			limit = {
+				exists = yes
+				tag = GRE
+				is_greater_power = yes
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			country_event = 96014
+		}
+		random_country = {
+			limit = {
+				exists = yes
+				tag = GRE
+				is_greater_power = no
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			THIS = {
+				any_owned = {
+					limit = {
+						is_core = GRE
+						NOT = {
+							province_id = 900 #Antioch
+							region = TUR_860 #Thrace
+							region = TUR_869 #Izmir
+							region = TUR_863 #Bursa
+							region = TUR_873 #Konya
+							region = TUR_876 #Ankara
+							region = TUR_880 #Kastamonu
+							region = TUR_882 #Trabizond
+							region = TUR_890 #Van
+							region = TUR_893 #Diyarbakir
+							region = TUR_894 #Adana
+							region = TUR_885 #Kars
+							region = TUR_855 #Cyprus
+						}
+					}
+					secede_province = GRE
+				}
+			}
+		}
+
+		#release all vassals
+		any_country = {
+			limit = { vassal_of = THIS }
+			leave_alliance = THIS
+			country_event = 96015
+		}
+		
+		#release non-existing countries			
+		any_country = {
+			limit = {
+				any_core = { owned_by = THIS }
+				exists = no
+				is_cultural_union = no
+				NOT = { has_country_flag = post_colonial_country }
+				NOT = {
+					tag = CLC
+					tag = PNT
+					tag = ARM
+					tag = KDS
+					tag = ASY
+					tag = CYP
+					tag = SYR
+					tag = LBN
+					tag = PLS
+					tag = JOR
+					tag = IRQ
+					tag = LBY
+					is_culture_group = west_african
+					is_culture_group = east_african
+					is_culture_group = central_african
+					is_culture_group = southern_african
+				}
+			}
+			all_core = {
+				limit = {
+					NOT = {
+						province_id = 900 #Antioch
+						region = TUR_860 #Thrace
+						region = TUR_869 #Izmir
+						region = EGY_843 #Aegean Islands
+						region = TUR_863 #Bursa
+						region = TUR_873 #Konya
+						region = TUR_876 #Ankara
+						region = TUR_880 #Kastamonu
+						region = TUR_882 #Trabizond
+						region = TUR_890 #Van
+						region = TUR_893 #Diyarbakir
+						region = TUR_894 #Adana
+						region = TUR_885 #Kars
+						region = TUR_855 #Cyprus
+					}
+					is_core = THIS
+					state_scope = {
+						NOT = { any_owned_province = { is_capital = yes } }
+					}
+				}
+				remove_core = THIS
+			}
+			country_event = 96012
+		}
+		
+		#give cores back to neighboring, non-allied countries
+		any_country = {
+			limit = {
+				exists = yes
+				neighbour = THIS
+				any_core = { owned_by = THIS }
+				NOT = { alliance_with = THIS }
+				NOT = { truce_with = THIS }
+				NOT = { this_culture_union = THIS }
+			}
+			country_event = 96013
+		}
+		
+		#release Cyprus as a vassal to a European GP
+		any_country = {
+			limit = {
+				tag = CYP
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			country_event = 96061
+		}
+		
+		#release Syria as a vassal to a European GP
+		any_country = {
+			limit = {
+				tag = SYR
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			country_event = 96061
+		}
+		
+		#release Lebanon as a vassal to a European GP
+		any_country = {
+			limit = {
+				tag = LBN
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			country_event = 96061
+		}
+		
+		#release Palestine as a vassal to a European GP
+		any_country = {
+			limit = {
+				tag = PLS
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			country_event = 96061
+		}
+
+		#release Transjordan as a vassal to a European GP
+		any_country = {
+			limit = {
+				tag = JOR
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			country_event = 96061
+		}
+
+		#release Iraq as a vassal to a European GP
+		any_country = {
+			limit = {
+				tag = IRQ
+				exists = no
+				any_core = { owned_by = THIS }
+			}
+			country_event = 96061
+		}
+
+		#release Libya as a vassal to a European GP if it's not a colony
+		any_country = {
+			limit = {
+				tag = LBY
+				exists = no
+				any_core = {
+					owned_by = THIS
+					is_colonial = no
+				}
+			}
+			country_event = 96061
+		}	
+		
+		# 50% chance of release for Armenia
+		any_country = {
+			limit = {
+				exists = no
+				tag = ARM
+				any_core = { owned_by = THIS }
+			}
+			random = {
+				chance = 50
+				country_event = 96060
+			}
+		}
+
+		# 30% chance of release for Kurdistan
+		any_country = {
+			limit = {
+				exists = no
+				tag = KDS
+				any_core = { owned_by = THIS }
+			}
+			random = {
+				chance = 30
+				country_event = 96060
+			}
+		}
+		
+		# 30% chance of release for Cilicia
+		any_country = {
+			limit = {
+				exists = no
+				tag = CLC
+				any_core = { owned_by = THIS }
+			}
+			random = {
+				chance = 30
+				country_event = 96060
+			}
+		}
+
+		# 10% chance of release for Pontus
+		any_country = {
+			limit = {
+				exists = no
+				tag = PNT
+				any_core = { owned_by = THIS }
+			}
+			random = {
+				chance = 10
+
+				country_event = 96060
+			}
+		}
+
+		#give colonies without cores to truce GP's
+		random_owned = {
+			limit = {
+				OR = {
+					is_overseas = yes
+					is_colonial = yes
+				}
+			}
+			any_country = {
+				limit = {
+					ai = no
+					is_greater_power = yes
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96011
+			}
+			any_country = {
+				limit = {
+					NOT = {
+						any_greater_power = {
+							ai = no
+							truce_with = THIS
+						}
+					}
+					ai = yes
+					is_greater_power = yes
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96016
+			}
+			any_country = {
+				limit = {
+					NOT = {
+						any_greater_power = {
+							ai = no
+							truce_with = THIS
+						}
+					}
+					is_greater_power = no
+					is_secondary_power = yes
+					is_vassal = no
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+				}
+				country_event = 96017
+			}
+		}
+		
+		#add fascism and punitive effects
+		random_owned = {
+			limit = {
+				owner = {
+					is_ideology_enabled = fascist
+					NOT = { government = fascist_dictatorship }
+				}
+			}
+			owner = {
+				soldiers = {
+					limit = { is_primary_culture = yes }
+					ideology = {
+						value = fascist
+						factor = 0.2
+					}
+				}
+				officers = {
+					limit = { is_primary_culture = yes }
+					ideology = {
+						value = fascist
+						factor = 0.4
+					}
+				}
+				any_pop = {
+					limit = {
+						is_primary_culture = yes
+						NOT = {
+							OR = {
+								type = soldiers
+								type = officers
+							}
+						}
+					}
+					ideology = {
+						value = fascist
+						factor = 0.1
+					}
+				}
+			}
+		}
+		add_country_modifier = {
+			name = punitive_effects
+			duration = 1825
+		}
+		add_country_modifier = {
+			name = no_more_war
+			duration = 3650
+		}
+	}
+}
+
+# Same-culture group countries that gain independence as allies
+country_event = {
+	
+	id = 96060
+	title = "EVTNAME96060"
+	desc = "EVTDESC96060"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA96031" #Great
+		FROM = {
+			any_state = {
+				limit = {
+					any_owned_province = { is_core = THIS }
+					NOT = { any_owned_province = { is_capital = yes } }
+				}
+				any_owned = {
+					limit = { is_core = THIS }
+					secede_province = THIS
+				}
+			}
+		}
+		random_country = {
+			limit = {
+				is_greater_power = yes
+				OR = {
+					truce_with = FROM
+					AND = {
+						FROM = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+			}
+			create_alliance = THIS
+			diplomatic_influence = {
+				who = THIS
+				value = 50
+			}
+		}
+		any_country = {
+			limit = {
+				OR = {
+					truce_with = FROM
+					AND = {
+						FROM = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+				is_greater_power = yes
+			}
+			diplomatic_influence = {
+				who = THIS
+				value = 100
+			}
+			relation = {
+				who = THIS
+				value = 100
+			}
+		}
+		any_country = {
+			limit = {
+				OR = {
+					truce_with = FROM
+					AND = {
+						FROM = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+				is_greater_power = no
+			}
+			relation = {
+				who = THIS
+				value = 100
+			}
+		}
+		FROM = {
+			diplomatic_influence = {
+				who = THIS
+				value = -200
+			}
+			relation = {
+				who = THIS
+				value = -200
+			}
+		}
+	}
+}
+
+country_event = {
+	
+	id = 96061
+	title = "EVTNAME96061"
+	desc = "EVTDESC96061"
+	picture = "administration"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTA96031" #Great
+		FROM = {
+			any_owned = {
+				limit = {
+					NOT = { province_id = 900 }
+					is_core = THIS
+				}
+				secede_province = THIS
+			}
+		}
+		random_country = {
+			limit = {
+				OR = {
+					truce_with = FROM
+					AND = {
+						FROM = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+				is_greater_power = yes
+				capital_scope = { continent = europe }
+			}
+			diplomatic_influence = {
+				who = THIS
+				value = 300
+			}
+			relation = {
+				who = THIS
+				value = 200
+			}
+			create_vassal = THIS
+		}
+		random_country = {
+			limit = {
+				OR = {
+					truce_with = FROM
+					AND = {
+						FROM = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+				is_greater_power = yes
+				NOT = { is_our_vassal = THIS }
+				THIS = { is_vassal = no }
+			}
+			diplomatic_influence = {
+				who = THIS
+				value = 100
+			}
+			relation = {
+				who = THIS
+				value = 100
+			}
+		}
+		any_country = {
+			limit = {
+				OR = {
+					truce_with = FROM
+					AND = {
+						FROM = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+				is_greater_power = yes
+				NOT = { is_our_vassal = THIS }
+			}
+			diplomatic_influence = {
+				who = THIS
+				value = 50
+			}
+			relation = {
+				who = THIS
+				value = 100
+			}
+		}
+		any_country = {
+			limit = {
+				OR = {
+					truce_with = FROM
+					AND = {
+						FROM = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+				is_greater_power = no
+			}
+			relation = {
+				who = THIS
+				value = 100
+			}
+		}
+		FROM = {
+			diplomatic_influence = {
+				who = THIS
+				value = -200
+			}
+			relation = {
+				who = THIS
+				value = -100
+			}
+		}
+		set_country_flag = newly_released_nation
+	}
+}
+
+#################################################
+#												#
+#     	Events that Start a Great War			#
+#												#
+#################################################
+
+country_event = {
+
+	id = 96065
+	title = "EVTNAME96065" #Outrage!
+	desc = "EVTDESC96065"
+	picture = "Demonstration"
+	
+	trigger = {
+		war = no
+		is_greater_power = yes
+		is_disarmed = no
+		mass_politics = 1
+		any_greater_power = {
+			is_disarmed = no
+			NOT = { relation = { who = THIS value = -100 } }
+			NOT = { has_country_modifier = neutrality }
+			NOT = { tag = THIS }
+		}		
+		NOT = {
+			has_country_modifier = no_more_war
+			has_country_modifier = neutrality
+			war_policy = pacifism
+			any_greater_power = { has_country_flag = in_great_war }
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 120
+		modifier = {
+			factor = 0.8
+			war_policy = jingoism
+		}
+		modifier = {
+			factor = 0.8
+			OR = {
+				government = absolute_monarchy
+				government = fascist_dictatorship
+				government = proletarian_dictatorship
+			}
+		}
+		modifier = {
+			factor = 1.2
+			OR = {
+				government = democracy
+				government = hms_government
+			}
+		}
+		modifier = {
+			factor = 2
+			war_policy = anti_military
+		}
+		modifier = {
+			factor = 2
+			any_greater_power = { has_country_modifier = no_more_war }
+		}
+	}
+	
+	option = {
+		name = "EVTOPTA96065" #We must defend $COUNTRY_ADJ$ interests, no matter the cost.
+		random_country = {
+			limit = {
+				is_greater_power = yes
+				is_disarmed = no
+				NOT = { relation = { who = THIS value = -100 } }
+				NOT = { has_country_modifier = neutrality }
+			}
+			add_casus_belli = {
+				target = THIS
+				type = dismantle_cb
+				months = 12
+			}
+		}
+		any_pop = {
+			dominant_issue = {
+				factor = 0.02
+				value = jingoism
+			}
+			scaled_militancy = {
+				issue = pacifism
+				factor = 2
+			}
+		}
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0.5
+				war_policy = anti_military
+			}
+			modifier = {
+				factor = 0.5
+				num_of_revolts = 1
+			}
+			modifier = {
+				factor = 0
+				num_of_revolts = 5
+			}
+			modifier = {
+				factor = 0.2
+				NOT = { total_amount_of_divisions = 10 }
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTB96065" #We cannot afford such a war.
+		prestige_factor = -0.1
+		any_pop = {
+			dominant_issue = {
+				factor = 0.02
+				value = pacifism
+			}
+			scaled_militancy = {
+				issue = jingoism
+				factor = 2
+			}
+		}
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0.5
+				war_policy = jingoism
+			}
+			modifier = {
+				factor = 2
+				war_policy = anti_military
+			}
+		}
+	}
+}
+
+country_event = {
+
+	id = 96066
+	title = "EVTNAME96066" #Assassination!
+	desc = "EVTDESC96066"
+	picture = "ferdinand"
+	
+	trigger = {
+		war = no
+		is_greater_power = yes
+		is_disarmed = no
+		mass_politics = 1
+		any_greater_power = {
+			is_disarmed = no
+			NOT = { relation = { who = THIS value = -100 } }
+			NOT = { has_country_modifier = neutrality }
+			NOT = { tag = THIS }
+		}		
+		NOT = {
+			has_country_modifier = no_more_war
+			has_country_modifier = neutrality
+			war_policy = pacifism
+			any_greater_power = { has_country_flag = in_great_war }
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 120
+		modifier = {
+			factor = 0.8
+			war_policy = jingoism
+		}
+		modifier = {
+			factor = 0.8
+			OR = {
+				government = absolute_monarchy
+				government = fascist_dictatorship
+				government = proletarian_dictatorship
+			}
+		}
+		modifier = {
+			factor = 1.2
+			OR = {
+				government = democracy
+				government = hms_government
+			}
+		}
+		modifier = {
+			factor = 2
+			war_policy = anti_military
+		}
+		modifier = {
+			factor = 2
+			any_greater_power = { has_country_modifier = no_more_war }
+		}
+	}
+	
+	option = {
+		name = "EVTOPTA96065" #We must defend $COUNTRY_ADJ$ interests, no matter the cost.
+		random_country = {
+			limit = {
+				is_greater_power = yes
+				is_disarmed = no
+				NOT = { relation = { who = THIS value = -100 } }
+				NOT = { has_country_modifier = neutrality }
+			}
+			add_casus_belli = {
+				target = THIS
+				type = dismantle_cb
+				months = 12
+			}
+		}
+		any_pop = {
+			dominant_issue = {
+				factor = 0.02
+				value = jingoism
+			}
+			scaled_militancy = {
+				issue = pacifism
+				factor = 2
+			}
+		}
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0.5
+				war_policy = anti_military
+			}
+			modifier = {
+				factor = 0.5
+				num_of_revolts = 1
+			}
+			modifier = {
+				factor = 0
+				num_of_revolts = 5
+			}
+			modifier = {
+				factor = 0.2
+				NOT = { total_amount_of_divisions = 10 }
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTB96065" #We cannot afford such a war.
+		prestige_factor = -0.1
+		any_pop = {
+			dominant_issue = {
+				factor = 0.02
+				value = pacifism
+			}
+			scaled_militancy = {
+				issue = jingoism
+				factor = 2
+			}
+		}
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0.5
+				war_policy = jingoism
+			}
+			modifier = {
+				factor = 2
+				war_policy = anti_military
+			}
+		}
+	}
+}
+
+
+#########################################################
+#														#
+#      		Transfer of the Colonies					#
+#														#
+#########################################################
+
+#Transfer all colonies which are coastal and NOT currently bordering a truce country
+country_event = {
+
+	id = 96070
+	title = "EVTNAME96070" #The $COUNTRY_ADJ$ Colonies
+	desc = "EVTDESC96070"
+	picture = "treaty"
+
+	trigger = {
+		war = no
+		has_country_modifier = punitive_effects
+		any_owned_province = {
+			OR = {
+				is_colonial = yes
+				is_overseas = yes
+			}
+			port = yes
+			NOT = { is_core = THIS }
+			NOT = {
+				any_neighbor_province = {
+					owner = {
+						OR = {
+							is_greater_power = yes
+							is_secondary_power = yes
+						}
+						OR = {
+							truce_with = THIS
+							AND = {
+								THIS = { has_country_modifier = international_pariah }
+								has_country_flag = coalition_member
+							}
+						}
+						NOT = { has_country_flag = not_want_colonies }
+					}
+				}
+			}
+		}
+		any_greater_power = {
+			OR = {
+				truce_with = THIS
+				AND = {
+					THIS = { has_country_modifier = international_pariah }
+					has_country_flag = coalition_member
+				}
+			}
+			NOT = { has_country_flag = not_want_colonies }
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA96070" #Time to carve up our empire.
+		random_country = {
+			limit = {
+				OR = {
+					is_greater_power = yes
+					is_secondary_power = yes
+				}
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+				NOT = { has_country_flag = not_want_colonies }
+			}
+			country_event = 96071
+		}
+	}
+}
+
+country_event = {
+	
+	id = 96071
+	title = "EVTNAME96071" #Transfer of the $FROMCOUNTRY_ADJ$ Colonies
+	desc = "EVTDESC96071"
+	picture = "treaty"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA96071" #Agree
+		FROM = {
+			random_state = {
+				limit = {
+					any_owned_province = {
+					OR = { is_colonial = yes is_overseas = yes }
+					port = yes
+					NOT = { is_core = FROM }
+					NOT = {
+						any_neighbor_province = {
+							owner = {
+								OR = {
+									is_greater_power = yes
+									is_secondary_power = yes
+								}
+								OR = {
+									truce_with = FROM
+									AND = {
+										FROM = { has_country_modifier = international_pariah }
+										has_country_flag = coalition_member
+									}
+								}
+								NOT = { has_country_flag = not_want_colonies }
+								}
+							}
+						}
+					}
+				}
+				any_owned = { secede_province = THIS }
+			}
+			random_owned = {
+				limit = {
+					OR = {
+						is_colonial = yes
+						is_overseas = yes
+					}
+					port = yes
+					NOT = { is_core = FROM }
+					NOT = {
+						any_neighbor_province = {
+							owner = {
+								OR = {
+									is_greater_power = yes
+									is_secondary_power = yes
+								}
+								OR = {
+									truce_with = FROM
+									AND = {
+										FROM = { has_country_modifier = international_pariah }
+										has_country_flag = coalition_member
+									}
+								}
+								NOT = { has_country_flag = not_want_colonies }
+							}
+						}
+					}
+				}
+				owner = { country_event = 96070 }
+			}		
+		}
+		ai_chance = {
+			factor = 100
+		}
+	}
+
+	option = {
+		name = "EVTOPTB96071" #Refuse
+		set_country_flag = not_want_colonies
+		ai_chance = {
+			factor = 0
+		}
+	}
+	
+	option = {
+		name = "EVTOPTC96071" #Skip
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+#Now transfer all colonial/overseas states bordering a truce country
+country_event = {
+
+	id = 96075
+	title = "EVTNAME96070" #The $COUNTRY_ADJ$ Colonies
+	desc = "EVTDESC96070"
+	picture = "treaty"
+
+	trigger = {
+		war = no
+		has_country_modifier = punitive_effects
+		NOT = {
+			any_owned_province = {
+				OR = {
+					is_colonial = yes
+					is_overseas = yes
+				}
+				port = yes
+				NOT = { is_core = THIS }
+				NOT = {
+					any_neighbor_province = {
+						owner = {
+							OR = {
+								is_greater_power = yes
+								is_secondary_power = yes
+							}
+							OR = {
+								truce_with = THIS
+								AND = {
+									THIS = { has_country_modifier = international_pariah }
+									has_country_flag = coalition_member
+								}
+							}
+							NOT = { has_country_flag = not_want_colonies }
+						}
+					}
+				}
+			}
+		}
+		any_owned_province = {
+			OR = {
+				is_colonial = yes
+				is_overseas = yes
+			}
+			NOT = { is_core = THIS }
+			any_neighbor_province = {
+				owner = {
+					OR = {
+						is_greater_power = yes
+						is_secondary_power = yes
+					}
+					OR = {
+						truce_with = THIS
+						AND = {
+							THIS = { has_country_modifier = international_pariah }
+							has_country_flag = coalition_member
+						}
+					}
+					NOT = { has_country_flag = not_want_colonies }
+				}
+			}
+		}
+		any_greater_power = {
+			OR = {
+				truce_with = THIS
+				AND = {
+					THIS = { has_country_modifier = international_pariah }
+					has_country_flag = coalition_member
+				}
+			}
+			NOT = { has_country_flag = not_want_colonies }
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA96070" #Time to carve up our empire.
+		random_country = {
+			limit = {
+				OR = {
+					is_greater_power = yes
+					is_secondary_power = yes
+				}
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+				NOT = { has_country_flag = not_want_colonies }
+				any_owned_province = {
+					any_neighbor_province = {
+						owned_by = THIS
+						OR = {
+							is_colonial = yes
+							is_overseas = yes
+						}
+						NOT = { is_core = THIS }
+					}
+				}
+			}
+			country_event = 96076
+		}
+	}
+}
+
+country_event = {
+	
+	id = 96076
+	title = "EVTNAME96071" #Transfer of the $FROMCOUNTRY_ADJ$ Colonies
+	desc = "EVTDESC96071"
+	picture = "treaty"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA96071" #Agree
+		prestige = 2
+		FROM = {
+			prestige = -2
+			random_state = {
+				limit = { 
+					any_owned_province = { 
+						OR = { is_colonial = yes is_overseas = yes }
+						NOT = { is_core = FROM }
+						any_neighbor_province = { owned_by = THIS }
+					}
+				}
+				any_owned = { secede_province = THIS }
+			}
+		}
+		ai_chance = { factor = 80 }
+	}
+
+	option = {
+		name = "EVTOPTB96071" #Refuse
+		set_country_flag = not_want_colonies
+		ai_chance = {
+			factor = 20
+			modifier = {
+				factor = 0
+				is_greater_power = yes
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTC96071" #Skip
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+#Now transfer all remaining colonial/overseas provinces that don't border anyone
+country_event = {
+
+	id = 96080
+	title = "EVTNAME96070" #The $COUNTRY_ADJ$ Colonies
+	desc = "EVTDESC96070"
+	picture = "treaty"
+
+	trigger = {
+		war = no
+		has_country_modifier = punitive_effects
+		NOT = {
+			any_owned_province = {
+				OR = {
+					is_colonial = yes
+					is_overseas = yes
+				}
+				port = yes
+				NOT = { is_core = THIS }
+				NOT = {
+					any_neighbor_province = {
+						owner = {
+							OR = {
+								is_greater_power = yes
+								is_secondary_power = yes
+							}
+							OR = {
+								truce_with = THIS
+								AND = {
+									THIS = { has_country_modifier = international_pariah }
+									has_country_flag = coalition_member
+								}
+							}
+							NOT = { has_country_flag = not_want_colonies }
+						}
+					}
+				}
+			}
+		}
+		NOT = {
+			any_owned_province = {
+				OR = {
+					is_colonial = yes
+					is_overseas = yes
+				}
+				NOT = { is_core = THIS }
+				any_neighbor_province = {
+					owner = {
+						OR = {
+							is_greater_power = yes
+							is_secondary_power = yes
+						}
+						OR = {
+							truce_with = THIS
+							AND = {
+								THIS = { has_country_modifier = international_pariah }
+								has_country_flag = coalition_member
+							}
+						}
+						NOT = { has_country_flag = not_want_colonies }
+					}
+				}
+			}
+		}
+		any_owned_province = {
+			OR = {
+				is_colonial = yes
+				is_overseas = yes
+			}
+			NOT = { is_core = THIS }
+		}
+		any_greater_power = {
+			OR = {
+				truce_with = THIS
+				AND = {
+					THIS = { has_country_modifier = international_pariah }
+					has_country_flag = coalition_member
+				}
+			}
+			NOT = { has_country_flag = not_want_colonies }
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA96070" #Time to carve up our empire.
+		random_country = {
+			limit = {
+				is_greater_power = yes
+				OR = {
+					truce_with = THIS
+					AND = {
+						THIS = { has_country_modifier = international_pariah }
+						has_country_flag = coalition_member
+					}
+				}
+				NOT = { has_country_flag = not_want_colonies }
+			}
+			country_event = 96081
+		}
+	}
+}
+
+country_event = {
+	
+	id = 96081
+	title = "EVTNAME96071" #Transfer of the $FROMCOUNTRY_ADJ$ Colonies
+	desc = "EVTDESC96081"
+	picture = "treaty"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA96071" #Agree
+		prestige = 2
+		FROM = {
+			prestige = -2
+			random_state = {
+				limit = { any_owned_province = { OR = { is_colonial = yes is_overseas = yes } NOT = { is_core = FROM } } }
+				any_owned = { secede_province = THIS }
+			}
+		}
+		ai_chance = { factor = 80 }
+	}
+
+	option = {
+		name = "EVTOPTB96071" #Refuse
+		set_country_flag = not_want_colonies
+		ai_chance = {
+			factor = 20
+			modifier = {
+				factor = 0
+				is_greater_power = yes
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTC96071" #Skip
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+#Events for the imposition of a new government
+country_event = {
+	id = 96085
+	title = "EVTNAME96085" #Democracy
+	desc = "EVTDESC96085"
+	news = yes
+	news_title = "EVTNAME96085_NEWS_TITLE"
+	news_desc_long = "EVTDESC96085_NEWS_LONG"
+	news_desc_medium = "EVTDESC96085_NEWS_MEDIUM"
+	news_desc_short = "EVTDESC96085_NEWS_SHORT"
+	picture = "unite"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTA96085" #We welcome the new regime.
+		government = democracy
+		ruling_party_ideology = liberal
+		political_reform = universal_weighted_voting
+		political_reform = population_equal_weight
+		political_reform = yes_meeting
+		political_reform = free_press
+		political_reform = non_socialist
+		political_reform = gerrymandering
+		political_reform = non_secret_ballots
+		clr_country_flag = communist_gov
+		clr_country_flag = absolute_monarchy_gov
+		clr_country_flag = semi_constitutional_monarchy_gov
+		clr_country_flag = constitutional_monarchy_gov
+		set_country_flag = democracy_gov
+		clr_country_flag = presidential_dictatorship_gov
+		clr_country_flag = fascist_gov
+		clr_country_flag = anarcho_liberal_gov
+		
+		random_country = {
+			limit = {
+				is_sphere_leader_of = THIS
+				NOT = { has_country_flag = friendly_democracy }
+			}
+			diplomatic_influence = { who = THIS value = -100 }
+		}
+		random_country = {
+			limit = {
+				has_country_flag = friendly_democracy
+				truce_with = THIS
+			}
+			relation = { who = THIS value = 400 }
+			diplomatic_influence = { who = THIS value = 100 }
+			create_alliance = THIS
+			clr_country_flag = friendly_democracy
+		}
+		capital_scope = {
+			any_pop = {
+				limit = { literacy = 0.2 }
+				ideology = { factor = 0.1 value = liberal }
+				ideology = { factor = -0.5 value = communist }
+			}
+		}
+		any_pop = {
+			ideology = { factor = -0.1 value = communist }
+		}
+		any_pop = {
+			scaled_militancy = {
+				ideology = reactionary
+				factor = 6
+			}
+			scaled_militancy = {
+				ideology = communist
+				factor = 6
+			}
+			scaled_militancy = {
+				ideology = fascist
+				factor = 6
+			}
+			scaled_militancy = {
+				ideology = liberal
+				factor = -4
+			}
+		}
+		
+		any_country = {
+			limit = {
+				war_with = THIS
+			}
+			end_war = THIS	
+		}
+	}
+}
+
+country_event = {
+	id = 96086
+	title = "EVTNAME96085" #Fascist
+	desc = "EVTDESC96086"
+	news = yes
+	news_title = "EVTNAME96086_NEWS_TITLE"
+	news_desc_long = "EVTDESC96086_NEWS_LONG"
+	news_desc_medium = "EVTDESC96086_NEWS_MEDIUM"
+	news_desc_short = "EVTDESC96086_NEWS_SHORT"
+	picture = "unite"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTA96085" #We welcome the new regime.
+		government = fascist_dictatorship
+		ruling_party_ideology = fascist
+		political_reform = none_voting
+		political_reform = party_appointed
+		political_reform = no_meeting
+		political_reform = state_press
+		political_reform = state_controlled
+		political_reform = underground_parties
+		political_reform = primary_culture_only
+		political_reform = mandatory_service
+		clr_country_flag = communist_gov
+		clr_country_flag = absolute_monarchy_gov
+		clr_country_flag = semi_constitutional_monarchy_gov
+		clr_country_flag = constitutional_monarchy_gov
+		clr_country_flag = democracy_gov
+		clr_country_flag = presidential_dictatorship_gov
+		set_country_flag = fascist_gov
+		clr_country_flag = anarcho_liberal_gov
+		
+		random_country = {
+			limit = {
+				is_sphere_leader_of = THIS
+				NOT = { has_country_flag = friendly_fascist }
+			}
+			diplomatic_influence = { who = THIS value = -100 }
+		}
+		random_country = {
+			limit = {
+				has_country_flag = friendly_fascist
+				truce_with = THIS
+			}
+			relation = { who = THIS value = 400 }
+			diplomatic_influence = { who = THIS value = 200 }
+			create_alliance = THIS
+			clr_country_flag = friendly_fascist
+		}
+		capital_scope = {
+			any_pop = {
+				limit = { is_primary_culture = yes }
+				ideology = { factor = 0.1 value = fascist }
+			}
+		}
+		any_owned = {
+			remove_province_modifier = black_shirts
+			remove_province_modifier = fascist_welfare
+			remove_province_modifier = free_corps
+			remove_province_modifier = beer_hall_putsch
+			remove_province_modifier = labor_union
+			remove_province_modifier = militant_trade_union
+			remove_province_modifier = worker_union
+			remove_province_modifier = strike_solution
+			remove_province_modifier = province_strike
+			remove_province_modifier = may_day
+		}
+		any_pop = {
+			scaled_militancy = {
+				ideology = reactionary
+				factor = 6
+			}
+			scaled_militancy = {
+				ideology = communist
+				factor = 8
+			}
+			scaled_militancy = {
+				ideology = socialist
+				factor = 2
+			}
+			scaled_militancy = {
+				ideology = fascist
+				factor = -8
+			}
+			scaled_militancy = {
+				ideology = liberal
+				factor = 4
+			}
+		}
+		any_country = {
+			change_variable = {
+				which = successful_fascist_rebellions
+				value = 1
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 96087
+	title = "EVTNAME96085" #Communist
+	desc = "EVTDESC96087"
+	news = yes
+	news_title = "EVTNAME96087_NEWS_TITLE"
+	news_desc_long = "EVTDESC96087_NEWS_LONG"
+	news_desc_medium = "EVTDESC96087_NEWS_MEDIUM"
+	news_desc_short = "EVTDESC96087_NEWS_SHORT"
+	picture = "unite"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTA96085" #We welcome the new regime.
+		government = proletarian_dictatorship
+		ruling_party_ideology = communist
+		political_reform = none_voting
+		political_reform = party_appointed
+		political_reform = no_meeting
+		political_reform = state_press
+		political_reform = state_controlled
+		political_reform = underground_parties
+		social_reform = good_minimum_wage
+		social_reform = eight_hours
+		social_reform = good_subsidies
+		social_reform = good_pensions
+		social_reform = good_health_care
+		nationalize = yes
+
+		set_country_flag = communist_gov
+		clr_country_flag = absolute_monarchy_gov
+		clr_country_flag = semi_constitutional_monarchy_gov
+		clr_country_flag = constitutional_monarchy_gov
+		clr_country_flag = democracy_gov
+		clr_country_flag = presidential_dictatorship_gov
+		clr_country_flag = fascist_gov
+		clr_country_flag = anarcho_liberal_gov
+		
+		random_country = {
+			limit = {
+				is_sphere_leader_of = THIS
+				NOT = { has_country_flag = friendly_communist }
+			}
+			diplomatic_influence = { who = THIS value = -100 }
+		}
+		random_country = {
+			limit = {
+				has_country_flag = friendly_communist
+				truce_with = THIS
+			}
+			relation = { who = THIS value = 400 }
+			diplomatic_influence = { who = THIS value = 200 }
+			create_alliance = THIS
+			clr_country_flag = friendly_communist
+		}
+		capital_scope = {
+			any_pop = {
+				ideology = { factor = 0.1 value = communist }
+			}
+		}
+		any_pop = {
+			scaled_militancy = {
+				ideology = reactionary
+				factor = 6
+			}
+			scaled_militancy = {
+				ideology = communist
+				factor = -8
+			}
+			scaled_militancy = {
+				ideology = socialist
+				factor = -4
+			}
+			scaled_militancy = {
+				ideology = fascist
+				factor = 8
+			}
+			scaled_militancy = {
+				ideology = liberal
+				factor = 4
+			}
+		}
+		any_owned = {
+			remove_province_modifier = labor_union
+			remove_province_modifier = militant_trade_union
+			remove_province_modifier = worker_union
+			remove_province_modifier = strike_solution
+			remove_province_modifier = province_strike
+			remove_province_modifier = may_day
+		}
+		any_country = {
+			change_variable = {
+				which = successful_communist_rebellions
+				value = 1
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 96090
+	title = "EVTNAME96090" #End of the Monarchy
+	desc = "EVTDESC96090"
+	major = yes
+	
+	trigger = {
+		has_country_modifier = punitive_effects
+		OR = {
+			government = hms_government
+			government = prussian_constitutionalism
+			government = absolute_monarchy
+		}
+		NOT = {
+			has_country_flag = end_of_monarchy
+			num_of_revolts = 1
+			average_militancy = 6
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 12
+	}
+	
+	option = {
+		name = "EVT96090OPTA"
+		set_country_flag = end_of_monarchy
+		prestige_factor = -0.2
+		random_owned = {
+			limit = {
+				owner = {
+					OR = {
+						government = hms_government
+						government = prussian_constitutionalism
+					}
+				}
+			}
+			owner = {
+				government = democracy
+				election = yes
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = { government = absolute_monarchy }
+			}
+			owner = { government = presidential_dictatorship }
+		}
+		aristocrats = {
+			ideology = {
+				factor = 0.4
+				value = reactionary
+			}
+		}
+		any_pop = {
+			limit = {
+				location = { is_core = THIS }
+			}
+			scaled_militancy = {
+				ideology = reactionary
+				factor = 8
+			}
+			scaled_militancy = {
+				ideology = communist
+				factor = 5
+			}
+			scaled_militancy = {
+				ideology = fascist
+				factor = 5
+			}
+		}		
+	}
+	
+	option = {
+		name = "EVT96090OPTB"
+		set_country_flag = end_of_monarchy
+		random_owned = {
+			limit = {
+				owner = { government = absolute_monarchy }
+			}
+			owner = {
+				ruling_party_ideology = reactionary
+			}
+		}
+		any_pop = {
+			limit = {
+				location = { is_core = THIS }
+			}
+			scaled_militancy = {
+				ideology = liberal
+				factor = 4
+			}
+			scaled_militancy = {
+				ideology = anarcho_liberal
+				factor = 8
+			}
+			scaled_militancy = {
+				ideology = communist
+				factor = 8
+			}
+			scaled_militancy = {
+				ideology = fascist
+				factor = 8
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 96091
+	title = "EVTNAME96091" #Eupen Malmedy goes to the owner of Liege
+	desc = "EVTDESC96091"
+	picture = "eupen_malmedy_lost"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT96091OPTA"
+		396 = { 
+			add_core = THIS
+			secede_province = THIS 
+			remove_core = PRU
+			remove_core = NGF
+			remove_core = GER
+			remove_core = GCF
+			}
+		
+	}
+}
+#Miquelon goes to the owner of newfoundland
+country_event = {
+	id = 96092
+	title = "EVTNAME96092" 
+	desc = "EVTDESC96092"
+	picture = "greatpowers"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT96092OPTA"
+		77 = { secede_province = THIS add_core = CAN }
+	}
+}
+
+
+#Dutch/Belgium gets a piece of France
+country_event = {
+	id = 96093
+	title = "EVTNAME96093" 
+	desc = "EVTDESC96093"
+	picture = "greatpowers"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT96093OPTA"
+			399 = {
+				add_core = THIS
+				add_core = FLA
+				secede_province = THIS
+			}
+			400 = {
+				add_core = THIS
+				add_core = FLA
+				secede_province = THIS
+			}
+			401 = {
+				add_core = THIS
+				add_core = FLA
+				secede_province = THIS
+			}
+			404 = {
+				add_core = THIS
+				secede_province = THIS
+			}
+			405 = {
+				add_core = THIS
+				secede_province = THIS
+			}
+		}
+	}

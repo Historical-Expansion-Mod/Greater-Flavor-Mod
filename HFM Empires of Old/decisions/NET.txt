@@ -1,0 +1,515 @@
+political_decisions = {
+	mediate_belgian_independence = {
+		picture = sign_treaty_of_london
+		potential = {
+			tag = ENG
+			is_greater_power = yes
+			BEL = { exists = yes }
+			NET = {
+				exists = yes
+				NOT = { any_owned_province = { is_core = BEL } }
+				NOT = { has_country_flag = signed_treaty_of_london }
+			}
+			NOT = { has_country_flag = mediated_belgian_independence }
+		}
+		
+		allow = {
+			NET = {
+				war = no
+				is_greater_power = no
+			}
+			BEL = {
+				war = no
+			}
+			OR = { 
+				relation = {
+					who = NET
+					value = 100
+				}
+				diplomatic_influence = {
+					who = NET
+					value = 60
+				}
+			}
+		}
+		
+		effect = {
+			set_country_flag = mediated_belgian_independence
+			prestige = 10
+			NET = { country_event = 36709 }
+		}
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { year = 1839 }
+			}
+		}
+	}
+	
+	end_the_javanese_sultanates = {
+		picture = java_map
+		potential = {
+			tag = NET
+			JAV = { 
+				vassal_of = THIS 
+				exists = yes
+				civilized = no
+				}
+			NOT = { has_country_flag = javanese_integrated }
+		}
+		
+		allow = {
+			war = no
+			nationalism_n_imperialism = 1
+		}
+		
+		effect = {
+			set_country_flag = javanese_integrated
+			JAV = { tech_school = unciv_tech_school country_event = 952500 }
+			badboy = 1
+		}
+		
+		ai_will_do = { 
+			factor = 1 
+			modifier = { factor = 0 badboy = 0.95 }
+		}
+	}
+	
+	the_short_declaration = {
+		picture = moluccan_map
+		potential = {
+			tag = NET
+			OR = {
+				MAL = { vassal_of = THIS exists = yes civilized = no }
+				SAK = { vassal_of = THIS exists = yes civilized = no }
+			}
+			NOT = { has_country_flag = tidore_integrated }
+		}
+		
+		allow = {
+			war = no
+			nationalism_n_imperialism = 1
+			OR = {
+				MAL = { vassal_of = THIS exists = yes civilized = no }
+				SAK = { vassal_of = THIS exists = yes civilized = no }
+			}
+		}
+		
+		effect = {
+			set_country_flag = tidore_integrated
+			badboy = 2
+			random_country = {
+				limit = { exists = yes tag = MAL vassal_of = THIS civilized = no }
+				any_pop = { consciousness = 3 militancy = 1 }
+				tech_school = unciv_tech_school
+				annex_to = THIS
+			}
+			random_country = {
+				limit = { exists = yes tag = SAK vassal_of = THIS civilized = no }
+				any_pop = { consciousness = 3 militancy = 1 }
+				tech_school = unciv_tech_school
+				annex_to = THIS
+			}
+			random_owned = {
+				limit = { owner = { owns = 1453 } }
+				owner = { 1454 = { secede_province = THIS life_rating = 21 } 1560 = { secede_province = THIS life_rating = 21 } } 
+			}
+		}
+		
+		ai_will_do = { 
+			factor = 1 
+			modifier = { factor = 0 badboy = 0.9 }
+		}
+	}
+	
+	the_aceh_question = {
+		picture = the_aceh
+		potential = {
+			tag = NET
+			colonial_nation = yes
+			is_canal_enabled = 2
+			ATJ = {
+				exists = yes
+				part_of_sphere = yes
+				civilized = no
+				NOT = { in_sphere = NET }
+			}
+			NOT = { has_global_flag = gold_coast_treaty }
+			NOT = { has_country_flag = made_aceh_proposal }
+			ATJ = { neighbour = NET }
+		}
+		
+		allow = {
+			war = no
+			nationalism_n_imperialism = 1
+		}
+		
+		effect = {
+			set_country_flag = made_aceh_proposal
+			ATJ = { sphere_owner = { country_event = 952503 } }
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	embrace_the_boer = {
+		picture = embrace_the_boer
+		potential = {
+			tag = NET
+			NOT = { has_country_flag = boer_accepted }
+			any_owned_province = { 
+			OR = {
+				is_core = SAF
+				is_core = NAL
+				is_core = TRN
+				is_core = ORA
+				}
+			}
+		}
+		
+		allow = {
+			war = no
+			money = 100000
+			any_owned_province = { has_pop_culture = boer }
+		}
+		
+		effect = {
+			set_country_flag = boer_accepted
+			treasury = -100000
+			add_accepted_culture = boer
+			any_pop = {
+				limit = { has_pop_culture = boer }
+				militancy = -7
+				consciousness = -4
+				money = 10
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	annex_limburg_NET = {
+		picture = treaty_signing
+		potential = {
+			tag = NET
+			is_our_vassal = LBG
+			LBG = { exists = yes }
+			OR = {
+				revolution_n_counterrevolution = 1
+				PRU = { exists = yes is_greater_power = no }
+				has_country_flag = limburg_crisis_NET
+				AND = {
+					is_greater_power = yes
+					year = 1850
+					OR = {
+						is_sphere_leader_of = LBG
+						LBG = { part_of_sphere = no }
+					}
+				}
+			}
+		}
+		
+		allow = {
+			war = no
+			OR = {
+				any_neighbor_country = {
+					has_country_flag = limburg_crisis
+					NOT = { has_country_modifier = preparations_for_war }
+				}
+				AND = {
+					is_greater_power = yes
+					OR = {
+						is_sphere_leader_of = LBG
+						LBG = { part_of_sphere = no }
+					}
+				}
+				AND = {
+					is_greater_power = yes
+					any_neighbor_country = {
+						has_country_flag = limburg_crisis
+						is_greater_power = no
+					}
+				}
+				AND = {
+					year = 1880
+					LBG = { part_of_sphere = no }
+				}
+			}
+		}
+		
+		effect = {
+			any_country = { release = LBG leave_alliance = LBG }
+			381 = { remove_core = LBG change_province_name = "Maastricht" }
+			any_country = { limit = { has_country_flag = limburg_crisis } clr_country_flag = limburg_crisis }
+			clr_country_flag = limburg_crisis
+			inherit = LBG
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	dutch_wallonia = {
+		picture = become_wallonia
+		potential = {
+			primary_culture = dutch
+			OR = {
+				AND = { owns = 381 owns = 387 NOT = { has_global_flag = dutch_rename_limburg } }
+				AND = { owns = 387 NOT = { has_global_flag = dutch_rename_brussels } }
+				AND = { owns = 392 NOT = { has_global_flag = dutch_rename_namur } }
+				AND = { owns = 393 NOT = { has_global_flag = dutch_rename_tournai } }
+				AND = { owns = 394 NOT = { has_global_flag = dutch_rename_charleroi } }
+				AND = { owns = 395 NOT = { has_global_flag = dutch_rename_liege } }
+				AND = { owns = 398 NOT = { has_global_flag = dutch_rename_arlon } }
+			}
+		}
+		
+		allow = {
+			war = no
+			nationalism_n_imperialism = 1
+		}
+		
+		effect = {
+			random_owned = {
+				limit = {
+					province_id = 387
+				}
+				387 = { 
+					change_province_name = "Brussel"
+				}
+				owner = { 
+					set_global_flag = dutch_rename_brussels
+					clr_global_flag = france_rename_brussels
+					#clr_global_flag = german_rename_arlon
+				}
+			}
+			random_owned = {
+				limit = {
+					province_id = 381
+					owner = { owns = 387 }
+				}
+				381 = { 
+					change_province_name = "Maastricht"
+				}
+				owner = { 
+					set_global_flag = dutch_rename_limburg
+					clr_global_flag = german_rename_limburg
+				}
+			}
+			random_owned = {
+				limit = {
+					province_id = 398
+				}
+				398 = { 
+					change_province_name = "Aarlen"
+				}
+				owner = { 
+					set_global_flag = dutch_rename_arlon
+					clr_global_flag = france_rename_arlon
+					clr_global_flag = german_rename_arlon
+				}
+			}
+			random_owned = {
+				limit = {
+					province_id = 395
+				}
+				395 = { 
+					change_province_name = "Luik"
+				}
+				owner = { 
+					set_global_flag = dutch_rename_liege
+					clr_global_flag = france_rename_liege
+					clr_global_flag = german_rename_liege
+				}
+			}
+			random_owned = {
+				limit = {
+					province_id = 392
+				}
+				392 = { 
+					change_province_name = "Namen"
+				}
+				owner = { 
+					set_global_flag = dutch_rename_namur
+					clr_global_flag = france_rename_namur
+					#clr_global_flag = german_rename_namur
+				}
+			}
+			random_owned = {
+				limit = {
+					province_id = 393
+				}
+				393 = { 
+					change_province_name = "Doornik"
+				}
+				owner = { 
+					set_global_flag = dutch_rename_tournai
+					clr_global_flag = france_rename_tournai
+					#clr_global_flag = german_rename_tournai
+				}
+			}
+			random_owned = {
+				limit = {
+					province_id = 394
+				}
+				394 = { 
+					change_province_name = "Bergen"
+				}
+				owner = { 
+					set_global_flag = dutch_rename_charleroi
+					clr_global_flag = france_rename_charleroi
+					#clr_global_flag = german_rename_charleroi
+				}
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	kpm_shipping = {
+		picture = kpm_shipping
+		potential = {
+			tag = NET
+			colonial_nation = yes
+			is_canal_enabled = 2
+			year = 1870
+			owns = 1413 #Batavia
+			NOT = { has_country_flag = kpm_shipping_founded }
+		}
+		
+		allow = {
+			war = no
+			relation = { 
+				who = ENG 
+				value = 100 
+			}
+			steel_steamers = 1
+			money = 15000
+		}
+		
+		effect = {
+			set_country_flag = kpm_shipping_founded
+			relation = {
+				who = ENG
+				value = 50
+			}
+			treasury = -15000
+			1413 = { naval_base = 6}	
+			1413 = { add_province_modifier = { name = kpm_shipping  duration = -1 } }			
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	appoint_thorbecke = {
+		picture = thorbecke_reforms
+		potential = {
+			tag = NET
+			NOT = { year = 1860 }
+			OR = {
+				government = absolute_monarchy
+				government = prussian_constitutionalism
+			}
+			NOT = {
+				has_country_modifier = thorbecke_reforms 
+				has_country_flag = thorbecke_reforms
+			}
+		}
+
+		allow = {
+			war = no
+			OR = {
+				average_militancy = 3
+				num_of_revolts = 1
+				average_consciousness = 5
+			}
+		}
+		
+		effect = {
+			set_country_flag = thorbecke_reforms
+			prestige = 5
+			add_country_modifier = {
+				name = thorbecke_reforms
+				duration = 7300
+			}
+			random_owned = {
+				limit = {
+					owner = { government = prussian_constitutionalism }
+				}
+				owner = {
+					political_reform = universal_weighted_voting
+					political_reform = yes_meeting
+					political_reform = free_press
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = { government = absolute_monarchy }
+				}
+				owner = {
+					government = prussian_constitutionalism
+					political_reform = landed_voting
+					political_reform = yes_meeting
+					political_reform = free_press
+				}
+			}
+			political_reform = open_borders
+			remove_country_modifier = global_liberal_agitation
+			any_owned = {
+				limit = { is_colonial = no }
+				remove_province_modifier = liberal_agitation
+				any_pop = {
+					scaled_militancy = {
+						ideology = liberal
+						factor = -8
+					}
+					scaled_consciousness = {
+						ideology = liberal
+						factor = -8
+					}
+					scaled_militancy = {
+						ideology = conservative
+						factor = -6
+					}
+				}
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	ethische_politiek = {
+		picture = ethische_politiek
+		potential = {
+			tag = NET
+			colonial_nation = yes
+			any_owned_province = { is_core = INO }
+			has_global_flag = indonesia_organized
+			NOT = { has_country_flag = ethische_politiek }
+		}
+		
+		allow = {
+			war = no
+			invention = the_dark_continent
+			invention = mission_to_civilize
+			money = 35001
+			slavery = no_slavery
+		}
+		
+		effect = {
+			set_country_flag = ethische_politiek
+			badboy = -0.5
+			treasury = -35001
+			prestige = 15
+			any_pop = {
+				limit = { location = { is_core = INO } }
+				militancy = -3
+				consciousness = -3
+			}
+			political_reform = civilizing
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+}
