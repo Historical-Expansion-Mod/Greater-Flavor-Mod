@@ -1609,7 +1609,8 @@ political_decisions = {
 		picture = vassal_payment
 		alert = no
 		potential = {
-			ai = no
+			# HPM 0.4.5.2 port: government decisions
+			has_country_flag = government_decisions_on
 			any_neighbor_country = {
 				vassal_of = THIS
 				NOT = { has_country_flag = exempt_from_vassal_contribution }
@@ -1697,6 +1698,675 @@ political_decisions = {
 			any_state = {
 				flashpoint_tension = -90
 			}
+		}
+	}
+	
+	# HPM 0.4.5.2 port: dismantlement
+	release_colonies_that_werent_annexed = {
+		potential = {
+			exists = yes
+			is_vassal = yes
+			has_country_flag = colony_to_be_annexed_flag
+			NOT = { has_country_modifier = colony_to_be_annexed }
+		}
+		
+		allow = {
+			war = no
+		}
+		
+		effect = {
+			clr_country_flag = colony_to_be_annexed_flag
+			overlord = { release_vassal = THIS }
+			neutrality = yes
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	new_round_of_dismantlement = {
+		potential = {
+			exists = yes
+			is_vassal = yes
+			has_country_modifier = colony_to_be_annexed
+			ai = yes
+			OR = {
+				any_greater_power = { has_country_modifier = dismantling_country }
+				any_neighbor_country = { has_country_modifier = dismantling_country }	
+			}
+		}
+		
+		allow = {
+			war = no
+			NOT = { has_country_modifier = considering_colonial_offer }
+		}
+		
+		effect = {
+			random_list = {
+				17 = { overlord = { country_event = 70005 } }
+				17 = { overlord = { country_event = { id = 70005 days = 1 } } }
+				17 = { overlord = { country_event = { id = 70005 days = 2 } } }
+				17 = { overlord = { country_event = { id = 70005 days = 3 } } }
+				17 = { overlord = { country_event = { id = 70005 days = 4 } } }
+				15 = { overlord = { country_event = { id = 70005 days = 5 } } }
+			}
+			
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	# HPM 0.4.5.2 port: colonial system
+	cleanup_colonial_cores = {
+		picture = map_nigeria
+		potential = {
+			ai = yes
+			any_neighbor_country = {
+				civilized = yes
+				# HPM 0.4.5.2 port: adapt to HFM continents
+				NOT = {
+					capital_scope = { continent = africa }
+					capital_scope = { continent = west_africa }
+					capital_scope = { continent = central_africa }
+					capital_scope = { continent = east_africa }
+					capital_scope = { continent = south_west_africa }
+				}
+				any_owned_province = {
+						OR = {
+							#Nigeria
+							AND = {
+								is_core = NGR
+								OR = {
+									is_core = SOK
+									is_core = DND
+									is_core = TOU
+									is_core = OYO
+									is_core = BEN
+									is_core = ARO
+									is_core = CLA
+									is_core = WRI
+									is_core = KBO
+								}
+							}
+							#Ivory Coast
+							AND = {
+								is_core = IVC
+								OR = {
+									is_core = KNG
+									is_core = ASH
+									is_core = MOS
+								}
+							}
+							#Guinea
+							AND = {
+								is_core = GNE
+								OR = {
+									is_core = JAL
+									is_core = GBU
+								}
+							}
+							#Senegal
+							AND = {
+								is_core = SNG
+								OR = {
+									is_core = TOO
+									is_core = WOL
+									is_core = SEG
+									is_core = TOU
+								}
+							}
+							#Zaire/Congo
+							AND = {
+								is_core = CNG
+								OR = {
+									is_core = LUA
+									is_core = LOA
+									is_core = AZA
+									is_core = KZB
+									is_core = KON
+								}
+							}
+							#Niger
+							AND = {
+								is_core = NIG
+								OR = {
+									is_core = DND
+									is_core = TOU
+									is_core = MAS
+									is_core = DAM
+									is_core = KBO
+								}
+							}
+							
+							#Mali
+							AND = {
+								is_core = MLI
+								OR = {
+									is_core = TOU
+									is_core = SEG
+									is_core = MAS
+									is_core = MOS
+									is_core = DND
+									is_core = BKF
+								}
+							}
+							
+							#Gambia
+							AND = {
+								is_core = GMB
+								OR = {
+									is_core = TOO
+									is_core = WOL
+									is_core = SEG
+									is_core = TOU
+								}
+							}
+							
+							#Angola
+							AND = {
+								is_core = ANG
+								is_core = KON
+							}
+							
+							#Mozambique
+							AND = {
+								is_core = MOZ
+								OR = {
+									is_core = GAZ
+									is_core = AGC
+									is_core = ZUL
+									is_core = SHO
+								}
+							}
+							
+							#Sudan
+							AND = {
+								is_core = SUD
+								OR = {
+									is_core = EGY
+									is_core = SHK
+									is_core = DAR
+									is_core = AZA
+								}
+							}
+							
+							#Ghana
+							AND = {
+								# HPM 0.4.5.2 port: HFM has no GHN, uses ASH
+								is_core = ASH
+								OR = {
+									is_core = MOS
+									# HPM 0.4.5.2 port: HFM has no GHN, uses ASH
+									# is_core = ASH
+								}
+							}
+							
+							#Burkina-Faso
+							AND = {
+								is_core = BKF
+								OR = {
+									is_core = SEG
+									is_core = TOU
+									is_core = MAS
+									is_core = MOS
+								}
+							}
+							
+							#Dahomey/Benin
+							AND = {
+								is_core = DAH
+								OR = {
+									is_core = TOU
+									is_core = MAS
+								}
+							}
+							
+							#Faroe Islands
+							AND = {
+								NOT = { exists = FRO }
+								is_core = FRO
+								OR = {
+									is_colonial = no
+									year = 1880
+								}
+							}
+							
+					}
+				}
+			}
+		}
+	
+		allow = {
+		}
+		
+		effect = {
+			any_neighbor_country = {
+				limit = {
+					civilized = yes
+					# HPM 0.4.5.2 port: adapt to HFM continents
+					NOT = {
+						capital_scope = { continent = africa }
+						capital_scope = { continent = west_africa }
+						capital_scope = { continent = central_africa }
+						capital_scope = { continent = east_africa }
+						capital_scope = { continent = south_west_africa }
+					}
+				}
+				any_owned = {
+					limit = {
+						is_core = NGR
+						OR = {
+							is_core = SOK
+							is_core = DND
+							is_core = TOU
+							is_core = OYO
+							is_core = BEN
+							is_core = ARO
+							is_core = CLA
+							is_core = WRI
+							is_core = KBO
+						}
+					}
+					remove_core = SOK
+					remove_core = DND
+					remove_core = TOU
+					remove_core = OYO
+					remove_core = BEN
+					remove_core = ARO
+					remove_core = CLA
+					remove_core = WRI
+					remove_core = KBO
+				}
+			}
+			
+			any_neighbor_country = {
+				limit = {
+					civilized = yes
+					# HPM 0.4.5.2 port: adapt to HFM continents
+					NOT = {
+						capital_scope = { continent = africa }
+						capital_scope = { continent = west_africa }
+						capital_scope = { continent = central_africa }
+						capital_scope = { continent = east_africa }
+						capital_scope = { continent = south_west_africa }
+					}
+				}
+				any_owned = {
+					limit = {
+						is_core = IVC
+						OR = {
+							is_core = KNG
+							is_core = ASH
+							is_core = MOS
+						}
+					}
+					remove_core = KNG
+					remove_core = ASH
+					remove_core = MOS
+				}
+			}
+			
+			any_neighbor_country = {
+				limit = {
+					civilized = yes
+					# HPM 0.4.5.2 port: adapt to HFM continents
+					NOT = {
+						capital_scope = { continent = africa }
+						capital_scope = { continent = west_africa }
+						capital_scope = { continent = central_africa }
+						capital_scope = { continent = east_africa }
+						capital_scope = { continent = south_west_africa }
+					}
+				}
+				any_owned = {
+					limit = {
+						is_core = GNE
+						OR = {
+							is_core = JAL
+							is_core = GBU
+						}
+					}
+					remove_core = JAL
+					remove_core = GBU
+				}
+			}
+			
+			any_neighbor_country = {
+				limit = {
+					civilized = yes
+					# HPM 0.4.5.2 port: adapt to HFM continents
+					NOT = {
+						capital_scope = { continent = africa }
+						capital_scope = { continent = west_africa }
+						capital_scope = { continent = central_africa }
+						capital_scope = { continent = east_africa }
+						capital_scope = { continent = south_west_africa }
+					}
+				}
+				any_owned = {
+					limit = {
+						is_core = SNG
+						OR = {
+							is_core = TOO
+							is_core = WOL
+							is_core = SEG
+							is_core = TOU
+						}
+					}
+					remove_core = TOO
+					remove_core = WOL
+					remove_core = SEG
+					remove_core = TOU
+				}
+			}
+			
+			any_neighbor_country = {
+				limit = {
+					civilized = yes
+					# HPM 0.4.5.2 port: adapt to HFM continents
+					NOT = {
+						capital_scope = { continent = africa }
+						capital_scope = { continent = west_africa }
+						capital_scope = { continent = central_africa }
+						capital_scope = { continent = east_africa }
+						capital_scope = { continent = south_west_africa }
+					}
+				}
+				any_owned = {
+					limit = {
+						is_core = NIG
+						OR = {
+							is_core = DND
+							is_core = TOU
+							is_core = MAS
+							is_core = DAM
+							is_core = KBO
+						}
+					}
+					remove_core = DND
+					remove_core = TOU
+					remove_core = MAS
+					remove_core = DAM
+					remove_core = KBO
+				}
+			}
+			
+			any_neighbor_country = {
+				limit = {
+					civilized = yes
+					# HPM 0.4.5.2 port: adapt to HFM continents
+					NOT = {
+						capital_scope = { continent = africa }
+						capital_scope = { continent = west_africa }
+						capital_scope = { continent = central_africa }
+						capital_scope = { continent = east_africa }
+						capital_scope = { continent = south_west_africa }
+					}
+				}
+				any_owned = {
+					limit = {
+						is_core = CNG
+						OR = {
+							is_core = LUA
+							is_core = LOA
+							is_core = AZA
+							is_core = KZB
+							is_core = KON
+						}
+					}
+					remove_core = LUA
+					remove_core = LOA
+					remove_core = AZA
+					remove_core = KZB
+					remove_core = KON
+				}
+			}
+			
+			any_neighbor_country = {
+				limit = {
+					civilized = yes
+					# HPM 0.4.5.2 port: adapt to HFM continents
+					NOT = {
+						capital_scope = { continent = africa }
+						capital_scope = { continent = west_africa }
+						capital_scope = { continent = central_africa }
+						capital_scope = { continent = east_africa }
+						capital_scope = { continent = south_west_africa }
+					}
+				}
+				any_owned = {
+					limit = {
+						is_core = MLI
+						OR = {
+							is_core = TOU
+							is_core = SEG
+							is_core = MAS
+							is_core = MOS
+							is_core = DND
+							is_core = BKF
+						}
+					}
+					remove_core = TOU
+					remove_core = SEG
+					remove_core = MAS
+					remove_core = MOS
+					remove_core = DND
+					remove_core = BKF
+				}
+			}
+			
+			any_neighbor_country = {
+				limit = {
+					civilized = yes
+					# HPM 0.4.5.2 port: adapt to HFM continents
+					NOT = {
+						capital_scope = { continent = africa }
+						capital_scope = { continent = west_africa }
+						capital_scope = { continent = central_africa }
+						capital_scope = { continent = east_africa }
+						capital_scope = { continent = south_west_africa }
+					}
+				}
+				any_owned = {
+					limit = {
+						is_core = GMB
+						OR = {
+							is_core = TOO
+							is_core = WOL
+							is_core = SEG
+							is_core = TOU
+						}
+					}
+					remove_core = TOO
+					remove_core = WOL
+					remove_core = SEG
+					remove_core = TOU
+				}
+			}
+			
+			any_neighbor_country = {
+				limit = {
+					civilized = yes
+					# HPM 0.4.5.2 port: adapt to HFM continents
+					NOT = {
+						capital_scope = { continent = africa }
+						capital_scope = { continent = west_africa }
+						capital_scope = { continent = central_africa }
+						capital_scope = { continent = east_africa }
+						capital_scope = { continent = south_west_africa }
+					}
+				}
+				any_owned = {
+					limit = {
+						is_core = ANG
+						is_core = KON
+					}
+					remove_core = KON
+				}
+			}
+			
+			any_neighbor_country = {
+				limit = {
+					civilized = yes
+					# HPM 0.4.5.2 port: adapt to HFM continents
+					NOT = {
+						capital_scope = { continent = africa }
+						capital_scope = { continent = west_africa }
+						capital_scope = { continent = central_africa }
+						capital_scope = { continent = east_africa }
+						capital_scope = { continent = south_west_africa }
+					}
+				}
+				any_owned = {
+					limit = {
+						is_core = MOZ
+						OR = {
+							is_core = GAZ
+							is_core = AGC
+							is_core = ZUL
+							is_core = SHO
+						}
+					}
+					remove_core = GAZ
+					remove_core = AGC
+					remove_core = ZUL
+					remove_core = SHO
+				}
+			}
+			
+			any_neighbor_country = {
+				limit = {
+					civilized = yes
+					# HPM 0.4.5.2 port: adapt to HFM continents
+					NOT = {
+						capital_scope = { continent = africa }
+						capital_scope = { continent = west_africa }
+						capital_scope = { continent = central_africa }
+						capital_scope = { continent = east_africa }
+						capital_scope = { continent = south_west_africa }
+					}
+				}
+				any_owned = {
+					limit = {
+						is_core = SUD
+						OR = {
+							is_core = EGY
+							is_core = SHK
+							is_core = DAR
+							is_core = AZA
+						}
+					}
+					remove_core = EGY
+					remove_core = SHK
+					remove_core = DAR
+					remove_core = AZA
+				}
+			}
+			
+			any_neighbor_country = {
+				limit = {
+					civilized = yes
+					# HPM 0.4.5.2 port: adapt to HFM continents
+					NOT = {
+						capital_scope = { continent = africa }
+						capital_scope = { continent = west_africa }
+						capital_scope = { continent = central_africa }
+						capital_scope = { continent = east_africa }
+						capital_scope = { continent = south_west_africa }
+					}
+				}
+				any_owned = {
+					limit = {
+						# HPM 0.4.5.2 port: HFM has no GHN, uses ASH
+						is_core = ASH
+						OR = {
+							is_core = MOS
+							# HPM 0.4.5.2 port: HFM has no GHN, uses ASH
+							# is_core = ASH
+						}
+					}
+					remove_core = MOS
+					# HPM 0.4.5.2 port: HFM has no GHN, uses ASH
+					# remove_core = ASH
+				}
+			}
+			
+			any_neighbor_country = {
+				limit = {
+					civilized = yes
+					# HPM 0.4.5.2 port: adapt to HFM continents
+					NOT = {
+						capital_scope = { continent = africa }
+						capital_scope = { continent = west_africa }
+						capital_scope = { continent = central_africa }
+						capital_scope = { continent = east_africa }
+						capital_scope = { continent = south_west_africa }
+					}
+				}
+				any_owned = {
+					limit = {
+						is_core = BKF
+						OR = {
+							is_core = SEG
+							is_core = TOU
+							is_core = MAS
+							is_core = MOS
+						}
+					}
+					remove_core = SEG
+					remove_core = TOU
+					remove_core = MAS
+					remove_core = MOS
+				}
+			}
+			
+			any_neighbor_country = {
+				limit = {
+					civilized = yes
+					# HPM 0.4.5.2 port: adapt to HFM continents
+					NOT = {
+						capital_scope = { continent = africa }
+						capital_scope = { continent = west_africa }
+						capital_scope = { continent = central_africa }
+						capital_scope = { continent = east_africa }
+						capital_scope = { continent = south_west_africa }
+					}
+				}
+				any_owned = {
+					limit = {
+						is_core = DAH
+						OR = {
+							is_core = TOU
+							is_core = MAS
+						}
+					}
+					remove_core = TOU
+					remove_core = MAS
+				}
+			}
+			
+			any_neighbor_country = {
+				limit = {
+					civilized = yes
+					# HPM 0.4.5.2 port: adapt to HFM continents
+					NOT = {
+						capital_scope = { continent = africa }
+						capital_scope = { continent = west_africa }
+						capital_scope = { continent = central_africa }
+						capital_scope = { continent = east_africa }
+						capital_scope = { continent = south_west_africa }
+					}
+				}
+				any_owned = {
+					limit = {
+						NOT = { exists = FRO }
+						is_core = FRO
+						OR = {
+							is_colonial = no
+							year = 1880
+						}
+					}
+					remove_core = FRO
+				}
+			}
+			
 		}
 	}
 }
