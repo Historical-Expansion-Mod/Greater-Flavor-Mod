@@ -134,11 +134,11 @@ military = {
 	COMBAT_DIFFICULTY_IMPACT = 0.2,
 	BASE_COMBAT_WIDTH = 30,
 	POP_MIN_SIZE_FOR_REGIMENT = 1000,
-	POP_SIZE_PER_REGIMENT = 1000,
-	SOLDIER_TO_POP_DAMAGE = 0.75,
+	POP_SIZE_PER_REGIMENT = 3000,
+	SOLDIER_TO_POP_DAMAGE = 0.25,
 	LAND_SPEED_MODIFIER = 1,
 	NAVAL_SPEED_MODIFIER = 2,
-	EXP_GAIN_DIV = 0.25,
+	EXP_GAIN_DIV = 0.05,
 	LEADER_RECRUIT_COST = 20,
 	SUPPLY_RANGE = 250,
 	POP_MIN_SIZE_FOR_REGIMENT_PROTECTORATE_MULTIPLIER = 8,
@@ -193,7 +193,7 @@ military = {
 	NAVAL_LOW_SUPPLY_DAMAGE_DAYS_DELAY = 30, -- delay in days before the STR will get damage due to no supplies. Sometimes supply status may jump bcoz of the market.
 	NAVAL_LOW_SUPPLY_DAMAGE_MIN_STR = 5.0, -- when low supply, the navy will supply STR damage but no less then X% to avoid destruction (value from 0 to 100.0)
 	NAVAL_LOW_SUPPLY_DAMAGE_PER_DAY = 0.25, -- damage to navies STR per day if totally 0% supplies (value from 0 to 100.0)
-}
+},
 
 diplomacy = {
 	PEACE_COST_ADD_TO_SPHERE = 1,
