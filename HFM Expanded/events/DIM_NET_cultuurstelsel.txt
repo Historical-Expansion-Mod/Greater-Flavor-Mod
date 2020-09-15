@@ -1,0 +1,1061 @@
+#Institute the cultuurstelsel
+country_event = {
+	id = 211400
+	is_triggered_only = yes
+	title = "DIM_cultuurstelsel_event_title"
+	desc = "DIM_cultuurstelsel_event_desc"
+	picture = "DIM_cultuurstelsel_banner"
+	fire_only_once = yes
+
+	option = {
+		name = "EVTOPTA211400"
+		set_country_flag = cultuurstelsel
+		set_variable = { which = javanese_famine_counter value = 1 } #hack for Javanese Famine events, which are of course dependend on the cultuurstelsel.
+	}
+}
+
+#Abuse of the Herendienst
+province_event = {
+	id = 211401
+	title = "DIM_cultuurstelsel_abuse_title"
+	desc = "DIM_cultuurstelsel_abuse_desc"
+
+	trigger = {
+		owner = { 
+			tag = NET 
+			NOT = { has_country_flag = regeringsreglement }
+		}
+		has_province_modifier = cultuurstelsel	
+	}
+	
+	mean_time_to_happen = {	months = 120 }
+
+	option = {
+		name = "EVTOPTA211401"
+		coffee = 40
+		any_pop = {
+			limit = { is_primary_culture = no  }
+			militancy = 0.5
+		}
+	}
+	
+	option = {
+		name = "EVTOPTB211401"
+		any_pop = {
+			limit = { is_primary_culture = no  }
+			consciousness = 0.5
+		}
+	}
+}
+
+#Famine on Java
+province_event = {
+	id = 211402
+	title = "DIM_cultuurstelsel_famine_title"
+	desc = "DIM_cultuurstelsel_famine_desc"
+
+	trigger = {
+		owner = { 
+			tag = NET 
+			NOT = { has_global_flag = great_javan_famine }
+		}
+		has_province_modifier = cultuurstelsel
+		NOT = { has_province_modifier = famine }
+	}
+	
+	mean_time_to_happen = {
+		months = 80
+		modifier = { factor = 0.75 year = 1845 NOT = { year = 1850 } }
+		modifier = { factor = 0.5 year = 1850 }
+		modifier = { factor = 2 has_country_flag = regeringsreglement }
+		modifier = { factor = 0.5 any_neighbor_province = { has_province_modifier = famine } }
+	}
+
+	option = {
+		name = "EVTOPTA211402"
+		set_country_flag = javanese_famine
+		NET = { 
+			change_variable = { which = javanese_famine_counter value = 2 } 
+			set_country_flag = javanese_famine
+		}
+		add_province_modifier = { name = famine duration = 365 }
+		any_pop = {
+			limit = { NOT = { has_pop_culture = dutch } }
+			consciousness = 3
+			militancy = 3
+		}
+		
+		ai_chance = { factor = 80 }
+	}
+	
+	option = {
+		name = "EVT1010011OPTB"
+		treasury = -5000
+		NET = { 
+			change_variable = { which = javanese_famine_counter value = 1 } 
+			set_country_flag = javanese_famine
+		}
+		add_province_modifier = { name = famine duration = 180 }
+		any_pop = {
+			limit = { NOT = { has_pop_culture = dutch } }
+			consciousness = 2
+		}
+		
+		ai_chance = { factor = 20 }
+	}
+}
+
+#Javanese Famine
+country_event = {
+	id = 211410
+	title = "DIM_javanese_famine_title"
+	desc = "DIM_javanese_famine_desc"
+	major = yes
+	fire_only_once = yes
+	
+	trigger = {
+		tag = NET
+		has_country_flag = javanese_famine
+		OR = {
+			has_country_flag = cultuurstelsel
+			has_country_flag = regeringsreglement
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 60			
+		modifier = {
+			check_variable = { which = javanese_famine_counter value = 1 }
+			factor = 0.9
+		}
+		modifier = {
+			check_variable = { which = javanese_famine_counter value = 2 }
+			factor = 0.85
+		}
+		modifier = {
+			check_variable = { which = javanese_famine_counter value = 4 }
+			factor = 0.8
+		}
+		modifier = {
+			check_variable = { which = javanese_famine_counter value = 6 }
+			factor = 0.8
+		}
+		modifier = {
+			check_variable = { which = javanese_famine_counter value = 8 }
+			factor = 0.7
+		}
+		modifier = {
+			check_variable = { which = javanese_famine_counter value = 10 }
+			factor = 0.5
+		}
+		modifier = {
+			check_variable = { which = javanese_famine_counter value = 12 }
+			factor = 0.4
+		}
+	}
+	
+	immediate = { set_global_flag = great_javan_famine }
+	
+	option = {
+		name = "EVT1010011OPTB"
+		prestige = -10
+		treasury = -55000
+		upper_house = { ideology = liberal value = 0.1 }
+		any_pop = {
+			limit = { location = { is_core = NET } has_pop_culture = dutch }
+			scaled_consciousness = { issue = laissez_faire factor = 5 }
+			scaled_militancy = { ideology = reactionary factor = 3 }
+			scaled_consciousness = { factor = 1 ideology = liberal }
+			scaled_consciousness = { factor = 1 ideology = anarcho_liberal }
+			ideology = { factor = 0.01 value = liberal }
+		}
+		any_owned = {
+			limit = {
+				OR = {
+					has_province_modifier = cultuurstelsel
+					has_province_modifier = cultuurstelsel_reformed
+				}
+			}
+			any_pop = { limit = { is_primary_culture = no strata = poor } militancy = 3 }	
+		}
+		any_owned = {
+			limit = { is_core = JAV }
+			add_province_modifier = { name = famine duration = 180 }
+		}
+		JAV = { any_owned = { add_province_modifier = { name = famine duration = 180 } } }
+		
+		ai_chance = {
+			factor = 20
+			modifier = {
+				factor = 0
+				NOT = { money = 55000 }
+			}
+		}
+	}
+
+	option = {
+		name = "EVTOPTA211402"
+		prestige = -10
+		upper_house = { ideology = liberal value = 0.1 }
+		any_pop = {
+			limit = { location = { is_core = NET } has_pop_culture = dutch }
+			scaled_consciousness = { issue = laissez_faire factor = -3 }
+			scaled_militancy = { ideology = reactionary factor = -3 }
+			scaled_consciousness = { factor = 3 ideology = liberal }
+			scaled_consciousness = { factor = 3 ideology = anarcho_liberal }
+			ideology = { factor = 0.01 value = liberal }
+		}
+		any_owned = {
+			limit = {
+				OR = {
+					has_province_modifier = cultuurstelsel
+					has_province_modifier = cultuurstelsel_reformed
+				}
+			}
+			any_pop = { limit = { is_primary_culture = no strata = poor } militancy = 6 }	
+		}
+		any_owned = {
+			limit = { is_core = JAV }
+			add_province_modifier = { name = famine duration = 365 }
+		}
+		JAV = { any_owned = { add_province_modifier = { name = famine duration = 365 } } }
+		
+		ai_chance = {
+			factor = 80
+			modifier = {
+				factor = 2
+				economic_policy = laissez_faire
+			}
+			modifier = {
+				factor = 1.5
+				citizenship_policy = residency
+			}
+			modifier = {
+				factor = 0.5
+				citizenship_policy = full_citizenship
+			}
+		}
+	}
+}
+
+#Eduard Douwes Dekkers protests
+country_event = {
+	id = 211403
+	title = "DIM_cultuurstelsel_multatuli1_title"
+	desc = "DIM_cultuurstelsel_multatuli1_desc"
+	picture = "DIM_indie_rechtspraak"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = NET
+		nationalism_n_imperialism = 1
+		has_country_flag = cultuurstelsel
+		owns = 1413
+		war = no
+	}
+	
+	mean_time_to_happen = { 
+		months = 72 
+		modifier = { factor = 0.75 year = 1855 }
+		modifier = { factor = 0.35 revolution_n_counterrevolution = 1 }
+	}
+
+	option = {
+		name = "EVTOPTA211403"	
+		set_country_flag = multatuli
+		any_pop = {
+			limit = {
+				location = { region = NET_1413 }
+				is_primary_culture = no
+			}
+			consciousness = -1
+		}
+		any_pop = {
+			limit = { location = { is_core = NET } has_pop_culture = dutch }
+			scaled_consciousness = { factor = 0.5 ideology = liberal }
+			scaled_consciousness = { factor = 0.5 ideology = anarcho_liberal }
+		}
+		
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "EVTOPTB211403"	
+		any_pop = {
+			limit = {
+				location = { region = NET_1413 }
+				is_primary_culture = no
+			}
+			consciousness = 1
+			militancy = 2
+		}		
+		
+		ai_chance = { factor = 0 }
+	}
+}
+
+#Multatuli writes to the king
+country_event = {
+	id = 211404
+	title = "DIM_cultuurstelsel_multatuli2_title"
+	desc = "DIM_cultuurstelsel_multatuli2_desc"
+	picture = "DIM_multatuli_brussel"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = NET
+		has_country_flag = cultuurstelsel
+		has_country_flag = multatuli
+		war = no
+		owns = 1413
+	}
+	
+	mean_time_to_happen = { 
+		months = 24 
+		modifier = { factor = 0.5 year = 1860 }
+		modifier = { factor = 0.35 revolution_n_counterrevolution = 1 }
+	}
+
+	option = {
+		name = "EVTOPTA211404"
+		plurality = -1
+		any_pop = {
+			limit = { location = { is_core = NET } has_pop_culture = dutch }
+			scaled_consciousness = { factor = 0.5 ideology = liberal }
+		}
+		ai_chance = { factor = 95 }
+	}
+	
+	option = {
+		name = "EVTOPTB211404"
+		prestige = -20
+		treasury = -5500
+		clr_country_flag = multatuli
+		any_pop = {
+			limit = {
+				location = { is_core = JAV }
+				is_primary_culture = no
+			}
+			consciousness = 3
+			militancy = 1
+		}	
+		
+		ai_chance = { factor = 5 }
+	}
+}
+
+#The book Max Havelaar
+country_event = {
+	id = 211405
+	title = "DIM_max_havelaar_title"
+	desc = "DIM_max_havelaar_desc"
+	picture = "DIM_max_havelaar"
+	fire_only_once = yes
+	
+	trigger = {
+		has_country_flag = cultuurstelsel
+		has_country_flag = multatuli
+		war = no
+		owns = 1413
+		NOT = { press_rights = state_press }
+		tag = NET
+	}
+	
+	mean_time_to_happen = { 
+		months = 24 
+		modifier = { factor = 0.5 year = 1860 }
+		modifier = { factor = 0.35 revolution_n_counterrevolution = 1 }
+	}
+	
+	option = {
+		name = "EVTOPTA211405"
+		prestige = -25
+		badboy = 2
+		upper_house = { ideology = liberal value = 0.15 }
+		any_pop = {
+			limit = { location = { is_core = NET } has_pop_culture = dutch }
+			ideology = { factor = 0.05 value = liberal }
+			scaled_militancy = { factor = 1.5 ideology = liberal }
+			scaled_militancy = { factor = 3 ideology = anarcho_liberal }
+			scaled_consciousness = { factor = 1.25 ideology = liberal }
+			scaled_consciousness = { factor = 2 ideology = anarcho_liberal }
+		}
+		
+		#Create a notification event for other GPs soon#
+	}
+
+}
+
+#The book: Java or how too run a colony
+country_event = {
+	id = 211409
+	title = "DIM_java_run_colony_title"
+	desc = "DIM_java_run_colony_desc"
+	picture = "DIM_cultuurstelsel_banner"
+	fire_only_once = yes
+
+	trigger = {
+		tag = NET
+		nationalism_n_imperialism = 1
+		has_country_flag = cultuurstelsel
+		has_global_flag = sepoy_rebellion
+		war = no
+	}
+	
+	mean_time_to_happen = { 
+		months = 72 
+		modifier = { factor = 0.5 year = 1865 }
+		modifier = { factor = 0.5 revolution_n_counterrevolution = 1 }
+	}
+	
+	option = {
+		name = "EVTOPTA211409"	
+		prestige = 5
+		upper_house = { ideology = conservative value = 0.1 }
+		random_country = { 
+			limit = { 
+				tag = BEL
+				exists = yes
+			}
+			country_event = 210449
+		}
+		any_pop = {
+			limit = { location = { is_core = NET } has_pop_culture = dutch }
+			ideology = { factor = 0.05 value = conservative }
+			scaled_consciousness = { factor = 0.15 ideology = liberal }
+			scaled_consciousness = { factor = 0.30 ideology = anarcho_liberal }
+		}
+	}
+}
+
+#Java, or How to Manage a Colony
+country_event = {
+	id = 210449
+	title = "DIM_java_run_colony_title"
+	desc = "DIM_belgium_java_run_colony_desc"
+	picture = "DIM_cultuurstelsel_banner"
+	is_triggered_only = yes
+
+	option = { name = "EVTOPTA210449" }
+}
+
+
+#Pangka Affair - Colonial contracts up for tender
+country_event = {
+	id = 211412
+	title = "DIM_pangka_title"
+	desc = "DIM_pangka_desc"
+	picture = "DIM_sugar_refinery"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = NET
+		year = 1845
+		has_country_flag = cultuurstelsel
+		NOT = { 
+			has_country_flag = regeringsreglement
+			has_country_flag = suikerwet
+		}	
+		war = no
+	}
+	
+	mean_time_to_happen = { 
+		months = 72 
+		modifier = { factor = 0.5 year = 1860 }
+		modifier = { factor = 0.5 revolution_n_counterrevolution = 1 }
+	}
+
+	option = {
+		name = "EVTOPTA211412"
+		375 = { capitalists = { money = 1500 } }
+		treasury = 1500
+		any_pop = {
+			limit = { location = { is_core = NET } has_pop_culture = dutch }
+			scaled_consciousness = { issue = laissez_faire factor = 0.5 }
+		}
+		set_country_flag = pangka
+		
+		ai_chance = { factor = 85 }
+	}
+	
+	option = {
+		name = "EVTOPTB211412"
+		prestige = -5
+		any_pop = {
+			limit = { location = { is_core = NET } has_pop_culture = dutch }
+			scaled_consciousness = { factor = -0.5 ideology = liberal }
+		}
+		any_pop = {
+			limit = { location = { is_core = NET } has_pop_culture = dutch strata = rich }
+			consciousness = 2
+		}
+		
+		ai_chance = { factor = 15 }
+	}
+}
+
+#Pangka Affair
+country_event = {
+	id = 211413
+	title = "DIM_pangka_affair_title"
+	desc = "DIM_pangka_affair_desc"
+	picture = "DIM_sugar_refinery"
+	fire_only_once = yes
+	major = yes
+	
+	trigger = {
+		tag = NET
+		year = 1850
+		has_country_flag = cultuurstelsel
+		not = { has_country_flag = suikerwet }
+		war = no
+		owns = 1413
+		OR = {
+			ruling_party_ideology = conservative
+			ruling_party_ideology = reactionary
+			has_country_flag = pangka 
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 240
+		modifier = { has_country_flag = pangka factor = 0.35 }
+	}
+
+	option = {
+		name = "EVTOPTA211413"
+		treasury = -5000
+		ruling_party_ideology = liberal
+		any_pop = {
+			scaled_militancy = { factor = -1.25 ideology = liberal }
+			scaled_militancy = { factor = -2 ideology = anarcho_liberal }
+		}
+		
+		ai_chance = { factor = 80 }
+	}
+	
+	option = {
+		name = "EVTOPTB211413"	
+		treasury = -5000
+		upper_house = { ideology = liberal value = 0.15 } 
+		any_pop = {
+			limit = { location = { is_core = NET } has_pop_culture = dutch }
+			scaled_militancy = { factor = 2 ideology = liberal }
+			scaled_militancy = { factor = 3 ideology = anarcho_liberal }
+		}
+		
+		ai_chance = { factor = 20 }
+	}
+}
+
+#Regeringsregelement - dubbele zending
+country_event = {
+	id = 211414
+	title = "DIM_regeringsregelement_zending_title"
+	desc = "DIM_regeringsregelement_zending_desc"
+	picture = "DIM_kerstening"
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA211414"
+		random_country = {
+			limit = { OR = { tag = PAP tag = BEL tag = FRA tag = BOR tag = SPA tag = SPC } exists = yes }
+			relation = { who = THIS value = 10 }
+		}	
+		any_pop = {
+			limit = {
+				OR = {
+					has_pop_religion = protestant
+					has_pop_religion = catholic
+				}
+			}
+			militancy = 0.5
+		}
+		
+		ai_chance = { factor = 20 }
+	}
+	
+	option = {
+		name = "EVTOPTB211414"	
+		set_country_flag = calvinistische_zending
+		random_country = {
+			limit = { OR = { tag = PAP tag = BEL tag = FRA tag = BOR tag = SPA tag = SPC } exists = yes }
+			relation = { who = THIS value = -50 }
+		}	
+		any_pop = {
+			limit = { has_pop_religion = protestant }
+			militancy = -0.5
+		}
+		any_pop = {
+			limit = { has_pop_religion = catholic }
+			militancy = 1
+		}
+		
+		ai_chance = { factor = 80 }
+	}
+	
+	option = {
+		name = "EVTOPTC211414"
+		set_country_flag = katholieke_zending
+		random_country = {
+			limit = { OR = { tag = PAP tag = BEL tag = FRA tag = BOR tag = SPA tag = SPC } exists = yes }
+			relation = { who = THIS value = 50 }
+		}	
+		any_pop = {
+			limit = { has_pop_religion = protestant }
+			militancy = 1.5
+		}
+		any_pop = {
+			limit = { has_pop_religion = catholic }
+			militancy = -1
+		}
+		
+		ai_chance = { factor = 0 }
+	}
+	option = {
+		name = "EVTOPTD211414"
+		set_country_flag = geen_zending
+		prestige = -10
+		random_country = {
+			limit = { OR = { tag = PAP tag = BEL tag = FRA tag = BOR tag = SPA tag = SPC } exists = yes }
+			relation = { who = THIS value = -25 }
+		}	
+		any_pop = {
+			limit = {
+				OR = {
+					has_pop_religion = protestant
+					has_pop_religion = catholic
+				}
+			}
+			militancy = 1
+		}
+		any_pop = {
+			limit = {
+				NOT = {
+					OR = {
+						has_pop_religion = catholic
+						has_pop_religion = protestant
+					}
+				}
+			}
+			militancy = -1
+			consciousness = -1
+		}
+		
+		ai_chance = { factor = 0 }
+	}
+}
+
+#supersede the landverhuurstelsel 
+province_event = {
+	id = 211415
+	title = "DIM_cultuurstelsel_landverhuur_title"
+	desc = "DIM_cultuurstelsel_landverhuur_desc"
+	
+	trigger = {
+		owner = { tag = NET }
+		has_province_modifier = landverhuurstelsel
+	}
+
+	mean_time_to_happen = { days = 10 }
+
+	option = {
+		name = "EVTOPTA1002" 
+		remove_province_modifier = landverhuurstelsel
+	}
+}
+
+#Cultuurstelsel in newly conquered territories
+province_event = {
+	id = 211416
+	title = "DIM_cultuurstelsel_newconquered_title"
+	desc = "DIM_cultuurstelsel_newconquered_desc"
+	
+	trigger = {
+		owner = { tag = NET }
+		OR = {
+			AND = {
+				OR = {
+					region = NET_1413 #Western Java
+					region = NET_1418 #Eastern Java
+				}
+				has_country_flag = cultuurstelsel
+			}
+			AND = {
+				OR = {
+					region = NET_1398 #Sumatra
+					region = NET_1401 #Siak
+					region = ATJ_1405 #Aceh
+				}
+				has_country_flag = cultuurstelsel_extended
+			}	
+		}
+		OR = {
+			trade_goods = coffee
+			trade_goods = dye
+			trade_goods = tea
+			AND = {
+				trade_goods = fruit
+				NOT = { has_country_flag = suikerwet }
+			}
+		}
+		NOT = { has_province_modifier = cultuurstelsel }
+		NOT = { has_country_flag = regeringsreglement }
+	}
+	
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "EVTOPTGOOD" 
+		add_province_modifier = { name = cultuurstelsel duration = -1 }
+	}
+}
+
+#People fleeing the Cultuurstelsel
+province_event = {
+	id = 211418
+	title = "DIM_cultuurstelsel_escape_title"
+	desc = "DIM_cultuurstelsel_escape_desc"
+	
+	trigger = {
+		owner = { tag = NET }
+		OR = {
+			AND = {
+				OR = {
+					region = NET_1413 #Western Java
+					region = NET_1418 #Eastern Java
+				}
+				has_country_flag = cultuurstelsel
+			}
+			AND = {
+				OR = {
+					region = NET_1398 #Sumatra
+					region = NET_1401 #Siak
+					region = ATJ_1405 #Aceh
+				}
+				has_country_flag = cultuurstelsel_extended
+			}	
+		}
+		NOT = { has_province_modifier = fleeing_cultuurstelsel }
+		NOT = { has_country_flag = regeringsreglement }
+	}
+	
+	mean_time_to_happen = { months = 450 }
+	
+	option = {
+		name = "EVT98225OPTB"
+		owner = { treasury = -20000 }
+		any_pop = {
+			limit = { is_culture_group = southeast_asian }
+			consciousness = -3
+			militancy = -1
+		}
+		random = {
+			chance = 50
+			add_province_modifier = { name = fleeing_cultuurstelsel duration = 120 }
+		}
+		ai_chance = {
+			factor = 5
+			modifier = {
+				factor = 0
+				owner = { civilized = no }
+			}
+			modifier = {
+				factor = 0
+				owner = {
+					NOT = { money = 40000 }
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTA211418"
+		owner = {
+			random_owned = {
+				limit = {
+					OR = {
+						region = NET_1398 #Sumatra
+						region = NET_1401 #Siak
+						region = ATJ_1405 #Aceh
+					}
+				}
+				any_pop = {
+					limit = { NOT = { has_pop_culture = dutch } }
+					consciousness = 3
+					militancy = 3
+				}
+			}
+		}
+		add_province_modifier = { name = fleeing_cultuurstelsel duration = 220 }
+	}
+}
+
+#The Koelie Ordonnantie
+country_event = {
+	id = 211450
+	title = "DIM_koelie_ordonnantie_title"
+	desc = "DIM_koelie_ordonnantie_desc"
+	picture = "DIM_poenale_sanctie"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = NET
+		nationalism_n_imperialism = 1
+		has_country_flag = koelie_contracten
+		NOT = {
+			OR = {
+				has_country_flag = ethische_politiek
+				has_country_flag = koelie_contracten_abandoned
+			}
+		}
+		war = no
+		owns = 1413
+		owns = 1406 #Medan
+		NOT = {
+			OR = {
+				ruling_party_ideology = communist
+				ruling_party_ideology = anarcho_liberal
+				ruling_party_ideology = socialist
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 120
+		modifier = { factor = 2 NOT = { year = 1870 } }
+		modifier = { factor = 0.75 year = 1870 }
+	}
+
+	option = {
+		name = "EVTOPTA211450"
+		set_country_flag = poenale_sanctie
+		any_owned = {
+			limit = { has_province_modifier = koelie_contracten }
+			add_province_modifier = { name = poenale_sanctie duration = -1 }
+		}
+		any_pop = {
+			limit = { location = { is_core = NET } has_pop_culture = dutch }
+			scaled_consciousness = { factor = 2 ideology = socialist }
+			scaled_consciousness = { factor = 2 ideology = communist }
+			scaled_consciousness = { factor = 1 ideology = anarcho_liberal }
+			scaled_consciousness = { factor = 1 ideology = liberal }
+		}
+	}
+	
+	option = {
+		name = "EVTOPTB211450"	
+		any_pop = {
+			limit = { location = { continent = east_indies } has_pop_culture = dutch }
+			consciousness = 1
+			militancy = 0.5
+			ideology = { factor = 0.1 value = conservative }
+		}
+	}
+	
+	option = {
+		name = "EVTOPTC211450"	
+		any_owned = { remove_province_modifier = koelie_contracten }
+		set_country_flag = koelie_contracten_abandoned
+		any_pop = {
+			limit = { location = { continent = east_indies } has_pop_culture = dutch }
+			consciousness = 2
+			militancy = 1
+			ideology = { factor = 0.2 value = reactionary }
+		}
+		any_pop = {
+			limit = { location = { is_core = NET } has_pop_culture = dutch }
+			ideology = { factor = 0.05 value = reactionary }
+		}
+	}
+}
+
+#The Suikerwet
+country_event = {
+	id = 211440
+	title = "DIM_suikerwet_title"
+	desc = "DIM_suikerwet_desc"
+	picture = "DIM_sugar_refinery"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = NET
+		war = no
+		OR = {
+			has_country_flag = agrarische_wet
+			has_country_flag = cultuurstelsel_abandoned
+		}
+		NOT = {
+			has_country_flag = suikerwet
+			ruling_party_ideology = communist
+			has_country_modifier = stock_market_crash
+			has_country_modifier = great_depression
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 120
+			modifier = {
+				factor = 2
+				ruling_party_ideology = conservative
+			}
+			modifier = {
+				factor = 4
+				ruling_party_ideology = reactionary
+			}
+			modifier = {
+				factor = 0.5
+				ruling_party_ideology = anarcho_liberal
+			}
+			modifier = {
+				factor = 0.75
+				has_country_flag = koffiewet
+			}
+			modifier = {
+				factor = 0.5
+				has_country_flag = suikerwet_denied
+			}
+	}
+
+	option = {
+		name = "EVTOPTA211440"
+		set_country_flag = suikerwet
+		any_owned = {
+			limit = { trade_goods = fruit }
+			remove_province_modifier = cultuurstelsel
+			remove_province_modifier = cultuurstelsel_reformed			
+		}
+	}
+	
+	option = {
+		name = "EVTOPTB211440"
+		set_country_flag = suikerwet_denied
+		any_pop = {
+			limit = { location = { is_core = NET } has_pop_culture = dutch }
+			scaled_militancy = { factor = 1 ideology = liberal }
+			scaled_militancy = { factor = 1 ideology = socialist }
+			scaled_militancy = { factor = 1.5 ideology = anarcho_liberal }
+		}
+	}
+}
+
+#The Koffiewet
+country_event = {
+	id = 211441
+	title = "DIM_koffiewet_title"
+	desc = "DIM_koffiewet_desc"
+	picture = "DIM_cultuurstelsel_banner"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = NET
+		war = no
+		OR = {
+			has_country_flag = agrarische_wet
+			has_country_flag = cultuurstelsel_abandoned
+		}
+		NOT = {
+			has_country_flag = koffiewet
+			ruling_party_ideology = communist
+			has_country_modifier = stock_market_crash
+			has_country_modifier = great_depression
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 120
+			modifier = {
+				factor = 2
+				ruling_party_ideology = conservative
+			}
+			modifier = {
+				factor = 4
+				ruling_party_ideology = reactionary
+			}
+			modifier = {
+				factor = 0.5
+				ruling_party_ideology = anarcho_liberal
+			}
+			modifier = {
+				factor = 0.75
+				has_country_flag = suikerwet
+			}
+			modifier = {
+				factor = 0.5
+				has_country_flag = koffiewet_denied
+			}
+	}
+
+	option = {
+		name = "EVTOPTA211440"
+		set_country_flag = koffiewet
+		any_owned = {
+			limit = { trade_goods = coffee }
+			remove_province_modifier = cultuurstelsel
+			remove_province_modifier = cultuurstelsel_reformed			
+		}
+	}
+	
+	option = {
+		name = "EVTOPTB211440"
+		set_country_flag = koffiewet_denied
+		any_pop = {
+			limit = { location = { is_core = NET } has_pop_culture = dutch }
+			scaled_militancy = { factor = 1 ideology = liberal }
+			scaled_militancy = { factor = 1 ideology = socialist }
+			scaled_militancy = { factor = 1.5 ideology = anarcho_liberal }
+		}
+	}
+}
+
+#Private Plantations Flourish
+province_event = {
+	id = 211445
+	title = "DIM_private_plantation_title"
+	desc = "DIM_private_plantation_desc"
+
+	trigger = {
+		owner = { 
+			has_country_flag = agrarische_wet
+			war = no
+			NOT = { ruling_party_ideology = communist }
+		}
+		continent = east_indies
+		OR = {
+			trade_goods = coffee
+			trade_goods = cotton
+			trade_goods = dye
+			trade_goods = rubber
+			trade_goods = fruit
+			trade_goods = tobacco
+			trade_goods = tea
+		}
+		NOT = {
+			has_province_modifier = cultuurstelsel
+			has_province_modifier = cultuurstelsel_reformed
+			has_province_modifier = deli_maatschappij
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 360
+		modifier = {
+			factor = 0.5
+			owner = { ruling_party_ideology = liberal }
+		}
+		modifier = {
+			factor = 2
+			owner = { ruling_party_ideology = socialist }
+		}
+		modifier = {
+			factor = 2
+			owner = { has_country_flag = ethische_politiek }
+		}
+	}
+
+	option = {
+		name = "EVTOPTA211445" 
+		add_province_modifier = { name = private_plantation duration = 365 }
+	}
+}
