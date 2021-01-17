@@ -1,0 +1,190 @@
+political_decisions = {
+
+	declare_independence_unilaterally = {
+		potential = {
+			is_vassal = yes
+			NOT = { has_country_flag = unilateral_independence }
+		}
+		allow = {
+			OR = {
+				upper_house = {
+					ideology = anarcho_liberal
+					value = 0.5
+				}
+				upper_house = {
+					ideology = fascist
+					value = 0.5
+				}
+				upper_house = {
+					ideology = communist
+					value = 0.5
+				}
+			}
+			prestige = 100
+			military_score = 60
+			average_consciousness = 5
+			
+		}
+		effect = {
+			set_country_flag = unilateral_independence
+			badboy = 6
+			any_pop = {
+				consciousness = 2
+				scaled_militancy = {
+					factor = 8
+					ideology = conservative
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = reactionary
+				}
+			}
+			overlord = { 
+				release_vassal = THIS
+				diplomatic_influence = {
+					who = THIS
+					value = -101
+				}
+				country_event = 811101
+			}
+		}
+		ai_will_do = { factor = 1 }
+	}
+
+	petition_for_independence = {
+		potential = {
+			is_vassal = yes
+			NOT = { has_country_flag = peaceful_independence }
+		}
+		allow = {
+			prestige = 150
+			industrial_score = 100
+			upper_house = {
+				ideology = liberal
+				value = 0.3
+			}
+			average_consciousness = 7
+		}
+		effect = {
+			set_country_flag = peaceful_independence
+			any_pop = {
+				consciousness = 2
+				scaled_militancy = {
+					factor = 1
+					ideology = conservative
+				}
+				scaled_militancy = {
+					factor = 4
+					ideology = reactionary
+				}
+			}
+			overlord = {
+				country_event = 811115
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
+	balfour_declaration_1926 = {
+		potential = {
+			tag = ENG
+			NOT = { 
+				has_global_flag = british_monarchy_overthrown
+				has_global_flag = balfour_declaration_1926_made 
+			}
+			has_country_flag = was_petitioned_for_independence
+		}
+		allow = {
+			war = no
+			mass_politics = 1
+		}
+		effect = {
+			set_global_flag = balfour_declaration_1926_made
+			any_country = {
+				limit = { has_country_flag = british_monarchical_dominion }
+				country_event = 811112
+			}
+		}
+		ai_will_do = { factor = 1 }
+	}
+
+	adopt_statute_of_westminster = {
+		alert = no
+		potential = {
+			has_country_flag = british_monarchical_dominion
+			has_global_flag = statute_of_westminster_passed
+			NOT = { has_country_flag = adopted_statute_of_westminster }	
+		}
+		allow = {
+		}
+		effect = {
+			set_country_flag = adopted_statute_of_westminster
+			war_exhaustion = -2
+			ENG = { 
+				diplomatic_influence = {
+					who = THIS
+					value = -101
+				}
+			}
+			create_alliance = ENG
+		}
+		ai_will_do = { 
+			factor = 1
+			modifier = {
+				factor = 0
+					NOT = {
+					OR = { # dominions where SoW applied directly
+						tag = IRE
+						tag = SAF
+						tag = CAN
+						war_exhaustion = 4
+						NOT = {
+							relation = {
+								who = ENG
+								value = 0
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	british_empire_games = {
+		potential = {
+			OR = {
+				tag = ENG
+				has_country_flag = british_monarchical_dominion
+			}
+			year = 1930
+			owns = 55 # Hamilton
+			NOT = { 
+				has_global_flag = british_monarchy_overthrown
+				has_global_flag = british_empire_games
+			}
+		}
+		allow = {
+			war = no
+		}
+		effect = {
+			money = -30000
+			set_global_flag = british_empire_games
+			prestige = 10
+			any_country = {
+				limit = {
+					OR = {
+						has_country_flag = british_monarchical_dominion
+						tag = ENG
+					}
+				}
+				prestige = 3
+				any_pop = {
+					consciousness = -0.5
+				}
+			}
+		}
+		ai_will_do = { factor = 1 }
+	}
+}
