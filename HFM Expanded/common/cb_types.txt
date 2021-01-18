@@ -134,6 +134,8 @@ status_quo
 test_end_war
 take_capital
 demand_concession_capital
+acquire_core_substate_region
+conquest_low
 }
 
 # Great War CB's
@@ -5152,6 +5154,7 @@ conquest = {
 					has_country_flag = exclusive_liberate_country_CB
 					has_country_flag = exclusive_make_puppet_CB
 				}
+				NOT = { number_of_states = 2 }
 			}
 		}
 		NOT = { is_our_vassal = THIS }
@@ -11601,4 +11604,144 @@ demand_concession_capital = {
 			value = 0.25
 		}
 	}
+}
+
+# Gain control of core Substate region
+acquire_core_substate_region = {
+	sprite_index = 6
+	is_triggered_only = yes
+	months = 12
+	crisis = no
+	
+	construction_speed = 0.25
+	
+	badboy_factor = 0.75
+	prestige_factor = 1.5
+	peace_cost_factor = 1
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 2
+	break_truce_militancy_factor = 2
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = {
+		NOT = { is_our_vassal = THIS }
+		num_of_substates = 1 # if has any substate
+		any_substate = {
+			number_of_states = 1
+			any_owned_province = {
+				is_core = THIS
+				is_colonial = no
+			}
+		}
+	}
+	
+	allowed_substate_regions = {
+		is_colonial = no
+		owner = { NOT = { in_sphere = THIS } }
+		any_owned_province = {
+			is_core = THIS
+			is_colonial = no
+		}
+	}
+
+	po_demand_state = yes
+	
+	war_name = WAR_TAKE_NAME
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+}
+conquest_low = {
+	sprite_index = 2
+	is_triggered_only = yes
+	months = 12
+	crisis = no
+	
+	construction_speed = 0.5
+	
+	can_use = {
+		this = { NOT = { badboy = 1 } }
+		NOT = {	total_pops = 400000 }
+		NOT = { 
+			OR = { 
+				has_country_modifier = neutrality
+				has_country_modifier = generic_neutrality
+			}
+		}
+		is_vassal = no
+		NOT = { has_country_modifier = neutrality_modifier }
+		THIS = {
+			NOT = {
+				has_country_modifier = neutrality_modifier
+				has_country_modifier = disable_conquest_cb
+			}
+		}
+		THIS = {
+			NOT = { has_country_flag = conquerable_1865 }
+		}
+		NOT = { has_country_flag = conquerable_1865 }
+		# only one state or unciv
+		NOT = { number_of_states = 5 }
+		OR = {
+			AND = {
+				civilized = yes
+				NOT = { number_of_states = 2 }
+			}
+			AND = {
+				civilized = no
+				THIS = { civilized = no }
+				NOT = { number_of_states = 3 }
+			}
+			AND = {
+				civilized = no
+				number_of_states = 1
+				THIS = {
+					OR = {
+						NOT = { is_greater_power = yes }
+						NOT = { nationalism_n_imperialism = 1 }
+					}
+				}
+			}
+		}
+		is_independant = yes
+	}
+
+	badboy_factor = 0.5
+	prestige_factor = 5
+	peace_cost_factor = 1
+	penalty_factor = 1
+	
+	break_truce_prestige_factor = 5
+	break_truce_infamy_factor = 2
+	break_truce_militancy_factor = 2
+	truce_months = 60
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+	
+	construction_speed = 0.5
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+	
+	po_annex = yes
+	
+	war_name = WAR_CONQUEST_NAME
 }
