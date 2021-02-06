@@ -3,7 +3,7 @@ political_decisions = {
 	portuguese_civil_code = {
 		picture = enact_the_homestead_act
 		potential = {
-			tag = POR
+			primary_culture = portuguese
 			state_n_government = 1
 			NOT = { has_country_flag = portuguese_civil_code }
 		}
@@ -44,40 +44,79 @@ political_decisions = {
 			any_owned_province = { is_colonial = yes }
 			NOT = { war_policy = pacifism }
 			NOT = { has_country_modifier = no_more_war }
-			POR = {
-				exists = yes
-				is_vassal = no
-				any_owned_province = {
-					OR = {
-						region = ENG_2068
-						region = ENG_2014
-						region = ENG_2071
-						region = ENG_2016
+			OR = {
+				POR = {
+					exists = yes
+					is_vassal = no
+					any_owned_province = {
+						OR = {
+							region = ENG_2068
+							region = ENG_2014
+							region = ENG_2071
+							region = ENG_2016
+						}
+						any_neighbor_province = { owned_by = THIS }
 					}
-					any_neighbor_province = { owned_by = THIS }
+				}
+				UPB = {
+					exists = yes
+					is_vassal = no
+					any_owned_province = {
+						OR = {
+							region = ENG_2068
+							region = ENG_2014
+							region = ENG_2071
+							region = ENG_2016
+						}
+						any_neighbor_province = { owned_by = THIS }
+					}
 				}
 			}
+			
 		}
 
 		allow = {
 			war = no
-			POR = {
-				is_greater_power = no
-				any_owned_province = {
-					OR = {
-						region = ENG_2068
-						region = ENG_2014
-						region = ENG_2016
-						region = ENG_2071
+			OR = {
+				POR = {
+					is_greater_power = no
+					any_owned_province = {
+						OR = {
+							region = ENG_2068
+							region = ENG_2014
+							region = ENG_2016
+							region = ENG_2071
+						}
+							any_neighbor_province = { owned_by = THIS }
 					}
-					any_neighbor_province = { owned_by = THIS }
+				}
+				UPB = {
+					is_greater_power = no
+					any_owned_province = {
+						OR = {
+							region = ENG_2068
+							region = ENG_2014
+							region = ENG_2016
+							region = ENG_2071
+						}
+							any_neighbor_province = { owned_by = THIS }
+					}
 				}
 			}
 		}
 
 		effect = {
 			badboy = 4
-			POR = { country_event = 97010 }
+			POR = { 
+				limit = { exists = POR }
+				country_event = 97010 
+			}
+			UPB = { 
+				limit = { exists = UPB }
+				country_event = 97010 
+			}
+
+
 			set_country_flag = ultimatum_to_portugal_sent
 		}
 
@@ -104,7 +143,7 @@ political_decisions = {
 	treaty_of_simulambuko = {
 		picture = treaty_signing
 		potential = {
-			tag = POR
+			primary_culture = portuguese
 			KON = {
 				ai = yes
 				owns = 2000
@@ -112,14 +151,25 @@ political_decisions = {
 			}
 			OR = {
 				has_global_flag = berlin_conference
-				POR = { owns = 2001 }
-				2000 = { controlled_by = POR }
+				OR = {
+					POR = { owns = 2001 }
+					UPB = { owns = 2001 }
+				}
+				2000 = { 
+					OR = {
+						controlled_by = POR 
+						controlled_by = UPB
+					}
+				}
 			}
 		}
 		
 		allow = {
 			KON = {
-				neighbour = POR
+				OR = {
+					neighbour = POR
+					neighbour = UPB	
+				}
 				owns = 2000
 				civilized = no
 			}
@@ -140,8 +190,19 @@ political_decisions = {
 							province_id = 2000
 							province_id = 2001
 						}
+						exists = POR
 					}
 					secede_province = POR
+				}
+				any_owned = {
+					limit = {
+						OR = {
+							province_id = 2000
+							province_id = 2001
+						}
+						exists = UPB
+					}
+					secede_province = UPB
 				}
 			}
 			relation = { who = KON value = 400 }
