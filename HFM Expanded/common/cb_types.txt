@@ -10042,119 +10042,97 @@ claim_colonial_region_full = {
 
 #Steal Puppet CB
 steal_puppet = {
-    sprite_index = 33
-    is_triggered_only = yes
-    months = 12
+    sprite_index = 10
+	is_triggered_only = yes
+	months = 12
+	
+	construction_speed = 0.4
 
-    badboy_factor = 5
-    prestige_factor = 1
-    peace_cost_factor = 15
-    penalty_factor = 1
+	badboy_factor = 1.8
+	prestige_factor = 1
+	peace_cost_factor = 5
+	penalty_factor = 1
 
-    break_truce_prestige_factor = 1
-    break_truce_infamy_factor = 1
-    break_truce_militancy_factor = 1
-    truce_months = 48
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
 
-    good_relation_prestige_factor = 1
-    good_relation_infamy_factor = 1
-    good_relation_militancy_factor = 1
+	can_use = {
+		NOT = { is_our_vassal = THIS }
+		THIS = {
+			OR = {
+				is_greater_power = yes
+				AND = {
+					tag = SER
+					has_country_flag = steal_serbian_vojvodina
+				}
+			}
+		}
+		num_of_vassals_no_substates = 1
+		THIS = { NOT = { has_country_modifier = neutrality } }
+		OR = {
+			war_with = THIS
+			THIS = { NOT = { has_country_modifier = no_more_war } }
+		}
+		OR = {
+			NOT = { has_country_flag = dismantle_declared }
+			THIS = { NOT = { has_country_flag = in_great_war } }
+			THIS = { ai = no }
+		}
+	}
+	
+	# THIS - us
+	# FROM - country scope is possible match?
+	# war target country of goal is scope
+	allowed_countries = {
+		is_our_vassal = FROM
+		FROM = { is_substate = no }
+	}
+	
+	po_release_puppet = yes
+	po_add_to_sphere = yes
 
-    can_use = {
-        OR = {
-            NOT = { has_country_modifier = war_focus }
-            THIS = {
-                NOT = {
-                    has_country_flag = exclusive_acquire_all_cores_CB
-                    has_country_flag = exclusive_humiliate_CB
-                    has_country_flag = exclusive_liberate_country_CB
-                    has_country_flag = exclusive_make_puppet_CB
-                }
-            }
-        }
-        NOT = { is_our_vassal = THIS }
-        num_of_vassals_no_substates = 1
-        NOT = { has_country_modifier = neutrality_modifier }
-        OR = {
-            war_with = THIS
-            THIS = { NOT = { has_country_modifier = neutrality_modifier } }
-        }
-        OR = {
-            war_with = THIS
-            THIS = { NOT = { has_country_modifier = no_more_war } }
-        }
-        OR = {
-            NOT = { has_country_flag = dismantle_declared }
-            THIS = { NOT = { has_country_flag = in_great_war } }
-            THIS = { ai = no }
-        }
-    }
-
-    # THIS - us
-    # FROM - country scope is possible match?
-    # war target country of goal is scope
-    allowed_countries = {
-        is_our_vassal = FROM
-        FROM = {
-            is_substate = no
-            NOT = { total_pops = 5000000 }
-            NOT = { has_country_flag = unreleasable_country }
-            OR = {
-                AND = {
-                    THIS = { total_amount_of_ships = 5 }
-                    any_owned_province = { port = yes }
-                }
-                neighbour = THIS
-                war_with = THIS
-                any_neighbor_country = {
-                    OR = {
-                        vassal_of = THIS
-                        substate_of = THIS
-                    }
-                }
-            }
-        }
-    }
-
-    po_release_puppet = yes
-    po_add_to_sphere = yes
-
-    war_name = WAR_NAME
-
-    on_add = {
-        move_issue_percentage = {
-            from = jingoism
-            to = pro_military
-            value = 0.25
-        }
-        any_country = {
-            limit = {
-                exists = yes
-                vassal_of = FROM
-                is_substate = no
-                NOT = { total_pops = 5000000 }
-                NOT = { has_country_flag = unreleasable_country }
-                OR = {
-                    AND = {
-                        THIS = { total_amount_of_ships = 5 }
-                        any_owned_province = { port = yes }
-                    }
-                    neighbour = THIS
-                    any_neighbor_country = {
-                        OR = {
-                            vassal_of = THIS
-                            substate_of = THIS
-                        }
-                    }
-                }
-            }
-            set_country_flag = transfer_to_new_overlord
-        }
-    }
-
-    on_po_accepted = {
-        THIS = { set_country_flag = new_overlord }
-    }
+	war_name = WAR_NAME
+	
+	on_add = {
+		any_country = {
+			limit = {
+				exists = no
+				has_country_flag = existing_country
+			}
+			clr_country_flag = existing_country
+		}
+		any_country = {
+			limit = {
+				exists = no
+				has_country_flag = vassal_nation_cb
+			}
+			clr_country_flag = vassal_nation_cb
+		}
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+	
+	on_po_accepted = {
+		any_country = {
+			limit = {
+				exists = yes
+				has_country_flag = vassal_nation_cb
+				is_vassal = no
+				in_sphere = THIS
+			}
+			country_event = 9999990
+			country_event = 19370
+		}
+	}
 }
 
 # #Permanent Colonial Claims
