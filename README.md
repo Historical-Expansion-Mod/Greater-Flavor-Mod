@@ -20,6 +20,7 @@ This expanded version of HFMe owes its existence to: (add your name here if you 
 -Bob Bobington
 -Abraham Lincoln
 -BloomerMagma
+-UlfDerDritte
 
 As well as the developer of HFM, the one and only:
 -SighPie
