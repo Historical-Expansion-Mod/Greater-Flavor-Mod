@@ -21,6 +21,7 @@ This expanded version of HFMe owes its existence to: (add your name here if you 
 -Abraham Lincoln
 -BloomerMagma
 -UlfDerDritte
+-Doble
 
 As well as the developer of HFM, the one and only:
 -SighPie
