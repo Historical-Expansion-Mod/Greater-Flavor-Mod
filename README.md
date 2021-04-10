@@ -13,15 +13,14 @@ Victoria 2 Modding server: https://discord.gg/qz73ZEH
 
 This expanded version of HFMe owes its existence to: (add your name here if you have contributed code-wise to the mod)
 -JmanThunder (Lead Dev)
--Choxflan
--GLitchesHaxBadAudio
--austrianemperor
--Thomdare
--Bob Bobington
 -Abraham Lincoln
 -BloomerMagma
 -UlfDerDritte
 -Doble
+-Choxflan
+-Bob Bobington
+-GLitchesHaxBadAudio
+-austrianemperor
 
 As well as the developer of HFM, the one and only:
 -SighPie
