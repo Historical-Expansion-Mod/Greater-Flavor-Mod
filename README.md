@@ -1,4 +1,4 @@
-# Historical Flavour Mod Expanded (HFME)
+# Greater Flavor Mod (GFM)
 
 This mod is HFM, but further expanded upon, adding bountiful flavour, provinces, historical accuracy changes, etc
 
@@ -11,9 +11,9 @@ This mod is HFM, but further expanded upon, adding bountiful flavour, provinces,
 3. Delete the old versions of the mods, if you have any.
 4. From the ZIP move everything into the mod folder.
 5. Start the game, select the mods you want:
-  * Historical Flavour Mod: Expanded is standalone - you do not need the original HFM to play.
-  * HFME SW Submod is the Shattered World submod.
-  * HFME RGO Submod adds experimental new RGOs
+  * GFM is standalone - you do not need the original HFM to play.
+  * GFM SW Submod is the Shattered World submod.
+  * GFM RGO Submod adds experimental new RGOs
   * Music Sub Mod adds more music to the game
 7. Enjoy.
 
@@ -29,14 +29,14 @@ For Increased Performace(64-bit PCs):
 
 ## Acknowledgements
 
-This expanded version of HFMe owes its existence to: (add your name here if you have contributed code-wise to the mod): 
+This expanded version of GFM owes its existence to: (add your name here if you have contributed code-wise to the mod): 
 * JmanThunder (Lead Dev)
 * Abraham Lincoln
+* Bob Bobington
 * BloomerMagma
 * UlfDerDritte
 * Doble
 * Choxflan
-* Bob Bobington
 * GLitchesHaxBadAudio
 * austrianemperor
 
@@ -44,4 +44,4 @@ As well as the original developer of HFM, the one and only: SighPie
 
 ## Discord
 
-The [Victoria 2 Modding Discord server](https://discord.gg/qz73ZEH) is the home for this mod (and many other mods). Please visit if you would like to discuss HFME, suggest improvements, or bring bugs to the attention of the developers.
+The [Victoria 2 Modding Discord server](https://discord.gg/qz73ZEH) is the home for this mod (and many other mods). Please visit if you would like to discuss GFM, suggest improvements, or bring bugs to the attention of the developers.
