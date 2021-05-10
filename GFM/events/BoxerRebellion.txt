@@ -1,0 +1,902 @@
+#############################################################
+#															#
+#                  	Boxer Rebellion Events					#
+#															#
+#############################################################
+
+#Initialization event
+#The Righteous Harmony Society
+country_event = {
+	id = 99000
+	title = "EVTNAME99000"
+	desc = "EVTDESC99000"
+	news = yes
+	news_title = "EVTNAME99000_NEWS_TITLE"
+	news_desc_long = "EVTDESC99000_NEWS_LONG"
+	news_desc_medium = "EVTDESC99000_NEWS_MEDIUM"
+	news_desc_short = "EVTDESC99000_NEWS_SHORT"
+	picture = "boxers"
+	
+	trigger = {
+		tag = QNG
+		civilized = no
+		OR = {
+			civilization_progress = 0.65
+			year = 1895
+			has_country_flag = wuxu_coup
+		}
+		OR = {
+			any_owned_province = {
+				controlled_by = THIS
+				is_core = CHI
+				NOT = {
+					region = CHI_1612
+					region = CHI_1616
+					is_core = MCK
+					is_core = XIN
+					is_core = XBI
+				}
+				OR = {
+					has_province_modifier = western_presence
+					has_province_modifier = foreign_smugglers
+					has_province_modifier = foreign_trading_post
+					has_province_modifier = local_opium_habit
+					has_province_modifier = european_military_mission
+					has_province_modifier = extraterritoriality_granted
+					has_province_modifier = legation_quarter
+				}
+			}	
+			AND = {
+				ai = yes
+				year = 1895
+			}
+		}
+		OR = {
+			average_militancy = 4
+			is_disarmed = yes
+			has_country_modifier = self_strengthening_movement
+			civilization_progress = 0.75
+		}
+		NOT = {
+			TPG = { exists = yes }
+			has_country_flag = boxers_appeared
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 25
+		modifier = {
+			factor = 1.5
+			war = yes
+		}
+		modifier = {
+			factor = 0.5
+			part_of_sphere = yes
+		}
+		modifier = {
+			factor = 0.1
+			year = 1898
+		}
+		modifier = {
+			factor = 0.5
+			any_core = {
+				empty = no
+				NOT = { is_core = TIB }
+				NOT = { is_core = MGL }
+				owner = {
+					NOT = { is_culture_group = east_asian }
+					NOT = { vassal_of = THIS }
+				}
+			}
+		}
+		modifier = {
+			factor = 0.8
+			average_militancy = 6
+		}
+		modifier = {
+			factor = 0.8
+			average_militancy = 7
+		}
+		modifier = {
+			factor = 0.8
+			average_militancy = 8
+		}
+	}
+	
+	option = {
+		name = "EVT99000OPTA"
+		set_country_flag = boxers_appeared
+		random_state = {
+			limit = {
+				any_owned_province = {
+					controlled_by = THIS
+					is_core = CHI
+					OR = {
+						is_primary_culture = yes
+						is_accepted_culture = yes
+					}
+					NOT = {
+						region = CHI_1612
+						region = CHI_1616
+						is_core = MCK
+						is_core = XIN
+						is_core = XBI
+					}
+					OR = {
+						has_province_modifier = western_presence
+						has_province_modifier = foreign_smugglers
+						has_province_modifier = foreign_trading_post
+						has_province_modifier = local_opium_habit
+						has_province_modifier = european_military_mission
+						has_province_modifier = extraterritoriality_granted
+						has_province_modifier = legation_quarter
+					}
+				}
+			}
+			any_owned = {
+				add_province_modifier = {
+					name = boxer_presence
+					duration = -1
+				}
+			}
+		}
+	}
+}
+
+province_event = {
+	id = 99001
+	title = "EVTNAME99001" #Boxers in $STATENAME$
+	desc = "EVTDESC99001"
+	
+	trigger = {
+		is_core = CHI
+		controlled_by = THIS
+		NOT = {
+			region = CHI_1616
+			is_core = TIB
+			is_core = XBI
+			is_core = XIN
+			is_core = GNG
+			is_core = YNN
+			is_core = MGL
+			is_core = FJN
+		}
+		owner = {
+			tag = QNG
+			has_country_flag = boxers_appeared
+			NOT = { has_country_flag = boxers_disbanded }
+			NOT = { has_country_flag = boxers_attacked_capital }
+		}
+		any_neighbor_province = {
+			OR = {
+				has_province_modifier = boxer_presence
+				has_province_modifier = boxer_agitation
+			}
+		}
+		NOT = {
+			has_province_modifier = boxer_presence
+			has_province_modifier = boxer_agitation
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 100
+		modifier = {
+			factor = 1.5
+			owner = { war = yes }
+		}
+		modifier = {
+			factor = 0.5
+			owner = { part_of_sphere = yes }
+		}
+		modifier = {
+			factor = 0.8
+			average_militancy = 6
+		}
+		modifier = {
+			factor = 0.8
+			average_militancy = 7
+		}
+		modifier = {
+			factor = 0.8
+			average_militancy = 8
+		}
+	}
+	
+	option = {
+		name = "EVT99001OPTA"
+		state_scope = {
+			any_owned = {
+				add_province_modifier = {
+					name = boxer_presence
+					duration = -1
+				}
+			}
+		}	
+	}
+}
+
+#Boxers clash with foreigners
+province_event = {
+	id = 99005
+	title = "EVTNAME99005" #Attack on Foreigners in $STATENAME$
+	desc = "EVTDESC99005"
+	
+	trigger = {
+		has_province_modifier = boxer_presence
+		controlled_by = THIS
+		OR = {
+			has_province_modifier = western_presence
+			has_province_modifier = foreign_smugglers
+			has_province_modifier = foreign_trading_post
+			has_province_modifier = local_opium_habit
+			has_province_modifier = european_military_mission
+			has_province_modifier = extraterritoriality_granted
+			has_province_modifier = legation_quarter
+		}
+		NOT = {
+			region = CHI_1616
+		}
+		owner = {
+			tag = QNG
+			civilized = no
+			NOT = { has_country_flag = boxers_disbanded }
+			NOT = { has_country_flag = boxers_attacked_capital }
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 100
+		modifier = {
+			factor = 0.5
+			owner = { part_of_sphere = yes }
+		}
+		modifier = {
+			factor = 0.8
+			has_province_modifier = western_presence
+		}
+		modifier = {
+			factor = 0.8
+			has_province_modifier = foreign_trading_post
+		}
+		modifier = {
+			factor = 0.8
+			has_province_modifier = european_military_mission
+		}
+		modifier = {
+			factor = 0.8
+			has_province_modifier = extraterritoriality_granted
+		}
+	}
+	
+	option = {
+		name = "EVT99005OPTA"
+		owner = { prestige = -2 }
+		state_scope = {
+			any_owned = {
+				limit = { has_province_modifier = boxer_presence }
+				remove_province_modifier = western_presence
+				remove_province_modifier = foreign_smugglers
+				remove_province_modifier = foreign_trading_post
+				remove_province_modifier = local_opium_habit
+				remove_province_modifier = european_military_mission
+				remove_province_modifier = extraterritoriality_granted
+				remove_province_modifier = legation_quarter
+			}
+		}
+		any_greater_power = {
+			relation = { who = THIS value = -25 }
+		}
+		random_country = {
+			limit = {
+				is_greater_power = yes
+				any_owned_province = { port = yes }
+				NOT = { casus_belli = THIS }
+				NOT = { war_with = THIS }
+			}
+			country_event = 99006
+		}
+		ai_chance = { factor = 90 }
+	}
+	
+	option = {
+		name = "EVT99005OPTB"
+		owner = { prestige = 2 }
+		state_scope = {
+			any_pop = {
+				limit = {
+					is_culture_group = east_asian
+					location = { has_province_modifier = boxer_presence }
+				}
+				militancy = 2
+				consciousness = 2
+			}
+			any_owned = {
+				limit = { has_province_modifier = boxer_presence }
+				remove_province_modifier = boxer_presence
+				add_province_modifier = {
+					name = boxer_agitation
+					duration = -1
+				}
+			}
+		}
+		any_greater_power = {
+			relation = { who = THIS value = 25 }
+		}
+		ai_chance = { factor = 10 }
+	}
+}
+
+country_event = {
+	id = 99006
+	title = "EVTNAME99006" #Boxer Atrocities - GP Response
+	desc = "EVTDESC99006"
+	picture = "boxers"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT99006OPTA"
+		prestige = -2
+		leave_alliance = FROM
+		relation = { who = FROM value = -50 }
+		diplomatic_influence = { who = FROM value = -50 }
+		casus_belli = {
+			target = FROM
+			type = cut_down_to_size_boxer
+			months = 12
+		}
+	}
+}
+
+#Boxers reach the capital
+country_event = {
+	id = 99010
+	title = "EVTNAME99010" #Boxers Attack Legation Quarter!
+	desc = "EVTDESC99010"
+	picture = "boxers"
+	major = yes
+	news = yes
+	news_desc_long = "EVTDESC99010_NEWS_LONG"
+	news_desc_medium = "EVTDESC99010_NEWS_MEDIUM"
+	news_desc_short = "EVTDESC99010_NEWS_SHORT"
+	
+	trigger = {
+		tag = QNG
+		has_country_flag = boxers_appeared
+		1616 = {
+			controlled_by = THIS
+			has_province_modifier = legation_quarter 
+		}
+		OR = {
+			any_owned_province = {
+				region = CHI_1616
+				controlled_by = THIS
+				any_neighbor_province = {
+					OR = {
+						has_province_modifier = boxer_presence
+						has_province_modifier = boxer_agitation
+					}
+				}
+			}
+			AND = {
+				year = 1890
+				civilized = no
+				ai = yes
+			}
+		}
+		NOT = {
+			has_country_flag = boxers_disbanded
+			has_country_flag = boxers_attacked_capital
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 25
+		modifier = {
+			factor = 1.5
+			war = yes
+		}
+		modifier = {
+			factor = 0.5
+			part_of_sphere = yes
+		}
+		modifier = {
+			factor = 0.8
+			average_militancy = 5
+		}
+		modifier = {
+			factor = 0.8
+			average_militancy = 6
+		}
+		modifier = {
+			factor = 0.8
+			average_militancy = 7
+		}
+		modifier = {
+			factor = 0.8
+			average_militancy = 8
+		}
+	}
+	
+	immediate = {
+		remove_country_modifier = missionary_activity
+		religion = mahayana
+		set_country_flag = mahayana_country
+		clr_country_flag = protestant_country
+		clr_country_flag = change_to_protestant
+		clr_country_flag = missionary_activity
+	}
+	
+	option = {
+		name = "EVT99010OPTA"
+		set_country_flag = boxers_attacked_capital
+		prestige = 10
+		CHI_1616 = {
+			any_owned = {
+				add_province_modifier = {
+					name = boxer_presence
+					duration = -1
+				}
+			}
+		}
+		any_owned = {
+			limit = { has_province_modifier = boxer_agitation }
+			remove_province_modifier = boxer_agitation
+			add_province_modifier = {
+				name = boxer_presence
+				duration = -1
+			}
+		}
+		add_country_modifier = {
+			name = boxer_attacked
+			duration = 3650
+		}
+		any_owned = {
+			limit = { has_province_modifier = boxer_presence }
+			remove_province_modifier = western_presence
+			remove_province_modifier = foreign_smugglers
+			remove_province_modifier = foreign_trading_post
+			remove_province_modifier = local_opium_habit
+			remove_province_modifier = european_military_mission
+			remove_province_modifier = extraterritoriality_granted
+			remove_province_modifier = legation_quarter
+			any_pop = {
+				limit = { is_culture_group = east_asian }
+				militancy = -4
+			}
+		}		
+		ai_chance = {
+			factor = 100
+		}
+	}
+	
+	option = {
+		name = "EVT99010OPTB"
+		set_country_flag = boxers_attacked_capital
+		prestige = -25
+		CHI_1616 = {
+			any_owned = {
+				add_province_modifier = {
+					name = boxer_agitation
+					duration = -1
+				}
+			}
+		}
+		any_owned = {
+			limit = { has_province_modifier = boxer_presence }
+			remove_province_modifier = boxer_presence
+			add_province_modifier = {
+				name = boxer_agitation
+				duration = -1
+			}
+		}
+		any_owned = {
+			limit = { has_province_modifier = boxer_agitation }
+			any_pop = {
+				limit = { is_culture_group = east_asian }
+				militancy = 10
+			}
+		}
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+	
+country_event = {
+	id = 99011
+	title = "EVTNAME99011" #Boxers Attack $COUNTRY_ADJ$ Legation
+	desc = "EVTDESC99011"
+	picture = "boxers"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT99011OPTA"
+		set_country_flag = intervened_boxer_war
+		leave_alliance = FROM
+		relation = { who = FROM value = -200 }
+		diplomatic_influence = { who = FROM value = -200 }
+		casus_belli = {
+			target = FROM
+			type = cut_down_to_size_boxer
+			months = 12
+		}
+		war = {
+			target = FROM
+			attacker_goal = {
+				casus_belli = cut_down_to_size_boxer
+			}
+		}
+		ai_chance = {
+			factor = 90
+			modifier = {
+				factor = 0.1
+				any_greater_power = { war_with = THIS }
+			}
+			modifier = {
+				factor = 0.25
+				num_of_revolts = 1
+			}
+		}
+	}
+	
+	option = {
+		name = "EVT99011OPTB"
+		prestige_factor = -0.2
+		leave_alliance = FROM
+		relation = { who = FROM value = -100 }
+		diplomatic_influence = { who = FROM value = -100 }
+		any_pop = {
+			limit = { is_primary_culture = yes }
+			scaled_militancy = {
+				issue = jingoism
+				factor = 3
+			}
+		}
+		ai_chance = {
+			factor = 10
+			modifier = {
+				factor = 2
+				NOT = { neighbour = FROM }
+			}
+		}
+	}
+}
+
+#Boxer intervention success event
+country_event = {
+	id = 99015
+	title = "EVTNAME99015" #The Boxer Protocol
+	desc = "EVTDESC99015"
+	picture = "qing_emperor"
+	major = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT99015OPTA"
+		set_country_flag = boxers_disbanded
+		treasury = -100000
+		relation = { who = FROM value = 200 }
+		any_greater_power = {
+			limit = { 
+				has_country_flag = intervened_boxer_war
+				NOT = { tag = FROM }
+			}
+			country_event = 99016
+		}
+		1616 = {
+			add_province_modifier = {
+				name = legation_quarter
+				duration = -1
+			}
+		}
+		any_owned = {
+			limit = {
+				province_id = 3249
+			}
+			secede_province = LEG
+		}
+		release = LEG
+		FROM = {
+			create_vassal = LEG
+			diplomatic_influence = {
+				who = LEG
+				value = 400
+			}				
+			military_access = LEG
+			create_alliance = LEG
+		}
+		LEG = {
+			treasury = 50000
+			civilized = yes
+			primary_culture = FROM
+			government = colonial_company
+			ruling_party_ideology = conservative
+			political_reform = appointed
+			political_reform = none_voting
+			political_reform = state_press
+			political_reform = no_trade_unions
+			political_reform = no_meeting
+			political_reform = underground_parties
+			political_reform = no_draft
+			political_reform = no_slavery
+			political_reform = debtors_prisons
+			political_reform = open_borders
+			political_reform = first_past_the_post
+			political_reform = culture_voting_only
+			social_reform = no_minimum_wage
+			social_reform = no_work_hour_limit
+			social_reform = no_safety
+			social_reform = no_subsidies
+			social_reform = no_pensions
+			social_reform =	trinket_health_care
+			social_reform = low_schools
+			social_reform = capital_punishment
+			social_reform = child_labor_legal
+				
+			upper_house = {
+				ideology = conservative
+				value = 0.5
+			}
+			
+			upper_house = {
+				ideology = reactionary
+				value = 0.2
+			}
+			
+			upper_house = {
+				ideology = liberal
+				value = 0.3
+			}
+		}
+		any_owned = {
+			limit = { has_province_modifier = boxer_presence }
+			remove_province_modifier = boxer_presence
+			any_pop = {
+				limit = { is_culture_group = east_asian }
+				consciousness = 2
+				militancy = 2
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 99016
+	title = "EVTNAME99015" #The Boxer Protocol - to other GP's
+	desc = "EVTDESC99016"
+	picture = "qing_emperor"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT99016OPTA"
+		clr_country_flag = intervened_boxer_war
+		prestige = 20
+		treasury = 50000
+		relation = { who = FROM value = 200 }
+		end_war = FROM
+		any_country = {
+			limit = {
+				NOT = { has_country_flag = intervened_boxer_war }
+				alliance_with = THIS
+				war_with = FROM
+			}
+			end_war = FROM
+		}
+		ai_chance = {
+			factor = 100
+		}
+	}
+	
+	option = {
+		name = "EVT99016OPTB"
+		clr_country_flag = intervened_boxer_war
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+
+#Boxers Burn something
+country_event = {
+	id = 13360
+	title = "EVTNAME13356"
+	desc = "EVTDESC13356"
+	picture = "boxers"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTA13356"
+		prestige = -2
+		relation = {
+			who = QNG
+			value = -50
+		}
+		casus_belli = {
+			target = QNG
+			type = cut_down_to_size_boxer
+			months = 12
+		}
+	}
+}
+
+#Boxers Occupy Foreign-Held Lands
+country_event = {
+	id = 13365
+	title = "EVTNAME13365"
+	desc = "EVTDESC13365"
+	picture = "boxers"
+	
+	trigger = {
+		tag = QNG
+		any_neighbor_country = {
+			any_owned_province = {
+					has_province_modifier = boxer_rebellion
+					is_core = CHI
+					is_colonial = yes
+					controlled_by = REB
+					province_control_days = 120
+					any_neighbor_province = { owned_by = QNG }
+				state_scope = {
+					NOT = {
+						any_owned_province = {
+							is_core = CHI
+							NOT = { controlled_by = REB }
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = "EVT13365OPTA"
+		prestige = 10
+		any_neighbor_country = {
+			any_state = {
+				limit = {
+					any_owned_province = {
+						has_province_modifier = boxer_rebellion
+						controlled_by = REB
+						province_control_days = 120
+						is_core = CHI
+						is_colonial = yes
+						any_neighbor_province = {
+							owned_by = QNG
+						}
+					}
+					NOT = {
+						any_owned_province = {
+							is_core = CHI
+							NOT = { controlled_by = REB }
+						}
+					}
+				}
+				any_owned = {
+					limit = { is_core = CHI }
+					remove_province_modifier = boxer_rebellion
+					any_pop = { militancy = -4 }
+					secede_province = QNG
+					change_controller = QNG
+				}
+			}
+			relation = {
+				who = THIS
+				value = -50
+			}
+			casus_belli = {
+				target = QNG
+				type = treaty_port_casus_belli
+				months = 30
+			}
+		}
+	}
+	
+	option = {
+		name = "EVT13365OPTB"
+		prestige = -10
+		any_pop = { militancy = -4 }
+		any_neighbor_country = {
+			any_state = {
+				limit = {
+					any_owned_province = {
+						has_province_modifier = boxer_rebellion
+						controlled_by = REB
+						province_control_days = 120
+						is_core = CHI
+						is_colonial = yes
+						any_neighbor_province = { owned_by = QNG }
+					}
+					NOT = {
+						any_owned_province = {
+							is_core = CHI
+							NOT = { controlled_by = REB }
+						}
+					}
+				}
+				any_owned = {
+					limit = { is_core = CHI }
+					remove_province_modifier = boxer_rebellion
+				}
+			}
+		}
+	}
+}
+
+#Boxers Victorious
+country_event = {
+	id = 13370
+	title = "EVTNAME13370"
+	desc = "EVTDESC13370"
+	picture = "boxers"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT13370OPTA"
+		prestige = 25
+		set_country_flag = boxers_attacked_capital
+		any_pop = {
+			ideology = { factor = 0.05 value = reactionary }
+			militancy = -8
+		}
+		remove_country_modifier = educational_reform
+		remove_country_modifier = western_influences
+		add_country_modifier = {
+			name = "uncivilized_isolationism"
+			duration = -1
+		}
+		random_country = {
+			limit = { 
+				is_sphere_leader_of = THIS
+				NOT = { is_our_vassal = THIS }
+			}
+			diplomatic_influence = {
+				who = THIS
+				value = -200
+			}
+			relation = {
+				who = THIS
+				value = -50
+			}
+			set_country_flag = former_sphere_leader
+			leave_alliance = THIS
+			country_event = 800056
+		}
+		any_owned = {
+			remove_province_modifier = western_presence
+			remove_province_modifier = legation_quarter
+			remove_province_modifier = foreign_smugglers
+			remove_province_modifier = foreign_trading_post
+			remove_province_modifier = local_opium_habit
+			remove_province_modifier = european_military_mission
+			remove_province_modifier = extraterritoriality_granted
+		}
+		any_country = {
+			limit = {
+				NOT = { has_country_flag = former_sphere_leader	}
+				is_greater_power = yes
+			}
+			leave_alliance = THIS
+			diplomatic_influence = {
+				who = THIS
+				value = -50
+			}
+			relation = {
+				who = THIS
+				value = -25
+			}
+			country_event = 13360
+		}		
+	}
+}

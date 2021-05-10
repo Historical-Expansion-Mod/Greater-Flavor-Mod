@@ -1,0 +1,545 @@
+#The Iron Gates Expedition
+country_event = {
+	id = 37238
+	title = "EVTNAME37238" 
+	desc = "EVTDESC37238"
+	picture = "french_fight_algeria"
+
+	fire_only_once = yes
+	
+	trigger = {
+		primary_culture = french
+		is_greater_power = yes
+		capital = 425
+		owns = 1700
+		owns = 1708 #Constantine
+		NOT = { year = 1870 }
+		NOT = { any_greater_power = { war_with = THIS } }
+		ALD = {
+			exists = yes
+			civilized = no
+			NOT = { truce_with = THIS }
+		}
+	}
+		
+	mean_time_to_happen = { days = 14 }
+	
+	immediate = { ALD = { capital =  1713 } }
+	
+	option = {
+		name = "EVT37238OPTA"
+		random_list = {
+			25 = { badboy = 3 }
+			25 = { badboy = 2.5 }
+			25 = { badboy = 3.0 }
+			25 = { badboy = 3.5 }
+		}
+		war_exhaustion = 5
+		relation = { who = ALD value = -400 }
+		diplomatic_influence = { who = ALD value = -100 }
+		leave_alliance = ALD
+		end_military_access = ALD
+		casus_belli = { target = ALD type = establish_protectorate_NI_casus_belli months = 60 }
+		war = {
+			target = ALD
+			attacker_goal = { casus_belli = establish_protectorate_NI_casus_belli }
+			defender_goal = { casus_belli = acquire_all_cores }
+			call_ally = no
+		}
+		random_owned = {
+			limit = { exists = MOR }
+			MOR = { country_event = 372384 }
+		}
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "EVT37238OPTB"
+		war_exhaustion = 5
+		badboy = -1
+		prestige = -5
+		ai_chance = { factor = 0 }
+	}
+}
+
+#The Iron Gates Expedition - French Victory
+country_event = {
+	id = 372383
+	title = "EVTNAME372383" 
+	desc = "EVTDESC372383"
+	picture = "abd_al_qadir_surrender"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		primary_culture = french
+		is_greater_power = yes
+		capital = 425
+		owns = 1700
+		owns = 1708 #Constantine
+		owns = 1713 #Laghwat
+		ALD = { exists = no }
+	}
+	
+	mean_time_to_happen = { days = 14 }
+	
+	option = {
+		name = "EVT372383OPTA"
+		prestige = 5
+		badboy = 0.5
+		
+		any_pop = {
+			limit = { 
+				OR = {
+					has_pop_culture = maghrebi
+					has_pop_culture = berber
+				}
+				location = { is_core = ALD }
+			}
+			scaled_militancy = {
+				ideology = conservative
+				factor = 4
+			}
+			scaled_militancy = {
+				ideology = reactionary
+				factor = 4
+			}
+			reduce_pop = 0.99
+		}
+		
+		random_country = {
+			limit = {
+				exists = yes
+				tag = TUG
+			}
+			THIS = { create_vassal = TUG }
+		}
+		
+		random_owned = {
+			limit = { 
+				is_core = RGA 
+				RGA = { exists = no }
+			}
+			RGA = { 
+				primary_culture = french 
+				government = colonial_company
+				remove_accepted_culture = berber
+				remove_accepted_culture = tuareg
+			}
+		}
+		
+		ai_chance = { factor = 1 }
+	}
+}
+
+#The Iron Gates Expedition - Moroccan Reaction
+country_event = {
+	id = 372384
+	title = "EVTNAME37238" 
+	desc = "EVTDESC372384"
+	picture = "french_fight_algeria"
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT37238OPTA"
+		relation = { who = ALD value = 400 }
+		create_alliance = ALD
+		military_access = ALD
+		
+		random_country = {
+			limit = {
+				exists = yes
+				primary_culture = french
+				is_greater_power = yes
+			}
+			leave_alliance = THIS
+			relation = { who = THIS value = -400 }
+			leave_alliance = THIS
+			diplomatic_influence = { who = THIS value = -200 }
+		}
+		
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "EVT37238OPTB"
+		badboy = -1
+		prestige = -10
+		relation = { who = ALD value = -400 }
+		leave_alliance = ALD
+
+		any_pop = {
+			limit = { is_primary_culture = yes }
+			scaled_militancy = {
+				ideology = conservative
+				factor = 6
+			}
+			scaled_militancy = {
+				ideology = reactionary
+				factor = 6
+			}
+		}
+		
+		ai_chance = { factor = 0 }
+	}
+}
+
+#The Treaty of Tafna
+country_event = {
+	id = 372381
+	title = "EVTNAME372381" 
+	desc = "EVTDESC372381"
+	picture = "abd_al_qadir_uprising"
+	fire_only_once = yes
+	
+	trigger = {
+		primary_culture = french
+		is_greater_power = yes
+		capital = 425
+		owns = 1700
+		NOT = {year = 1870}
+		ALD = {
+			exists = yes
+			war_with = THIS
+		}
+	}
+		
+	mean_time_to_happen = { days = 15 }
+	
+	option = {
+		name = "EVT372381OPTA"
+		badboy = -1
+		prestige = -5
+		#Ends war and creates truce
+		end_war = ALD
+		war = {
+			target = ALD
+			attacker_goal = { casus_belli = test_end_war }
+			call_ally = no
+		}
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 1705
+					province_id = 1707
+					province_id = 1703
+					province_id = 1706
+				}
+			}
+			secede_province = ALD
+		}
+		diplomatic_influence = { who = TUG value = 100 }
+		create_vassal = ABA
+		set_global_flag = treaty_of_tafna
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "EVT372381OPTB"
+		badboy = 1
+		war_exhaustion = 5
+		set_global_flag = treaty_of_tafna
+		ai_chance = { factor = 0 }
+	}
+}
+
+#The Siege of Constantine
+country_event = {
+	id = 372382
+	title = "EVTNAME372382"
+	desc = "EVTDESC372382"
+	picture = "siege_of_constantine"
+	fire_only_once = yes
+	
+	trigger = {
+		primary_culture = french
+		is_greater_power = yes
+		capital = 425
+		owns = 1700
+		NOT = { year = 1870 }
+		NOT = { any_greater_power = { war_with = THIS } }
+		RGA = {
+			OR = { 
+				is_vassal = no
+				vassal_of = THIS
+			}
+			exists = yes
+			NOT = { war_with = THIS }
+			NOT = { truce_with = THIS }
+		}
+	}
+		
+	mean_time_to_happen = { 
+		months = 18 
+		
+		modifier = {
+			factor = 0.5 #increase likelihood to happen
+			year = 1837
+		}
+
+		modifier = {
+			factor = 0.35 #increase likelihood to happen
+			year = 1838
+		}
+	}
+	
+	option = {
+		name = "EVT372382OPTA"
+		relation = { who = RGA value = -400 }
+		diplomatic_influence = { who = RGA value = -100 }
+		leave_alliance = RGA
+		end_military_access = RGA
+		casus_belli = { target = RGA type = establish_protectorate_NI_casus_belli months = 60 }
+		war = {
+			target = RGA
+			attacker_goal = { casus_belli = establish_protectorate_NI_casus_belli }
+			call_ally = no
+		}
+		set_global_flag = siege_of_constantine
+		random_list = {
+			25 = { badboy = 0.5 }
+			25 = { badboy = 1 }
+			25 = { badboy = 1.5 }
+			25 = { badboy = 2 }
+		}
+		
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "EVT372382OPTB"
+		badboy = -1
+		prestige = -10
+		ai_chance = { factor = 0 }
+	}
+}
+
+#Kabylie Revolt
+country_event = {
+
+	id = 372401
+	title = "EVTNAME372401" 
+	desc = "EVTDESC372401"
+	picture = "mokrani_revolt"
+	fire_only_once = yes
+	
+	trigger = {
+		OR = {
+			owns = 1712
+			owns = 1713
+			owns = 1715
+		}
+		ALD = { exists = no }
+		RGA = { exists = no }
+		ABA = { 
+			exists = yes
+			vassal_of = THIS
+			NOT = { truce_with = THIS }
+		}
+		capital_scope = { continent = europe }
+		nationalism_n_imperialism = 1
+		OR = { 
+			war = yes
+			year = 1855
+		}
+	}
+		
+	mean_time_to_happen = { months = 3 }
+	
+	immediate = { release_vassal = ABA }
+	
+	option = {
+		name = "EVT372401OPTA"
+		set_global_flag = kabylie_revolt
+		FRA_1700 = { add_province_modifier = { name = nationalist_agitation duration = 365 } } 
+		ALD_1708 = { add_province_modifier = { name = nationalist_agitation duration = 365 } }
+		random_list = {
+			25 = { badboy = 0.5 }
+			25 = { badboy = 1.0 }
+			25 = { badboy = 1.5 }
+			25 = { badboy = 2.0 }
+		}
+		casus_belli ={
+			target = ABA
+			type = establish_protectorate_NI_casus_belli
+			months = 60
+		}
+		war = {
+			target = ABA
+			attacker_goal = { casus_belli = establish_protectorate_NI_casus_belli }
+			call_ally = no
+		}
+		
+		random_country = {
+			limit = {
+				tag = ABA
+				exists = yes
+				neighbour = THIS
+				NOT = { number_of_states = 2 }
+				NOT = { civilized = yes }
+				THIS = { nationalism_n_imperialism = 1 has_global_flag = berlin_conference }
+			}
+			add_casus_belli = { target = THIS type = establish_protectorate_BC_casus_belli months = 48 }
+		}
+		
+		random_country = {
+			limit = {
+				tag = ABA
+				exists = yes
+				neighbour = THIS
+				NOT = { number_of_states = 2 }
+				NOT = { civilized = yes }
+				THIS = { nationalism_n_imperialism = 1 NOT = { has_global_flag = berlin_conference } }
+			}
+			add_casus_belli = { target = THIS type = establish_protectorate_NI_casus_belli months = 48 }
+		}
+			
+		random_country = {
+			limit = {
+				tag = ABA
+				exists = yes
+				neighbour = THIS
+				NOT = { number_of_states = 2 }
+				NOT = { civilized = yes }
+				THIS = { NOT = { nationalism_n_imperialism = 1 } }
+			}
+			add_casus_belli = { target = THIS type = establish_protectorate_casus_belli months = 48 }
+		}
+	}
+}
+
+#Mokrani Revolt
+country_event = {
+
+	id = 37240
+	title = "EVTNAME37240" 
+	desc = "EVTDESC37240"
+	picture = "mokrani_revolt"
+
+	fire_only_once = yes
+	
+	trigger = {
+		OR = {
+			owns = 1712
+			owns = 1713
+			owns = 1715
+		}
+		ALD = { exists = no }
+		NOT = { truce_with = ALD }
+		NOT = { has_global_flag = algeria_claimed_sahara }
+		#has_global_flag = berlin_conference
+		NOT = { capital_scope = { continent = africa } }
+		year = 1871
+		war = no
+		1711 = { empty = yes }
+	}
+		
+	mean_time_to_happen = { months = 6 }
+	
+	immediate = {
+		ALD_1718 = { secede_province = THIS add_core = ALD }
+		random_country = {
+			limit = {
+				tag = TUG
+				ai = yes
+				exists = yes
+			}
+			annex_to = ALD
+			TUG = { any_core = { remove_core = TUG } }
+		}
+		random_country = {
+			limit = {
+				tag = ABA
+				ai = yes
+				exists = yes
+			}
+			annex_to = ALD
+			ABA = { any_core = { remove_core = ABA } }
+		}
+	}
+	
+	option = {
+		name = "EVT37240OPTA"
+		set_global_flag = mokrani_revolt
+		any_owned = {
+			limit = {
+				OR = {
+					is_core = TUG
+					is_core = ABA
+				}
+			}
+			remove_core = TUG
+			remove_core = ABA
+		}
+		ALD_1718 = { secede_province = ALD any_pop = { literacy = -0.99 } }
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 1713
+					province_id = 1712
+					province_id = 1702
+					province_id = 1813
+					province_id = 1717
+					province_id = 1721
+					province_id = 1720
+					province_id = 1715
+				}
+			}
+			secede_province = ALD
+		}
+		
+		ALD = { 
+			civilized = no 
+			government = absolute_monarchy
+		}
+		FRA_1700 = { add_province_modifier = { name = nationalist_agitation duration = 365 } } 
+		ALD_1708 = { add_province_modifier = { name = nationalist_agitation duration = 365 } }
+		
+		casus_belli ={
+			target = ALD
+			type = conquest_any
+			months = 60
+		}
+		war = {
+			target = ALD
+			attacker_goal = { casus_belli = conquest_any }
+			call_ally = no
+		}
+		
+		random_country = {
+			limit = {
+				tag = ALD
+				exists = yes
+				neighbour = THIS
+				NOT = { number_of_states = 2 }
+				NOT = { civilized = yes }
+				THIS = { nationalism_n_imperialism = 1 has_global_flag = berlin_conference }
+			}
+			add_casus_belli = { target = THIS type = establish_protectorate_BC_casus_belli months = 48 }
+		}
+		
+		random_country = {
+			limit = {
+				tag = ALD
+				exists = yes
+				neighbour = THIS
+				NOT = { number_of_states = 2 }
+				NOT = { civilized = yes }
+				THIS = { nationalism_n_imperialism = 1 NOT = { has_global_flag = berlin_conference } }
+			}
+			add_casus_belli = { target = THIS type = establish_protectorate_NI_casus_belli months = 48 }
+		}
+			
+		random_country = {
+			limit = {
+				tag = ALD
+				exists = yes
+				neighbour = THIS
+				NOT = { number_of_states = 2 }
+				NOT = { civilized = yes }
+				THIS = { NOT = { nationalism_n_imperialism = 1 } }
+			}
+			add_casus_belli = { target = THIS type = establish_protectorate_casus_belli months = 48 }
+		}
+	}
+}

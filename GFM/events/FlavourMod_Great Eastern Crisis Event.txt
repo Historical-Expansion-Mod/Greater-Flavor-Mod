@@ -1,0 +1,1220 @@
+#The Great Eastern Crisis
+country_event = {
+	id = 99820
+	title = "EVTNAME99820"
+	desc = "EVTDESC99820"
+	picture = "russo_turkish"
+	major = yes
+	
+	trigger = {
+		AND = {
+			tag = RUS
+			is_disarmed = no
+		}
+		is_greater_power = yes
+		OR = {
+			AND = { 
+				year = 1870
+				OR = { 
+					has_global_flag = treaty_of_paris_1856
+					has_global_flag = treaty_of_paris_russia
+				}
+			}
+			AND = {
+				year = 1860
+				OR = {
+					TUR = { 
+						war_with = ROM
+						war_with = GRE
+						war_with = BUL
+						war_with = SER
+						war_with = MON
+						war_with = BOS
+						war_with = ALB
+					}
+				}
+			}
+			AND = {
+				NOT = { has_global_flag = crimea_has_happened }
+				year = 1865
+			}
+		}
+		TUR = {
+			is_greater_power = no
+			any_owned_province = {
+				OR = {
+					is_core = ROM
+					is_core = SER
+					is_core = MON
+					is_core = BOS
+					is_core = BUL
+					is_core = ALB
+					is_core = GRE
+				}
+			}
+			OR = {
+				is_greater_power = no
+				is_disarmed = yes
+				num_of_revolts = 20
+				lost_national = 0.2
+				AND = {
+					exists = BUL
+					NOT = {
+						BUL = { vassal_of = TUR }
+					}
+				}
+				AND = {
+					exists = ROM
+					NOT = {
+						ROM = { vassal_of = TUR }
+					}
+				}
+			}
+		}
+		NOT = { has_global_flag = great_eastern_crisis }
+		NOT = { has_global_flag = berlin_congress_to_be_held }
+	}
+	
+	mean_time_to_happen = {
+		months = 45
+		
+		modifier = {
+			factor = 0.5
+			has_global_flag = treaty_of_paris_russia 
+		}
+		
+		modifier = {
+			factor = 0.5
+			year = 1873
+		}
+		
+		modifier = {
+			factor = 0.4
+			year = 1874
+		}
+		
+		modifier = {
+			factor = 0.05
+			year = 1875
+		}
+	}
+	
+	immediate = {
+		set_global_flag = great_eastern_crisis
+	}
+
+	option = {
+		name = "EVTOPT99820A"
+		prestige = 5
+		set_country_flag = started_the_great_eastern_crisis
+		set_global_flag = great_eastern_crisis
+		leave_alliance = TUR
+		diplomatic_influence = {
+			who = TUR
+			value = -400
+		}
+		relation = {
+			who = TUR
+			value = -200
+		}
+		ai_chance = {
+			factor = 100
+		}
+	}
+	
+	option = {
+		name = "EVTOPT99820B"
+		set_global_flag = great_eastern_crisis_refused
+		prestige = -25
+		remove_country_modifier = protector_of_eastern_christendom
+		any_pop = {
+			limit = {
+				has_pop_religion = orthodox
+			}
+			militancy = 4
+			consciousness = 4
+		}
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+#Ottomans get inital alert
+country_event = {
+
+	id = 99823
+	title = "EVTNAME99823"
+	desc = "EVTDESC99823"
+	picture = "ottoman"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT90063OPT"
+		prestige = -5
+	}
+}
+
+#Gaining Support for the War
+country_event = {
+	id = 99821
+	title = "EVTNAME99821"
+	desc = "EVTDESC99821"
+	picture = "ottoman"
+
+	trigger = {
+		has_country_modifier = great_eastern_crisis
+	}
+	
+	mean_time_to_happen = {
+		days = 2
+	}
+
+	option = {
+		name = "EVT90062OPTA"
+		remove_country_modifier = great_eastern_crisis
+		prestige = 5
+		relation = { 
+			who = RUS
+			value = 50
+		}
+		relation = {
+			who = TUR
+			value = -400
+		}
+		leave_alliance = TUR
+		diplomatic_influence = {
+			who = TUR
+			value = -400
+		}
+		TUR = {
+			change_variable = {
+				which = great_eastern_crisis_supporter
+				value = 1
+			}
+		}
+		
+		ai_chance = {
+			factor = 99
+			modifier = {
+				factor = 0
+				OR = { 
+					has_country_flag = sunni_country
+					has_country_flag = shiite_country
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = "EVT99821OPTB"
+		remove_country_modifier = great_eastern_crisis
+		badboy = 5
+		relation = { 
+			who = RUS
+			value = -200
+		}
+		relation = {
+			who = TUR
+			value = 200
+		}
+		create_alliance = TUR
+		diplomatic_influence = {
+			who = TUR
+			value = 400
+		}
+		any_pop = {
+			limit = {
+				OR = {
+					has_pop_religion = catholic
+					has_pop_religion = protestant
+					has_pop_religion = orthodox
+				}
+				militancy = 8
+				consciousness = 8
+			}
+		}
+		RUS = { 
+			set_country_flag = ottomans_were_supported
+			country_event = 99824
+		}
+		
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				OR = { 
+					has_country_flag = orthodox_country
+					has_country_flag = protestant_country
+					has_country_flag = catholic_country
+				}
+			}
+		}
+	}
+}
+
+#Reichstadt Agreement
+country_event = {
+	id = 99822
+	title = "EVTNAME99822"
+	desc = "EVTDESC99822"
+	picture = "Administration"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT99822OPTA" #Agree
+		prestige = -10
+		badboy = -1
+		FROM = { country_event = 99827 }
+		ai_chance = {
+			factor = 85
+			modifier = {
+				factor = 0.85
+				has_global_flag = treaty_of_paris_russia
+			}
+			modifier = {
+				factor = 0.5
+				FROM = { NOT = { military_score = 150 }  }
+			}
+			
+			modifier = {
+				factor = 2
+				has_global_flag = constantinople_conference
+			}
+		}
+	}
+	
+	option = {
+		name = "EVT99822OPTB" #Refuse
+		prestige = 10
+		FROM = { country_event = 99828 }
+		ai_chance = {
+			factor = 15
+			modifier = {
+				factor = 0
+				has_global_flag = constantinople_conference
+			}
+			modifier = {
+				factor = 100
+				FROM = { NOT = { military_score = 100 } }
+			}
+			modifier = {
+				factor = 2
+				FROM = { has_recently_lost_war = yes }
+			}
+		}
+	}
+}
+
+#Reichstadt Agreement - Success
+country_event = {
+
+	id = 99827
+	title = "EVTNAME99827"
+	desc = "EVTDESC99827"
+	picture = "Administration"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT99827OPTA"
+		badboy = 3
+		set_country_flag = claimed_bosnia
+		set_global_flag = reichstadt_agreement_success
+		relation = {
+			who = TUR
+			value = -200
+		}
+		leave_alliance = TUR
+		diplomatic_influence = {
+			who = TUR
+			value = -400
+		}
+		TUR = {
+			change_variable = {
+				which = great_eastern_crisis_supporter
+				value = 1
+			}
+		}
+		remove_country_modifier = great_eastern_crisis
+	}
+}
+
+#Reichstadt Agreement - Fails, Croatia Owner Response
+country_event = {
+	id = 99828
+	title = "EVTNAME99828"
+	desc = "EVTDESC99828"
+	picture = "Administration"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT99828OPTA"
+		remove_country_modifier = great_eastern_crisis
+		relation = { 
+			who = FROM
+			value = -200
+		}
+		relation = {
+			who = TUR
+			value = 200
+		}
+		create_alliance = TUR
+		diplomatic_influence = {
+			who = TUR
+			value = 400
+		}
+		any_pop = {
+			limit = {
+				OR = {
+					has_pop_religion = catholic
+					has_pop_religion = protestant
+					has_pop_religion = orthodox
+				}
+				militancy = 8
+				consciousness = 8
+			}
+		}
+		FROM = { 
+			set_country_flag = ottomans_were_supported
+			country_event = 99824
+		}
+		
+		ai_chance = {
+			factor = 40
+			
+			modifier = {
+				factor = 100
+				military_score = 100
+			}
+			modifier = {
+				factor = 2
+				has_recently_lost_war = no
+			}
+			modifier = {
+				factor = 0
+				war_exhaustion = 1
+			}
+		}
+	}
+	
+	option = {
+		name = "EVT99821OPTB"
+		prestige = -20
+		ai_chance = {
+			factor = 60
+			
+			modifier = {
+				factor = 100
+				NOT = { military_score = 100 }
+			}
+			modifier = {
+				factor = 2
+				has_recently_lost_war = yes
+			}
+		}
+	}
+}
+
+#Declare War on the Ottomans - A GP Supports them
+country_event = {
+	id = 99824
+	title = "EVTNAME99824"
+	desc = "EVTDESC99824"
+	major = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT99824OPTA"
+		prestige = 10
+		any_pop = {
+			limit = {
+				is_primary_culture = yes
+			}
+			militancy = -8
+			consciousness = -8
+		}
+		war = {
+			target = TUR
+			attacker_goal = { casus_belli = cut_down_to_size_ottoman }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = yes
+		}
+		
+		any_country = {
+			limit = {
+				has_country_modifier = great_eastern_crisis
+			}
+			remove_country_modifier = great_eastern_crisis
+		}
+		
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "EVT99824OPTB"
+		prestige = -25
+		any_pop = {
+			limit = {
+				is_primary_culture = yes
+			}
+			militancy = 5
+			consciousness = 5
+		}
+		
+		any_country = {
+			limit = {
+				has_country_modifier = great_eastern_crisis
+			}
+			remove_country_modifier = great_eastern_crisis
+		}
+		
+		ai_chance = { factor = 0 }
+	}
+}
+
+#Send Demands to the Ottomans - No GP Supports them
+country_event = {
+	id = 99825
+	title = "EVTNAME99825"
+	desc = "EVTDESC99825"
+	picture = "berlin_congress_htm"
+	
+	trigger = {
+		has_country_flag = started_the_great_eastern_crisis
+		NOT = { has_country_flag = ottomans_were_supported }
+		TUR = {
+			exists = yes
+			check_variable = {
+				which = great_eastern_crisis_supporter
+				value = 2
+			}
+		}
+		NOT = {
+			any_greater_power = {
+				alliance_with = TUR
+			}
+		}
+		NOT = { has_global_flag = great_eastern_crisis_war_demanded_turks }
+	}
+	
+	mean_time_to_happen = {
+		months = 2
+		modifier = {
+			factor = 0.5
+			TUR = {
+				check_variable = {
+					which = great_eastern_crisis_supporter
+					value = 2
+				}
+			}
+		}
+		modifier = {
+			factor = 0.4
+			TUR = {
+				check_variable = {
+					which = great_eastern_crisis_supporter
+					value = 3
+				}
+			}
+		}
+		modifier = {
+			factor = 0.2
+			TUR = {
+				check_variable = {
+					which = great_eastern_crisis_supporter
+					value = 4
+				}
+			}
+		}
+		modifier = {
+			factor = 0
+			TUR = {
+				check_variable = {
+					which = great_eastern_crisis_supporter
+					value = 5
+				}
+			}
+		}
+		modifier = {
+			factor = 0.1
+			OR = {
+				has_global_flag = reichstadt_agreement_success
+				AND = {
+					TUR = {
+						check_variable = {
+							which = great_eastern_crisis_supporter
+							value = 2
+						}
+					}
+					NOT = {
+						TUR = { owns = 783 }
+						BOS = { vassal_of = TUR }
+					}
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "EVT99825OPT"
+		set_global_flag = great_eastern_crisis_war_demanded_turks
+		prestige = 20
+		any_country = {
+			limit = {
+				exists = yes
+				NOT = { alliance_with = RUS }
+				OR = {
+					tag = SER
+					tag = ROM
+					tag = MON
+					tag = BUL
+				}
+			}
+			create_alliance = RUS
+			country_event = 99829
+		}
+		TUR = { country_event = 99826 }
+	}
+}
+
+#Ottomans receive the Russian Demand - War
+country_event = {
+	
+	id = 99826
+	title = "EVTNAME99826"
+	desc = "EVTDESC99826"
+	picture = "russo_turkish"
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT90065OPTA"
+		prestige = 10
+		any_pop = {
+			limit = {
+				is_primary_culture = yes
+			}
+			militancy = -8
+			consciousness = -8
+		}
+		FROM = {
+			war = {
+				target = THIS
+				attacker_goal = { casus_belli = cut_down_to_size_ottoman }
+				defender_goal = { casus_belli = status_quo }
+				call_ally = yes
+			}
+		}
+	}
+}
+
+#Balkan Minors 
+country_event = {
+	id = 99829
+	title = "EVTNAME99829"
+	desc = "EVTDESC99829"
+	picture = "russo_turkish"
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT99825OPT"
+		prestige = 10
+		any_pop = {
+			limit = {
+				is_primary_culture = yes
+			}
+			militancy = -8
+			consciousness = -8
+		}
+		relation = {
+			who = FROM
+			value = 200
+		}
+		FROM = {
+			diplomatic_influence = {
+				who = THIS
+				value = 400
+			}
+		}
+		remove_country_modifier = no_more_war
+		war_exhaustion = -100
+		create_alliance = FROM
+		leave_alliance = TUR
+		military_access = FROM
+	}
+}
+
+
+#Congress of Berlin Treaty of San Stefano - Russia gets notified
+country_event = {
+
+	id = 99830
+	title = "EVTNAME99830" # Call for Congress - Russia
+	desc = "EVTDESC99830"
+	picture = "ottoman"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT99831OPTA"
+		prestige = -5
+		set_country_flag = attending_berlin_congress
+	}
+}
+
+#Congress of Berlin Treaty of San Stefano - Ottomans gets notified
+country_event = {
+
+	id = 99831
+	title = "EVTNAME99831" # Call for Congress - Russia
+	desc = "EVTDESC99831"
+	picture = "ottoman"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT99831OPTA"
+		prestige = -5
+		set_country_flag = attending_berlin_congress
+	}
+}
+
+#Dismantle the Ottoman Empire
+country_event = {
+
+	id = 99832
+	title = "EVTNAME99832"
+	desc = "EVTDESC99832"
+	picture = "ottoman"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT99832OPTA"
+		prestige = -5
+		
+		# Take temporary control of rebel-controlled provinces
+		any_owned = {
+			limit = {
+				controlled_by_rebels = yes
+				OR = {
+					is_core = ROM
+					is_core = BUL
+					is_core = GRE
+					is_core = MON
+					is_core = BOS
+					is_core = SER
+					is_core = ALB
+				}
+			}
+			change_controller = TUR
+		}
+		
+		# Remove cores
+		TUR_674 = { remove_core = TUR } # Dobrudja
+		TUR_788 = { remove_core = TUR } # Bosnia
+		TUR_810 = { remove_core = TUR } # Bulgaria
+		TUR_809 = { remove_core = TUR }	# E.Rumelia
+		TUR_803 = { remove_core = TUR } # S.Serbia
+		MON_2582 = { remove_core = TUR } # Montenegro
+		TUR_853 = { remove_core = TUR } # Albania
+		TUR_832 = { remove_core = TUR } # Thessalia
+		TUR_806 = { remove_core = TUR } # N.Macedonia
+		TUR_805 = { remove_core = TUR } # W.Macedonia
+		TUR_855 = { remove_core = TUR } # Cyprus
+		847 = { remove_core = TUR } #Chania
+		848 = { remove_core = TUR } #Iraklion
+		EGY_843 = { remove_core = TUR } #Aegean Islands
+		#TUR_860 = { remove_core = TUR } #Thrace
+		
+		#Secede Istanbul, Kars to Russia
+		random_owned = {
+			limit = {
+				province_id = 860 #Istanbul
+				owned_by = TUR
+			}
+			secede_province = RUS
+		}
+		random_owned = {
+			limit = {
+				province_id = 861 #Uskandar
+				owned_by = TUR
+			}
+			secede_province = RUS
+		}
+		any_owned = {
+			limit = { region = TUR_885 }
+			secede_province = RUS
+		}
+		
+		#Secede to Bulgaria
+		random_owned = {
+			limit = {
+				province_id = 806 #Kavala
+				owned_by = TUR
+			}
+			state_scope = {
+				any_owned = {
+					secede_province = BUL
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				province_id = 823 #Kavala
+				owned_by = TUR
+			}
+			state_scope = {
+				any_owned = {
+					secede_province = BUL
+				}
+			}
+		}
+		
+		
+		# Free Moldavia & Wallachia, and return Constanta and Tulcea to Wallachia
+		random_country = {
+			limit = {
+				tag = ROM
+				ai = yes
+				owns = 678
+			}
+			678 = { secede_province = RUS add_core = RUS }
+		}
+		random_country = {
+			limit = {
+				tag = ROM
+				vassal_of = TUR
+			}
+			TUR = { release_vassal = ROM }
+		}
+		random_country = {
+			limit = {
+				tag = MOL
+				vassal_of = TUR
+			}
+			TUR = { release_vassal = MOL }
+		}
+		random_country = {
+			limit = {
+				tag = WAL
+				vassal_of = TUR
+			}
+			TUR = { release_vassal = WAL }
+		}
+		random_owned = {
+			limit = {
+				province_id = 674 #Constanta
+				owned_by = TUR
+				NOT = { exists = ROM }
+			}
+			secede_province = WAL
+		}
+		random_owned = {
+			limit = {
+				province_id = 675 #Tulcea
+				owned_by = TUR
+				NOT = { exists = ROM }
+			}
+			secede_province = WAL
+		}
+		random_owned = {
+			limit = {
+				province_id = 674 #Constanta
+				owned_by = TUR
+				exists = ROM
+			}
+			secede_province = ROM
+		}
+		random_owned = {
+			limit = {
+				province_id = 675 #Tulcea
+				owned_by = TUR
+				exists = ROM
+			}
+			secede_province = ROM
+		}
+	
+		# Give Bulgaria, Eastern Rumelia, Silestre, Thrace to Bulgaria, free it if vassaled
+		random_country = {
+			limit = {
+				tag = BUL
+				vassal_of = TUR
+			}
+			TUR = { release_vassal = BUL }
+		}
+		random_owned = {
+			limit = {
+				province_id = 828 #Edrine
+				owned_by = TUR
+			}
+			secede_province = BUL
+		}
+		random_owned = {
+			limit = {
+				province_id = 858 #Kirklareli
+				owned_by = TUR
+			}
+			secede_province = BUL
+		}
+		random_owned = {
+			limit = {
+				province_id = 859 #Gallipoli
+				owned_by = TUR
+			}
+			secede_province = BUL
+		}
+		any_owned = {
+			limit = { is_core = BUL }
+			secede_province = BUL
+		}
+
+		# Any Montenegran lands given to Montenegro, it is freed if vassaled
+		any_owned = {
+			limit = { is_core = MON }
+			secede_province = MON
+		}
+		random_country = {
+			limit = {
+				tag = MON
+				vassal_of = TUR
+			}
+			TUR = { release_vassal = MON }
+		}
+		
+		# Any Bosnian lands given to Bosnia, it is freed if vassaled
+		random_owned = {
+			limit = {
+				province_id = 783
+				BOS = { exists = no }
+			}
+		}
+		random_owned = {
+			limit = {
+				is_core = BOS
+				BOS = { exists = yes }
+			}
+		}
+		random_owned = {
+			limit = {
+				province_id = 783
+				owned_by = TUR
+			}
+			state_scope = {
+				any_owned = {
+					secede_province = BOS
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				province_id = 804
+				BOS = { exists = yes }
+			}
+			secede_province = BOS
+		}
+		random_country = {
+			limit = {
+				tag = BOS
+				vassal_of = TUR
+			}
+			TUR = { release_vassal = BOS }
+		}
+		
+		# Any Croatian lands given to Croatia, it is freed if vassaled
+		random_owned = {
+			limit = {
+				CRO = { exists = no }
+				TUR = { owns = 771 }
+			}
+		}
+		random_owned = {
+			limit = {
+				province_id = 771 #Zagreb
+				owned_by = TUR
+			}
+			state_scope = {
+				any_owned = {
+					secede_province = CRO
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				province_id = 781 #Zadar
+				owned_by = TUR
+			}
+			state_scope = {
+				any_owned = {
+					secede_province = CRO
+				}
+			}
+		}
+		random_country = {
+			limit = {
+				tag = CRO
+				vassal_of = TUR
+			}
+			TUR = { release_vassal = CRO }
+		}
+		
+		# Any Dalmatian lands given to Dalmatia, it is freed if vassaled
+		random_owned = {
+			limit = {
+				DLM = { exists = no }
+				CRO = { exists = no }
+				TUR = { NOT = { owns = 771 } }
+			}
+		}
+		random_owned = {
+			limit = {
+				province_id = 781 #Zadar
+				owned_by = TUR
+			}
+			state_scope = {
+				any_owned = {
+					secede_province = DLM
+				}
+			}
+		}
+		random_country = {
+			limit = {
+				tag = DLM
+				vassal_of = TUR
+			}
+			TUR = { release_vassal = DLM }
+		}
+		
+		# Any Serbian lands given to Serbia, it is freed if vassaled
+		any_owned = {
+			limit = { is_core = SER }
+			secede_province = SER
+		}
+		random_country = {
+			limit = {
+				tag = SER
+				vassal_of = TUR
+			}
+			TUR = { release_vassal = SER }
+		}
+
+		# Greece Gets Back S. Macedonia, Thessalia
+		random_owned = {
+			limit = { GRE = { exists = no } }
+			GRE = { set_country_flag = congress_released_country }
+		}
+		random_country = {
+			limit = {
+				tag = GRE
+				vassal_of = TUR
+			}
+			TUR = { release_vassal = GRE }
+		}
+		random_owned = {
+			limit = {
+				province_id = 834 #Athens
+				owned_by = TUR
+				NOT = { exists = GRE }
+			}
+			owner = { release_vassal = GRE }
+		}
+		random_owned = {
+			limit = {
+				province_id = 819 #Florina
+				owned_by = TUR
+			}
+			state_scope = {
+				any_owned = {
+					secede_province = GRE
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				province_id = 824 #Janina
+				owned_by = TUR
+			}
+			state_scope = {
+				any_owned = {
+					secede_province = GRE
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				province_id = 842 #Patras
+				owned_by = TUR
+			}
+			state_scope = {
+				any_owned = {
+					secede_province = GRE
+				}
+			}
+		}
+		
+		#Return Aegean Islands to Greece
+		random_owned = {
+			limit = {
+				province_id = 844 #Aegan
+				owned_by = TUR
+			}
+			state_scope = {
+				any_owned = {
+					limit = { is_core = GRE }
+					secede_province = GRE
+				}
+			}
+		}
+		random_country = {
+			limit = {
+				tag = SAM
+				vassal_of = TUR
+			}
+			TUR = { release_vassal = SAM }
+			GRE = { inherit = SAM }
+		}
+		
+		#Give Crete to Greece
+		random_owned = {
+			limit = {
+				province_id = 848 #Iraklion
+				owned_by = TUR
+			}
+			state_scope = {
+				any_owned = {
+					limit = { is_core = CRE }
+					secede_province = GRE
+				}
+			}
+		}
+		random_country = {
+			limit = {
+				tag = CRE
+				vassal_of = TUR
+			}
+			TUR = { release_vassal = CRE }
+			GRE = { inherit = CRE }
+		}
+		
+		#Return Cyprus to Greece
+		random_owned = {
+			limit = {
+				province_id = 855 #Nicosia
+				owned_by = TUR
+			}
+			state_scope = {
+				any_owned = {
+					limit = { is_core = CYP }
+					secede_province = GRE
+				}
+			}
+		}
+		random_country = {
+			limit = {
+				tag = CYP
+				vassal_of = TUR
+			}
+			TUR = { release_vassal = CYP }
+			GRE = { inherit = CYP }
+		}
+
+		# Albania released
+		random_owned = {
+			limit = { is_core = ALB }
+		}
+		random_owned = {
+			limit = {
+				province_id = 849 #Tirana
+				owned_by = TUR
+				NOT = { exists = ALB }
+			}
+			owner = { release = ALB }
+		}
+		any_owned = {
+			limit = { is_core = ALB }
+			secede_province = ALB
+		}
+		
+		# Military Upset
+		soldiers = {
+			limit = { is_primary_culture = yes }
+			ideology = {
+				value = reactionary
+				factor = 0.20
+			}
+			militancy = 5
+		}
+		officers = {
+			limit = { is_primary_culture = yes }
+			ideology = {
+				value = reactionary
+				factor = 0.40
+			}
+			militancy = 5
+		}
+		
+		RUS = {			
+			relation = { who = SER value = 400 }
+			diplomatic_influence = { who = SER value = 200 }
+			create_alliance = SER
+			
+			relation = { who = BUL value = 400 }
+			diplomatic_influence = { who = BUL value = 200 }
+			create_alliance = BUL
+			
+			relation = { who = MON value = 400 }
+			diplomatic_influence = { who = MON value = 200 }
+			create_alliance = MON
+			
+			relation = { who = ROM value = 400 }
+			diplomatic_influence = { who = ROM value = 200 }
+			create_alliance = ROM
+			
+			relation = { who = ALB value = 400 }
+			diplomatic_influence = { who = ALB value = 200 }
+			create_alliance = ALB
+			
+			
+		}
+		678 = { secede_province = RUS }
+		
+		ROM = {
+			add_country_modifier = {
+				name = nationalist_balkans
+				duration = -1
+			}
+		}
+		BUL = {
+			add_country_modifier = {
+				name = nationalist_balkans
+				duration = -1
+			}
+		}
+		GRE = {
+			add_country_modifier = {
+				name = nationalist_balkans
+				duration = -1
+			}
+		}
+		SER = {
+			add_country_modifier = {
+				name = nationalist_balkans
+				duration = -1
+			}
+		}
+		ALB = {
+			add_country_modifier = {
+				name = nationalist_balkans
+				duration = -1
+			}
+		}
+		RUM = {
+			all_core = {
+				remove_core = RUM
+			}
+		}
+	}
+}
