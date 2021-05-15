@@ -33,6 +33,7 @@ This expanded version of GFM owes its existence to: (add your name here if you h
 * JmanThunder (Lead Dev)
 * Abraham Lincoln
 * Bob Bobington
+* SirRunner
 * BloomerMagma
 * UlfDerDritte
 * Doble
