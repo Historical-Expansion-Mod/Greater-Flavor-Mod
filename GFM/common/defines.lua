@@ -1,7 +1,7 @@
 defines = {
 
 start_date = '1836.1.1',
-end_date = '1950.12.31',
+end_date = '1936.1.1',
 
 country = {
 	YEARS_OF_NATIONALISM 	= 20,   -- Years of Nationalism
@@ -95,7 +95,7 @@ country = {
 
 economy = {
 	MAX_DAILY_RESEARCH		    = 100,
-	LOAN_BASE_INTEREST			= 0.07,
+	LOAN_BASE_INTEREST			= 0.01,
 	BANKRUPTCY_EXTERNAL_LOAN_YEARS	= 10,
 	BANKRUPTCY_FACTOR = 0.2,
 	SHADOWY_FINANCIERS_MAX_LOAN_AMOUNT = 150000,
@@ -505,7 +505,7 @@ diplomacy = {
 	
 	MIN_WARSCORE_TO_INTERVENE = -1,
 	MIN_MONTHS_TO_INTERVENE = 0,
-	MAX_WARSCORE_FROM_BATTLES = 25,
+	MAX_WARSCORE_FROM_BATTLES = 50,
 	
 	GUNBOAT_DIPLOMATIC_COST = 1,
 	GUNBOAT_RELATION_ON_ACCEPT = 1,
@@ -513,7 +513,7 @@ diplomacy = {
 
 	LIBERATE_STATE_RELATION_INCREASE = 50,
 	DISHONORED_CALLALLY_PRESTIGE_PENALTY = -3,
-	BASE_TRUCE_MONTHS = 0,
+	BASE_TRUCE_MONTHS = 12,
 	MAX_INFLUENCE = 100,
 	WARSUBSIDIES_PERCENT = 0.33, -- How many percent of imports you are going to pay each day(mil. constructions and mil. maintainence)
 	NEIGHBOUR_BONUS_INFLUENCE_PERCENT = 0.50, -- Bonus to neighbouring countries when influencing
@@ -663,8 +663,8 @@ pops = {
 	POP_SAVINGS = 0.018,
 	
 	STATE_CREATION_ADMIN_LIMIT = 0.01,
-	MIL_TO_JOIN_REBEL = 7, -- Rebels over this will join a faction
-	MIL_TO_JOIN_RISING = 8, -- Rebels over this will join a general rising
+	MIL_TO_JOIN_REBEL = 8, -- Rebels over this will join a faction
+	MIL_TO_JOIN_RISING = 9, -- Rebels over this will join a general rising
 	MIL_TO_AUTORISE = 9, -- Rebels over this rise no matter what
 	REDUCTION_AFTER_RISEING = 0.0, -- After a pop spawns a rebellion, its militancy will be reduced this much
 	REDUCTION_AFTER_DEFEAT = 3.0, -- After a rebellion is being defeated in combat, its pop militancy will be divided by this number.
