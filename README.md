@@ -32,15 +32,15 @@ For Increased Performace(64-bit PCs):
 This expanded version of GFM owes its existence to: (add your name here if you have contributed code-wise to the mod): 
 * JmanThunder (Lead Dev)
 * Abraham Lincoln
+* dr ッ
 * Bob Bobington
 * SirRunner
 * BloomerMagma
 * UlfDerDritte
 * Doble
-* Choxflan
-* GLitchesHaxBadAudio
 * Erling Kristiansen
-* dr ッ
+* GLitchesHaxBadAudio
+
 
 As well as the original developer of HFM, the one and only: SighPie
 
