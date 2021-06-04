@@ -30,8 +30,8 @@ For Increased Performace(64-bit PCs):
 ## Acknowledgements
 
 This expanded version of GFM owes its existence to: (add your name here if you have contributed code-wise to the mod): 
-* JmanThunder (Lead Dev)
-* Abraham Lincoln
+* Abraham Lincoln (Lead Dev)
+* JmanThunder (Mod Creator)
 * dr ッ
 * Bob Bobington
 * SirRunner
