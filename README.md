@@ -2,9 +2,9 @@
 
 This mod is HFM, but further expanded upon, adding bountiful flavour, provinces, historical accuracy changes, etc
 
-NOTE: If you have problems with downloads from github, use this mirror link. It is updated as often as possible (updated 6/6/21):
+NOTE: If you have problems with downloads from github, use this mirror link. It is updated as often as possible (updated 6/10/21):
 
-https://www.dropbox.com/s/xc7892scltn8tvq/GFM%206.6.21.zip?dl=0
+https://www.dropbox.com/s/4ybt02fn4w9wofm/GFM%206.10.21.zip?dl=0
 
 ## Installation Instructions
 
