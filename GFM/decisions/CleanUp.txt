@@ -277,6 +277,8 @@ political_decisions = {
             ai = yes
             exists = yes
             year = 1837
+			NOT = { tag = TMT }
+			NOT = { has_country_flag = ghost_country }
             OR = {
                 AND = { government = theocracy NOT = { has_country_flag = theocratic_government } }
                 AND = { government = proletarian_dictatorship NOT = { has_country_flag = communist_gov } }
@@ -288,7 +290,7 @@ political_decisions = {
                 AND = { government = fascist_dictatorship NOT = { has_country_flag = fascist_gov } }
                 AND = { government = colonial_company NOT = { has_country_flag = clean_up_colonial_government } }
                 AND = { government = dominion NOT = { has_country_flag = dominion_gov } }
-                AND = { exists = yes NOT = { has_country_flag = existing_country } }
+                AND = { exists = yes NOT = { has_country_flag = existing_country has_country_flag = ghost_country } }
 
                 any_neighbor_country = {
                     OR = {
@@ -302,7 +304,7 @@ political_decisions = {
                         AND = { government = fascist_dictatorship NOT = { has_country_flag = fascist_gov } }
                         AND = { government = colonial_company NOT = { has_country_flag = clean_up_colonial_government } }
                         AND = { government = dominion NOT = { has_country_flag = dominion_gov } }
-                        AND = { exists = yes NOT = { has_country_flag = existing_country } }
+                        AND = { exists = yes NOT = { has_country_flag = existing_country has_country_flag = ghost_country } }
                     }
                 }
             }
@@ -335,7 +337,7 @@ political_decisions = {
             random_owned = { limit = { owner = { government = dominion } } owner = { set_country_flag = dominion_gov } }
             random_owned = { limit = { owner = { exists = yes NOT = { has_country_flag = existing_country } } } owner = { set_country_flag = existing_country } }
             any_neighbor_country = {
-                limit = { exists = yes NOT = { has_country_flag = existing_country } }
+                limit = { exists = yes NOT = { has_country_flag = existing_country has_country_flag = ghost_country } }
                 set_country_flag = existing_country
             }
             any_country = {
@@ -2351,6 +2353,194 @@ political_decisions = {
                 }
             }
 
+        }
+    }
+	
+	ghost_units_cleanup = {
+        alert = no
+        potential = {
+            #civilized = yes
+            ai = yes
+            NOT = { has_country_modifier = law_changed_by_force }
+            NOT = {
+                has_global_flag = cleaning_up_ghosts
+                has_global_flag = disabled_mobilization_fix
+            }
+            capital_scope = { province_control_days = 150 }
+            OR = {
+                any_owned_province = {
+                    province_control_days = 120
+                    any_core = {
+                        OR = {
+                            is_mobilised = yes
+                            total_amount_of_ships = 1
+                        }
+                        capital_scope = { NOT = { province_control_days = 120 } }
+                        has_country_flag = existing_country
+                        exists = no
+                        is_greater_power = no
+                    }
+                }
+                any_neighbor_country = {
+                    ai = no
+                    any_owned_province = {
+                        province_control_days = 120
+                        any_core = {
+                            OR = {
+                                is_mobilised = yes
+                                total_amount_of_ships = 1
+                            }
+                            capital_scope = { NOT = { province_control_days = 120 } }
+                            has_country_flag = existing_country
+                            exists = no
+                            is_greater_power = no
+                        }
+                    }
+                }
+            }
+        }
+
+        allow = {
+            war = no
+        }
+
+        effect = {
+            set_global_flag = cleaning_up_ghosts
+            set_country_flag = cleaning_up_ghosts_country
+            add_country_modifier = { name = law_changed_by_force duration = 30 }
+            3486 = { secede_province = THIS }
+            3487 = { secede_province = THIS }
+            3488 = { secede_province = THIS }
+            3489 = { secede_province = THIS }
+            TMT = { country_event = 6016821 }
+        }
+    }
+
+    ghost_country_absorb = {
+        alert = no
+        potential = {
+            ai = yes
+            has_country_flag = ghost_country
+        }
+
+        allow = {
+            is_mobilised = no
+            war = no
+        }
+
+        effect = {
+            clr_country_flag = ghost_country
+            clr_country_flag = existing_country
+            remove_country_modifier = neutrality_modifier
+            political_reform = open_borders
+            annex_to = TMT
+        }
+    }
+
+    ghost_country_absorb_player = {
+        alert = no
+        potential = {
+            ai = yes
+            has_global_flag = cleaning_up_ghosts
+            OR = {
+                3486 = {
+                    owner = {
+                        ai = no
+                        has_country_flag = ghost_country
+                    }
+                }
+                3487 = {
+                    owner = {
+                        ai = no
+                        has_country_flag = ghost_country
+                    }
+                }
+                3488 = {
+                    owner = {
+                        ai = no
+                        has_country_flag = ghost_country
+                    }
+                }
+                3489 = {
+                    owner = {
+                        ai = no
+                        has_country_flag = ghost_country
+                    }
+                }
+            }
+        }
+
+        allow = {
+        }
+
+        effect = {
+            any_country = {
+                limit = {
+                    has_country_flag = ghost_country
+                    ai = no
+                }
+                clr_country_flag = ghost_country
+                clr_country_flag = existing_country
+                remove_country_modifier = neutrality_modifier
+                political_reform = open_borders
+                annex_to = TMT
+            }
+        }
+    }
+
+    tmt_ends = {
+        alert = no
+        potential = {
+            ai = yes
+            tag = TMT
+            owns = 3486
+            owns = 3487
+            owns = 3488
+            owns = 3489
+            has_country_modifier = neutrality_modifier
+        }
+
+        allow = {
+            is_mobilised = no
+        }
+
+        effect = {
+            remove_country_modifier = neutrality_modifier
+            political_reform = open_borders
+            clr_country_flag = existing_country
+            clr_global_flag = cleaning_up_ghosts
+            clr_country_flag = cleaning_up_ghosts_country
+            random_country = {
+                limit = {
+                    owns = 2553
+                    NOT = { tag = TMT }
+                }
+                inherit  = TMT
+            }
+            random_owned = {
+                limit = {
+                    owner = { 2553 = { empty = yes } }
+                }
+                # Audax Validator "." Ignore_NEXT
+                FROM = { inherit = THIS }
+            }
+            any_owned = {
+                limit = {
+                    owner = {
+                        NOT = {
+                            any_owned_province = {
+                                OR = {
+                                    province_id = 3489
+                                    province_id = 3488
+                                    province_id = 3487
+                                    province_id = 3486
+                                }
+                            }
+                        }
+                    }
+                }
+                owner = { neutrality = yes }
+            }
         }
     }
 }
