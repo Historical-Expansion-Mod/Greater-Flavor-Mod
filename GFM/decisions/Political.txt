@@ -154,13 +154,7 @@ political_decisions = {
         picture = sign_the_geneva_convention
         potential = {
             part_of_sphere = yes
-            OR = {
-            is_vassal = no
-                AND = {
-                    ai = yes
-                    has_country_flag = failed_unification_remove_from_sphere
-                }
-            }
+			is_vassal = no
         }
 
         allow = {
@@ -175,24 +169,12 @@ political_decisions = {
                         }
                     }
                 }
-                AND = {
-                    ai = yes
-                    has_country_flag = failed_unification_remove_from_sphere
-                }
             }
         }
 
         effect = {
             random_owned = {
-                limit = { owner = { NOT = { has_country_flag = failed_unification_remove_from_sphere } } }
                 owner = { sphere_owner = { country_event = 13202 } }
-            }
-            random_owned = {
-                limit = { owner = { has_country_flag = failed_unification_remove_from_sphere } }
-                owner = {
-                    clr_country_flag = failed_unification_remove_from_sphere
-                    sphere_owner = { diplomatic_influence = { who = THIS value = -200 } }
-                }
             }
         }
 
@@ -204,7 +186,6 @@ political_decisions = {
                 factor = 0
                 NOT = {
                     total_pops = 50000000
-                    has_country_flag = failed_unification_remove_from_sphere
                 }
                 sphere_owner = {
                     # Factor = (sphere_owner regiments) / (our regiments).
@@ -1885,6 +1866,7 @@ political_decisions = {
     renovate_capital = {
         picture = budapest_city
         potential = {
+			NOT = { has_country_flag = used_renovate_already }
             OR = {
                 794 = { #Belgrade
                     owned_by = THIS
@@ -1978,6 +1960,18 @@ political_decisions = {
                     is_capital = yes
                     NOT = { life_rating = 38 }
                 }
+
+				487 = { #Madrid
+                    owned_by = THIS
+                    is_capital = yes
+                    NOT = { life_rating = 43 }
+                }
+				
+				498 = { #Barcelona
+                    owned_by = THIS
+                    is_capital = yes
+                    NOT = { life_rating = 38 }
+                }
             }
         }
 
@@ -1994,11 +1988,18 @@ political_decisions = {
         }
 
         effect = {
+			set_country_flag = used_renovate_already
             treasury = -75000
             random_owned = {
                 limit = {
                     is_capital = yes
-                    NOT = { life_rating = 38 }
+                    OR = {
+						NOT = { life_rating = 38 }
+						AND = {
+							province_id = 487
+							NOT = { life_rating = 43 }
+						}
+					}
                     owned_by = THIS
                     OR = {
                         province_id = 794
@@ -2019,6 +2020,8 @@ political_decisions = {
                         province_id = 876
                         province_id = 783
                         province_id = 849
+						province_id = 487
+						province_id = 498
                     }
                 }
                 life_rating = 3
