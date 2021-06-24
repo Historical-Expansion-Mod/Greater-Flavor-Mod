@@ -44,6 +44,7 @@ This expanded version of GFM owes its existence to: (add your name here if you h
 * Doble
 * Erling Kristiansen
 * GLitchesHaxBadAudio
+* Sarif#2056
 
 
 As well as the original developer of HFM, the one and only: SighPie
