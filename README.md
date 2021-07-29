@@ -17,6 +17,7 @@ https://www.dropbox.com/s/13gi1musugh4oqr/GFM%207.24.21.zip?dl=0
 5. Start the game, select the mods you want:
   * GFM is standalone - you do not need the original HFM to play.
   * GFM SW Submod is the Shattered World submod.
+  * GFM Dynamic Nations Submod adds more flag/nameing/colour options for each nation and ads some new mechanics involving this (Eg. USA # Flag Stars).
   * GFM RGO Submod adds experimental new RGOs
   * Music Sub Mod adds more music to the game
 7. Enjoy.
