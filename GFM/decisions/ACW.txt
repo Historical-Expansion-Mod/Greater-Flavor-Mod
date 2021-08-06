@@ -3,11 +3,20 @@ political_decisions = {
     apply_for_USA_statehood = {
         picture = apply_for_usa_statehood
         potential = {
-            exists = USA
-            USA = { 
-				OR = {
-					government = democracy 
-					has_country_flag = Government_Democracy
+			OR = {
+				USA = { 
+					exists = yes
+					OR = {
+						government = democracy 
+						has_country_flag = Government_Democracy
+					}
+				}
+				US2 = { 
+					exists = yes
+					OR = {
+						government = democracy 
+						has_country_flag = Government_Democracy
+					}
 				}
 			}
             OR = {
@@ -18,10 +27,12 @@ political_decisions = {
             OR = {
                 is_vassal = no
                 vassal_of = USA
+				vassal_of = US2
             }
             OR = {
                 part_of_sphere = no
                 in_sphere = USA
+				in_sphere = US2
             }
             ai = yes
             OR = {
@@ -32,30 +43,63 @@ political_decisions = {
             NOT = { has_country_flag = LSK_form }
         }
         allow = {
-            139 = { owned_by = USA }
+            OR = { 139 = { owned_by = USA } 139 = { owned_by = USA } }
             war = no
-            USA = { war = no }
+            NAD = { USA = { war = no } US2 = { war = no } }
             USA = { NOT = { average_militancy = 5 badboy = 0.7 } }
-            NOT = { truce_with = USA }
-            USA = { NOT = { any_owned_province = { any_core = { any_owned_province = { country_units_in_province = REB } } } } }
-            USA = { NOT = { num_of_revolts = 1 } }
-            relation = {
-                who = USA
-                value = 175
-            }
+			US2 = { NOT = { average_militancy = 5 badboy = 0.7 } }
+            NOT = { OR = { truce_with = USA truce_with = US2 } }
+            AND = { USA = { NOT = { any_owned_province = { any_core = { any_owned_province = { country_units_in_province = REB } } } } } USA = { NOT = { any_owned_province = { any_core = { any_owned_province = { country_units_in_province = REB } } } } } }
+            AND = { USA = { NOT = { num_of_revolts = 1 } } USA = { NOT = { num_of_revolts = 1 } } }
+			AND = {
+				USA = exists
+				relation = {
+					who = USA
+					value = 175
+				}
+			}
+			AND = {
+				US2 = exists
+				relation = {
+					who = US2
+					value = 175
+				}
+			}
         }
         effect = {
             set_country_flag = usstatehood_we_have_applied
-            USA = {
-                country_event = 16400
-                war_exhaustion = -20
-            }
+			any_country = {
+				limit = {
+						tag = USA
+						exists = yes
+				}
+				USA = {
+					country_event = 16400
+					war_exhaustion = -20
+				}
+			}
+			any_country = {
+				limit = {
+						tag = US2
+						exists = yes
+				}
+				US2 = {
+					country_event = 16400
+					war_exhaustion = -20
+				}
+			}
         }
         ai_will_do = {
             factor = 1
             modifier = {
                 factor = 0
                 USA = {
+                    NOT = { state_n_government = 1 }
+                }
+            }
+            modifier = {
+                factor = 0
+                US2 = {
                     NOT = { state_n_government = 1 }
                 }
             }
@@ -71,7 +115,7 @@ political_decisions = {
         picture = king_cotton
         potential = {
             tag = CSA
-            war_with = USA
+            OR = { war_with = USA war_with = US2 }
             NOT = {
                 has_country_flag = haskingcotton
             }
@@ -90,10 +134,26 @@ political_decisions = {
                 limit = {
                     NOT = {
                         tag = USA
+						USA = exists
+						NOT = { US2 = exists }
                     }
                 }
                 casus_belli = {
                     target = USA
+                    type = cut_down_to_size
+                    months = 24
+                }
+            }
+            any_greater_power = {
+                limit = {
+                    NOT = {
+                        tag = USA
+						US2 = exists
+						NOT = { USA = exists }
+                    }
+                }
+                casus_belli = {
+                    target = US2
                     type = cut_down_to_size
                     months = 24
                 }
@@ -108,6 +168,7 @@ political_decisions = {
         potential = {
             OR = {
                 tag = USA
+				tag = US2
                 tag = CSA
             }
             NOT = {
@@ -154,6 +215,7 @@ political_decisions = {
             OR = {
                 tag = USA
                 tag = CSA
+				tag = US2
             }
             has_global_flag = marching_on_the_trail_of_tears
             owns = 130
@@ -220,7 +282,7 @@ political_decisions = {
     custers_expedition = {
         picture = custers_expedition
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             NOT = {
                 has_country_flag = custers_expedition_sent
             }
@@ -238,7 +300,8 @@ political_decisions = {
 
         effect = {
             prestige = 1
-            set_country_flag = custers_expedition_sent
+            USA = { set_country_flag = custers_expedition_sent }
+			US2 = { set_country_flag = custers_expedition_sent }
         }
 
         ai_will_do = { factor = 1 }
@@ -246,7 +309,10 @@ political_decisions = {
 
     enact_the_homestead_act = {
         potential = {
-            tag = USA
+            OR = {
+				tag = USA
+				tag = US2
+			}
             OR = {
 				government = democracy
 				has_country_flag = Government_Democracy
@@ -263,7 +329,8 @@ political_decisions = {
         }
 
         effect = {
-            set_country_flag = homestead_act
+            USA = { set_country_flag = homestead_act }
+			US2 = { set_country_flag = homestead_act }
             add_country_modifier = {
                 name = the_homestead_act
                 duration = -1
@@ -276,7 +343,7 @@ political_decisions = {
     bixby_letter = {
         picture = bixby_letter
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             NOT = {
                 has_country_flag = bixby_letter_sent
             }
@@ -288,7 +355,8 @@ political_decisions = {
         }
 
         effect = {
-            set_country_flag = bixby_letter_sent
+            USA = { set_country_flag = bixby_letter_sent }
+			US2 = { set_country_flag = bixby_letter_sent }
             war_exhaustion = -2
         }
 
@@ -297,7 +365,7 @@ political_decisions = {
 
     enact_anaconda_plan = {
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             war_with = CSA
             NOT = {
                 has_global_flag = anaconda_plan_active
@@ -325,7 +393,7 @@ political_decisions = {
 
     shermans_march_to_the_sea = {
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             war_with = CSA
             NOT = {
                 has_country_flag = sherman_marched_to_the_sea
@@ -343,7 +411,8 @@ political_decisions = {
         }
 
         effect = {
-            set_country_flag = sherman_marched_to_the_sea
+            USA = { set_country_flag = sherman_marched_to_the_sea }
+			US2 = { set_country_flag = sherman_marched_to_the_sea }
             201 = {
                 any_pop = {
                     reduce_pop = 0.70
@@ -370,7 +439,7 @@ political_decisions = {
     emancipation_proclamation = {
         picture = emancipation_proclamation
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             NOT = {
                 has_country_flag = emancipation
                 has_country_flag = the_slavery_debate
@@ -392,7 +461,8 @@ political_decisions = {
             prestige = 35
         }
         effect = {
-            set_country_flag = emancipation
+            USA = { set_country_flag = emancipation }
+			US2 = { set_country_flag = emancipation }
             prestige = 5
             political_reform = no_slavery
             any_pop = {
@@ -400,19 +470,37 @@ political_decisions = {
                 consciousness = -5
                 militancy = -5
             }
-            any_greater_power = {
-                relation = {
-                    who = USA
-                    value = 30
-                }
-            }
+			any_country = {
+				limit = {
+						tag = USA
+						exists = yes
+				}
+				any_greater_power = {
+					relation = {
+						who = USA
+						value = 30
+					}
+				}
+			}
+			any_country = {
+				limit = {
+						tag = US2
+						exists = yes
+				}
+				any_greater_power = {
+					relation = {
+						who = US2
+						value = 30
+					}
+				}
+			}
         }
 
         ai_will_do = { factor = 1 }
     }
     manifest_destiny = {
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             is_greater_power = yes
             NOT = { has_country_flag = hasmanifestdestiny }
 			NOT = { has_global_flag = USA_demanded_MEX }
@@ -433,7 +521,8 @@ political_decisions = {
             MEX = { is_vassal = no }
         }
         effect = {
-            set_country_flag = hasmanifestdestiny
+            USA = { set_country_flag = hasmanifestdestiny }
+			US2 = { set_country_flag = hasmanifestdestiny }
 			set_global_flag = USA_demanded_MEX
             random_list = {
                 25 = { }
@@ -546,7 +635,7 @@ political_decisions = {
     gag_rule = {
         picture = gag_rule
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             average_consciousness = 1
             OR = {
                 slavery = yes_slavery
@@ -566,7 +655,8 @@ political_decisions = {
             any_pop = {
                 consciousness = -1
             }
-            set_country_flag = house_gag_rule_enacted
+            USA = { set_country_flag = house_gag_rule_enacted }
+			US2 = { set_country_flag = house_gag_rule_enacted }
         }
 
         ai_will_do = { factor = 1 }
@@ -575,7 +665,7 @@ political_decisions = {
     corwin_amendment = {
         picture = corwin_amendment
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             average_consciousness = 4
             OR = {
             slavery = yes_slavery
@@ -595,7 +685,8 @@ political_decisions = {
             any_pop = {
                 consciousness = -2
             }
-            set_country_flag = corwin_amendment_enacted
+            USA = { set_country_flag = corwin_amendment_enacted }
+			US2 = { set_country_flag = corwin_amendment_enacted }
         }
 
         ai_will_do = { factor = 1 }
@@ -604,7 +695,7 @@ political_decisions = {
     fugitive_slave_act = {
         picture = fugitive_slave_act
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             average_consciousness = 4
             OR = {
             slavery = yes_slavery
@@ -625,7 +716,8 @@ political_decisions = {
                 limit = { is_slave = yes }
                 any_pop = { consciousness = -2 }
             }
-            set_country_flag = fugitive_slave_act_enacted
+            USA = { set_country_flag = fugitive_slave_act_enacted }
+			US2 = { set_country_flag = fugitive_slave_act_enacted }
         }
 
         ai_will_do = { factor = 1 }
@@ -633,7 +725,7 @@ political_decisions = {
 
     nashville_convention = {
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             average_consciousness = 5
             OR = {
             slavery = yes_slavery
@@ -658,7 +750,8 @@ political_decisions = {
                     consciousness = -3
                 }
             }
-            set_country_flag = nashville_convention_held
+            USA = { set_country_flag = nashville_convention_held }
+			US2 = { set_country_flag = nashville_convention_held }
         }
 
         ai_will_do = { factor = 1 }
@@ -666,7 +759,7 @@ political_decisions = {
 
     ostend_manifesto = {
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             SPA_2209 = { is_slave = yes }
             OR = {
                 slavery = yes_slavery
@@ -708,51 +801,122 @@ political_decisions = {
                     value = -150
                 }
             }
-            SPA = {
-                random_owned = { limit = { province_id = 2209 is_colonial = yes }
-                owner = {
-                    add_casus_belli = {
-                        target = USA
-                        type = place_in_the_sun
-                        months = 30
-                        }
-                    }
-                }
-                random_owned = { limit = { province_id = 2209 is_colonial = no }
-                owner = {
-                    add_casus_belli = {
-                        target = USA
-                        type = acquire_any_state
-                        months = 30
-                        }
-                    }
+            any_greater_power = {
+                relation = {
+                    who = US2
+                    value = -150
                 }
             }
-            SPC = {
-                random_owned = { limit = { province_id = 2209 is_colonial = yes }
-                    owner = {
-                    add_casus_belli = {
-                        target = USA
-                        type = place_in_the_sun
-                        months = 30
-                        }
-                    }
-                }
-                random_owned = { limit = { province_id = 2209 is_colonial = no }
-                    owner = {
-                    add_casus_belli = {
-                        target = USA
-                        type = acquire_any_state
-                        months = 30
-                        }
-                    }
-                }
-            }
+			any_country = {
+				limit = {
+						tag = USA
+						exists = yes
+				}
+				SPA = {
+					random_owned = { limit = { province_id = 2209 is_colonial = yes }
+					owner = {
+						add_casus_belli = {
+							target = USA
+							type = place_in_the_sun
+							months = 30
+							}
+						}
+					}
+					random_owned = { limit = { province_id = 2209 is_colonial = no }
+					owner = {
+						add_casus_belli = {
+							target = USA
+							type = acquire_any_state
+							months = 30
+							}
+						}
+					}
+				}
+			}
+			any_country = {
+				limit = {
+						tag = US2
+						exists = yes
+				}
+				SPA = {
+					random_owned = { limit = { province_id = 2209 is_colonial = yes }
+					owner = {
+						add_casus_belli = {
+							target = US2
+							type = place_in_the_sun
+							months = 30
+							}
+						}
+					}
+					random_owned = { limit = { province_id = 2209 is_colonial = no }
+					owner = {
+						add_casus_belli = {
+							target = US2
+							type = acquire_any_state
+							months = 30
+							}
+						}
+					}
+				}
+			}
+			any_country = {
+				limit = {
+						tag = USA
+						exists = yes
+				}
+				SPC = {
+					random_owned = { limit = { province_id = 2209 is_colonial = yes }
+						owner = {
+						add_casus_belli = {
+							target = USA
+							type = place_in_the_sun
+							months = 30
+							}
+						}
+					}
+					random_owned = { limit = { province_id = 2209 is_colonial = no }
+						owner = {
+						add_casus_belli = {
+							target = USA
+							type = acquire_any_state
+							months = 30
+							}
+						}
+					}
+				}
+			}
+			any_country = {
+				limit = {
+						tag = US2
+						exists = yes
+				}
+				SPC = {
+					random_owned = { limit = { province_id = 2209 is_colonial = yes }
+						owner = {
+						add_casus_belli = {
+							target = US2
+							type = place_in_the_sun
+							months = 30
+							}
+						}
+					}
+					random_owned = { limit = { province_id = 2209 is_colonial = no }
+						owner = {
+						add_casus_belli = {
+							target = US2
+							type = acquire_any_state
+							months = 30
+							}
+						}
+					}
+				}
+			}
             any_state = {
                 limit = { is_slave = yes }
                 any_pop = { consciousness = -1 }
             }
-            set_country_flag = ostend_manifesto_published
+            USA = { set_country_flag = ostend_manifesto_published }
+			US2 = { set_country_flag = ostend_manifesto_published }
         }
         ai_will_do = {
             factor = 1
@@ -770,7 +934,7 @@ political_decisions = {
     kansas_nebraska_act = {
         picture = kansas_nebraska_act
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             average_consciousness = 1
             OR = {
             slavery = yes_slavery
@@ -799,7 +963,8 @@ political_decisions = {
                 }
                 any_pop = { consciousness = 1 }
             }
-            set_country_flag = kansas_nebraska_act_acting
+            USA = { set_country_flag = kansas_nebraska_act_acting }
+			US2 = { set_country_flag = kansas_nebraska_act_acting }
         }
 
         ai_will_do = { factor = 1 }
@@ -807,7 +972,7 @@ political_decisions = {
 
     wilmot_proviso = {
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             average_consciousness = 1
             OR = {
                 slavery = yes_slavery
@@ -857,7 +1022,8 @@ political_decisions = {
             USA_116 = { is_slave = no remove_core = CSA }
             USA_91 = { is_slave = no remove_core = CSA }
             USA_144 = { is_slave = yes add_core = CSA }
-            set_country_flag = wilmot_proviso_providing
+            USA = { set_country_flag = wilmot_proviso_providing }
+			US2 = { set_country_flag = wilmot_proviso_providing }
         }
 
         ai_will_do = { factor = 1 }
@@ -867,7 +1033,7 @@ political_decisions = {
         picture = form_kellys_irish_brigade
         potential = {
             tag = CSA
-            war_with = USA
+            OR = { war_with = USA war_with = US2 }
             NOT = {
                 has_country_flag = kellys_irish_brigade
             }
@@ -890,7 +1056,8 @@ political_decisions = {
                 pop_type = soldiers
             }
             war_exhaustion = -1
-            set_country_flag = kellys_irish_brigade
+            USA = { set_country_flag = kellys_irish_brigade }
+			US2 = { set_country_flag = kellys_irish_brigade }
         }
 
         ai_will_do = { factor = 1 }
@@ -908,7 +1075,7 @@ political_decisions = {
         }
 
         allow = {
-            war_with = USA
+            OR = { war_with = USA war_with = US2 }
             is_vassal = no
         }
 
@@ -959,7 +1126,8 @@ political_decisions = {
                 duration = 365
             }
 
-            set_country_flag = bonnie_blue_flag
+            USA = { set_country_flag = bonnie_blue_flag }
+			US2 = { set_country_flag = bonnie_blue_flag }
         }
 
         ai_will_do = { factor = 1 }
@@ -967,7 +1135,7 @@ political_decisions = {
 
     enact_radical_reconstruction = {
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             has_global_flag = american_civil_war_has_happened
             owns = 211
             owns = 195
@@ -1033,7 +1201,8 @@ political_decisions = {
                 }
                 remove_province_modifier = king_cotton
             }
-            set_country_flag = has_used_radical_reconstruction
+            USA = { set_country_flag = has_used_radical_reconstruction }
+			US2 = { set_country_flag = has_used_radical_reconstruction }
 			any_country = {
 				limit = { 
 					tag = BRZ
@@ -1262,6 +1431,10 @@ political_decisions = {
                 limit = { tag = USA }
                 relation = { who = THIS value = 50 }
             }
+            random_country = {
+                limit = { tag = US2 }
+                relation = { who = THIS value = 50 }
+            }
         }
         ai_will_do = {
             factor = 1
@@ -1319,7 +1492,7 @@ political_decisions = {
     rio_grande_treaty = {
     picture = rio_grande_treaty
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             any_owned_province = { is_core = TEX }
             RGR = {
                 exists = yes
@@ -1337,14 +1510,15 @@ political_decisions = {
             }
         }
         effect = {
-            set_country_flag = rio_grande_treaty
+            USA = { set_country_flag = rio_grande_treaty }
+			US2 = { set_country_flag = rio_grande_treaty }
             treasury = -100000
             relation = { who = RGR value = 100 }
             create_alliance = RGR
             RGR = {
                 treasury = 100000
                 any_owned = {
-                    limit = { is_core = USA }
+                    limit = { OR = { is_core = USA is_core = US2 } }
                     secede_province = USA
                 }
             }
@@ -1412,7 +1586,7 @@ political_decisions = {
     pass_the_fifteenth_amendment = {
     picture = first_vote_usa
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             NOT = { has_country_flag = fifteenth_amendment_enacted }
             NOT = { citizens_rights = all_voting_pops }
             OR = {
@@ -1430,7 +1604,8 @@ political_decisions = {
         }
 
         effect = {
-            set_country_flag = fifteenth_amendment_enacted
+            USA = { set_country_flag = fifteenth_amendment_enacted }
+			US2 = { set_country_flag = fifteenth_amendment_enacted }
             political_reform = all_voting_pops
             any_pop = { limit = { is_primary_culture = no is_accepted_culture = no } militancy = -1 }
         }
@@ -1574,7 +1749,7 @@ political_decisions = {
     1850_compromise = {
         picture = clay_and_douglas_draft
         potential = {
-            tag = USA
+            OR = {  tag = USA tag = US2 }
             OR = {
                 slavery = yes_slavery
                 slavery = freedom_of_womb
@@ -1612,7 +1787,8 @@ political_decisions = {
             USA_121 = { is_slave = no remove_core = CSA }
             USA_116 = { is_slave = no remove_core = CSA }
             USA_91 = { is_slave = no remove_core = CSA }
-            set_country_flag = clay_and_douglas_draft_enacted
+            USA = { set_country_flag = clay_and_douglas_draft_enacted }
+			US2 = { set_country_flag = clay_and_douglas_draft_enacted }
         }
 
         ai_will_do = { factor = 1 }
@@ -1621,7 +1797,7 @@ political_decisions = {
     offer_to_buy_cuba = {
         picture = map_caribbean
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             2209 = { owned_by = SPA }
             NOT = {
                 has_country_flag = ostend_manifesto_published
@@ -1652,7 +1828,8 @@ political_decisions = {
         }
 
         effect = {
-            set_country_flag = trying_to_buy_cuba
+            USA = { set_country_flag = trying_to_buy_cuba }
+			US2 = { set_country_flag = trying_to_buy_cuba }
             2209 = { owner = { country_event = 90131 } }
         }
 
@@ -1665,6 +1842,7 @@ political_decisions = {
             OR = {
                 tag = USA
                 tag = CSA
+				tag = US2
             }
             is_greater_power = yes
             DOM = {
