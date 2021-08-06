@@ -466,36 +466,28 @@ political_decisions = {
             random_country = { limit = { is_our_vassal = USA NOT = { tag = THIS } } relation = { who = THIS value = -200 } leave_alliance = THIS }
             random_country = { limit = { is_our_vassal = US2 NOT = { tag = THIS } } relation = { who = THIS value = -200 } leave_alliance = THIS }
             any_pop = { dominant_issue = { factor = 0.05 value = jingoism } consciousness = 2 }
-            casus_belli = {
-                target = USA
-                type = cut_down_to_size
-                months = 12
-            }
-            casus_belli = {
-                target = US2
-                type = cut_down_to_size
-                months = 12
-            }
-			any_country = {
+            random_owned = {
 				limit = {
-						tag = USA
-						exists = yes
+					owner = { USA = { exists = yes } }
 				}
-				war = {
-					target = USA
-					attacker_goal = { casus_belli = cut_down_to_size }
-					defender_goal = { casus_belli = cut_down_to_size }
+				owner = {
+					war = {
+						target = USA
+						attacker_goal = { casus_belli = cut_down_to_size_no_infamy }
+						defender_goal = { casus_belli = cut_down_to_size_no_infamy }
+					}
 				}
 			}
-			any_country = {
+			random_owned = {
 				limit = {
-						tag = US2
-						exists = yes
+					owner = { US2 = { exists = yes } }
 				}
-				war = {
-					target = US2
-					attacker_goal = { casus_belli = cut_down_to_size }
-					defender_goal = { casus_belli = cut_down_to_size }
+				owner = {
+					war = {
+						target = US2
+						attacker_goal = { casus_belli = cut_down_to_size_no_infamy }
+						defender_goal = { casus_belli = cut_down_to_size_no_infamy }
+					}
 				}
 			}
             any_pop = {
@@ -535,10 +527,18 @@ political_decisions = {
 
         allow = {
             money = 75000
-            USA = {
-                is_disarmed = yes
-                truce_with = THIS
-            }
+			OR = {
+				USA = {
+					exists = yes
+					is_disarmed = yes
+					truce_with = THIS
+				}
+				US2 = {
+					exists = yes
+					is_disarmed = yes
+					truce_with = THIS
+				}
+			}
         }
 
         effect = {
@@ -559,10 +559,8 @@ political_decisions = {
 				}
 				CAN_46 = { add_core = US2 }
 			}
-            51 = { remove_core = USA }
-            50 = { remove_core = USA }
-            51 = { remove_core = US2 }
-            50 = { remove_core = US2 }
+            51 = { remove_core = USA remove_core = US2 }
+            50 = { remove_core = USA remove_core = US2 }
             USA = {
                 remove_accepted_culture = cajun
                 ###Add Lousiana Cores###
@@ -666,32 +664,40 @@ political_decisions = {
                 treasury = 75000
             }
             ULA = { all_core = { remove_core = FCA } }
-            THIS = {
-                any_owned = {
-                    limit = {
-                        OR = {
-							is_core = USA
-						}
-                        NOT = { is_core = ACA is_core = ULA region = USA_78 }
-                    }
-                    secede_province = USA
-                    remove_core = THIS
-                    remove_core = FCA
-                }
-            }
-            THIS = {
-                any_owned = {
-                    limit = {
-                        OR = {
-							is_core = US2
-						}
-                        NOT = { is_core = ACA is_core = ULA region = USA_78 }
-                    }
-                    secede_province = USA
-                    remove_core = THIS
-                    remove_core = FCA
-                }
-            }
+            any_owned = {
+				limit = {
+					USA = { exists = yes }
+					is_core = USA
+					NOT = { is_core = ACA is_core = ULA region = USA_78 }
+				}
+				secede_province = USA
+				remove_core = THIS
+				remove_core = FCA
+			}
+			any_owned = {
+				limit = {
+					US2 = { exists = yes }
+					is_core = US2
+					NOT = { is_core = ACA is_core = ULA region = USA_78 }
+				}
+				secede_province = US2
+				remove_core = THIS
+				remove_core = FCA
+			}
+			any_owned = {
+				limit = {
+					USA = { exists = no }
+					US2 = { exists = no }
+					OR = {
+						is_core = USA
+						is_core = US2
+					}
+					NOT = { is_core = ACA is_core = ULA region = USA_78 }
+				}
+				secede_province = USA
+				remove_core = THIS
+				remove_core = FCA
+			}
             ###Turn all these states into colonies
             any_owned = {
                 limit = {
@@ -719,32 +725,38 @@ political_decisions = {
             USA = { any_pop = { limit = { has_pop_culture = french_canadian } move_pop = 71 } }
             US2 = { any_pop = { limit = { has_pop_culture = french_canadian } move_pop = 71 } }
             FCA = { remove_accepted_culture = anglo_canadian }
-			any_country = {
+			random_country = {
 				limit = {
-						tag = USA
-						exists = yes
+					tag = FCA
+					USA = { exists = yes }
 				}
-				random_country = {
-					limit = { tag = FCA }
-					any_owned = {
-						limit = { region = CAN_46 }
-						remove_core = FCA
-						secede_province = USA
-					}
+				any_owned = {
+					limit = { region = CAN_46 }
+					remove_core = FCA
+					secede_province = USA
 				}
 			}
-			any_country = {
+			random_country = {
 				limit = {
-						tag = US2
-						exists = yes
+					tag = FCA
+					US2 = { exists = yes }
 				}
-				random_country = {
-					limit = { tag = FCA }
-					any_owned = {
-						limit = { region = CAN_46 }
-						remove_core = FCA
-						secede_province = US2
-					}
+				any_owned = {
+					limit = { region = CAN_46 }
+					remove_core = FCA
+					secede_province = US2
+				}
+			}
+			random_country = {
+				limit = {
+					tag = FCA
+					USA = { exists = no }
+					US2 = { exists = no }
+				}
+				any_owned = {
+					limit = { region = CAN_46 }
+					remove_core = FCA
+					secede_province = USA
 				}
 			}
             46 = { state_scope = { change_region_name = "Southern Ontario" } }
@@ -753,14 +765,14 @@ political_decisions = {
 						tag = USA
 						exists = yes
 				}
-				USA = { country_event = 99971 }
+				country_event = 99971
 			}
 			any_country = {
 				limit = {
 						tag = US2
 						exists = yes
 				}
-				US2 = { country_event = 99971 }
+				country_event = 99971
 			}
         }
 
@@ -769,7 +781,10 @@ political_decisions = {
 
     become_the_fsa_french_lousiana = {
         potential = {
-            tag = USA
+			OR = {
+				tag = USA
+				tag = US2
+			}
             ai = yes
             NOT = { owns = 139 }
             has_global_flag = treaty_of_new_york
@@ -788,8 +803,7 @@ political_decisions = {
             release_vassal = TEX
             any_owned = {
                 limit = {
-                    owned_by = USA
-                    is_core = USA
+					is_core = THIS
                 }
                 add_core = FSA
             }
