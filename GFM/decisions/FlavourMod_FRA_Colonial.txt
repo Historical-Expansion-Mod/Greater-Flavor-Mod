@@ -99,6 +99,7 @@ political_decisions = {
                 }
             }
             USA = { remove_accepted_culture = cajun }
+			US2 = { remove_accepted_culture = cajun }
             remove_accepted_culture = cajun
         }
 
@@ -359,6 +360,7 @@ political_decisions = {
             random_owned = {
                 limit = { owner = { has_country_flag = quebec_and_acadia_only } }
                 USA = { all_core = { remove_core = ACA } } #Removes Acadian Cores from the US
+				US2 = { all_core = { remove_core = ACA } } #Removes Acadian Cores from the US
                 ULA = { all_core = { remove_core = ULA } }
                 owner = { badboy = -5 } #Reduces your infamy for dropping the rest of your claims
                 46 = { state_scope = { change_region_name = "Southern Ontario" } }
@@ -419,7 +421,7 @@ political_decisions = {
             has_country_flag = french_total_victory
             has_country_flag = french_america
             has_country_flag = canada_organized
-			USA = { exists = yes }
+			OR = { USA = { exists = yes } US2 = { exists = yes } }
             NOT = {
                 has_country_flag = war_for_louisiana
                 exists = ULA
@@ -430,6 +432,7 @@ political_decisions = {
         allow = {
             war = no
             NOT = { truce_with = USA }
+			NOT = { truce_with = US2 }
             NOT = { war_policy = pacifism }
             NOT = { revolution_n_counterrevolution = 1 }
         }
@@ -443,24 +446,50 @@ political_decisions = {
                     months = 60
                 }
             }
+            US2 = {
+                add_casus_belli = {
+                    target = THIS
+                    type = cut_down_to_size
+                    months = 60
+                }
+            }
             FRA = { set_country_flag = war_for_louisiana }
             BOR = { set_country_flag = war_for_louisiana }
             relation = { who = USA value = -200 }
+            relation = { who = US2 value = -200 }
             diplomatic_influence = { who = USA value = -200 }
+            diplomatic_influence = { who = US2 value = -200 }
             leave_alliance = USA
+            leave_alliance = US2
             random_country = { limit = { tag = USA vassal_of = THIS } THIS = { release_vassal = USA } }
+            random_country = { limit = { tag = US2 vassal_of = THIS } THIS = { release_vassal = US2 } }
             random_country = { limit = { is_our_vassal = USA NOT = { tag = THIS } } relation = { who = THIS value = -200 } leave_alliance = THIS }
+            random_country = { limit = { is_our_vassal = US2 NOT = { tag = THIS } } relation = { who = THIS value = -200 } leave_alliance = THIS }
             any_pop = { dominant_issue = { factor = 0.05 value = jingoism } consciousness = 2 }
-            casus_belli = {
-                target = USA
-                type = cut_down_to_size
-                months = 12
-            }
-            war = {
-                target = USA
-                attacker_goal = { casus_belli = cut_down_to_size }
-                defender_goal = { casus_belli = cut_down_to_size }
-            }
+            random_owned = {
+				limit = {
+					owner = { USA = { exists = yes } }
+				}
+				owner = {
+					war = {
+						target = USA
+						attacker_goal = { casus_belli = cut_down_to_size_no_infamy }
+						defender_goal = { casus_belli = cut_down_to_size_no_infamy }
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = { US2 = { exists = yes } }
+				}
+				owner = {
+					war = {
+						target = US2
+						attacker_goal = { casus_belli = cut_down_to_size_no_infamy }
+						defender_goal = { casus_belli = cut_down_to_size_no_infamy }
+					}
+				}
+			}
             any_pop = {
                 limit = {
                     OR = {
@@ -498,19 +527,40 @@ political_decisions = {
 
         allow = {
             money = 75000
-            USA = {
-                is_disarmed = yes
-                truce_with = THIS
-            }
+			OR = {
+				USA = {
+					exists = yes
+					is_disarmed = yes
+					truce_with = THIS
+				}
+				US2 = {
+					exists = yes
+					is_disarmed = yes
+					truce_with = THIS
+				}
+			}
         }
 
         effect = {
             set_global_flag = treaty_of_new_york
             clr_global_flag = american_frontier
             ###Secede Southern Ontario to USA###
-            CAN_46 = { add_core = USA }
-            51 = { remove_core = USA }
-            50 = { remove_core = USA }
+			any_country = {
+				limit = {
+						tag = USA
+						exists = yes
+				}
+				CAN_46 = { add_core = USA }
+			}
+			any_country = {
+				limit = {
+						tag = US2
+						exists = yes
+				}
+				CAN_46 = { add_core = US2 }
+			}
+            51 = { remove_core = USA remove_core = US2 }
+            50 = { remove_core = USA remove_core = US2 }
             USA = {
                 remove_accepted_culture = cajun
                 ###Add Lousiana Cores###
@@ -562,18 +612,92 @@ political_decisions = {
                 }
                 treasury = 75000
             }
-            ULA = { all_core = { remove_core = FCA } }
-            THIS = {
+            US2 = {
+                remove_accepted_culture = cajun
+                ###Add Lousiana Cores###
                 any_owned = {
                     limit = {
-                        is_core = USA
-                        NOT = { is_core = ACA is_core = ULA region = USA_78 }
+                        OR = {
+                            region = USA_139 #Louisiana
+                            region = USA_144 #Arkansas
+                            region = USA_148 #Missouri
+                            region = USA_118 #North Dakota
+                            region = USA_121 #South Dakota
+                            region = USA_124 #Nebraska
+                            region = USA_151 #Idaho
+                            region = USA_158 #Iowa
+                            region = USA_126 #Kansas
+                            region = USA_129 #Oklahoma
+                            region = USA_111 #Wyoming
+                            region = USA_116 #Montana
+                            region = USA_78 #Washington
+                            region = USA_81 #Oregon
+                            region = USA_91 #Idaho
+                            province_id = 106
+                            province_id = 78
+                            province_id = 79
+                        }
+                        NOT = {
+                            province_id = 129
+                            province_id = 110
+                            province_id = 107
+                            province_id = 128
+                        }
                     }
-                    secede_province = USA
-                    remove_core = THIS
-                    remove_core = FCA
+                    add_core = ULA
                 }
+                ###Population Transfers
+                any_pop = { limit = { has_pop_culture = french_canadian } move_pop = 65 }
+                ###Remove Acadia Cores###
+                any_owned = { limit = { is_core = ACA } remove_core = ACA }
+                ###Secede Provinces
+                any_owned = {
+                    limit = {
+                        OR = {
+                            is_core = ULA
+                            is_core = ACA
+                            is_core = FCA
+                        }
+                    }
+                    secede_province = THIS
+                }
+                treasury = 75000
             }
+            ULA = { all_core = { remove_core = FCA } }
+            any_owned = {
+				limit = {
+					USA = { exists = yes }
+					is_core = USA
+					NOT = { is_core = ACA is_core = ULA region = USA_78 }
+				}
+				secede_province = USA
+				remove_core = THIS
+				remove_core = FCA
+			}
+			any_owned = {
+				limit = {
+					US2 = { exists = yes }
+					is_core = US2
+					NOT = { is_core = ACA is_core = ULA region = USA_78 }
+				}
+				secede_province = US2
+				remove_core = THIS
+				remove_core = FCA
+			}
+			any_owned = {
+				limit = {
+					USA = { exists = no }
+					US2 = { exists = no }
+					OR = {
+						is_core = USA
+						is_core = US2
+					}
+					NOT = { is_core = ACA is_core = ULA region = USA_78 }
+				}
+				secede_province = USA
+				remove_core = THIS
+				remove_core = FCA
+			}
             ###Turn all these states into colonies
             any_owned = {
                 limit = {
@@ -599,17 +723,57 @@ political_decisions = {
             inherit = UTI
             treasury = -75000
             USA = { any_pop = { limit = { has_pop_culture = french_canadian } move_pop = 71 } }
+            US2 = { any_pop = { limit = { has_pop_culture = french_canadian } move_pop = 71 } }
             FCA = { remove_accepted_culture = anglo_canadian }
-            random_country = {
-                limit = { tag = FCA }
-                any_owned = {
-                    limit = { region = CAN_46 }
-                    remove_core = FCA
-                    secede_province = USA
-                }
-            }
+			random_country = {
+				limit = {
+					tag = FCA
+					USA = { exists = yes }
+				}
+				any_owned = {
+					limit = { region = CAN_46 }
+					remove_core = FCA
+					secede_province = USA
+				}
+			}
+			random_country = {
+				limit = {
+					tag = FCA
+					US2 = { exists = yes }
+				}
+				any_owned = {
+					limit = { region = CAN_46 }
+					remove_core = FCA
+					secede_province = US2
+				}
+			}
+			random_country = {
+				limit = {
+					tag = FCA
+					USA = { exists = no }
+					US2 = { exists = no }
+				}
+				any_owned = {
+					limit = { region = CAN_46 }
+					remove_core = FCA
+					secede_province = USA
+				}
+			}
             46 = { state_scope = { change_region_name = "Southern Ontario" } }
-            USA = { country_event = 99971 }
+			any_country = {
+				limit = {
+						tag = USA
+						exists = yes
+				}
+				country_event = 99971
+			}
+			any_country = {
+				limit = {
+						tag = US2
+						exists = yes
+				}
+				country_event = 99971
+			}
         }
 
         ai_will_do = { factor = 1 }
@@ -617,7 +781,10 @@ political_decisions = {
 
     become_the_fsa_french_lousiana = {
         potential = {
-            tag = USA
+			OR = {
+				tag = USA
+				tag = US2
+			}
             ai = yes
             NOT = { owns = 139 }
             has_global_flag = treaty_of_new_york
@@ -636,8 +803,7 @@ political_decisions = {
             release_vassal = TEX
             any_owned = {
                 limit = {
-                    owned_by = USA
-                    is_core = USA
+					is_core = THIS
                 }
                 add_core = FSA
             }

@@ -12,12 +12,18 @@ political_decisions = {
                     has_global_flag = CSA_aoc
                 }
             }
-            USA = {
-                OR = {
-                    is_greater_power = no
-                    exists = no
-                }
-            }
+			USA = {
+				OR = {
+					is_greater_power = no
+					exists = no
+				}
+			}
+			US2 = {
+				OR = {
+					is_greater_power = no
+					exists = no
+				}
+			}
             is_greater_power = yes
         }
         allow = {
@@ -28,6 +34,16 @@ political_decisions = {
             war = no
             mass_politics = 1
             USA = {
+                all_core = {
+                    OR = {
+                        owner = {
+                            in_sphere = THIS
+                        }
+                        owned_by = THIS
+                    }
+                }
+            }
+            US2 = {
                 all_core = {
                     OR = {
                         owner = {
@@ -388,6 +404,7 @@ political_decisions = {
                         tag = USA
                         tag = CSA
                         tag = FSA
+						tag = US2
                     }
                 }
                 relation = {
@@ -426,23 +443,39 @@ political_decisions = {
             tag = ULA
             has_unclaimed_cores = no
             NOT = { has_country_flag = ULA_buyout }
-            USA = { exists = yes }
-            USA = {
-                any_core = {
-                    is_core = ULA
-                }
-            }
+            OR = { USA = { exists = yes } US2 = { exists = yes } }
+			OR = {
+				USA = {
+					any_core = {
+						is_core = ULA
+					}
+				}
+				US2 = {
+					any_core = {
+						is_core = ULA
+					}
+				}
+			}
             is_greater_power = yes
         }
         allow = {
             war = no
             money = 400000
-            NOT = { truce_with = USA }
+            NOT = { OR = { truce_with = USA truce_with = US2 } }
         }
         effect = {
-            USA = {
-                country_event = 1388079
-            }
+			random_owned = {
+				limit = {
+					owner = { USA = { exists = yes } }
+				}
+				owner = { USA = { country_event = 1388079 } }
+			}
+			random_owned = {
+				limit = {
+					owner = { US2 = { exists = yes } }
+				}
+				owner = { US2 = { country_event = 1388079 } }
+			}
         }
     }
     CSA_ULA_friendship = {
@@ -461,7 +494,7 @@ political_decisions = {
             CSA = {
                 exists = yes
                 war = no
-                NOT = { in_sphere = USA }
+                NOT = { OR = { in_sphere = USA in_sphere = US2 } }
 
             }
         }
@@ -627,10 +660,20 @@ political_decisions = {
 				government = democracy
 				has_country_flag = Government_Democracy
 			}
-			USA = { 
-				OR = {
-					government = democracy 
-					has_country_flag = Government_Democracy
+			OR = {
+				USA = {
+					exists = yes
+					OR = {
+						government = democracy 
+						has_country_flag = Government_Democracy
+					}
+				}
+				US2 = {
+					exists = yes
+					OR = {
+						government = democracy 
+						has_country_flag = Government_Democracy
+					}
 				}
 			}
 			primary_culture = yankee
@@ -646,8 +689,17 @@ political_decisions = {
 			SON = { NOT = { num_of_revolts = 1 } }
 			OR = {
 				in_sphere = USA
+				in_sphere = US2
 				sphere_owner = { is_sphere_leader_of = USA }
-				relation = { who = USA value = 200 }	
+				sphere_owner = { is_sphere_leader_of = US2 }
+				AND = {
+					relation = { who = USA value = 200 }
+					USA = { exists = yes }
+				}
+				AND = {
+					relation = { who = US2 value = 200 }
+					US2 = { exists = yes }
+				}
             }
 			SON = {
 				all_core = {
@@ -659,9 +711,13 @@ political_decisions = {
 		effect = {
 			set_country_flag = son_statehood_we_have_applied
 			USA = { war_exhaustion = -5 }
+			US2 = { war_exhaustion = -5 }
 			random_country = {
 				limit = {
-					tag = USA
+					OR = {
+						AND = { tag = USA USA = { exists = yes } }
+						AND = { tag = US2 US2 = { exists = yes } }
+					}
 					ai = yes
 					THIS = { ai = yes }
 				}
@@ -669,7 +725,10 @@ political_decisions = {
 			}
 			random_country = {
 				limit = {
-					tag = USA
+					OR = {
+						AND = { tag = USA USA = { exists = yes } }
+						AND = { tag = US2 US2 = { exists = yes } }
+					}
 					ai = yes
 					THIS = { ai = no }
 				}
@@ -677,7 +736,10 @@ political_decisions = {
 			}
 			random_country = {
 				limit = {
-					tag = USA
+					OR = {
+						AND = { tag = USA USA = { exists = yes } }
+						AND = { tag = US2 US2 = { exists = yes } }
+					}
 					ai = no
 				}
 				country_event = 16401

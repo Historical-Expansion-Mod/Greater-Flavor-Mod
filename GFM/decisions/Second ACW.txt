@@ -230,7 +230,8 @@ political_decisions = {
                     tag = NEN
                     OR = {
                         has_country_flag = usstatehood_we_have_applied
-                        USA = { ai = yes }
+                        USA = { ai = yes exists = yes }
+						US2 = { ai = yes exists = yes }
                     }
                 }
                 tag = UIL
@@ -245,13 +246,14 @@ political_decisions = {
                 tag = USA
                 tag = CSA
                 tag = FSA
+				tag = US2
             }
             is_greater_power = no
             ai = yes
         }
 
         allow = {
-            139 = { owned_by = USA }
+            139 = { OR = { owned_by = USA owned_by = US2 } }
             war = no
             OR = {
 				government = democracy
@@ -260,20 +262,45 @@ political_decisions = {
             OR = {
                 sphere_owner = { is_sphere_leader_of = USA }
                 in_sphere = USA
+				sphere_owner = { is_sphere_leader_of = US2 }
+                in_sphere = US2
             }
-            USA = {
-                war = no
-                OR = {
-					government = democracy
-					has_country_flag = Government_Democracy
+			OR = {
+				USA = {
+					war = no
+					exists = yes
+					OR = {
+						government = democracy
+						has_country_flag = Government_Democracy
+					}
+					relation = { who = THIS value = 150 }
 				}
-                relation = { who = THIS value = 150 }
-            }
+				US2 = {
+					war = no
+					exists = yes
+					OR = {
+						government = democracy
+						has_country_flag = Government_Democracy
+					}
+					relation = { who = THIS value = 150 }
+				}
+			}
         }
 
         effect = {
             set_country_flag = asked_to_rejoin_usa
-            USA = { country_event = 60130 }
+			random_owned = {
+				limit = {
+					owner = { USA = { exists = yes } }
+				}
+				owner = { USA = { country_event = 60130 } }
+			}
+			random_owned = {
+				limit = {
+					owner = { US2 = { exists = yes } }
+				}
+				owner = { US2 = { country_event = 60130 } }
+			}
         }
 
         ai_will_do = {
@@ -358,7 +385,7 @@ political_decisions = {
     fsa_enact_anaconda_plan = {
         picture = enact_anaconda_plan
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             FSA = {
                 any_owned_province = { has_building = naval_base }
                 war_with = THIS
@@ -437,7 +464,7 @@ political_decisions = {
         }
 
         allow = {
-            war_with = USA
+            OR = { war_with = USA war_with = US2 }
         }
 
         effect = {
@@ -459,7 +486,7 @@ political_decisions = {
     fsa_enact_radical_reconstruction = {
         picture = enact_radical_reconstruction
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             war = no
             has_global_flag = alt_american_civil_war_has_happened
             owns = 232
@@ -490,7 +517,8 @@ political_decisions = {
                 is_slave = yes
             }
             clr_global_flag = alt_american_civil_war_has_happened
-            set_country_flag = has_used_radical_reconstruction_FSA
+            USA = { set_country_flag = has_used_radical_reconstruction_FSA }
+            US2 = { set_country_flag = has_used_radical_reconstruction_FSA }
 			any_owned = {
                 limit = { is_core = FSA }
                 add_province_modifier = { name = reconstruction_FSA duration = 2555 }
@@ -503,25 +531,43 @@ political_decisions = {
         potential = {
             is_culture_group = american_cultures
             USA = { exists = no }
+			US2 = { exists = no }
         }
 
         allow = {
             war = no
-            USA = {
-                all_core = {
-                    OR = {
-                        owned_by = THIS
-                        owner = {
-                            NOT = { is_culture_group = american_cultures }
-                        }
-                        owner = { in_sphere = THIS }
-                        owner = { vassal_of = THIS }
-                        empty = yes
-                        region = USA_1
-                        region = HAW_658
-                    }
-                }
-            }
+			OR = {
+				USA = {
+					all_core = {
+						OR = {
+							owned_by = THIS
+							owner = {
+								NOT = { is_culture_group = american_cultures }
+							}
+							owner = { in_sphere = THIS }
+							owner = { vassal_of = THIS }
+							empty = yes
+							region = USA_1
+							region = HAW_658
+						}
+					}
+				}
+				US2 = {
+					all_core = {
+						OR = {
+							owned_by = THIS
+							owner = {
+								NOT = { is_culture_group = american_cultures }
+							}
+							owner = { in_sphere = THIS }
+							owner = { vassal_of = THIS }
+							empty = yes
+							region = USA_1
+							region = HAW_658
+						}
+					}
+				}
+			}
             FSA = {
                 all_core = {
                     OR = {
@@ -582,7 +628,7 @@ political_decisions = {
 
     restore_washington_capital = {
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             owns = 2146
             NOT = {
                 capital = 2146
@@ -607,12 +653,13 @@ political_decisions = {
             OR = {
                 tag = USA
                 tag = FSA
+				tag = US2
             }
             owns = 223
             OR = {
                 tag = FSA
                 AND = {
-                    tag = USA
+                    OR = { tag = USA tag = US2 }
                     NOT = { owns = 2146 }
                 }
             }
@@ -635,6 +682,7 @@ political_decisions = {
             OR = {
                 tag = USA
                 tag = FSA
+				tag = US2
             }
             owns = 243
             OR = {
@@ -643,7 +691,7 @@ political_decisions = {
                     NOT = { owns = 223 }
                 }
                 AND = {
-                    tag = USA
+                    OR = { tag = USA tag = US2 }
                     NOT = { owns = 2146 }
                     NOT = { owns = 223 }
                 }
@@ -705,7 +753,7 @@ political_decisions = {
     recognize_puerto_rico = {
         picture = gtfo
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             PRI = {
                 exists = yes
                 is_vassal = no
@@ -724,7 +772,8 @@ political_decisions = {
         }
 
         effect = {
-            set_country_flag = recognized_puerto_rico
+            USA = { set_country_flag = recognized_puerto_rico }
+			US2 = { set_country_flag = recognized_puerto_rico }
             prestige = 5
             relation = { who = PRI value = 100 }
             diplomatic_influence = { who = PRI value = 100 }
@@ -732,15 +781,22 @@ political_decisions = {
                 limit = {
                     any_owned_province = {
                         is_core = PRI
-                        is_core = USA
+                        OR = {
+							is_core = USA
+							is_core = US2
+						}
                     }
                 }
                 any_owned = {
                     limit = {
                         is_core = PRI
-                        is_core = USA
+                        OR = {
+							is_core = USA
+							is_core = US2
+						}
                     }
                     remove_core = USA
+					remove_core = US2
                 }
             }
         }
@@ -749,7 +805,7 @@ political_decisions = {
     recognize_cuba = {
         picture = gtfo
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             CUB = {
                 exists = yes
                 is_vassal = no
@@ -776,15 +832,22 @@ political_decisions = {
                 limit = {
                     any_owned_province = {
                         is_core = CUB
-                        is_core = USA
+                        OR = {
+							is_core = USA
+							is_core = US2
+						}
                     }
                 }
                 any_owned = {
                     limit = {
                         is_core = CUB
-                        is_core = USA
+						OR = {
+							is_core = USA
+							is_core = US2
+						}
                     }
                     remove_core = USA
+					remove_core = US2
                 }
             }
         }
@@ -793,7 +856,7 @@ political_decisions = {
     recognize_phillipines = {
         picture = gtfo
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             revolution_n_counterrevolution = 1
             PHL = {
                 exists = yes
@@ -821,15 +884,22 @@ political_decisions = {
                 limit = {
                     any_owned_province = {
                         is_core = PHL
-                        is_core = USA
+                        OR = {
+							is_core = USA
+							is_core = US2
+						}
                     }
                 }
                 any_owned = {
                     limit = {
-                        is_core = PHL
-                        is_core = USA
+						is_core = PHL
+						OR = {
+							is_core = USA
+							is_core = US2
+						}
                     }
                     remove_core = USA
+					remove_core = US2
                 }
             }
         }
@@ -842,15 +912,16 @@ political_decisions = {
             has_global_flag = american_civil_war_has_happened
             exists = CSA
             CSA = {
-                NOT = { in_sphere = USA }
+                NOT = { OR = { in_sphere = USA in_sphere = US2 } }
             }
-            exists = USA
+            OR = { exists = USA exists = US2 }
             NOT = {
                 has_country_flag = recognize_the_csa
                 has_global_flag = alt_american_civil_war_has_happened
                 tag = CSA
                 tag = USA
                 tag = FSA
+				tag = US2
             }
         }
         allow = {
@@ -860,12 +931,26 @@ political_decisions = {
                     NOT = {
                         CSA = { national_provinces_occupied = 0.30 }
                     }
-                    NOT = {
-                         relation = {
-                            who = USA
-                            value = 50
-                        }
-                    }
+					OR = {
+						AND = {
+							USA = { exists = yes }
+							NOT = {
+								relation = {
+									who = USA
+									value = 50
+								}
+							}
+						}
+						AND = {
+							US2 = { exists = yes }
+							NOT = {
+								relation = {
+									who = US2
+									value = 50
+								}
+							}
+						}
+					}
                 }
                 AND = {
                     has_global_flag = declaration2
@@ -878,6 +963,7 @@ political_decisions = {
             set_country_flag = recognize_the_csa
             CSA = { prestige = 5 }
             USA = { prestige = -5 }
+			US2 = { prestige = -5 }
             relation = {
                 who = CSA
                 value = 100
@@ -890,6 +976,10 @@ political_decisions = {
                 who = USA
                 value = -100
             }
+            relation = {
+                who = US2
+                value = -100
+            }
         }
         ai_will_do = {
             factor = 1
@@ -899,7 +989,15 @@ political_decisions = {
             }
             modifier = {
                 factor = 0
+                alliance_with = US2
+            }
+            modifier = {
+                factor = 0
                 relation = { who = USA value = 100 }
+            }
+            modifier = {
+                factor = 0
+                relation = { who = US2 value = 100 }
             }
         }
     }
@@ -908,7 +1006,7 @@ political_decisions = {
         picture = reform_csa
         potential = {
             exists = CSA
-            tag = USA
+            OR = { tag = USA tag = US2 }
             has_global_flag = american_civil_war_has_happened
             NOT = {
                 has_global_flag = right_to_secede
@@ -932,9 +1030,13 @@ political_decisions = {
                 any_owned = {
                     limit = {
                         is_core = CSA
-                        is_core = USA
+                        OR = {
+							is_core = USA
+							is_core = US2
+						}
                     }
                     remove_core = USA
+					remove_core = US2
                 }
             }
             relation = {
@@ -983,6 +1085,7 @@ political_decisions = {
                 limit = {
                     is_greater_power = yes
                     NOT = { tag = USA }
+					NOT = { tag = US2 }
                 }
                 relation = {
                     who = THIS
@@ -990,6 +1093,7 @@ political_decisions = {
                 }
             }
             USA = { prestige = -30 remove_accepted_culture = dixie }
+            US2 = { prestige = -30 remove_accepted_culture = dixie }
         }
         ai_will_do = {
             factor = 1
@@ -1001,13 +1105,17 @@ political_decisions = {
         potential = {
             is_greater_power = yes
             exists = FSA
-            exists = USA
+            OR = {
+				exists = USA
+				exists = US2
+			}
             has_global_flag = alt_american_civil_war_has_happened
             NOT = {
                 has_country_flag = recognize_the_fsa
                 tag = CSA
                 tag = USA
                 tag = FSA
+				tag = US2
             }
         }
         allow = {
@@ -1023,6 +1131,12 @@ political_decisions = {
                             value = 50
                         }
                     }
+                    NOT = {
+                         relation = {
+                            who = US2
+                            value = 50
+                        }
+                    }
                 }
                 AND = {
                     has_global_flag = declaration3
@@ -1035,6 +1149,7 @@ political_decisions = {
             set_country_flag = recognize_the_fsa
             FSA = { prestige = 5 }
             USA = { prestige = -5 }
+            US2 = { prestige = -5 }
             relation = {
                 who = FSA
                 value = 100
@@ -1047,6 +1162,10 @@ political_decisions = {
                 who = USA
                 value = -100
             }
+            relation = {
+                who = US2
+                value = -100
+            }
         }
         ai_will_do = {
             factor = 1
@@ -1056,7 +1175,15 @@ political_decisions = {
             }
             modifier = {
                 factor = 0
+                alliance_with = US2
+            }
+            modifier = {
+                factor = 0
                 relation = { who = USA value = 100 }
+            }
+            modifier = {
+                factor = 0
+                relation = { who = US2 value = 100 }
             }
         }
     }
@@ -1065,7 +1192,7 @@ political_decisions = {
         picture = form_fsa
         potential = {
             exists = FSA
-            tag = USA
+            OR = { tag = USA tag = US2 }
             has_global_flag = alt_american_civil_war_has_happened
             NOT = {
                 has_global_flag = fsa_right_to_secede
@@ -1089,9 +1216,13 @@ political_decisions = {
                 any_owned = {
                     limit = {
                         is_core = FSA
-                        is_core = USA
+						OR = {
+							is_core = USA
+							is_core = US2
+						}
                     }
                     remove_core = USA
+					remove_core = US2
                 }
             }
             relation = {
@@ -1140,6 +1271,7 @@ political_decisions = {
                 limit = {
                     is_greater_power = yes
                     NOT = { tag = USA }
+					NOT = { tag = US2 }
                 }
                 relation = {
                     who = THIS
@@ -1147,6 +1279,7 @@ political_decisions = {
                 }
             }
             USA = { prestige = -30 }
+			US2 = { prestige = -30 }
         }
         ai_will_do = {
             factor = 1
