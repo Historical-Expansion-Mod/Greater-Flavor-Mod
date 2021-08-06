@@ -3,7 +3,7 @@ political_decisions = {
         picture = apply_for_USA_statehood
         potential = {
             has_global_flag = USA_claimoregon
-            tag = USA
+            OR = { tag = USA tag = US2 }
             FRA = {
                 NOT = {
                     OR = {
@@ -12,12 +12,20 @@ political_decisions = {
                         }
                 }
             }
-            USA = {
-                has_country_flag = oregon_treaty
-                NOT = {
-                    has_country_flag = USA_CAN_Expansion
-                }
-            }
+			OR = {
+				USA = {
+					has_country_flag = oregon_treaty
+					NOT = {
+						has_country_flag = USA_CAN_Expansion
+					}
+				}
+				USA = {
+					has_country_flag = oregon_treaty
+					NOT = {
+						has_country_flag = USA_CAN_Expansion
+					}
+				}
+			}
             NOT = { has_global_flag = treaty_of_new_york }
         }
         allow = {
@@ -27,6 +35,16 @@ political_decisions = {
                     OR = {
                         empty = yes
                         owned_by = USA
+						owned_by = US2
+                    }
+                }
+            }
+            US2 = {
+                all_core = {
+                    OR = {
+                        empty = yes
+                        owned_by = US2
+						owned_by = USA
                     }
                 }
             }
@@ -40,9 +58,11 @@ political_decisions = {
             NOT = { truce_with = ENG }
         }
         effect = {
-            set_country_flag = USA_CAN_Expansion
+            USA = { set_country_flag = USA_CAN_Expansion }
+			US2 = { set_country_flag = USA_CAN_Expansion }
             badboy = 20
-            add_accepted_culture = anglo_canadian
+            USA = { add_accepted_culture = anglo_canadian }
+			US2 = { add_accepted_culture = anglo_canadian }
             CAN = { all_core = { add_core = USA } }
             MRU = { all_core = { add_core = USA } }
             ENG_9 = { add_core = USA }
@@ -57,6 +77,7 @@ political_decisions = {
             ENG_68 = { add_core = USA }
             ENG_74 = { add_core = USA }
             77 = { remove_core = USA }
+			77 = { remove_core = US2 }
             ENG = {
                 country_event = {
                     id = 72749
@@ -75,9 +96,14 @@ political_decisions = {
         picture = canadian_dominion
         potential = {
             tag = ENG
-            USA = {
-                has_country_flag = USA_CAN_Expansion
-            }
+			OR = {
+				USA = {
+					has_country_flag = USA_CAN_Expansion
+				}
+				US2 = {
+					has_country_flag = USA_CAN_Expansion
+				}
+			}
             NOT = {
                     has_global_flag = USA_CAN_denied
                     has_global_flag = USA_CAN_achieved
@@ -85,9 +111,13 @@ political_decisions = {
         }
         allow = {
             has_recently_lost_war = no
-            truce_with = USA
+            OR = { truce_with = USA truce_with = US2 }
             is_greater_power = yes
             USA = {
+                NOT = { war_with = ENG }
+                is_disarmed = yes
+            }
+            US2 = {
                 NOT = { war_with = ENG }
                 is_disarmed = yes
             }
@@ -132,6 +162,20 @@ political_decisions = {
                     remove_core = USA
                 }
             }
+            US2 = {
+                any_owned = {
+                    limit = {
+                        OR = {
+                            is_core = NEN
+                            is_core = ENG
+                            is_core = CAN
+                            is_core = COL
+                        }
+                    }
+                    secede_province = ENG
+                    remove_core = US2
+                }
+            }
             USA = {
                 any_owned = {
                     limit = {
@@ -142,14 +186,42 @@ political_decisions = {
                     add_core = NEN
                 }
             }
+            US2 = {
+                any_owned = {
+                    limit = {
+                        region = USA_232
+                    }
+                    secede_province = ENG
+                    remove_core = US2
+                    add_core = NEN
+                }
+            }
             69 = { remove_core = NEN }
             250 = { remove_core = MRU }
             ENG = { all_core = { remove_core = USA } }
-            USA = {
-                country_event = {
-                    id = 72748
-                }
-            }
+			ENG = { all_core = { remove_core = US2 } }
+			any_country = {
+				limit = {
+						tag = USA
+						exists = yes
+				}
+				USA = {
+					country_event = {
+						id = 72748
+					}
+				}
+			}
+			any_country = {
+				limit = {
+						tag = US2
+						exists = yes
+				}
+				US2 = {
+					country_event = {
+						id = 72748
+					}
+				}
+			}
         }
         ai_will_do = {
             factor = 1
@@ -158,10 +230,15 @@ political_decisions = {
     USA_CAN_achieved = {
         picture = apply_for_USA_statehood
         potential = {
-            tag = USA
-            USA = {
-                has_country_flag = USA_CAN_Expansion
-            }
+            OR = { tag = USA tag = US2 }
+			OR = {
+				USA = {
+					has_country_flag = USA_CAN_Expansion
+				}
+				US2 = {
+					has_country_flag = USA_CAN_Expansion
+				}
+			}
             NOT = {
                     OR = {
                         has_global_flag = USA_CAN_denied
@@ -174,7 +251,7 @@ political_decisions = {
                 truce_with = ENG
                 is_greater_power = yes
                 ENG = {
-                    truce_with = USA
+                    OR = { truce_with = USA truce_with = US2 }
                     is_disarmed = yes
                 }
         }
@@ -195,10 +272,13 @@ political_decisions = {
                 limit = {
                     in_sphere = ENG
                     war = no
-                    any_owned_province = { is_core = USA }
+					OR = {
+						any_owned_province = { is_core = USA }
+						any_owned_province = { is_core = US2 }
+					}
                 }
                 any_owned = {
-                    limit = { is_core = USA }
+                    limit = { OR = { is_core = USA is_core = US2 } }
                     secede_province = USA
                 }
             }
@@ -206,10 +286,10 @@ political_decisions = {
                 limit = {
                     vassal_of = ENG
                     war = no
-                    any_owned_province = { is_core = USA }
+                    any_owned_province = { OR = { is_core = USA is_core = US2 } }
                 }
                 any_owned = {
-                    limit = { is_core = USA }
+                    limit = { OR = { is_core = USA is_core = US2 } }
                     secede_province = USA
                 }
             }
@@ -229,6 +309,7 @@ political_decisions = {
                 }
             }
             USA = { all_core = { remove_core = ENG } }
+			US2 = { all_core = { remove_core = ENG } }
             ENG = {
                 any_owned = {
                     limit = {
@@ -261,17 +342,35 @@ political_decisions = {
                     has_global_flag = FRA_USA_QUE
                 }
             }
-            USA = {
-                owns = 58
-                owns = 65
-            }
+            OR = {
+				USA = {
+					owns = 58
+					owns = 65
+				}
+				US2 = {
+					owns = 58
+					owns = 65
+				}
+			}
         }
         allow = {
             war = no
-            relation = {
-                who = USA
-                value = 100
-            }
+			OR = {
+				AND = {
+					relation = {
+						who = USA
+						value = 100
+					}
+					USA = exists
+				}
+				AND = {
+					relation = {
+						who = US2
+						value = 100
+					}
+					US2 = exists
+				}
+			}
             money = 200000
             USA = { war = no }
         }
@@ -291,7 +390,7 @@ political_decisions = {
     USA_french = {
         #picture = quebec_question
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             owns = 58
             owns = 65
             NOT = {
@@ -320,7 +419,7 @@ political_decisions = {
         picture = canadian_dominion
         potential = {
             owns = 57
-            tag = USA
+            OR = { tag = USA tag = US2 }
             NOT = { accepted_culture = anglo_canadian }
         }
         allow = {
@@ -328,7 +427,8 @@ political_decisions = {
             revolution_n_counterrevolution = 1
         }
         effect = {
-            add_accepted_culture = anglo_canadian
+            USA = { add_accepted_culture = anglo_canadian }
+			US2 = { add_accepted_culture = anglo_canadian }
             CAN_46 = { add_core = USA }
         }
     }
@@ -337,7 +437,7 @@ political_decisions = {
     shield_NW = {
         picture = switch_to_liberty
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             OR = {
 				government = democracy
 				has_country_flag = Government_Democracy
@@ -358,6 +458,16 @@ political_decisions = {
                 all_core = {
                     OR = {
                         owned_by = USA
+						owned_by = US2
+                        empty = yes
+                    }
+                }
+            }
+            US2 = {
+                all_core = {
+                    OR = {
+                        owned_by = USA
+						owned_by = US2
                         empty = yes
                     }
                 }
@@ -365,7 +475,8 @@ political_decisions = {
             revolution_n_counterrevolution = 1
         }
         effect = {
-            set_country_flag = shield_NW
+            USA = { set_country_flag = shield_NW }
+			US2 = { set_country_flag = shield_NW }
             prestige = 5
             badboy = 10
             any_country = {
@@ -398,7 +509,7 @@ political_decisions = {
     NW_hegemony = {
         picture = form_union_nation
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             OR = {
 				government = democracy
 				has_country_flag = Government_Democracy
@@ -417,6 +528,16 @@ political_decisions = {
                 all_core = {
                     OR = {
                         owned_by = USA
+						owned_by = US2
+                        empty = yes
+                    }
+                }
+            }
+            US2 = {
+                all_core = {
+                    OR = {
+                        owned_by = USA
+						owned_by = US2
                         empty = yes
                     }
                 }
@@ -840,7 +961,7 @@ political_decisions = {
     outside_form_FRCA = {
         picture = map_central_america
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             has_country_flag = NW_hegemony
             NOT = { has_global_flag = FRCA_outside }
             is_greater_power = yes
@@ -983,6 +1104,8 @@ political_decisions = {
                     OR = {
                         in_sphere = USA
                         vassal_of = USA
+                        in_sphere = US2
+                        vassal_of = US2
                     }
                     any_owned_province = { is_core = UCA }
                     war = no
@@ -1098,7 +1221,7 @@ political_decisions = {
     mexican_monarch = {
         picture = restore_mexican_empire
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             has_country_flag = NW_hegemony
             NOT = { has_global_flag = mexican_monarch }
             MEX = {
@@ -1131,7 +1254,7 @@ political_decisions = {
 
     YUC_MMwar = {
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             NOT = { exists = YUC }
             war_with = MEX
             MEX_2183 = { owned_by = MEX }
@@ -1143,18 +1266,19 @@ political_decisions = {
             ammunition = 1000
             YUC = {
                 all_core = {
-                    controlled_by = USA
+                    OR = { controlled_by = USA controlled_by = US2 }
                 }
             }
-            2181 = { controlled_by = USA }
-            2165 = { controlled_by = USA }
-        }
+            OR = { 2181 = { controlled_by = USA } 2181 = { controlled_by = US2 } }
+            OR = { 2165 = { controlled_by = USA } 2165 = { controlled_by = US2 } }
+        } 
         effect = {
             money = -50000
             small_arms = -1000
             ammunition = -1000
             badboy = 5
-            set_country_flag = YUC_MMwar
+            USA = { set_country_flag = YUC_MMwar }
+			US2 = { set_country_flag = YUC_MMwar }
             2181 = { add_core = YUC }
             2165 = { add_core = YUC }
             MEX = {
@@ -1199,7 +1323,7 @@ political_decisions = {
             exists = YUC
             MEX = {
                 war_with = YUC
-                war_with = USA
+                OR = { war_with = USA war_with = US2 }
                 owns = 2182
 				owns = 3402
             }
@@ -1239,7 +1363,7 @@ political_decisions = {
     form_CRB_USA = {
         picture = claim_the_caribbean
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             has_country_flag = NW_hegemony
             NOT = { exists = CRB }
             NOT = { has_country_flag = form_CRB_USA }
@@ -1314,13 +1438,15 @@ political_decisions = {
             }
         }
         effect = {
-            set_country_flag = form_CRB_USA
+            USA = { set_country_flag = form_CRB_USA }
+			US2 = { set_country_flag = form_CRB_USA }
             SPA_2209 = { add_core = CRB }
             HAI_2213 = { add_core = CRB }
             ENG_203 = { add_core = CRB }
             ENG_2224 = { add_core = CRB }
             ENG_2228 = { add_core = CRB }
             CRB = { all_core = { remove_core = USA } }
+			CRB = { all_core = { remove_core = US2 } }
             any_country = {
                 limit = {
                     OR = {
@@ -1369,7 +1495,7 @@ political_decisions = {
 
     LSK_form = {
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             LSK = {
                 all_core = {
                     OR = {
@@ -1394,7 +1520,7 @@ political_decisions = {
     andean_congress = {
         picture = peru_bolivia
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             has_country_flag = NW_hegemony
             NOT = { has_country_flag = andean_congress }
             NOT = { exists = GCO }
@@ -1487,7 +1613,8 @@ political_decisions = {
             }
         }
         effect = {
-            set_country_flag = andean_congress
+            USA = { set_country_flag = andean_congress }
+			US2 = { set_country_flag = andean_congress }
             CLM = { all_core = { add_core = GCO } }
             ECU = { all_core = { add_core = GCO } }
             VNZ = { all_core = { add_core = GCO } }
@@ -1555,7 +1682,7 @@ political_decisions = {
     CHL_andean = {
         picture = chile_bolivia_peru_borders
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             OR = {
 				government = democracy
 				has_country_flag = Government_Democracy
@@ -1586,7 +1713,8 @@ political_decisions = {
             }
         }
         effect = {
-            set_country_flag = CHL_andean
+            USA = { set_country_flag = CHL_andean }
+			US2 = { set_country_flag = CHL_andean }
             badboy = 3
             CHL = {
                 country_event = 1225875
@@ -1599,7 +1727,7 @@ political_decisions = {
     CHL_andean_force = {
         picture = chile_bolivia_peru_borders
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             exists = PBC
             NOT = { has_country_flag = CHL_andean_force }
             PBC = {
@@ -1614,7 +1742,8 @@ political_decisions = {
             war = no
         }
         effect = {
-            set_country_flag = CHL_andean_force
+            USA = { set_country_flag = CHL_andean_force }
+			US2 = { set_country_flag = CHL_andean_force }
             CHL = {
                 annex_to = PBC
             }
@@ -1623,7 +1752,7 @@ political_decisions = {
     panama_compromise = {
         picture = colombia_map
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             has_country_flag = NW_hegemony
             NOT = { has_country_flag = panama_compromise }
             UCA = { vassal_of = THIS }
@@ -1639,7 +1768,8 @@ political_decisions = {
             war = no
         }
         effect = {
-            set_country_flag = panama_compromise
+            USA = { set_country_flag = panama_compromise }
+			US2 = { set_country_flag = panama_compromise }
             country_event = 3552310
         }
         ai_will_do = {
@@ -1649,7 +1779,7 @@ political_decisions = {
 
     BRZ_USA = {
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             OR = {
 				government = democracy
 				has_country_flag = Government_Democracy
@@ -1681,7 +1811,8 @@ political_decisions = {
             }
         }
         effect = {
-            set_country_flag = BRZ_USA
+            USA = { set_country_flag = BRZ_USA }
+			US2 = { set_country_flag = BRZ_USA }
             country_event = 8133696
         }
         ai_will_do = {
@@ -1691,7 +1822,7 @@ political_decisions = {
 
     LPL_USA = {
         potential = {
-            tag = USA
+            OR = { tag = USA tag = US2 }
             has_country_flag = NW_hegemony
             NOT = { has_country_flag = LPL_USA }
             NOT = { exists = LPL }
@@ -1788,7 +1919,8 @@ political_decisions = {
                 who = LPL
                 value = 200
             }
-            set_country_flag = LPL_USA
+            USA = { set_country_flag = LPL_USA }
+			US2 = { set_country_flag = LPL_USA }
             LPL = { set_country_flag = hegpuppet }
         }
         ai_will_do = {
