@@ -312,6 +312,7 @@ country_event = {
         NOT = { has_country_modifier = underground_railroad_NAF }
         OR = {
             USA = { slavery = yes_slavery }
+			US2 = { slavery = yes_slavery }
             CSA = { slavery = yes_slavery }
         }
     }
@@ -326,6 +327,7 @@ country_event = {
             limit = {
                 OR = {
                     tag = USA
+					tag = US2
                     tag = CSA
                 }
                 slavery = yes_slavery
@@ -355,8 +357,14 @@ country_event = {
         has_country_modifier = underground_railroad_NAF
         USA = {
             OR = {
-                slavery = no_slavery
-                exists = no
+                AND = { slavery = no_slavery NOT = { exists = US2} exists = yes }
+                AND = { exists = no NOT = { exists = US2} }
+            }
+        }
+        US2 = {
+            OR = {
+                AND = { slavery = no_slavery NOT = { exists = USA} exists = yes }
+                AND = { exists = no NOT = { exists = USA} }
             }
         }
         CSA = {
@@ -501,10 +509,16 @@ country_event = {
         tag = NAF
         year = 1840
         NOT = { year = 1850 }
-        USA = {
-            slavery = yes_slavery
-            exists = yes
-        }
+		OR = {
+			USA = {
+				slavery = yes_slavery
+				exists = yes
+			}
+			US2 = {
+				slavery = yes_slavery
+				exists = yes
+			}
+		}
     }
 
     mean_time_to_happen = {
@@ -516,6 +530,17 @@ country_event = {
         prestige = 4
         clipper_convoy = 1
         USA = {
+            casus_belli = {
+                target = NAF
+                type = humiliate
+                months = 12
+            }
+            relation = {
+                who = THIS
+                value = -100
+            }
+        }
+        US2 = {
             casus_belli = {
                 target = NAF
                 type = humiliate
@@ -700,12 +725,19 @@ country_event = {
         year = 1890
         NOT = { year = 1910}
         is_greater_power = no
-        USA = {
-            exists = yes
-            is_greater_power = yes
-        }
+		OR = {
+			USA = {
+				exists = yes
+				is_greater_power = yes
+			}
+			US2 = {
+				exists = yes
+				is_greater_power = yes
+			}
+		}
         NOT = {
             war_with = USA
+			war_with = US2
         }
     }
 
@@ -719,7 +751,17 @@ country_event = {
             who = USA
             value = 100
         }
+        relation = {
+            who = US2
+            value = 100
+        }
         USA = {
+            diplomatic_influence = {
+                who = THIS
+                value = 200
+            }
+        }
+        US2 = {
             diplomatic_influence = {
                 who = THIS
                 value = 200
@@ -852,7 +894,10 @@ country_event = { ##### slavery ended
 
     trigger = {
         tag = FSA
-        USA = { slavery = no_slavery }
+        OR ={
+			USA = { AND = { slavery = no_slavery exists = yes } }
+			US2 = { AND = { slavery = no_slavery exists = yes } }
+		}
         has_country_flag = FSA_NAF_revolt_at_USA
         NOT = { has_global_flag = FSA_NAF_revolt_fire }
         NOT = { has_global_flag = FSA_NAF_revolt_fail }
@@ -883,6 +928,12 @@ country_event = { ##### slavery revolt failed
             AND = {
                 tag = USA
                 FSA = { has_country_flag = FSA_NAF_revolt_at_USA }
+				US2 = { exists = no }
+            }
+            AND = {
+                tag = US2
+                FSA = { has_country_flag = FSA_NAF_revolt_at_USA }
+				USA = { exists = no }
             }
             AND = {
                 tag = CSA
@@ -974,6 +1025,12 @@ country_event = { ##### minor slave revolt
             AND = {
                 tag = USA
                 FSA = { has_country_flag = FSA_NAF_revolt_at_USA }
+				USA = { exists = no }
+            }
+            AND = {
+                tag = US2
+                FSA = { has_country_flag = FSA_NAF_revolt_at_USA }
+				USA = { exists = no }
             }
             AND = {
                 tag = CSA
@@ -1095,6 +1152,12 @@ country_event = { ##### large slave
             AND = {
                 tag = USA
                 FSA = { has_country_flag = FSA_NAF_revolt_at_USA }
+				USA = { exists = no }
+            }
+            AND = {
+                tag = US2
+                FSA = { has_country_flag = FSA_NAF_revolt_at_USA }
+				USA = { exists = no }
             }
             AND = {
                 tag = CSA
