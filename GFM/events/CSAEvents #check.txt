@@ -492,7 +492,7 @@ country_event = {
     picture = "new_orleans"
 
     trigger = {
-        tag = USA
+        OR = { tag = USA tag = US2 }
         year = 1840
         NOT = {
             year = 1860
@@ -721,7 +721,7 @@ country_event = {
     fire_only_once = yes
 
     trigger = {
-        tag = USA
+        OR = { tag = USA tag = US2 }
         year = 1876
         NOT = {
             year = 1877
@@ -870,7 +870,7 @@ country_event = {
     fire_only_once = yes
 
     trigger = {
-        tag = USA
+        OR = { tag = USA tag = US2 }
         owns = 232
         war_with = CSA
         war_exhaustion = 5
@@ -932,7 +932,7 @@ country_event = {
 
     trigger = {
         year = 1836
-        tag = USA
+        OR = { tag = USA tag = US2 }
     }
 
     mean_time_to_happen = {
@@ -1684,7 +1684,7 @@ country_event = {
     picture = "draft_riots"
 
     trigger = {
-        tag = USA
+        OR = { tag = USA tag = US2 }
         owns = 233
         owns = 232
         OR = {
@@ -1745,7 +1745,7 @@ country_event = {
     picture = "new_york"
 
     trigger = {
-        tag = USA
+        OR = { tag = USA tag = US2 }
         NOT = {
             has_global_flag = ny_has_seceded
         }
@@ -1882,7 +1882,7 @@ country_event = {
 
     trigger = {
         tag = UNY
-        war_with = USA
+        OR = { war_with = USA war_with = US2 }
     }
 
     mean_time_to_happen = {
@@ -1900,17 +1900,38 @@ country_event = {
     }
     option = {
         name = "Anyone who will aid our just cause!"
-        USA = {
-            any_neighbor_country = {
-                limit = {
-                    NOT = {
-                        tag = UNY
-                        alliance_with = USA
-                    }
-                }
-                country_event = 187903
-            }
-        }
+		random_owned = {
+			limit = { owner = { USA = { exists = yes } } }
+			owner = {
+				USA = {
+					any_neighbor_country = {
+						limit = {
+							NOT = {
+								tag = UNY
+								alliance_with = USA
+							}
+						}
+						country_event = 187903
+					}
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { US2 = { exists = yes } } }
+			owner = {
+				US2 = {
+					any_neighbor_country = {
+						limit = {
+							NOT = {
+								tag = UNY
+								alliance_with = US2
+							}
+						}
+						country_event = 187903
+					}
+				}
+			}
+		}
         prestige = -10
         ai_chance = {
             factor = 80
@@ -1937,10 +1958,22 @@ country_event = {
             factor = 65
             modifier = {
                 factor = 0
-                relation = {
-                    who = USA
-                    value = 0
-                }
+				OR = {
+				AND = {
+					relation = {
+						who = USA
+						value = 0
+					}
+					exists = USA
+				}
+				AND = {
+					relation = {
+						who = US2
+						value = 0
+					}
+					exists = US2
+				}
+				}
             }
         }
     }
@@ -1961,15 +1994,34 @@ country_event = {
         UNY = {
             country_event = 187904
         }
-        war = {
-            target = USA
-            attacker_goal = {
-                casus_belli = cut_down_to_size
-            }
-            defender_goal = {
-                casus_belli = humiliate
-            }
-        }
+		random_owned = {
+			limit = { owner = { USA = { exists = yes } } }
+			owner = {
+				war = {
+					target = USA
+					attacker_goal = {
+						casus_belli = cut_down_to_size
+					}
+					defender_goal = {
+						casus_belli = humiliate
+					}
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { US2 = { exists = yes } } }
+			owner = {
+				war = {
+					target = US2
+					attacker_goal = {
+						casus_belli = cut_down_to_size
+					}
+					defender_goal = {
+						casus_belli = humiliate
+					}
+				}
+			}
+		}
         ai_chance = {
             factor = 35
         }
@@ -2032,7 +2084,7 @@ country_event = {
         UNY = {
             exists = no
         }
-        tag = USA
+        OR = { tag = USA tag = US2 }
         any_owned_province = {
             is_core = UNY
         }
@@ -2052,12 +2104,12 @@ country_event = {
             consciousness = -2
         }
         any_owned = {
-            limit = {
-                is_core = UNY
-            }
-            remove_core = UNY
-            add_core = USA
-        }
+			limit = {
+				is_core = UNY
+			}
+			remove_core = UNY
+			add_core = THIS
+		}
     }
 }
 
@@ -2772,6 +2824,7 @@ country_event = {
         NOT = { has_country_flag = national_parks_flag }
         OR = {
             tag = USA
+			tag = US2
             tag = CSA
             tag = FSA
             tag = TEX
@@ -3377,7 +3430,18 @@ country_event = {
     option = {
         name = "Sell Colorado to the United States."
         badboy = -1
-        USA = { country_event = 44374 }
+		random_owned = {
+			limit = { owner = { USA = { exists = yes } } }
+			owner = {
+				USA = { country_event = 44374 }
+			}
+		}
+		random_owned = {
+			limit = { owner = { US2 = { exists = yes } } }
+			owner = {
+				US2 = { country_event = 44374 }
+			}
+		}
         ai_chance = {
             factor = 95
         }
@@ -3388,6 +3452,7 @@ country_event = {
         set_country_flag = texas_border_treaty
         badboy = 2
         relation = { who = USA value = -100 }
+		relation = { who = US2 value = -100 }
         ai_chance = {
             factor = 5
         }
@@ -3408,11 +3473,26 @@ country_event = {
         prestige = 5
         badboy = -1
         treasury = -25000
-        USA_106 = {
-            secede_province = USA
-            add_core = USA
-            remove_core = TEX
-        }
+		random_owned = {
+			limit = { owner = { USA = { exists = yes } } }
+			owner = {
+				USA_106 = {
+					secede_province = USA
+					add_core = USA
+					remove_core = TEX
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { US2 = { exists = yes } } }
+			owner = {
+				USA_106 = {
+					secede_province = US2
+					add_core = US2
+					remove_core = TEX
+				}
+			}
+		}
         relation = { who = TEX value = 100 }
         TEX = { country_event = 44375 }
         ai_chance = {
@@ -3445,6 +3525,7 @@ country_event = {
         prestige = 5
         treasury = 25000
         relation = { who = USA value = 100 }
+		relation = { who = US2 value = 100 }
     }
 }
 
@@ -3459,6 +3540,7 @@ country_event = {
     option = {
         name = "Damn."
         relation = { who = USA value = -100 }
+		relation = { who = US2 value = -100 }
     }
 }
 
@@ -3478,12 +3560,18 @@ country_event = {
             has_global_flag = trent_affair_resolved
             has_global_flag = trent_affair_begun
             alliance_with = USA
+			alliance_with = US2
         }
         is_greater_power = yes
         tag = ENG
-        USA = {
-            war_with = CSA
-        }
+		OR = {
+			USA = {
+				war_with = CSA
+			}
+			US2 = {
+				war_with = CSA
+			}
+		}
         relation = {
             who = CSA
             value = 0
@@ -3497,12 +3585,27 @@ country_event = {
     option = {
         name = "The United States must answer for this!"
         set_global_flag = trent_affair_begun
-        USA = { country_event = 187942 }
+		random_owned = {
+			limit = { owner = { USA = { exists = yes } } }
+			owner = {
+				USA = { country_event = 187942 }
+				relation = {
+					who = USA
+					value = -25
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { US2 = { exists = yes } } }
+			owner = {
+				US2 = { country_event = 187942 }
+				relation = {
+					who = US2
+					value = -25
+				}
+			}
+		}
         CSA = { country_event = 187941 }
-        relation = {
-            who = USA
-            value = -25
-        }
         ai_chance = {
             factor = 90
         }
@@ -3653,6 +3756,10 @@ country_event = {
             who = USA
             value = 25
         }
+        relation = {
+            who = US2
+            value = 25
+        }
         CSA = {
             country_event = 187945
         }
@@ -3671,19 +3778,42 @@ country_event = {
     option = {
         name = "They will regret this."
         set_global_flag = trent_affair_resolved
-        relation = {
-            who = USA
-            value = -175
-        }
-        war = {
-            target = USA
-            attacker_goal = {
-                casus_belli = cut_down_to_size
-            }
-            defender_goal = {
-                casus_belli = humiliate
-            }
-        }
+		random_owned = {
+			limit = { owner = { USA = { exists = yes } } }
+			owner = {
+				relation = {
+					who = USA
+					value = -175
+				}
+				war = {
+					target = USA
+					attacker_goal = {
+						casus_belli = cut_down_to_size_no_infamy
+					}
+					defender_goal = {
+						casus_belli = humiliate
+					}
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { US2 = { exists = yes } } }
+			owner = {
+				relation = {
+					who = US2
+					value = -175
+				}
+				war = {
+					target = US2
+					attacker_goal = {
+						casus_belli = cut_down_to_size_no_infamy
+					}
+					defender_goal = {
+						casus_belli = humiliate
+					}
+				}
+			}
+		}
         diplomatic_influence = {
             who = CSA
             value = 100
@@ -3733,6 +3863,7 @@ province_event = {
             }
             OR = {
                 owned_by = USA
+				owned_by = US2
                 owned_by = CSA
                 owned_by = MEX
             }
