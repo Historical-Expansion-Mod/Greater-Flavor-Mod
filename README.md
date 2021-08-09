@@ -4,7 +4,7 @@ This mod is HFM, but further expanded upon, adding bountiful flavour, provinces,
 
 NOTE: If you have problems with downloads from github, use this mirror link. It is updated as often as possible (updated 8/2/21):
 
-https://www.dropbox.com/s/yj10e05idx1ak13/GFM%208.2.21.zip?dl=0
+https://www.dropbox.com/s/qzd5s8zyvne77xn/GFM%208.9.21.zip?dl=0
 
 ## Installation Instructions
 
