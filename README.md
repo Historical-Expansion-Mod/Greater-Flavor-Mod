@@ -50,6 +50,10 @@ This expanded version of GFM owes its existence to: (add your name here if you h
 
 As well as the original developer of HFM, the one and only: SighPie
 
+Additional asset credits:
+
+* Dukeçza Victor
+
 ## Discord
 
 The [Victoria 2 Modding Discord server](https://discord.gg/qz73ZEH) is the home for this mod (and many other mods). Please visit if you would like to discuss GFM, suggest improvements, or bring bugs to the attention of the developers.
