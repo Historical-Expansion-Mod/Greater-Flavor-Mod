@@ -5,6 +5,7 @@ This mod is HFM, but further expanded upon, adding bountiful flavour, provinces,
 NOTE: If you have problems with downloads from github, use this mirror link. It is updated as often as possible (updated 8/13/21):
 
 https://www.dropbox.com/s/woxy1kenjjedo7p/GFM%208.13.21.zip?dl=0
+Attention! The music submod has moved repositories: https://github.com/Elijah-maker/GFM-Music-Submod
 ## Installation Instructions
 
 1. To get the latest version, click the green button that says "Code" and click "Download ZIP", or click [here](https://github.com/JmanThunder/HFM-Expanded/archive/refs/heads/master.zip)
