@@ -17,7 +17,8 @@ Attention! The music submod has moved repositories: https://github.com/Elijah-ma
 5. Start the game, select the mods you want:
   * GFM is standalone - you do not need the original HFM to play.
   * GFM SW Submod is the Shattered World submod.
-  * GFM Dynamic Nations Submod adds more flag/naming/colour options for each nation and adds some new mechanics involving this (Eg. Dynamic Dominions). Note: The Large Address Adware Patch is HIGHLY recommended.
+  * GFM Dynamic Nations Submod adds more flag/naming/colour options for each nation and adds mechanics for this (Eg. Dynamic Dominions). 
+       Note: The Large Address Adware Patch is HIGHLY recommended.
   * GFM RGO Submod adds experimental new RGOs
   * Music Sub Mod adds more music to the game
 7. Enjoy.
