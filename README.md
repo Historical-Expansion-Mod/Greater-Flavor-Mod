@@ -2,9 +2,10 @@
 
 This mod is HFM, but further expanded upon, adding bountiful flavour, provinces, historical accuracy changes, etc
 
-NOTE: If you have problems with downloads from github, use this mirror link. It is updated as often as possible (updated 8/13/21):
+NOTE: If you have problems with downloads from github, use this mirror link. It is updated as often as possible (updated 8/22/21):
 
-https://www.dropbox.com/s/woxy1kenjjedo7p/GFM%208.13.21.zip?dl=0
+https://www.dropbox.com/s/6i7fspcskzk4743/GFM%208.22.21.zip?dl=0
+
 Attention! The music submod has moved repositories: https://github.com/Elijah-maker/GFM-Music-Submod
 ## Installation Instructions
 
