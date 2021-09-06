@@ -7,6 +7,8 @@ NOTE: If you have problems with downloads from github, use this mirror link. It 
 https://www.dropbox.com/s/6i7fspcskzk4743/GFM%208.22.21.zip?dl=0
 
 Attention! The music submod has moved repositories: https://github.com/Elijah-maker/GFM-Music-Submod
+PS: The abandoned RGO submod has also been moved: https://drive.google.com/file/d/1iDgmCTRm0dJFqJvqQbv9cRdXt1b0NDYZ/view?usp=sharing
+
 ## Installation Instructions
 
 1. To get the latest version, click the green button that says "Code" and click "Download ZIP", or click [here](https://github.com/JmanThunder/HFM-Expanded/archive/refs/heads/master.zip)
