@@ -2,9 +2,9 @@
 
 This mod is HFM, but further expanded upon, adding bountiful flavour, provinces, historical accuracy changes, etc
 
-NOTE: If you have problems with downloads from github, use this mirror link. It is updated as often as possible (updated 8/22/21):
+NOTE: If you have problems with downloads from github, use this mirror link. It is updated as often as possible (updated 9/8/21):
 
-https://www.dropbox.com/s/6i7fspcskzk4743/GFM%208.22.21.zip?dl=0
+https://www.dropbox.com/s/bcbkt9oatptlfgh/GFM%209.8.21.zip?dl=0
 
 Attention! The music submod has moved repositories: https://github.com/Elijah-maker/GFM-Music-Submod
 PS: The abandoned RGO submod has also been moved: https://drive.google.com/file/d/1iDgmCTRm0dJFqJvqQbv9cRdXt1b0NDYZ/view?usp=sharing
@@ -50,13 +50,12 @@ This expanded version of GFM owes its existence to: (add your name here if you h
 * Erling Kristiansen
 * GLitchesHaxBadAudio
 * Sarif#2056
+* Dukeçza Victor
+* Batislav
+* the based department
 
 
 As well as the original developer of HFM, the one and only: SighPie
-
-Additional asset credits:
-
-* Dukeçza Victor
 
 ## Discord
 
