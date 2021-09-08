@@ -50,13 +50,12 @@ This expanded version of GFM owes its existence to: (add your name here if you h
 * Erling Kristiansen
 * GLitchesHaxBadAudio
 * Sarif#2056
+* Dukeçza Victor
+* Batislav
+* the based department
 
 
 As well as the original developer of HFM, the one and only: SighPie
-
-Additional asset credits:
-
-* Dukeçza Victor
 
 ## Discord
 
