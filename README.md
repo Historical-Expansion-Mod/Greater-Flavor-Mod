@@ -6,7 +6,11 @@ NOTE: If you have problems with downloads from github, use this mirror link. It 
 
 https://www.dropbox.com/s/bcbkt9oatptlfgh/GFM%209.8.21.zip?dl=0
 
+News! Absolute gigachad Jay de Brabant has made a submod for GFM adding anime girl flags (the repo also includes regular HFM flags). 
+https://github.com/LePetitJayJay/Victoria-2-Anime-Flags-Mod
+
 Attention! The music submod has moved repositories: https://github.com/Elijah-maker/GFM-Music-Submod
+
 PS: The abandoned RGO submod has also been moved: https://drive.google.com/file/d/1iDgmCTRm0dJFqJvqQbv9cRdXt1b0NDYZ/view?usp=sharing
 
 ## Installation Instructions
