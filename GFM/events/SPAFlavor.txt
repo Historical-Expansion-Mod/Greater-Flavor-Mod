@@ -3690,37 +3690,33 @@ country_event = {
         SPA = {
             OR = {
                 exists = no
-                AND = {
-                    war = no
-                    is_greater_power = yes
-                    OR = {
-                        government = hms_government
-                        government = prussian_constitutionalism
-                        government = absolute_monarchy
-                        government = absolute_empire
-                        government = semi_constitutional_empire
-                        government = constitutional_empire
-                    }
+				OR = {
+					government = hms_government
+					government = prussian_constitutionalism
+					government = absolute_monarchy
+					government = absolute_empire
+					government = semi_constitutional_empire
+					government = constitutional_empire
                 }
             }
         }
         SPC = {
             OR = {
                 exists = no
-                AND = {
-                    war = no
-                    is_greater_power = yes
-                    OR = {
-                        government = hms_government
-                        government = prussian_constitutionalism
-                        government = absolute_monarchy
-                        government = absolute_empire
-                        government = semi_constitutional_empire
-                        government = constitutional_empire
-                    }
+                OR = {
+					government = hms_government
+					government = prussian_constitutionalism
+					government = absolute_monarchy
+                    government = absolute_empire
+					government = semi_constitutional_empire
+					government = constitutional_empire
                 }
             }
         }
+		OR = {
+			exists = SPC
+			exists = SPA
+		}
     }
 
     mean_time_to_happen = {
@@ -3748,7 +3744,7 @@ country_event = {
             militancy = 6
         }
         ai_chance = {
-            factor = 5
+            factor = 0
         }
     }
 
@@ -3773,7 +3769,7 @@ country_event = {
             }
         }
         ai_chance = {
-            factor = 95
+            factor = 1
         }
     }
 }
@@ -3802,10 +3798,14 @@ country_event = {
             }
         }
         ai_chance = {
-            factor = 0.95
+            factor = 1
             modifier = {
-                factor = 0.1
+                factor = 0
                 tag = SPC
+            }
+			modifier = {
+                factor = 1
+                tag = SPA
             }
         }
     }
@@ -3828,14 +3828,17 @@ country_event = {
             relation = { who = FROM value = -100 }
             relation = { who = THIS value = 50 }
         }
-        war = {
-            target = FROM
-            attacker_goal = {
-                casus_belli = make_puppet
-            }
-        }
+        FROM = { country_event = 112333 }
         ai_chance = {
-            factor = 0.05
+            factor = 1
+            modifier = {
+                factor = 1
+                tag = SPC
+            }
+			modifier = {
+                factor = 0
+                tag = SPA
+            }
         }
     }
 }
@@ -3865,10 +3868,14 @@ country_event = {
             }
         }
         ai_chance = {
-            factor = 40
+            factor = 1
             modifier = {
-                factor = 0.1
+                factor = 0
                 tag = SPC
+            }
+			modifier = {
+                factor = 0
+                tag = SPA
             }
         }
     }
@@ -3899,12 +3906,133 @@ country_event = {
             relation = { who = FROM value = -100 }
             relation = { who = THIS value = 50 }
         }
-        casus_belli = {
-            target = FROM
-            type = make_puppet
-            months = 30
+		FROM = { country_event = 112333 }
+        ai_chance = {
+            factor = 1
+            modifier = {
+                factor = 1
+                tag = SPC
+            }
+			modifier = {
+                factor = 1
+                tag = SPA
+            }
         }
-        ai_chance = { factor = 60 }
+    }
+}
+
+country_event = {
+    id = 112333
+    title = "The Chincha Islands War"
+    desc = "Spain has occupied the valuable guano-rich Chincha Islands along our coast to pressure us into paying indemnities for the Talambó Incident."
+    picture = "numancia"
+    is_triggered_only = yes
+    option = {
+        name = "We are left with no choice!"
+        any_country = { 
+			limit = {
+				OR = {
+					tag = CHL
+					tag = BOL
+					tag = ECU
+					tag = PEU
+				}
+				exists = yes
+				NOT = { tag = THIS }
+			}
+			country_event = 112334
+		}
+		any_country = {
+			limit = {
+				OR = {
+					tag = SPC
+					tag = SPA
+				}
+				exists = yes
+			}
+			casus_belli = { target = THIS type = war_reparations months = 36 }
+			war = {
+				target = THIS
+				attacker_goal = { casus_belli = war_reparations }
+				defender_goal = { casus_belli = humiliate_no_infamy }
+				call_ally = yes
+			}
+		}
+		set_country_flag = do_pareja
+		add_country_modifier = { name = power_vacuum duration = 75 }
+    }
+}
+
+country_event = {
+    id = 112334
+    title = "The Chincha Islands War"
+    desc = "Spain has occupied the valuable guano-rich Chincha Islands in $FROMCOUNTRY$ to pressure them into paying indemnties for the Talambó Incident. Shall we support them?"
+    picture = "numancia"
+    is_triggered_only = yes
+    option = {
+        name = "To arms!"
+        create_alliance = FROM
+		relation = { who = FROM value = 50 }
+		ai_chance = { factor = 1 }
+    }
+	option = {
+        name = "We aren't ready."
+        end_alliance = FROM
+		prestige = -5
+		relation = { who = FROM value = -50 }
+		ai_chance = { factor = 0 }
+    }
+}
+
+country_event = {
+    id = 112335
+    title = "The Vivanco-Pareja Treaty"
+    desc = "$FROMCOUNTRY$ has proposed ending the Chincha Islands War with an official apology and negligible indemnity being paid."
+    picture = "pareja_treaty"
+    is_triggered_only = yes
+    option = {
+        name = "Splendid!"
+        end_war = FROM
+		any_country = {
+			limit = {
+				war_with = THIS
+				alliance_with = FROM
+			}
+			country_event = 112336
+			relation = { who = THIS value = 200 }
+		}
+		relation = { who = FROM value = 200 }
+		prestige = 20
+		ai_chance = { factor = 1 }
+    }
+	option = {
+        name = "No way, Jose!"
+		FROM = { country_event = 112337 }
+		ai_chance = { factor = 0 }
+    }
+}
+
+country_event = {
+    id = 112336
+    title = "The Vivanco-Pareja Treaty"
+    desc = "A treaty has been signed to end the Chincha Islands War. Peru nominally admits defeat, while Spain receives a small indemnity."
+    picture = "pareja_treaty"
+    is_triggered_only = yes
+    option = {
+        name = "Splendid!"
+        end_war = FROM
+		ai_chance = { factor = 1 }
+    }
+}
+
+country_event = {
+    id = 112337
+    title = "The Vivanco-Pareja Treaty"
+    desc = "$FROMCOUNTRY$ has refused our terms, continuing this bloody war of attrition."
+    picture = "pareja_treaty"
+    is_triggered_only = yes
+    option = {
+        name = "Damn them!"
     }
 }
 

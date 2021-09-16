@@ -1,3 +1,3 @@
-name = "GFM Dynamic Nations (unstable)"
+name = "GFM Dynamic Nations Submod"
 path = "mod/GFM Dynamic Nations"
 dependencies = { "Greater Flavor Mod" }
