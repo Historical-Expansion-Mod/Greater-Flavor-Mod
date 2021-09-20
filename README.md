@@ -53,6 +53,7 @@ This expanded version of GFM owes its existence to: (add your name here if you h
 * Doble
 * Erling Kristiansen
 * GLitchesHaxBadAudio
+* General Garcia
 * Sarif#2056
 * Dukeçza Victor
 * Batislav
