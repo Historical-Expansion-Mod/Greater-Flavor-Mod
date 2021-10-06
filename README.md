@@ -44,7 +44,7 @@ For Increased Performace(64-bit PCs):
 ## Acknowledgements
 
 This expanded version of GFM owes its existence to: (add your name here if you have contributed code-wise to the mod): 
-* Abraham Lincoln (Lead Dev) (AKA Cringe Abe)
+* Abraham Lincoln (Lead Dev)
 * JmanThunder (Mod Creator)
 * dr ッ
 * Bob Bobington
@@ -59,7 +59,7 @@ This expanded version of GFM owes its existence to: (add your name here if you h
 * Dukeçza Victor
 * Batislav
 * the based department
-* Davi Cerqueira (Based)
+* Davi Cerqueira 
 
 
 As well as the original developer of HFM, the one and only: SighPie
