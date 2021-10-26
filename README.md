@@ -24,7 +24,7 @@ PS: The abandoned RGO submod has also been moved: https://drive.google.com/file/
 5. Start the game, select the mods you want:
   * GFM is standalone - you do not need the original HFM to play.
   * GFM SW Submod is the Shattered World submod.
-  * GFM Low Resolutiom Submod changes files to a lower resolution, to make the gameplay faster.
+  * GFM Low Resolution Submod changes files to a lower resolution, making the gameplay faster.
   * GFM Dynamic Nations Submod adds more flag/naming/colour options for each nation and adds mechanics for this (Eg. Dynamic Dominions). 
        Note: The Large Address Aware Patch is HIGHLY recommended.
   * GFM RGO Submod adds experimental new RGOs
