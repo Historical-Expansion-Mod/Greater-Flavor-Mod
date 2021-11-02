@@ -58,40 +58,18 @@ country_event = {
     option = {
         name = "EVT97605OPTB"
         set_country_flag = rejected_commodore_perry
-		random_owned = {
-			limit = { owner = { USA = { exists = yes } } }
-			owner = {
-				leave_alliance = USA
-				relation = { who = USA value = -200 }
-				add_casus_belli = {
-					target = USA
-					type = add_to_sphere
-					months = 12
-				}
-				add_casus_belli = {
-					target = USA
-					type = humiliate
-					months = 12
-				}
-			}
-		}
-		random_owned = {
-			limit = { owner = { US2 = { exists = yes } } }
-			owner = {
-				leave_alliance = US2
-				relation = { who = US2 value = -200 }
-				add_casus_belli = {
-					target = US2
-					type = add_to_sphere
-					months = 12
-				}
-				add_casus_belli = {
-					target = US2
-					type = humiliate
-					months = 12
-				}
-			}
-		}
+        leave_alliance = USA
+        relation = { who = USA value = -200 }
+        add_casus_belli = {
+            target = USA
+            type = add_to_sphere
+            months = 12
+        }
+        add_casus_belli = {
+            target = USA
+            type = humiliate
+            months = 12
+        }
         FROM = { country_event = 97607 }
 
         ai_chance = { factor = 15 }
@@ -259,6 +237,424 @@ country_event = {
         FROM = { clr_country_flag = negotiate_unequal_treaty_TKG }
     }
 }
+
+# Good Outcome for the First Japanese Embassy to Europe
+country_event = { 
+	id = 91170
+	title = "EVTNAME91170"
+	desc = "EVTDESC91170"
+	picture = "japanese_embassy_good"
+	
+	fire_only_once = yes
+	
+	trigger = { 
+		tag = TKG 
+		has_global_flag = first_japanese_embassy_sent
+		has_country_modifier = sending_embassy
+			NOT = { 
+				has_global_flag = successful_first_embassy 
+				has_global_flag = failed_first_embassy 
+				any_greater_power = {
+					war_with = THIS 
+						OR = { 
+							relation = { who = THIS value = -100 }
+						} 
+				} 
+			}
+	} 
+	
+	option = { 
+		name="EVT91170OPTA"
+		research_points = 500
+		prestige = 10 
+		remove_country_modifier = sending_embassy
+		set_global_flag = successful_first_embassy
+		any_greater_power = { 
+			limit = { 
+				NOT = { 
+					casus_belli = THIS
+					war_with = THIS 
+				} 
+			} 
+			relation = { who = THIS value = 50 } 
+			diplomatic_influence = {
+                who = THIS
+                value = 5
+            }
+		}
+			1649 = { 
+				add_province_modifier = { 
+					name = port_opening_delayed 
+					duration = 1825
+				} 
+			} 
+			1657 = { 
+				add_province_modifier = { 
+					name = port_opening_delayed 
+					duration = 1825
+				}
+			} 
+			1645 = { 
+				add_province_modifier = { 
+					name = port_opening_delayed 
+					duration = 1825
+				}
+			}
+		ai_chance = { factor = 65 } 			
+	}
+	mean_time_to_happen = { days = 100 } 
+}	 
+
+# Bad Outcome for the First Japanese Embassy to Europe
+country_event = { 
+	id = 91171
+	title = "EVTNAME91171"
+	desc = "EVTDESC91171"
+	picture = "japanese_embassy_bad"
+	
+	fire_only_once = yes
+	
+	trigger = { 
+		tag = TKG 
+		has_global_flag = first_japanese_embassy_sent
+		has_country_modifier = sending_embassy 
+			NOT = { 
+				has_global_flag = successful_first_embassy 
+				has_global_flag = failed_first_embassy
+				any_greater_power = {
+					war_with = THIS 
+						OR = { 
+							relation = { who = THIS value = -100 }
+						} 
+				} 
+			}
+	} 
+	
+	option = { 
+		name="EVT91171OPTA"
+		research_points = 500
+		prestige = -10 
+		set_global_flag = failed_first_embassy
+		remove_country_modifier = sending_embassy
+		any_pop = { 
+			scaled_militancy = {
+				factor = 2
+			}
+		}
+		any_greater_power = { 
+			limit = { 
+				NOT = { 
+					casus_belli = THIS
+					war_with = THIS 
+				} 
+			} 
+			relation = { who = THIS value = -30 }
+		} 		 
+    }
+	
+	ai_chance = { factor = 35 } 		
+		
+	mean_time_to_happen = { days = 100 } 	
+}
+
+# Good Outcome for the Second Japanese Embassy to Europe
+country_event = { 
+	id = 91172
+	title = "EVTNAME91172"
+	desc = "EVTDESC91172"
+	picture = "second_japanese_embassy"
+	
+	fire_only_once = yes
+	
+	trigger = { 
+		tag = TKG 
+		has_global_flag = first_japanese_embassy_sent
+		has_global_flag = second_japanese_embassy_sent
+		has_country_modifier = sending_embassy
+			NOT = { 
+				has_global_flag = successful_second_embassy 
+				has_global_flag = failed_second_embassy  
+				has_global_flag = third_japanese_embassy_sent 
+			} 
+		 
+	} 
+	
+	option = { 
+		name="EVT91172OPTA"
+		research_points = 500
+		prestige = 10 `
+		remove_country_modifier = sending_embassy
+		add_country_modifier = { 
+			name = sakoku
+			duration = -1 
+		}
+		set_global_flag = successful_second_embassy
+		any_greater_power = { 
+			limit = { 
+				NOT = { 
+					casus_belli = TKG
+					war_with = TKG 
+				} 
+			} 
+			relation = { who = THIS value = 50 } 
+				diplomatic_influence = {
+					who = TKG
+					value = -50 
+				}
+		}			
+	}
+	
+	ai_chance = { factor = 15 }
+	
+	mean_time_to_happen = { days = 100 } 
+	 
+}
+
+# Bad Outcome for the Second Japanese Embassy to Europe
+country_event = { 
+	id = 91173
+	title = "EVTNAME91173"
+	desc = "EVTDESC91173"
+	picture = "second_japanese_embassy"
+	
+	fire_only_once = yes
+	
+	trigger = { 
+		tag = TKG 
+		has_global_flag = first_japanese_embassy_sent
+		has_global_flag = second_japanese_embassy_sent
+		has_country_modifier = sending_embassy
+			NOT = { 
+				has_global_flag = successful_second_embassy 
+				has_global_flag = failed_second_embassy 
+				has_global_flag = third_japanese_embassy_sent 
+			}  
+	} 
+	
+	option = { 
+		name="EVT91171OPTA"
+		research_points = 500
+		prestige = 2
+		set_global_flag = failed_second_embassy
+		remove_country_modifier = sending_embassy
+		any_pop = { 
+			scaled_militancy = {
+				factor = 2
+			}
+		}
+		any_greater_power = { 
+			limit = { 
+				NOT = { 
+					casus_belli = THIS 
+					war_with = THIS 
+				} 
+			} 
+			relation = { who = THIS value = 30 }
+			diplomatic_influence = {
+				who = THIS 
+				value = 5 
+			}	 		
+		}
+	}
+	ai_chance = { factor = 85 }
+	
+	mean_time_to_happen = { days = 100 } 
+} 
+
+#Good Outcome for the Japanese Embassy to the United States
+country_event = { 
+	id = 91174
+	title = "EVTNAME91174"
+	desc = "EVTDESC91174"
+	picture = "japanese_american_embassy"
+	
+	fire_only_once = yes
+	
+	trigger = { 
+		tag = TKG
+		has_global_flag = first_japanese_embassy_sent
+		has_global_flag = second_japanese_embassy_sent 
+		has_global_flag = third_japanese_embassy_sent 
+		has_country_modifier = sending_embassy 
+		NOT = { 
+			has_global_flag = successful_third_embassy
+			has_global_flag = failed_third_embassy
+			TKG = { 
+				war_with = USA 
+				relation = { who = USA value = -100 } 
+			} 
+		} 
+	}
+	
+	option = { 
+		name = "EVT91174OPTA" 
+		prestige = 5 
+		research_points = 500
+		remove_country_modifier = sending_embassy 
+		USA = { 
+			relation { who = THIS value = 50 } 
+			diplomatic_influence = { 
+				who = TKG 
+				value = 10 
+			} 
+		} 
+	}
+	
+	ai_chance = { 
+		factor = 65
+		modifier = { 
+			relation { who = USA value = 100 } 
+			factor = 1.5
+		} 
+		modifier = { 
+			relation { who = USA value = 200 } 
+			factor = 2.0
+		} 
+	} 
+	
+	mean_time_to_happen = { days = 100 } 
+}
+
+#Bad Outcome for the Japanese Embassy to the United States
+country_event = { 
+	id = 91175
+	title = "EVTNAME91175"
+	desc = "EVTDESC91175"
+	picture = "japanese_american_embassy" 
+	
+	fire_only_once = yes
+	
+	trigger = { 
+		tag = TKG 
+		has_global_flag = first_japanese_embassy_sent
+		has_global_flag = second_japanese_embassy_sent 
+		has_global_flag = third_japanese_embassy_sent 
+		has_country_modifier = sending_embassy 
+		NOT = { 
+			has_global_flag = successful_third_embassy
+			has_global_flag = failed_third_embassy
+			war_with = USA 
+			relation = { who = USA value = -100 } 
+		} 
+	}
+	
+	option = { 
+		name = "EVT91175OPTA" 
+		prestige = -2
+		research_points = 500
+		remove_country_modifier = sending_embassy
+		USA = { 
+			relation { who = THIS value = -30 }  
+		} 
+	}
+	
+	ai_chance = { 
+		factor = 35
+		modifier = { 
+			relation { who = USA value = -50 } 
+			factor = 1.5
+		} 
+		modifier = { 
+			relation { who = USA value = -100 } 
+			factor = 2.0
+		} 
+	} 
+	
+	mean_time_to_happen = { days = 100 } 
+} 
+
+#First Embassy Terminated  
+country_event = { 
+	id = 91176
+	title = "EVTNAME91176" 
+	desc = "EVTDESC91176" 
+	picture = "greatpowers"
+	
+	trigger = { 
+		tag = TKG 
+		has_country_modifier = sending_embassy 
+		has_global_flag = first_japanese_embassy_sent   
+		any_greater_power = { 
+			war_with = THIS 
+			OR = { 
+				relation = { who = THIS value = -100 }
+			} 
+		} 			
+		NOT = { has_global_flag = successful_first_embassy } 
+		NOT = { has_global_flag = failed_first_embassy }
+	}	
+		
+	option = { 
+		name = "EVT91176OPTA"
+		remove_country_modifier = sending_embassy
+	}
+	
+	mean_time_to_happen = { days = 7 } 	
+} 	
+	 
+	
+	
+#Second Embassy Terminated  
+country_event = { 
+	id = 91177
+	title = "EVTNAME91177" 
+	desc = "EVTDESC91177" 
+	picture = "greatpowers"
+	
+	trigger = { 
+		tag = TKG 
+		has_country_modifier = sending_embassy
+		has_global_flag = second_japanese_embassy_sent 		
+		any_greater_power = { 
+			war_with = THIS
+				OR = {
+					relation { who = THIS value = -200 } 
+				}
+		} 	
+		NOT = { has_global_flag = successful_second_embassy } 
+		NOT = { has_global_flag = failed_second_embassy }	
+	}
+	
+	option = { 
+		name = "EVT91177OPTA"
+		remove_country_modifier = sending_embassy
+	}
+	
+	mean_time_to_happen = { days = 7 } 		
+}
+
+#Third Embassy Terminated  
+country_event = { 
+	id = 91178
+	title = "EVTNAME91178" 
+	desc = "EVTDESC91178" 
+	picture = "greatpowers"
+	
+	trigger = { 
+		tag = TKG 
+		has_country_modifier = sending_embassy 
+		has_global_flag = third_japanese_embassy_sent 
+		USA = {
+			war_with = THIS 
+			OR = { 
+				relation { who = THIS value = -100 } 
+			}
+		} 
+		NOT = { has_global_flag = successful_third_embassy } 
+		NOT = { has_global_flag = failed_third_embassy }			
+	} 
+
+	option = { 
+		name = "EVT91178OPTA"
+		remove_country_modifier = sending_embassy
+		prestige = -10
+	}
+	
+	mean_time_to_happen = { days = 7 } 	
+}	
+	
+	
+		 		
 
 #####################################################################################
 #                                                                                    #
@@ -713,7 +1109,6 @@ country_event = {
             KAG = { average_militancy = 4 }
             SEN = { average_militancy = 4 }
             YZW = { average_militancy = 4 }
-			SOC = { average_militancy = 4 }
             JAP = { average_militancy = 4 }
         }
         NOT = { has_country_flag = sakuradamon_incident }
@@ -846,7 +1241,6 @@ country_event = {
             has_global_flag = order_to_expel_barbarians
             JAP = { is_vassal = no }
             KAG = { is_vassal = no }
-			SOC = { is_vassal = no }
             YZW = { is_vassal = no }
             SEN = { is_vassal = no }
             CHO = { is_vassal = no }
@@ -877,7 +1271,6 @@ country_event = {
         JAP = { all_core = { add_core = TKG } }
         SAT = { all_core = { add_core = TKG } }
         CHO = { all_core = { add_core = TKG } }
-		SOC = { all_core = { add_core = TKG } }
         SEN = { all_core = { add_core = TKG } }
         YZW = { all_core = { add_core = TKG } }
         TOS = { all_core = { add_core = TKG } }
@@ -1364,7 +1757,7 @@ country_event = {
     news_desc_medium = "EVTDESC97646_NEWS_MEDIUM"
     news_desc_short = "EVTDESC97646_NEWS_SHORT"
     major = yes
-    picture = "meiji_coronation"
+    picture = "boshin_war"
 
     trigger = {
         has_country_flag = imperial_war_leader
@@ -1453,7 +1846,6 @@ country_event = {
                     tag = SAT
                     tag = TOS
                     tag = KAG
-					tag = SOC
                 }
                 exists = yes
             }
@@ -1697,7 +2089,7 @@ country_event = {
     news_desc_long = "EVTDESC97651_NEWS_LONG"
     news_desc_medium = "EVTDESC97651_NEWS_MEDIUM"
     news_desc_short = "EVTDESC97651_NEWS_SHORT"
-    picture = "shogun_is_in_charge"
+    picture = "boshin_war"
     major = yes
 
     trigger = {
@@ -1804,7 +2196,6 @@ country_event = {
                     tag = SAT
                     tag = TOS
                     tag = KAG
-					tag = SOC
                 }
                 exists = yes
             }
@@ -1961,7 +2352,6 @@ country_event = {
             tag = YZW
             tag = CHO
             tag = TOS
-			tag = SOC
             tag = SAT
         }
         substate_of = TKG
@@ -2430,7 +2820,7 @@ country_event = {
             leave_alliance = THIS
             add_casus_belli = {
                 target = THIS
-                type = acquire_any_state
+                type = acquire_state
                 months = 24
             }
             add_casus_belli = {
@@ -2480,7 +2870,7 @@ country_event = {
             leave_alliance = THIS
             add_casus_belli = {
                 target = THIS
-                type = acquire_any_state
+                type = acquire_state
                 months = 24
             }
             add_casus_belli = {
@@ -2743,7 +3133,7 @@ country_event = {
     }
 }
 
-country_event = { ##rework
+country_event = {
     id = 97678
     title = "EVTNAME97678" #The Formosa Question
     desc = "EVTDESC97678"
@@ -3265,7 +3655,6 @@ country_event = {
         EZO = {
             civilized = yes
             government = democracy
-			set_country_flag = Government_Democracy
             political_reform = population_equal_weight
             political_reform = wealth_voting
             political_reform = yes_meeting
@@ -3353,7 +3742,6 @@ country_event = {
             SEN = { is_vassal = no }
             CHO = { is_vassal = no }
             TOS = { is_vassal = no }
-			SOC = { is_vassal = no }
             SAT = { is_vassal = no }
         }
         NOT = { has_country_flag = emperor_meiji }
@@ -3378,7 +3766,6 @@ country_event = {
         set_country_flag = emperor_meiji
         remove_country_modifier = kobu_gattai
         TKG = { all_core = { add_core = JAP } }
-		SOC = { all_core = { add_core = JAP } }
         SAT = { all_core = { add_core = JAP } }
         CHO = { all_core = { add_core = JAP } }
         SEN = { all_core = { add_core = JAP } }
@@ -3387,3 +3774,4 @@ country_event = {
         KAG = { all_core = { add_core = JAP } }
     }
 }
+
