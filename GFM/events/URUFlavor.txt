@@ -981,7 +981,7 @@ country_event = {
             }
         }
         ai_chance = {
-            factor = 0.99
+            factor = 0.98
         }
     }
 
@@ -1037,31 +1037,22 @@ country_event = {
 
     option = {
         name = "EVTOPT600074C"
+		set_global_flag = uruguay_integration
         badboy = 3
-        #prestige = 5
-        any_country = {
-        relation = {
-            who = THIS
-            value = -100
-                }
-            }
-        casus_belli = {
-            target = URU
-            type = make_puppet
-            months = 72
-            }
+        prestige = 5
+		create_vassal = URU
         URU = {
         relation = {
             who = BRZ
             value = -400
-                }
+        }
         any_country = {
-            leave_alliance = URU
-        relation = {
-            who = URU
-            value = -200
-                }
+		    leave_alliance = URU
+            relation = {
+                who = URU
+                value = -200
             }
+        }
         set_country_flag = blanco_rule
         clr_country_flag = garibaldi_italian_legion
         clr_country_flag = oribe_is_true_president
@@ -1094,7 +1085,7 @@ country_event = {
                 }
             }
         ai_chance = {
-            factor = 0
+            factor = 0.01
             }
         }
     option = {
@@ -1492,5 +1483,135 @@ country_event = {
                 ideology = conservative
             }
         }
+	}
+}
+
+country_event = {
+    id = 600077
+	major = yes
+    title = "The Uruguayan Rebellion"
+    desc = "The Uruguayans, inspired by the revolt led by General Urquiza, have ended their loyalty towards us and decided to join their uprising against $COUNTRY$"
+    picture = "33orientals"
+
+    fire_only_once = yes
+
+    trigger = {
+        tag = ARC
+        has_global_flag = uruguay_integration
+        war_with = ENT
+        URU = { is_vassal = yes }
+    }
+
+    mean_time_to_happen = { days = 5 }
+
+    option = {
+        name = "They will pay for this betrayal!"
+		set_global_flag = uruguay_revolted
+        release_vassal = URU
+        war = {
+            target = URU
+            attacker_goal = { casus_belli = civil_war }
+            defender_goal = { casus_belli = humiliate_no_infamy }
+            call_ally = no
+        }
+		URU = {
+		    money = 5000
+			leadership = 20
+            small_arms = 25
+            ammunition = 25
+            artillery = 25
+            add_country_modifier = {
+                name = small_country_draft
+                duration = 365
+            }
+            create_alliance = ENT
+            relation = {
+                who = ENT
+                value = 400
+            }
+		}
+    }
+}
+
+country_event = {
+    id = 600078
+    title = "The Pacification of Uruguay"
+    desc = "URUGUAYLOST"
+	picture = "la_plata"
+
+	trigger = {
+		has_country_flag = entre_rios_has_happened
+		has_global_flag = uruguay_revolted
+		ENT = { exists = no }
+		URU = { all_core = { owned_by = THIS } }
+	}
+
+	fire_only_once = yes
+	
+	mean_time_to_happen =  {
+        days = 5
+	}
+	
+	option = {
+        name = "Officially integrate Uruguay into $COUNTRY$"
+		badboy = 3
+		prestige = 5
+        2344 = { state_scope = { change_region_name = "Banda Oriental" } }
+		any_owned = { 
+		    limit = { 
+			    is_core = URU 
+			}
+		    add_core = THIS 
+			any_pop = { militancy = 1 }
+		}
+        ai_chance = {
+            factor = 0.75
+        }
+	}
+
+	option = {
+        name = "Continue their autonomy, they are not worth the trouble"
+		badboy = -5
+		any_owned = { 
+		    limit = { 
+			    is_core = URU 
+			}
+		    secede_province = URU
+			any_pop = { militancy = -3 }
+		}
+		create_vassal = URU
+		create_alliance = URU
+        relation = {
+            who = URU
+            value = 400
+        }
+        ai_chance = {
+            factor = 0.25
+        }
+	}
+}
+
+country_event = {
+    id = 600079
+    title = "The Uruguayan Uprising Succeeds!"
+    desc = "URUGUAYWON"
+	picture = "montevideo_uruguay"
+
+	trigger = {
+		tag = URU
+		has_global_flag = uruguay_revolted
+		URU = { all_core = { owned_by = THIS } }
+	}
+
+	fire_only_once = yes
+	
+	mean_time_to_happen =  {
+        days = 5
+	}
+
+	option = {
+        name = "Uruguay is free at last!"
+		prestige = 10
+		any_pop = { militancy = -5 consciousness = -5 }
 	}
 }
