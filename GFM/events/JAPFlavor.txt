@@ -22,27 +22,22 @@ country_event = {
 				tag = TOS 
 				tag = YZW 
 				tag = CHO 
+				tag = SOC 
 		}
 		year = 1836 	
 		NOT = { has_country_flag = tenpo_famine_ongoing } 
 	}
 		
-		option = { 
-			name = "EVT21130OPTA"
-			any_country = {
-				limit = { 
-					primary_culture = japanese
-					NOT = { tag = RYU } 
-				}	
-				add_country_modifier = { 
-					name = tenpo_famine
-					duration = -1 
-				}
-			set_country_flag = tenpo_famine_ongoing
-			} 
-		} 
+	option = { 
+		name = "EVT21130OPTA"
+		add_country_modifier = { 
+			name = tenpo_famine
+			duration = -1 
+		}
+		set_country_flag = tenpo_famine_ongoing
+	} 
 		
-		mean_time_to_happen = { days = 1 } 
+	mean_time_to_happen = { days = 1 } 
 }
 
 country_event = { 
@@ -61,6 +56,7 @@ country_event = {
 			tag = TOS 
 			tag = YZW 
 			tag = CHO 
+			tag = SOC 
 		} 
 		has_country_flag = tenpo_famine_ongoing 
 		year = 1837
@@ -76,20 +72,20 @@ country_event = {
 	mean_time_to_happen = {
 		months = 7 
 		modifier = { 
-			treasury = 100000
+			treasury = 50000
 			factor = 0.8
 		} 
 		modifier = { 
-			treasury = 150000
+			treasury = 100000
 			factor = 0.6
 		} 
 		modifier = { 
-			treasury = 200000
+			treasury = 150000
 			factor = 0.5
 		} 
 		modifier = { 
-			treasury = 20000
-			factor = 2
+			treasury = 200000
+			factor = 1
 		} 
 	} 
 } 
@@ -189,6 +185,49 @@ country_event = {
         ai_chance = { factor = 15 }
     }
 }
+country_event = { 
+	title = "EVTNAME21138" #Formation of the Shinsengumi 
+	desc = "EVTDESC21138"
+	picture = "hijikata_toshizo"
+	
+	trigger = { 
+		tag = TKG 
+		civilization_progress = 0.75
+		has_country_flag = sonno_joi 
+		has_global_flag = order_to_expel_barbarians
+		year = 1860 
+		NOT = { has_global_flag = boshin_war }
+		NOT = { has_global_flag = boshin_war_has_happened } 
+		NOT = { has_country_flag = formed_shinsengumi } 
+		NOT = { has_country_flag = shinsengumi_defeated } 
+	}
+
+	option = { 
+		name = "EVT21138OPTA"
+		relation = { who = JAP value = -100 } 
+		JAP = { country_event = 21139 } 	
+	}  
+} 
+
+country_event = { 
+	title = "EVTNAME21139" #Imperial Japan receives Shinsengumi 
+	desc = "EVTDESC21139"
+	picture = "shinsengumi_patrol"
+	
+	is_triggered_only = yes 
+	
+	option = { 
+		name = "EVT21139OPTA" 
+		JAP = { 
+			any_owned = { 
+				add_province_modifier = { 
+					name = shinsengumi_policing 
+					duration = -1 
+				} 
+			} 
+		} 
+	}
+}
 
 country_event = {
     id = 97606
@@ -217,7 +256,7 @@ country_event = {
         relation = { who = TKG value = 100 }
 		add_country_modifier = { 
 			name = pressuring_japan 
-			duration = 1460 
+			duration = 1460
 		} 
     }
 }
@@ -305,6 +344,10 @@ country_event = {
                 duration = -1
             }
         }
+		add_country_modifier = { 
+			name = pressuring_japan 
+			duration = 50 
+		} 
         ai_chance = { factor = 100 }
     }
 
@@ -315,6 +358,158 @@ country_event = {
         ai_chance = { factor = 0 }
     }
 }
+
+country_event = { 
+	id = 21132 #Ansei Unequal Treaty Popup, Japan
+	title = "EVTNAME21132" 
+	desc = "EVTDESC21132" 
+	picture = "ansei_treaties" 
+	
+	is_triggered_only = yes 
+	
+	option = { 
+		name = "EVT21132OPTA" #Accept Treaty 
+		FROM = { country_event = 21133 }
+		ai_chance = { factor = 100 } 
+	} 
+	
+	option = { 
+		name = "EVT21132OPTB" #Reject Treaty 
+		FROM = { country_event = 21134 } 
+		prestige = 10 
+		ai_chance = { factor = 0 } 
+	}
+} 
+
+country_event = { 
+	id = 21133 #Japan Accepts Ansei Treaty, Popup for Great Power 
+	title = "EVTNAME21133"
+	desc = "EVTDESC21133"
+	picture = "ansei_treaties" 
+	
+	is_triggered_only = yes 
+	
+	option = { 
+		name = "EVT21133OPTA"
+		set_country_flag = negotiated_ansei_treaty
+		diplomatic_influence = { who = THIS value = 50 } 
+		relation = { who = THIS value = 100 } 
+		prestige = 5 
+		add_country_modifier = { 
+				name = pressuring_japan 
+				duration = 60 
+			}
+	} 
+} 
+
+country_event = { 
+	id = 21134 #Japan Rejects Ansei Treaty, Popup for Great Power 
+	title = "EVTNAME21134"
+	desc = "EVTDESC21134"
+	picture = "ansei_treaties" 
+	
+	is_triggered_only = yes 
+	
+	option = { 
+		name = "EVT21134OPTA" #Declare War  
+		war = { 
+			target = FROM
+			type = humiliate 
+		}
+		badboy = 2 
+		set_country_flag = failed_ansei_treaty
+		ai_chance = { factor = 95 }
+	} 
+	
+	option = { 
+		name = "EVT21134OPTB" #Back off 
+		prestige = -10 
+		TKG = { prestige = 10 } 
+		ai_chance = { factor = 5 } 
+		set_country_flag = failed_ansei_treaty 
+		ai_chance = { factor = 5 } 
+	} 
+} 
+
+
+country_event = { 
+	id = 21135 #Franco-Japanese Unequal Treaty 
+	title = "EVTNAME21135"
+	desc = "EVTDESC21135"
+	picture = "ansei_treaties"
+	
+	is_triggered_only = yes 
+	
+	option = { 
+		name = "EVT21135OPTA" #Accept Treaty
+		FROM = { 
+			diplomatic_influence = { who = THIS value = 50 } 
+			relation = { who = THIS value = 100 } 
+			prestige = 5 
+			country_event = 21136
+		}
+		ai_chance = { factor = 100 } 
+	} 
+	
+	option = { 
+		name = "EVT21135OPTB" #Reject Treaty 
+		FROM = {
+			diplomatic_influence = { who = THIS value = -50 } 
+			prestige = -5
+			country_event = 21137 
+		} 
+		prestige = 10 
+		ai_chance = { factor = 0 } 
+	} 	
+} 
+
+country_event = { 
+	id = 21136 #Japan Accepts Franco-Japanese Treaty 
+	title = "EVTNAME21136"
+	desc = "EVTDESC21136"
+	picture = "ansei_treaties"
+	
+	is_triggered_only = yes 
+	
+	option = { 
+		name = "EVT21136OPTA"
+		set_country_flag = french_japan_unequal_treaty 
+		add_country_modifier = { 
+				name = pressuring_japan 
+				duration = 60
+		}
+	} 	
+}  
+
+country_event = { 
+	id = 21137 #Japan Rejects Franco-Japanese Treaty 
+	title = "EVTNAME21137"
+	desc = "EVTDESC21137"
+	picture = "ansei_treaties"
+	
+	is_triggered_only = yes 
+	
+	option = { 
+		name = "EVT21137OPTA"
+		war = {
+            target = FROM
+            attacker_goal = {
+                casus_belli = humiliate
+            }
+		} 	
+		badboy = 2 
+		set_country_flag = french_japan_unequal_treaty_failed 
+		ai_chance = { factor = 95 }
+	} 
+	
+	option = { 
+		name = "EVT21137OPTB" 
+		prestige = -10 
+		TKG = { prestige = 10 } 
+		set_country_flag = french_japan_unequal_treaty_failed 
+		ai_chance = { factor = 5 } 
+	} 	
+} 
 
 country_event = {
     id = 97609
@@ -331,8 +526,6 @@ country_event = {
 
     option = {
         name = "EVT97609OPTA"
-        clr_country_flag = negotiate_unequal_treaty_TKG
-        FROM = { clr_country_flag = negotiate_unequal_treaty_TKG }
         prestige = 10
         end_war = FROM
         treasury = 100000
@@ -340,7 +533,7 @@ country_event = {
         diplomatic_influence = { who = FROM value = 200 }
 		add_country_modifier = { 
 			name = pressuring_japan 
-			duration = 1460 
+			duration = 60 
 		} 
     }
 }
@@ -523,11 +716,7 @@ country_event = {
 		1645 = { remove_province_modifier = port_opening_delayed } 
 		ai_chance = { factor = 15 }	
 	}
-	
-	
-	
-	mean_time_to_happen = { days = 100 } 
-	 
+	mean_time_to_happen = { days = 100 }  
 }
 
 # Bad Outcome for the Second Japanese Embassy to Europe
@@ -2608,7 +2797,7 @@ country_event = {
 				duration = 150 
 			} 
 		}
-		set_global_flag = harris_treaty_accepted 
+		set_country_flag = harris_treaty_accepted 
 		ai_chance = { factor = 95 } 
 	} 
 
@@ -2618,7 +2807,7 @@ country_event = {
 		relations = { who = FROM value = -100 } 
 		FROM = { country_event = 91187 } 
 		any_pop = { consciousness = -0.1 }
-		set_global_flag = harris_treaty_rejected 
+		set_country_flag = harris_treaty_rejected 
 		ai_chance = { factor = 5 } 
 	} 
 }
@@ -2642,26 +2831,27 @@ country_event = {
 
 country_event = { 
 	id = 91187 #US notification: Japan refuses Harris Treaty 
-	title = "EVTNAME91186" 
-	desc = "EVTDESC91186" 
+	title = "EVTNAME91187" 
+	desc = "EVTDESC91187" 
 	picture = "harris_treaty_negotiation" 
 	
 	is_triggered_only = yes 
 	
 	option = { 
-		name = "EVT91186OPTA" 
+		name = "EVT91187OPTA" 
 		diplomatic_influence = { who = FROM value = -50 }  
 		ai_chance = { factor = 10 } 
 	} 
 	
 	option = { 
-		name = "EVT91186OPTB" 
+		name = "EVT91187OPTB" 
 		 war = {
             target = FROM
             attacker_goal = {
                 casus_belli = humiliate
-            }
+            } 
 		}
+		badboy = 2
 		ai_chance = { factor = 90 } 	
 	}	
 } 
