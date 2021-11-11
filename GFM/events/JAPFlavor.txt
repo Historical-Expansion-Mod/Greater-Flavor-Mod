@@ -72,19 +72,19 @@ country_event = {
 	mean_time_to_happen = {
 		months = 4
 		modifier = { 
-			treasury = 50000
+			money = 50000
 			factor = 0.8
 		} 
 		modifier = { 
-			treasury = 100000
+			money = 100000
 			factor = 0.6
 		} 
 		modifier = { 
-			treasury = 150000
+			money = 150000
 			factor = 0.5
 		} 
 		modifier = { 
-			treasury = 200000
+			money = 200000
 			factor = 0.3
 		} 
 	} 
@@ -158,7 +158,7 @@ country_event = {
 
 country_event = { 
 	id = 21144 
-	title =  "EVTNAME2144" #Morrison Incident, OPTA USA popup
+	title =  "EVTNAME21144" #Morrison Incident, OPTA USA popup
 	desc = "EVTDESC21144"
 	picture = "morrison_incident" 
 	
@@ -184,13 +184,13 @@ country_event = {
         }
 		any_pop = {
 			ideology = { 
-				type = conservative 
+				value = conservative 
 				factor = 0.002
 			} 
 		} 	
 		any_pop = {
 			ideology = { 
-				type = reactionary
+				value = reactionary
 				factor = 0.002
 			} 
 		}			
@@ -216,13 +216,13 @@ country_event = {
         }
 		any_pop = {
 			ideology = { 
-				type = conservative 
+				value = conservative 
 				factor = -0.002
 			} 
 		} 	
 		any_pop = {
 			ideology = { 
-				type = reactionary
+				value = reactionary
 				factor = -0.002
 			} 
 		}	
@@ -231,7 +231,7 @@ country_event = {
 
 country_event = {
 	id = 21145
-	title =  "EVTNAME2145" #Morrison Incident, OPTB USA popup
+	title =  "EVTNAME21145" #Morrison Incident, OPTB USA popup
 	desc = "EVTDESC21145"
 	picture = "morrison_incident"
 	
@@ -348,7 +348,9 @@ country_event = {
         ai_chance = { factor = 15 }
     }
 }
+
 country_event = { 
+	id = 21138
 	title = "EVTNAME21138" #Formation of the Shinsengumi 
 	desc = "EVTDESC21138"
 	picture = "hijikata_toshizo"
@@ -370,10 +372,12 @@ country_event = {
 		relation = { who = JAP value = -100 } 
 		JAP = { country_event = 21139 } 	
 	}
+	
 	mean_time_to_happen = { months = 1 } 
 } 
 
 country_event = { 
+	id = 21139 
 	title = "EVTNAME21139" #Imperial Japan receives Shinsengumi 
 	desc = "EVTDESC21139"
 	picture = "shinsengumi_patrol"
@@ -382,14 +386,12 @@ country_event = {
 	
 	option = { 
 		name = "EVT21139OPTA" 
-		JAP = { 
-			any_owned = { 
-				add_province_modifier = { 
-					name = shinsengumi_policing 
-					duration = -1 
-				} 
+		any_owned = { 
+			add_province_modifier = { 
+				name = shinsengumi_policing 
+				duration = -1 
 			} 
-		} 
+		}  
 	}
 }
 
@@ -774,14 +776,15 @@ country_event = {
 			NOT = { 
 				has_global_flag = successful_first_embassy 
 				has_global_flag = failed_first_embassy 
-				OR = {
-					any_greater_power = {
-						relation = { who = THIS value = -100 }
-					} 
-					any_greater_power = {
-						war_with = THIS 
-					} 
-				}
+				any_greater_power = {
+					limit = { 
+						capital_scope = { 
+							continent = europe 
+						} 
+					}
+					relation = { who = THIS value = -150 } 
+					war_with = THIS 
+				} 
 			}
 	} 
 	
@@ -792,7 +795,10 @@ country_event = {
 		remove_country_modifier = sending_embassy
 		set_global_flag = successful_first_embassy
 		any_greater_power = { 
-			limit = { 
+			limit = {
+				capital_scope = { 
+					continent = europe 
+				} 
 				NOT = { 
 					casus_belli = THIS
 					war_with = THIS 
@@ -821,10 +827,45 @@ country_event = {
 					name = port_opening_delayed 
 					duration = 1825
 				}
-			}
-		ai_chance = { factor = 65 } 			
+			}			
 	}
-	mean_time_to_happen = { days = 100 } 
+	mean_time_to_happen = { 
+		days = 100 
+		modifier = { 
+			any_greater_power = { 
+				limit = { 
+					capital_scope = { 
+						continent = europe 
+					} 
+				} 
+				relation = { who = THIS value = 150 } 
+			}
+			factor = 0.75
+		} 
+		modifier = { 
+			any_greater_power = { 
+				limit = { 
+					capital_scope = { 
+						continent = europe 
+					} 
+				} 
+				relation = { who = THIS value = 175 } 
+			}
+			factor = 0.5
+		} 
+		modifier = { 
+			any_greater_power = { 
+				limit = { 
+					capital_scope = { 
+						continent = europe 
+					} 
+				} 
+				relation = { who = THIS value = 200 } 
+			}
+			factor = 0.25
+		} 
+	} 
+	
 }	 
 
 # Bad Outcome for the First Japanese Embassy to Europe
@@ -842,12 +883,14 @@ country_event = {
 		has_country_modifier = sending_embassy 
 		NOT = { 
 			has_global_flag = successful_first_embassy 
-			has_global_flag = failed_first_embassy
+			has_global_flag = failed_first_embassy 
 			any_greater_power = {
-				relation = { who = THIS value = -100 }
+				limit = { continent = europe } 
+				relation = { who = THIS value = -150 } 
+				war_with = THIS 
 			} 
-		}
-	} 
+		} 	
+	}
 	
 	option = { 
 		name="EVT91171OPTA"
@@ -859,17 +902,54 @@ country_event = {
 		any_pop = { militancy = 0.5 } 
 		any_greater_power = { 
 			limit = { 
+				capital_scope = { 
+					continent = europe 
+				} 
+			} 
 				NOT = { 
 					casus_belli = THIS
 					war_with = THIS 
 				} 
-			} 
-			relation = { who = THIS value = -30 }
+			relation = { who = THIS value = -30 }	
 		} 		
-		ai_chance = { factor = 1 } 
-    }		
+	} 				
 		
-	mean_time_to_happen = { days = 100 } 	
+	mean_time_to_happen = { 
+		days = 100 
+		modifier = { 
+			any_greater_power = { 
+				limit = { 
+					capital_scope = { 
+						continent = europe 
+					} 
+				}	 
+				relation = { who = THIS value = -50 } 
+			}
+			factor = 0.75
+		} 
+		modifier = { 
+			any_greater_power = { 
+				limit = { 
+					capital_scope = { 
+						continent = europe 
+					} 
+				} 
+				relation = { who = THIS value = -75 } 
+			}
+			factor = 0.5
+		} 
+		modifier = { 
+			any_greater_power = { 
+				limit = { 
+					capital_scope = { 
+						continent = europe 
+					} 
+				}
+				relation = { who = THIS value = -100 } 
+			}
+			factor = 0.25
+		} 
+	}	
 }
 
 # Good Outcome for the Second Japanese Embassy to Europe
@@ -889,9 +969,17 @@ country_event = {
 			NOT = { 
 				has_global_flag = successful_second_embassy 
 				has_global_flag = failed_second_embassy  
-				has_global_flag = third_japanese_embassy_sent 
-			} 
-		 
+				has_global_flag = third_japanese_embassy_sent
+				any_greater_power = {
+					limit = { 
+						capital_scope = { 
+							continent = europe 
+						} 
+					} 
+					relation = { who = THIS value = -150 } 
+					war_with = THIS 
+				} 
+			}  
 	} 
 	
 	option = { 
@@ -906,11 +994,14 @@ country_event = {
 		set_global_flag = successful_second_embassy
 		any_greater_power = { 
 			limit = { 
-				NOT = { 
-					casus_belli = TKG
-					war_with = TKG 
+				capital_scope = { 
+					continent = europe 
 				} 
+			NOT = { 
+				casus_belli = TKG
+				war_with = TKG 
 			} 
+		} 
 			relation = { who = THIS value = 50 } 
 			diplomatic_influence = {
 				who = TKG
@@ -919,10 +1010,44 @@ country_event = {
 		}
 		1649 = { remove_province_modifier = port_opening_delayed } 
 		1657 = { remove_province_modifier = port_opening_delayed } 
-		1645 = { remove_province_modifier = port_opening_delayed } 
-		ai_chance = { factor = 1 }	
+		1645 = { remove_province_modifier = port_opening_delayed } 	
 	}
-	mean_time_to_happen = { days = 100 }  
+	mean_time_to_happen = { 
+		days = 100 
+		modifier = { 
+			any_greater_power = { 
+				limit = { 
+					capital_scope = { 
+						continent = europe 
+					} 
+				}
+				relation = { who = THIS value = 150 } 
+			}
+			factor = 0.75
+		} 
+		modifier = { 
+			any_greater_power = { 
+				limit = { 
+					capital_scope = { 
+						continent = europe 
+					} 
+				} 
+				relation = { who = THIS value = 175 } 
+			}
+			factor = 0.5
+		} 
+		modifier = { 
+			any_greater_power = { 
+				limit = { 
+					capital_scope = { 
+						continent = europe 
+					} 
+				}
+				relation = { who = THIS value = 200 } 
+			}
+			factor = 0.25
+		} 
+	}  
 }
 
 # Bad Outcome for the Second Japanese Embassy to Europe
@@ -943,6 +1068,11 @@ country_event = {
 				has_global_flag = successful_second_embassy 
 				has_global_flag = failed_second_embassy 
 				has_global_flag = third_japanese_embassy_sent 
+				any_greater_power = {
+					limit = { continent = europe } 
+					relation = { who = THIS value = -150 } 
+					war_with = THIS 
+				} 
 			}  
 	} 
 	
@@ -956,9 +1086,12 @@ country_event = {
 		any_pop = { militancy = 0.5 } 
 		any_greater_power = { 
 			limit = { 
-				NOT = { 
-					casus_belli = THIS 
-					war_with = THIS 
+				capital_scope = { 
+					continent = europe 
+				} 
+			NOT = { 
+				casus_belli = THIS 
+				war_with = THIS 
 				} 
 			} 
 			relation = { who = THIS value = 30 }
@@ -967,11 +1100,44 @@ country_event = {
 				value = 5 
 			}	 		
 		}
-		ai_chance = { factor = 85 }
 	}
-	
-	
-	mean_time_to_happen = { days = 100 } 
+		
+	mean_time_to_happen = { 
+		days = 100 
+		modifier = { 
+			any_greater_power = { 
+				limit = { 
+					capital_scope = { 
+						continent = europe 
+					} 
+				} 
+				relation = { who = THIS value = -50 } 
+			}
+				factor = 0.75
+		} 
+		modifier = { 
+			any_greater_power = { 
+				limit = { 
+					capital_scope = { 
+						continent = europe 
+					} 
+				}
+				relation = { who = THIS value = -75 } 
+			}
+			factor = 0.5
+		} 
+		modifier = { 
+			any_greater_power = { 
+				limit = { 
+					capital_scope = { 
+						continent = europe 
+					} 
+				}
+				relation = { who = THIS value = -100 } 
+			}
+			factor = 0.25
+		} 
+	}	
 } 
 
 #Good Outcome for the Japanese Embassy to the United States
@@ -994,7 +1160,7 @@ country_event = {
 			has_global_flag = failed_third_embassy
 			TKG = { 
 				war_with = USA 
-				relation = { who = USA value = -100 } 
+				relation = { who = USA value = -150 } 
 			} 
 		} 
 	}
@@ -1010,12 +1176,39 @@ country_event = {
 				who = TKG 
 				value = 10 
 			} 
-		} 
-	
-		ai_chance = { factor = 1 } 
+		}  
 	}
 	
-	mean_time_to_happen = { days = 100 } 
+	mean_time_to_happen = { 
+		days = 100 
+		modifier = { 
+			USA = { 
+				relation = { who = THIS value = 150 } 
+			}
+			US2 = { 
+				relation = { who = THIS value = 150 } 
+			}
+				factor = 0.75
+		} 
+		modifier = { 
+			USA = { 
+				relation = { who = THIS value = 175 } 
+			}
+			US2 = { 
+				relation = { who = THIS value = 175 } 
+			}
+			factor = 0.5
+		} 
+		modifier = { 
+			USA = {
+				relation = { who = THIS value = 200 } 
+			}
+			US2 = {
+				relation = { who = THIS value = 200 } 
+			}
+			factor = 0.25
+		} 
+	}
 }
 
 #Bad Outcome for the Japanese Embassy to the United States
@@ -1037,7 +1230,7 @@ country_event = {
 			has_global_flag = successful_third_embassy
 			has_global_flag = failed_third_embassy
 			war_with = USA 
-			relation = { who = USA value = -100 } 
+			relation = { who = USA value = -150 } 
 		} 
 	}
 	
@@ -1049,11 +1242,38 @@ country_event = {
 		USA = { 
 			relation = { who = THIS value = -30 }  
 		} 
-	
-		ai_chance = { factor = 1 } 
 	}
 	
-	mean_time_to_happen = { days = 100 } 
+	mean_time_to_happen = { 
+		days = 100 
+		modifier = { 
+			USA = { 
+				relation = { who = THIS value = -50 } 
+			}
+			US2 = { 
+				relation = { who = THIS value = -50 } 
+			}
+			factor = 0.75
+		} 
+		modifier = { 
+			USA = { 
+				relation = { who = THIS value = -75 } 
+			}
+			US2 = { 
+				relation = { who = THIS value = -75 } 
+			}
+			factor = 0.5
+		} 
+		modifier = { 
+			USA = {
+				relation = { who = THIS value = -100 } 
+			}
+			US2 = { 
+				relation = { who = THIS value = -100 } 
+			}
+			factor = 0.25
+		} 
+	}
 } 
 
 #First Embassy Terminated  
@@ -1069,10 +1289,13 @@ country_event = {
 		has_global_flag = first_japanese_embassy_sent   
 		OR = {
 			any_greater_power = { 
+				limit = { 
+					capital_scope = { 
+						continent = europe 
+					} 
+				}
 				war_with = THIS 
-			} 	
-			any_greater_power = {
-				relation = { who = THIS value = -100 }
+				relation = { who = THIS value = -150 }
 			}
 		}
 		NOT = { has_global_flag = successful_first_embassy } 
@@ -1102,11 +1325,14 @@ country_event = {
 		has_global_flag = second_japanese_embassy_sent 		
 		OR = {
 			any_greater_power = { 
-				war_with = THIS
-			} 	
-			any_greater_power = { 
-				relation = { who = THIS value = -200 } 
-			} 	
+				limit = { 
+					capital_scope = { 
+						continent = europe 
+					} 
+				} 
+				war_with = THIS 
+				relation = { who = THIS value = -150 }
+			}
 		}
 		NOT = { has_global_flag = successful_second_embassy } 
 		NOT = { has_global_flag = failed_second_embassy }	
@@ -1133,9 +1359,13 @@ country_event = {
 		has_global_flag = third_japanese_embassy_sent 
 		OR = {
 			USA = {
-				relation = { who = THIS value = -100 } 
+				relation = { who = THIS value = -150 } 
 			} 
 			USA = { war_with = THIS }
+			US2 = { 
+				relation = { who = THIS value = -150 } 
+			}
+			US2 = { war_with = THIS }	
 		}
 		NOT = { has_global_flag = successful_third_embassy } 
 		NOT = { has_global_flag = failed_third_embassy }			
