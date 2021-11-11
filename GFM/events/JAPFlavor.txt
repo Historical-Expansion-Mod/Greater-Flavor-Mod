@@ -41,7 +41,7 @@ country_event = {
 }
 
 country_event = { 
-	id = 101131 #End of famine 
+	id = 21131 #End of famine 
 	title = "EVTNAME21131"
 	desc = "EVTDESC21131"
 	picture = "tenpo_famine_end"
@@ -64,13 +64,13 @@ country_event = {
 	}
 
 	option = { 
-		name = "EVT101131OPTA"
+		name = "EVT21131OPTA"
 		remove_country_modifier = tenpo_famine 
 		set_country_flag = tenpo_famine_ended 
 	} 
 	
 	mean_time_to_happen = {
-		months = 7 
+		months = 4
 		modifier = { 
 			treasury = 50000
 			factor = 0.8
@@ -85,12 +85,174 @@ country_event = {
 		} 
 		modifier = { 
 			treasury = 200000
-			factor = 1
+			factor = 0.3
 		} 
 	} 
 } 
 
- 
+country_event = { 
+	id = 21143
+	title = "EVTNAME21143" #Morrison Incident, TKG popup 
+	desc = "EVTDESC21143"
+	picture = "morrison_incident"
+	
+	trigger = { 
+		tag = TKG 
+		year = 1837 
+		has_country_modifier = uncivilized_isolationism
+		has_country_modifier = sakoku 
+		OR = { 
+			USA = { diplomatic_influence = { who = THIS value = 30 } } 
+			US2 = { diplomatic_influence = { who = THIS value = 30 } } 
+		} 
+		NOT = { has_country_modifier = western_influences } 
+		NOT = { has_global_flag = morrison_incident } 
+	}
+
+	option = { 
+		name = "EVT21143OPTA"
+		any_country = { 
+			limit = { 
+				OR = { 
+					AND = { 
+						USA = { exists = yes } 
+						tag = USA 
+					}
+					AND = { 
+						US2 = { exists = yes }  
+						tag = US2 
+					} 
+				} 
+			} 
+				country_event = 21144 
+				relation = { who = THIS value = -50 }
+			}  
+		set_global_flag = morrison_incident 
+		ai_chance = { factor = 95 } 
+	}
+		
+	option = { 
+		name = "EVT21143OPTB"
+		any_country = { 
+			limit = { 
+				OR = { 
+					AND = { 
+						USA = { exists = yes } 
+						tag = USA 
+					}
+					AND = { 
+						US2 = { exists = yes }  
+						tag = US2 
+					} 
+				} 
+			} 
+			country_event = 21145
+			relation = { who = THIS value = 30 }	
+		set_global_flag = morrison_incident 
+		ai_chance = { factor = 5 } 
+	} 
+	
+	mean_time_to_happen = { months = 4 } 
+} 
+
+country_event = { 
+	id = 21144 
+	title =  "EVTNAME2144" #Morrison Incident, OPTA USA popup
+	desc = "EVTDESC21144"
+	picture = "morrison_incident" 
+	
+	is_triggered_only = yes 
+	
+	option = { 
+		name = "EVT21144OPTA" 
+		diplomatic_influence = { who = FROM value = -50 } 
+		move_issue_percentage = {
+            from = pro_military
+            to = jingoism
+            value = 0.10
+        }
+		move_issue_percentage = {
+            from = anti_military
+            to = pro_military
+            value = 0.10
+        }
+		move_issue_percentage = {
+            from = pacifism
+            to = pro_military
+            value = 0.10
+        }
+		any_pop = {
+			ideology = { 
+				type = conservative 
+				factor = 0.002
+			} 
+		} 	
+		any_pop = {
+			ideology = { 
+				type = reactionary
+				factor = 0.002
+			} 
+		}			
+	} 
+
+	option = { 
+		name = "EVT21144OPTB"
+		diplomatic_influence = { who = FROM value = -50 } 
+		move_issue_percentage = {
+            from = jingoism
+            to = pro_military
+            value = 0.10
+        }
+		move_issue_percentage = {
+            from = pro_military
+            to = anti_military
+            value = 0.10
+        }
+		move_issue_percentage = {
+            from = anti_military
+            to = pacifism 
+            value = 0.10
+        }
+		any_pop = {
+			ideology = { 
+				type = conservative 
+				factor = -0.002
+			} 
+		} 	
+		any_pop = {
+			ideology = { 
+				type = reactionary
+				factor = -0.002
+			} 
+		}	
+	} 
+} 
+
+country_event = { 
+	id = 21145
+	title =  "EVTNAME2145" #Morrison Incident, OPTB USA popup
+	desc = "EVTDESC21145"
+	picture = "morrison_incident"
+	
+	is_triggered_only 
+	
+	option = { 
+		name = "EVT21145OPTA"
+		diplomatic_influence = { who = FROM value = -50 } 
+		any_pop = { 
+			scaled_consciousness = { 
+				ideology = conservative 
+				factor = 0.2 
+			} 
+		} 
+		any_pop = { 
+			scaled_consciousness = { 
+				ideology = reactionary 
+				factor = 0.2 
+			} 
+		} 
+	} 
+}
 
 #Commodore Perry's Expedition events
 country_event = {
@@ -206,7 +368,8 @@ country_event = {
 		name = "EVT21138OPTA"
 		relation = { who = JAP value = -100 } 
 		JAP = { country_event = 21139 } 	
-	}  
+	}
+	mean_time_to_happen = { months = 1 } 
 } 
 
 country_event = { 
@@ -360,6 +523,44 @@ country_event = {
 }
 
 country_event = { 
+	title = "EVTNAME21140" #Shinsengumi defeated, popup for victor 
+	desc = "EVTDESC21140"
+	picture = "battle_of_katsunuma"
+	
+	trigger = { 
+		tag = JAP 
+		has_global_flag = boshin_war 
+		war_with = TKG 
+		TKG = { 
+			war_exhaustion = 10 
+			national_provinces_occupied = 0.30
+		} 
+		1652 = { controlled_by = THIS } 
+		NOT = { has_country_flag = shinsengumi_defeated } 
+	} 
+	
+	option = { 
+		name = "EVT21140OPTA" 
+		TKG = { country_event = 21141 } 
+	} 
+} 
+
+country_event = { 
+	title = "EVTNAME21141" #Shinsengumi defeated, popup for TKG 
+	desc = "EVTDESC21141"
+	picture = "battle_of_katsunuma"
+	
+	is_triggered_only = yes 
+	
+	option = { 
+		name = "EVT21141OPTA"
+		prestige = -2 
+		set_country_flag = shinsengumi_defeated
+	} 
+	
+} 
+
+country_event = { 
 	id = 21132 #Ansei Unequal Treaty Popup, Japan
 	title = "EVTNAME21132" 
 	desc = "EVTDESC21132" 
@@ -414,7 +615,9 @@ country_event = {
 		name = "EVT21134OPTA" #Declare War  
 		war = { 
 			target = FROM
-			type = humiliate 
+			attacker_goal = { 
+				casus_belli = humiliate 
+			} 
 		}
 		badboy = 2 
 		set_country_flag = failed_ansei_treaty
@@ -958,7 +1161,9 @@ country_event = {
 	}
 	
 	mean_time_to_happen = { days = 7 } 	
-}	
+}
+
+	
 
 #####################################################################################
 #                                                                                    #
@@ -1731,6 +1936,37 @@ country_event = {
         relation = { who = FROM value = -50 }
     }
 }
+
+country_event = { 
+	id = 21142 
+	title = "EVTNAME21142" 
+	desc = "EVTDESC21142" 
+	picture = "ee_ja_nai_ka" 
+	
+	
+	trigger = { 
+		primary_culture = japanese 
+		TKG = { civilized = yes } 
+		average_consciousness = 1.5 
+		average_militancy = 1.5 
+		year = 1860 
+		NOT = { has_global_flag = boshin_war } 
+		NOT = { has_global_flag = boshin_war_has_happened }
+		NOT = { tag = RYU } 
+		NOT = { has_country_flag = protest_dances } 
+		NOT = { has_country_modifier = protest_dances } 
+	} 
+
+	option = { 
+		name = "EVT21142OPTA"
+		add_country_modifier = { 
+			name = protest_dances 
+			duration = 365
+		} 
+		set_country_flag = protest_dances 
+	}
+	mean_time_to_happen = { months = 1 } 
+} 
 
 #####################################################################################
 #                                                                                    #
@@ -4161,6 +4397,171 @@ country_event = {
         }
     }
 }
+
+country_event = { 
+	id = 21146 #The Otsu Incident, JAP  
+	title = "EVTNAME21146"
+	desc = "EVTDESC21146"
+	picture = "otsu_incident" 
+	
+	trigger = { 
+		tag = JAP 
+		RUS = {  
+			OR = { 
+				government = hms_government
+                government = prussian_constitutionalism
+                government = absolute_monarchy
+                government = absolute_empire
+                government = semi_constitutional_empire
+                government = constitutional_empire
+			}
+			OR = { 
+				owns = 1086
+				owns = 1088 
+			} 
+			has_country_flag = build_the_tsr3
+			relation = { who = THIS value = 100 } 
+			has_country_flag = shimoda_treaty 
+		}
+		year = 1891 
+		is_greater_power = yes 
+		is_disarmed = no 
+		has_country_flag = has_line_of_advantage 
+		NOT = { has_country_flag = otsu_incident } 
+		NOT = { war_with = RUS } 
+	} 
+
+	option = { 
+		name = "EVT21146OPTA"
+		RUS = { country_event = 21148 } 
+		relation = { who = RUS value = -100 } 
+		set_country_flag = otsu_incident 
+	}
+		
+	option = { 
+		name = "EVT21146OPTB"
+		RUS = { country_event = 21148 } 
+		relation = { who = RUS value = -200 }
+		move_issue_percentage = { 
+			from = pro_military
+			to = jingoism 
+			value = 0.3
+		}
+		set_country_flag = otsu_incident 
+	}
+	
+	mean_time_to_happen = { 
+		months = 3 
+		modifier = { 
+			relation = { who = RUS value = 150 } 
+			value = 2 
+		} 
+		modifier = { 
+			has_country_flag = sakhalin_line_of_advantage
+			value = 0.5
+		} 
+	} 	
+}
+
+country_event = { 
+	id = 21147 #The Otsu Incident, TKG 
+	title = "EVTNAME21147"
+	desc = "EVTDESC21147"
+	picture = "otsu_incident" 
+	
+	trigger = { 
+		tag = TKG 
+		RUS = {  
+			OR = { 
+				government = hms_government
+                government = prussian_constitutionalism
+                government = absolute_monarchy
+                government = absolute_empire
+                government = semi_constitutional_empire
+                government = constitutional_empire
+			}
+			OR = { 
+				owns = 1086
+				owns = 1088 
+			} 
+			has_country_flag = build_the_tsr3
+			relation = { who = THIS value = 100 } 
+			has_country_flag = shimoda_treaty 
+			NOT = { relation = { who = THIS value = 200 } } 
+		}
+		year = 1891 
+		is_greater_power = yes 
+		is_disarmed = no 
+		has_country_flag = has_line_of_advantage 
+		NOT = { has_country_flag = otsu_incident } 
+		NOT = { war_with = RUS } 
+	} 
+
+	option = { 
+		name = "EVT21147OPTA"
+		RUS = { country_event = 21148 } 
+		relation = { who = RUS value = -100 } 
+		set_country_flag = otsu_incident 
+	}
+		
+	option = { 
+		name = "EVT21177OPTB"
+		RUS = { country_event = 21148 } 
+		relation = { who = RUS value = -200 }
+		move_issue_percentage = { 
+			from = pro_military
+			to = jingoism 
+			value = 0.3
+		}
+		set_country_flag = otsu_incident 
+	}
+	
+	mean_time_to_happen = { 
+		months = 3 
+		modifier = { 
+			relation = { who = RUS value = 150 } 
+			value = 2 
+		} 
+		modifier = { 
+			has_country_flag = sakhalin_line_of_advantage
+			value = 0.5
+		} 
+	} 	
+}
+
+country_event = { 
+	id = 21148 #Russian news of Otsu Incident 
+	title = "EVTNAME21148"
+	desc = "EVTDESC21148"
+	picture = "otsu_incident" 
+	
+	is_triggered_only = yes 
+
+	option = { 
+		name = "EVT21148OPTA"
+		any_pop = { 
+			consciousness = 0.6
+			militancy = 0.3
+		}
+		ai_chance = { factor = 75 } 
+	} 
+	
+	option = { 
+		name = "EVT21148OPTB"
+		war = { 
+			target = FROM 
+			attacker_goal = {
+				casus_belli = cut_down_to_size
+			} 
+		}
+		move_issue_percentage = { 
+			from = pro_military
+			to = jingoism
+			value = 0.7
+		}
+		ai_chance = { factor = 25 } 	
+	} 
+}  
 
 country_event = {
     id = 97682
