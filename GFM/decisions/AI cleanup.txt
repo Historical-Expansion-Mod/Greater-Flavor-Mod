@@ -1,0 +1,920 @@
+political_decisions = {
+
+	japan_ai_dye = {
+        picture = reichstag
+        potential = {
+            ai = yes
+            OR = {
+                tag = TKG
+                tag = JAP
+            }
+            civilized = no
+            NOT = { has_global_flag = japan_ai_dye }
+			JAP = { ai = yes }
+            TKG = { ai = yes }
+            CHO = { ai = yes }
+            SAT = { ai = yes }
+            SEN = { ai = yes }
+            YZW = { ai = yes }
+			SOC = { ai = yes }
+            KAG = { ai = yes }
+            TOS = { ai = yes }
+        }
+
+        allow = {
+        }
+
+        effect = {
+            1652 = { trade_goods = dye }
+            set_global_flag = japan_ai_dye
+        }
+    }
+
+    cleanup_eic = {
+        potential = {
+            NOT = { has_country_modifier = called_eic }
+            tag = ENG
+            ai = yes
+            war = yes
+            OR = {
+                EIC = {
+                    OR = {
+                        vassal_of = ENG
+                        substate_of = ENG
+                    }
+                    exists = yes
+                }
+                RAJ = {
+                    OR = {
+                        vassal_of = ENG
+                        substate_of = ENG
+                    }
+                    alliance_with = ENG
+                    exists = yes
+                }
+            }
+        }
+
+        allow = {
+            OR = {
+                AND = {
+                    any_greater_power = { war_with = ENG NOT = { war_with = EIC } }
+                    EIC = {
+                        OR = {
+                            vassal_of = ENG
+                            substate_of = ENG
+                        }
+                        exists = yes
+                        war = no
+                    }
+                }
+                AND = {
+                    any_neighbor_country = { war_with = ENG NOT = { war_with = EIC } }
+                    EIC = {
+                        OR = {
+                            vassal_of = ENG
+                            substate_of = ENG
+                        }
+                        exists = yes
+                        war = no
+                    }
+                }
+                AND = {
+                    any_greater_power = { war_with = ENG NOT = { war_with = RAJ } }
+                    RAJ = {
+                        OR = {
+                            vassal_of = ENG
+                            substate_of = ENG
+                        }
+                        exists = yes
+                        war = no
+                        alliance_with = ENG
+                    }
+                }
+                AND = {
+                    war = yes
+                    EIC = { exists = yes war = no }
+                }
+                AND = {
+                    war_with = MUG
+                    EIC = {
+                        exists = yes
+                        NOT = { war_with = MUG }
+                    }
+                }
+            }
+        }
+
+        effect = {
+            add_country_modifier = { name = called_eic duration = 90 }
+				war = {               #No target initiates a one-day war that automatically resolves in a WP, but call_ally causes the new ally
+					# Audax Validator "." Ignore_NEXT
+					attacker_goal = {  casus_belli = call_allies_cb  }
+					call_ally = yes
+				}
+        }
+    }
+
+    cleanup_morocco = {
+        potential = {
+            capital_scope = { continent = europe }
+            is_greater_power = yes
+            has_global_flag = tangier_protocol_succeeded
+            NOT = { primary_culture = french }
+            NOT = { tag = SPA }
+            NOT = { tag = IBR }
+            NOT = { tag = SPC }
+            ai = yes
+            OR = {
+                owns = 1683 #Taza
+                owns = 1680 #Fez
+                owns = 1690 #Marrakesh
+                owns = 1694 #Agadir
+            }
+            NOT = { has_global_flag = cleanup_morocco }
+			OR = {
+                SPA = {
+                    OR = {
+                        owns = 1683 #Taza
+                        owns = 1680 #Fez
+                        owns = 1690 #Marrakesh
+                        owns = 1694 #Agadir
+                    }
+                    #money = 75000
+                }
+                SPC = {
+                    OR = {
+                        owns = 1683 #Taza
+                        owns = 1680 #Fez
+                        owns = 1690 #Marrakesh
+                        owns = 1694 #Agadir
+                    }
+                    #money = 75000
+                }
+                FRA = {
+                    exists = yes
+                    OR = {
+                        owns = 1683 #Taza
+                        owns = 1680 #Fez
+                        owns = 1690 #Marrakesh
+                        owns = 1694 #Agadir
+                    }
+                    #money = 75000
+                }
+                BOR = {
+                    exists = yes
+                    OR = {
+                        owns = 1683 #Taza
+                        owns = 1680 #Fez
+                        owns = 1690 #Marrakesh
+                        owns = 1694 #Agadir
+                    }
+                    #money = 75000
+                }
+            }
+        }
+
+        allow = {
+        }
+
+        effect = {
+            any_owned = {
+                limit = {  is_core = MOR }
+                secede_province = UTI
+            }
+
+            random_country = {
+                limit = {
+                    OR = {
+                        AND = {  tag = FRA exists = yes }
+                        AND = {  tag = BOR exists = yes }
+                        tag = SPA
+                        tag = SPC
+                    }
+                    OR = {
+                        owns = 1683 #Taza
+                        owns = 1680 #Fez
+                        owns = 1690 #Marrakesh
+                        owns = 1694 #Agadir
+                    }
+                }
+                inherit = UTI
+                #treasury = -75000
+            }
+            #treasury = 75000
+        }
+    }
+
+	cleanup_decision_merge = {
+        potential = {
+			ai = yes
+            OR = {
+				AND = {
+					tag = ANT
+					war = no
+					is_vassal = no
+					exists = yes
+					GRE = { exists = yes }
+					NOT = { has_global_flag = sw_set }
+				}
+				AND = {
+					OR = {
+						tag = KOR
+						tag = LAN
+					}
+					civilized = no
+					vassal_of = QNG
+					war_with = ENG
+					war = yes
+				}
+				AND = {
+					tag = MEX
+					truce_with = USA
+					USA = { ai = yes }
+					NOT = { has_country_flag = won_MEX_USA_war }
+					NOT = { USA = { has_country_flag = won_MEX_USA_war } }
+					has_global_flag = USA_demanded_MEX
+					USA = {
+						owns = 137
+						owns = 134
+						owns = 133
+						owns = 131
+						owns = 127
+						owns = 106
+						owns = 112
+						owns = 3468
+						owns = 111
+						owns = 93
+						owns = 91
+						owns = 82
+						owns = 3463
+						owns = 86
+						owns = 3452
+						owns = 88
+						owns = 3451
+						owns = 90
+					}
+					owns = 2139
+					owns = 102
+					owns = 100
+					owns = 96
+					owns = 94
+					owns = 3457
+					owns = 95
+					owns = 3459
+					owns = 97
+					owns = 110
+					owns = 107
+					owns = 109
+					owns = 103
+					owns = 128
+					owns = 129
+					owns = 135
+					owns = 136
+					owns = 138
+				}
+				AND = {
+					tag = SLO
+					owns = 3282
+					NOT = {
+						owns = 767
+						owns = 3289
+						owns = 616
+						owns = 624
+					}
+					639 = { owned_by = HUN }
+					war = no
+					is_vassal = no
+				}
+				AND = {
+					tag = ITA
+					exists = yes
+					has_global_flag = ITS_form
+				}
+				AND = {
+					OR = {
+						tag = POR
+						tag = BEL
+						tag = NET
+						tag = DEN
+					}
+					owns = 2643
+					NOT = {
+						owns = 1141
+						owns = 1142
+						owns = 1138
+						owns = 1139
+						owns = 1135
+					}
+					1135 = { owned_by = PER }
+					war = no
+					is_vassal = no
+				}
+			}
+        }
+        allow = { 
+		}
+        effect = {
+			any_country = {
+				limit = {
+					OR = {
+						AND = {
+							tag = KOR
+							THIS = { tag = KOR }
+							exists = yes
+						}
+						AND = {
+							tag = LAN
+							THIS = { tag = LAN }
+							exists = yes
+						}
+					}
+				}
+				end_war = ENG				
+			}
+			any_country = {
+				limit = {
+					tag = MEX
+					THIS = { tag = MEX }
+					exists = yes
+				}
+				any_owned = { 
+					limit = {
+						OR = {
+							province_id = 100
+							province_id = 101
+							province_id = 3460
+							province_id = 2148
+							province_id = 105
+							province_id = 135
+							province_id = 136
+							province_id = 138
+							province_id = 129
+							province_id = 128
+							province_id = 103
+							province_id = 109
+							province_id = 108
+							province_id = 110
+							province_id = 107
+							province_id = 97
+							province_id = 98
+							province_id = 99
+							province_id = 3459
+							province_id = 96
+							province_id = 94
+							province_id = 3458
+							province_id = 95
+							province_id = 3457
+						}
+					}
+					secede_province = USA
+				}
+			}
+			any_country = {
+				limit = {
+					tag = SLO
+					THIS = { tag = SLO }
+					exists = yes
+				}
+				annex_to = HUN
+			}
+			any_country = {
+				limit = {
+					tag = ITA
+					THIS = { tag = ITA }
+					exists = yes
+				}
+				annex_to = ITS
+			}
+			any_country = {
+				limit = {
+					OR = {
+						AND = {
+							tag = POR
+							THIS = { tag = POR }
+							exists = yes
+						}
+						AND = {
+							tag = DEN
+							THIS = { tag = DEN }
+							exists = yes
+						}
+						AND = {
+							tag = BEL
+							THIS = { tag = BEL }
+							exists = yes
+						}
+						AND = {
+							tag = NET
+							THIS = { tag = NET }
+							exists = yes
+						}
+					}
+				}
+				2643 = { secede_province = PER }
+			}
+			any_country = {
+				limit = {
+					tag = ANT
+					THIS = { tag = ANT }
+					exists = yes
+				}
+				ANT = { all_core = { remove_core = ANT } }
+				annex_to = GRE
+			}
+        }
+        ai_will_do = {
+            factor = 1
+        }
+    }
+	
+    roman_republic_joins = {
+        picture = italia_irredenta
+        potential = {
+            tag = PAP
+            ai = yes
+            NOT = { has_country_flag = roman_republic_joins }
+        }
+
+        allow = {
+			government = democracy
+            OR = {
+				AND = {
+					exists = ITA
+					ITA = {
+						is_greater_power = yes
+						OR = {
+							government = democracy
+							government = hms_government
+							government = prussian_constitutionalism
+							government = semi_constitutional_empire
+							government = constitutional_empire
+							has_country_flag = Government_Democracy
+						}
+					}
+				}
+				AND = {
+					exists = ITS
+					ITS = {
+						is_greater_power = yes
+						OR = {
+							government = democracy
+							government = hms_government
+							government = prussian_constitutionalism
+							government = semi_constitutional_empire
+							government = constitutional_empire
+							has_country_flag = Government_Democracy
+						}
+					}
+				}
+			}
+        }
+
+        effect = {
+            any_pop = {
+                militancy = -1
+            }
+			any_country = {
+				limit = {
+					tag = ITA
+					exists = yes
+				}
+				inherit = PAP
+			}
+			any_country = {
+				limit = {
+					tag = ITS
+					exists = yes
+				}
+				inherit = PAP
+			}
+            set_country_flag = roman_republic_joins
+        }
+
+        ai_will_do = {
+            factor = 1
+        }
+    }
+	
+	unciv_balance_qng = {
+        picture = reichstag
+        potential = {
+            ai = yes
+            tag = QNG
+            civilized = no
+            NOT = { has_country_flag = unciv_balance_flag }
+        }
+
+        allow = { }
+
+        effect = {
+            add_country_modifier = {
+                name = unciv_balance_qng
+                duration = 3650
+            }
+            set_country_flag = unciv_balance_flag
+        }
+    }
+	
+	viet_remove_sphere = {
+        picture = reichstag
+        potential = {
+            ai = yes
+            OR = {
+                tag = DAI
+                tag = CHK
+                tag = CAM
+                tag = LUA
+                tag = PGG
+                tag = NIA
+            }
+            civilized = no
+			OR = {
+				USA = {
+					ai = yes
+					is_sphere_leader_of = THIS
+				}
+				US2 = {
+					ai = yes
+					is_sphere_leader_of = THIS
+				}
+			}
+            OR = {
+                FRA = { exists = yes ai = yes }
+                BOR = { exists = yes ai = yes }
+            }
+        }
+
+        allow = {
+        }
+
+        effect = { 
+			USA = { diplomatic_influence = { who = THIS value = -400 } } 
+			US2 = { diplomatic_influence = { who = THIS value = -400 } } 
+		}
+    }
+	break_alliance_AI = {
+        picture = pax_britannica
+        potential = {
+            tag = ENG
+            NOT = { exists = IRE }
+            ai = yes
+            has_country_modifier = pax_britannica
+        }
+        allow = {
+            tag = ENG
+            any_greater_power = { alliance_with = ENG }
+            NOT = { exists = IRE }
+            has_country_modifier = pax_britannica
+            NOT = { exists = GER }
+            NOT = { exists = GCF }
+            rank = 1
+            NOT = { year = 1870 }
+            NOT = {
+                AND = {
+                    EGY = { war_with = TUR }
+                    war_with = EGY
+                    OR = {
+                        war_with = FRA
+                        war_with = BOR
+                    }
+                }
+            }
+            OR = {
+                TUR = {
+                    is_greater_power = yes
+                    NOT = { alliance_with = THIS }
+                }
+                TUR = { is_greater_power = no }
+            }
+            OR = {
+                JAP = {
+                    is_greater_power = yes
+                    NOT = { alliance_with = THIS }
+                }
+                JAP = { is_greater_power = no }
+            }
+            OR = {
+                BEL = {
+                    is_greater_power = yes
+                    NOT = { alliance_with = THIS }
+                }
+                BEL = { is_greater_power = no }
+            }
+            OR = {
+                POR = {
+                    is_greater_power = yes
+                    NOT = { alliance_with = THIS }
+                }
+                POR = { is_greater_power = no }
+            }
+        }
+
+        effect = {
+            any_greater_power = {
+                limit = {
+                    NOT = {
+                        tag = JAP
+                        tag = BEL
+                        tag = TUR
+                    }
+                    alliance_with = ENG
+                }
+                leave_alliance = THIS
+                relation = { who = THIS value = -150 }
+            }
+        }
+
+        ai_will_do = { factor = 1 }
+    }
+	
+	ai_get_british_wyoming = {
+        potential = {
+            tag = ENG
+            ai = yes
+            OR = { AND = {  owns = 93 owns = 114 owns = 83 owns = 78 } RPL = { vassal_of = THIS owns = 93 owns = 114 owns = 83 owns = 78 } }
+            USA = { ai = yes }
+			US2 = { ai = yes }
+            NOT = { has_country_flag = ai_get_british_wyoming }
+        }
+
+        allow = { war = no }
+
+        effect = {
+            set_country_flag = ai_get_british_wyoming
+            111 = { secede_province = ENG }
+            COL = {  all_core = { remove_core = ENG } }
+            RPL = { any_owned = { limit = { is_core = COL } secede_province = ENG } }
+        }
+
+        ai_will_do = { factor = 1 }
+    }
+
+    mombasa_sale = {
+        picture = map_kenya
+        potential = {
+            ai = yes
+            war = no
+			OR = {
+				AND = {
+					NOT = {
+						has_country_flag = zanzibar_sale
+						owns = 2045
+					}
+					any_owned_province = {
+						region = ENG_2036
+						is_colonial = yes
+					}
+					2045 = { empty = no }
+					OR = {
+						AND = {
+							is_greater_power = no
+							is_secondary_power = no
+						}
+						2045 = {
+							owner = { is_sphere_leader_of = THIS }
+						}
+						2045 = {
+							owner = { alliance_with = THIS }
+						}
+					}
+				}
+				AND = {
+					NOT = {
+						has_country_flag = mombasa_sale
+						owns = 2032
+					}
+					any_owned_province = {
+						region = ENG_2024
+						is_colonial = yes
+					}
+					2032 = { empty = no }
+					OR = {
+						AND = {
+							is_greater_power = no
+							is_secondary_power = no
+						}
+						2032 = {
+							owner = { is_sphere_leader_of = THIS }
+						}
+						2032 = {
+							owner = { alliance_with = THIS }
+						}
+					}
+				}
+			}
+        }
+
+        allow = {
+            OR = {
+				AND = {
+					2032 = {
+						is_core = KNY
+						owner = {
+							NOT = { truce_with = THIS }
+							relation = { who = THIS value = 0 }
+							money = 100000
+						}
+					}
+					NOT = {
+						has_country_flag = mombasa_sale
+						owns = 2032
+					}
+				}
+				AND = {
+					2045 = {
+						is_core = TNZ
+						owner = {
+							NOT = { truce_with = THIS }
+							relation = { who = THIS value = 0 }
+							money = 100000
+						}
+					}
+					NOT = {
+						has_country_flag = zanzibar_sale
+						owns = 2045
+					}
+				}
+			}
+        }
+
+        effect = {
+            any_country = {
+				limit = {
+					tag = THIS
+					exists = yes
+					NOT = {
+						has_country_flag = mombasa_sale
+						owns = 2032
+					}
+					any_owned_province = {
+						region = ENG_2024
+						is_colonial = yes
+					}
+					2032 = { empty = no }
+					OR = {
+						AND = {
+							is_greater_power = no
+							is_secondary_power = no
+						}
+						2032 = {
+							owner = { is_sphere_leader_of = THIS }
+						}
+						2032 = {
+							owner = { alliance_with = THIS }
+						}
+					}
+				}
+				set_country_flag = mombasa_sale
+				2032 = {
+					owner = {
+						country_event = 97009
+					}
+				}
+			}
+			any_country = {
+				limit = {
+					tag = THIS
+					exists = yes
+					NOT = {
+						has_country_flag = zanzibar_sale
+						owns = 2045
+					}
+					any_owned_province = {
+						region = ENG_2036
+						is_colonial = yes
+					}
+					2045 = { empty = no }
+					OR = {
+						AND = {
+							is_greater_power = no
+							is_secondary_power = no
+						}
+						2045 = {
+							owner = { is_sphere_leader_of = THIS }
+						}
+						2045 = {
+							owner = { alliance_with = THIS }
+						}
+					}
+				}
+				set_country_flag = zanzibar_sale
+				2045 = {
+					owner = {
+						country_event = 97008
+					}
+				}
+			}
+        }
+
+        ai_will_do = {
+            factor = 1
+            modifier = {
+                factor = 0
+                is_greater_power = yes
+            }
+            modifier = {
+                factor = 0
+                2032 = {
+                    owner = {
+                        is_secondary_power = no
+                        is_greater_power = no
+                    }
+                }
+            }
+            modifier = {
+                factor = 0
+                2045 = {
+                    owner = {
+                        is_secondary_power = no
+                        is_greater_power = no
+                    }
+                }
+            }
+        }
+    }
+	ionian_lose_accepted_cultures = {
+        potential = {
+            ai = yes
+            is_cultural_union = no
+            OR = {
+                ION = {
+                    NOT = { has_country_flag = normalized_cultures }
+                    OR = {
+                        accepted_culture = british
+                        accepted_culture = north_italian
+                    }
+                    OR = {
+                        any_owned_province = { NOT = { is_core = ION } }
+                        exists = no
+                    }
+                }
+                GRE = {
+                    NOT = { has_country_flag = normalized_cultures }
+                    OR = {
+                        accepted_culture = british
+                        accepted_culture = north_italian
+                    }
+                }
+                HAW = {
+                    NOT = { has_country_flag = normalized_cultures }
+                    accepted_culture = yankee
+                    OR = {
+                        any_owned_province = { NOT = { is_core = HAW } }
+                        NOT = { pop_majority_culture = polynesian }
+                        exists = no
+                    }
+                }
+            }
+        }
+
+        allow = {
+        }
+
+        effect = {
+            any_country = {
+                limit = {
+                    tag = ION
+                    OR = {
+                        accepted_culture = british
+                        accepted_culture = north_italian
+                    }
+                    OR = {
+                        any_owned_province = { NOT = { is_core = ION } }
+                        exists = no
+                    }
+                }
+                set_country_flag = normalized_cultures
+                remove_accepted_culture = british
+                remove_accepted_culture = north_italian
+            }
+
+            any_country = {
+                limit = {
+                    tag = GRE
+                    OR = {
+                        accepted_culture = british
+                        accepted_culture = north_italian
+                    }
+                }
+                set_country_flag = normalized_cultures
+                remove_accepted_culture = british
+                remove_accepted_culture = north_italian
+            }
+
+            any_country = {
+                limit = {
+                    tag = HAW
+                    accepted_culture = yankee
+                    OR = {
+                        any_owned_province = { NOT = { is_core = HAW } }
+                        NOT = { pop_majority_culture = polynesian }
+                        exists = no
+                    }
+                }
+                set_country_flag = normalized_cultures
+                remove_accepted_culture = yankee
+            }
+        }
+    }
+}
