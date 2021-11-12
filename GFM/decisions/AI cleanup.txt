@@ -970,26 +970,6 @@ political_decisions = {
             }
         }
     }
-	eic_transfer_money_to_eng = {
-        potential = {
-            tag = EIC
-            ai = yes
-            money = 100001
-            ENG = { NOT = { money = 50000 } }
-        }
-
-        allow = {
-        }
-
-        effect = {
-            treasury = -100000
-            ENG = {
-                treasury = 100000
-            }
-        }
-
-        ai_will_do = { factor = 1 }
-    }
 	clean_up_ai_eic = {
         picture = anglification
         potential = {
@@ -997,14 +977,22 @@ political_decisions = {
             exists = yes
             ai = yes
 			OR = {
-				exists = ENL
-				exists = ENG
+				AND = {
+					OR = {
+						exists = ENL
+						exists = ENG
+					}
+					OR = {
+						has_global_flag = sepoy_rebellion
+						year = 1862
+						NOT = { government = colonial_company }
+					}
+				}
+				AND = {
+					money = 100001
+					ENG = { NOT = { money = 50000 } }
+				}
 			}
-            OR = {
-                has_global_flag = sepoy_rebellion
-                year = 1862
-                NOT = { government = colonial_company }
-            }
         }
 
         allow = {
@@ -1012,21 +1000,50 @@ political_decisions = {
         }
 
         effect = {
-			any_country = {	
+			any_country = {
 				limit = {
-					exists = ENG
+					tag = EIC
+					THIS = { tag = EIC }
+					exists = yes
+					OR = {
+						ENL = { exists = yes }
+						ENG = { exists = yes }
+					}
+					OR = {
+						has_global_flag = sepoy_rebellion
+						year = 1862
+						NOT = { government = colonial_company }
+					}
 				}
-				THIS = {
-					ENG = { inherit = EIC }
+				any_country = {	
+					limit = {
+						exists = ENG
+					}
+					THIS = {
+						ENG = { inherit = EIC }
+					}
+				}
+				any_country = {
+					limit = {
+						exists = ENL
+					}
+					THIS = {
+						ENL = { inherit = EIC }
+					}
 				}
 			}
 			
 			any_country = {
 				limit = {
-					exists = ENL
+					tag = EIC
+					THIS = { tag = EIC }
+					exists = yes
+					money = 100001
+					ENG = { NOT = { money = 50000 } }
 				}
-				THIS = {
-					ENL = { inherit = EIC }
+				treasury = -100000
+				ENG = {
+					treasury = 100000
 				}
 			}
         }
