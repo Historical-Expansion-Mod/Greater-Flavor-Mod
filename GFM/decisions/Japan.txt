@@ -81,7 +81,12 @@ political_decisions = {
 			NOT = { has_global_flag = harris_treaty_accepted } 
 		} 	
 		
-		allow = { war = no } 
+		allow = { 
+			war = no 
+			NOT = { has_country_flag = negotiate_unequal_treaty_TKG } 
+			NOT = { CLN = { has_country_flag = japan_has_been_pressured } } 
+		
+		} 
 		
 		effect = { 
 			TKG = { country_event = 91185 } 
@@ -445,29 +450,34 @@ political_decisions = {
 				civilized = no 
 				OR = { 
 					has_country_flag = caved_to_commodore_perry
-					NOT = { has_country_modifier = uncivilized_isolationism } 
-					NOT = { has_country_modifier = sakoku } 
-				} 
-			}
+					has_country_flag = surrendered_to_perry 
+					AND = { 
+						NOT = { has_country_modifier = uncivilized_isolationism } 
+						NOT = { has_country_modifier = sakoku } 
+
+					} 
+				}
+			} 	
 			NOT = { tag = FRA } 
 			NOT = { tag = USA } 
 			NOT = { tag = US2 } 
 			NOT = { has_global_flag = boshin_war } 
 			NOT = { has_global_flag = boshin_war_has_happened }	
-		} 
+		}
 		
 		allow = {
 			war = no
 			NOT = { has_country_flag = negotiate_unequal_treaty_TKG } 
 			NOT = { has_country_flag = negotiated_ansei_treaty } 
 			NOT = { has_country_flag = failed_ansei_treaty } 
-			NOT = { CLN = { has_country_flag = japan_has_been_pressured } }
+			NOT = { CLN = { has_country_flag = japan_has_been_pressured } } 
 		} 
 	
 		effect = { 
 			set_country_flag = negotiated_ansei_treaty 
 			TKG = { country_event  = 21132 } 
 		}
+		
 		ai_will_do = { factor = 1 } 
 	}
 	
@@ -873,7 +883,7 @@ political_decisions = {
             }
 			country_event = 899094
 		} 
-		ai_will_do = { factor = 1 }
+		ai_will_do = { factor = 0.1 }
 	} 
 	
     meiji_constitution = {
@@ -1053,6 +1063,7 @@ political_decisions = {
         }
     }
 
+    
     annex_korea = {
         potential = {
             OR = {
@@ -1066,12 +1077,13 @@ political_decisions = {
         }
 
         allow = {
+			nationalism_n_imperialism = yes 
             NOT = { war_with = KOR    }
             NOT = { truce_with = KOR }
             OR = {
                 AND = {
                     is_our_vassal = KOR
-                    year = 1910
+					total_amount_of_ships = 40
                 }
                 KOR = {
                     civilized = yes
@@ -1589,7 +1601,7 @@ political_decisions = {
         }
 
         ai_will_do = {
-            factor = 1
+            factor = 0.1
             modifier = {
                 factor = 0
                 OR = {
@@ -1674,7 +1686,7 @@ political_decisions = {
                 add_core = TAI
                 remove_core = FJN
                 change_province_name = "Tainan Cho"
-                state_scope = { change_region_name = "Takasago" }
+                state_scope = { change_region_name = "Taiwan" }
             }
             TAI = { government = colonial_company add_accepted_culture = japanese }
             set_global_flag = taiwan_administration
@@ -2342,7 +2354,7 @@ political_decisions = {
     }
 	
 	japanese_rename_korea = {
-		picture = abolish_the_han_system
+		picture = korea_map 
 		potential = {
 			primary_culture = japanese
 			KOR = { exists = no }
@@ -2412,7 +2424,7 @@ political_decisions = {
 				limit = { province_id = 1621 }
 				1621 = { 
 					change_province_name = "Kanko"
-					state_scope = { change_region_name = "Shariin" }
+					state_scope = { change_region_name = "Kanko" }
 				}
 				1629 = { change_province_name = "Genzan" }
 				1623 = { change_province_name = "Joshin" }
@@ -2527,5 +2539,95 @@ political_decisions = {
 		}
 		ai_will_do = { factor = 1 }
 	}
+	
+	rename_manchuria = { 
+		picture = manchuria_map 
+		potential = { 
+			OR = { 
+				tag = JAP
+				tag = TKG 
+			} 
+			MCK = { exists = no } 
+			owns = 1479
+			owns = 1480
+			owns = 1481
+			owns = 1552
+			owns = 1553
+			owns = 1554
+			owns = 1555
+			owns = 3440
+			owns = 1533 
+			NOT = { has_global_flag = japanese_rename_manchuria } 
+		} 
+		
+		allow = { 
+			war = no 
+			nationalism_n_imperialism = yes 
+		}
+
+		effect = { 
+			1479 = { 
+				change_province_name = "Shin'yo"
+				state_scope = { change_region_name = "Houtenshu" } 
+			}
+			1480 = { change_province_name = "Kinshu" } 
+			1481 = { change_province_name = "Ryojun" } 
+			1552 = { 
+				change_province_name = "Chichiharu" 
+				state_scope =  { change_region_name = "Kokuryuko" } 
+			} 
+			1554 = { change_province_name = "Neikoto" } 
+			1555 = { change_province_name = "Kitsurin" } 
+			3440 = { change_province_name = "Enben" } 
+			1533 = { change_province_name = "Tsuryo" } 
+			set_global_flag = japanese_rename_manchuria
+		
+		} 
+	} 
+	
+		rename_manchuria_china = { 
+			picture = manchuria_map 
+			potential = { 
+				OR = { 
+					primary_culture = han_chinese
+					primary_culture = manchu 
+				} 
+				owns = 1479
+				owns = 1480
+				owns = 1481
+				owns = 1552
+				owns = 1553
+				owns = 1554
+				owns = 1555
+				owns = 3440
+				owns = 1533 
+				has_global_flag = japanese_rename_manchuria
+				NOT = { has_global_flag = manchuria_restored } 
+			} 
+			
+			allow = { 
+				war = no 
+			}
+
+			effect = { 
+				1479 = { 
+					change_province_name = "Mukden"
+					state_scope = { change_region_name = "Fengtian" } 
+				}
+				1480 = { change_province_name = "Jinzhou" } 
+				1481 = { change_province_name = "Lüshun" } 
+				1552 = { 
+					change_province_name = "Qiqihar" 
+					state_scope =  { change_region_name = "Heilongjiang" } 
+				} 
+				1554 = { change_province_name = "Ninguta" } 
+				1555 = { change_province_name = "Jilin" } 
+				3440 = { change_province_name = "Yanbian" } 
+				1533 = { change_province_name = "Tongliao" } 
+				clr_global_flag = japanese_rename_manchuria
+				set_global_flag = manchuria_restored 
+			
+			} 
+		}	 
 
 }
