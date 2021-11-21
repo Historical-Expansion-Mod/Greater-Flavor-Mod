@@ -3,9 +3,7 @@ country_event = {
 	title = "EVTNAME784518"
 	desc = "EVTDESC784518"
 	picture = "japanese_fleet_attacks_russian_fleet"
-	
 	major = yes 
-		
 	is_triggered_only = yes 
 		
 	option = { 
@@ -18,7 +16,6 @@ country_event = {
 				call_ally = no 
 			}
 		} 
-		set_global_flag = russo_japanese_war 
 	}
 } 
 
@@ -36,14 +33,12 @@ country_event = {
 			tag = JAP 
 		} 
 		war_with = RUS 
-		1486 = {
+		1481 = {
 			owned_by = RUS 
 			controlled_by = THIS 	
 		} 
 		has_global_flag = russo_japanese_war 
 		NOT = { has_country_modifier = aggression_against_russia } 
-		NOT = { has_global_flag = russo_japanese_war_end } 
-	
 	} 
 
 	option = { 
@@ -66,10 +61,6 @@ country_event = {
 	option = { 
 		name = "We are not finished here!" 
 		war_exhaustion = 40
-		any_pop = { 
-			militancy = 2
-		} 
-		RUS = { country_event = 784521 } 
 		
 		ai_chance = { 
 			factor = 0.2 
@@ -104,19 +95,58 @@ country_event = {
 	
 	option = { 
 		name = "This is reasonable." 
-		1481 = { secede_province = FROM } 
-		FROM = { 
-			any_neighbor_province = { 
-				limit = { 
-					region = JAP_1086 
-					owner = RUS 
-				} 
-				annex_to = FROM 
-				add_core = FROM 
-				remove_core = RUS 
-			} 
-		} 
-		end_war = FROM 
+		any_owned = {
+			limit = {
+				owner = {
+					tag = RUS
+					war_with = TKG
+				}
+				OR = {
+					province_id = 1089
+					province_id = 1088
+				}
+			}
+			secede_province = TKG
+			add_core = TKG
+			remove_core = RUS 
+		}
+		any_owned = {
+			limit = {
+				owner = {
+					tag = RUS
+					war_with = TKG
+				}
+				is_core = CHI
+			}
+			secede_province = TKG
+		}
+		any_owned = {
+			limit = {
+				owner = {
+					tag = RUS
+					war_with = JAP
+				}
+				OR = {
+					province_id = 1089
+					province_id = 1088
+				}
+			}
+			secede_province = JAP
+			add_core = JAP
+			remove_core = RUS 
+		}
+		any_owned = {
+			limit = {
+				owner = {
+					tag = RUS
+					war_with = JAP
+				}
+				is_core = CHI
+			}
+			secede_province = JAP
+		}
+		end_war = TKG
+		end_war = JAP
 		prestige = -30 
 		any_pop = { 
 			militancy = 3 
@@ -185,6 +215,7 @@ country_event = {
 		name = "We have done the impossible!"
 		set_global_flag = russo_japanese_war_end_japanese_victory
 		prestige = 30 
+		clr_global_flag = russo_japanese_war
 	} 
 } 
 
@@ -198,7 +229,6 @@ country_event = {
 	
 	option = { 
 		name = "They dig their graves deeper and deeper."
-		set_global_flag = continued_japanese_aggression
 	} 
 } 
 
@@ -215,57 +245,48 @@ country_event = {
 			war_with = TKG
 			war_with = JAP 
 		}
-		OR = { 
-			NOT = { 1486 = { controlled_by = TKG } } 
-			NOT = { 1486 = { controlled_by = JAP } } 
-		} 
-		OR = { 
+		NOT = { 1481 = { controlled_by = TKG } } 
+		NOT = { 1481 = { controlled_by = JAP } } 
+		NOT = {
 			TKG = { 
-				NOT = { has_country_modifier = aggression_against_russia } 
+				has_country_modifier = aggression_against_russia
 			} 
+		}
+		NOT = {
 			JAP = { 
-				NOT = { has_country_modifier = aggression_against_russia } 
+				has_country_modifier = aggression_against_russia
 			}
-		} 
-		NOT = { has_global_flag = russo_japanese_war_end } 
+		}
 	} 
 
 	option = { 
 		name = "They are defeated. We should seek peace."
 		any_country = { 
 			limit = { 
-				war_with = THIS 
-				primary_culture = japanese 
-				casus_belli = cut_down_to_size_no_infamy 
+				OR = {
+					tag = TKG
+					tag = JAP
+				}
+				war_with = THIS
 			} 
 			country_event = 784524 
 		} 	
-			ai_chance = { 
-				factor = 0.75
-				modifier = {
-					factor = 1
-					is_greater_power = yes
-				} 
-				modifier = { 
-					factor = 2
-					war_exhaustion = 20 
-				} 
+		ai_chance = { 
+			factor = 0.75
+			modifier = {
+				factor = 1
+				is_greater_power = yes
 			} 
+			modifier = { 
+				factor = 2
+				war_exhaustion = 20 
+			} 
+		} 
 	} 
 	
 	option = { 
-		name = "Continue slaughtering the Japanese scum!"
+		name = "No quarter will be given!"
 		war_exhaustion = 40 
-		any_pop = { militancy = 1 } 
-		any_country = { 
-			limit = { 
-				war_with = THIS 
-				primary_culture = japanese 
-				casus_belli = cut_down_to_size_no_infamy 
-			} 
-			country_event = 784525 
-		}  
-		set_global_flag = continued_russian_aggression 
 		
 		ai_chance = { 
 			factor = 0.2 
@@ -311,20 +332,34 @@ country_event = {
 	option = { 
 		name = "Unfortunately, this is our best option."
 		end_war = RUS 
-		any_owned_province = { 
-			limit = { 
-				region = JAP_1088
-			} 
-			secede_province = FROM 
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 1089
+					province_id = 1088	
+					province_id = 1087
+					province_id = 1086
+				}
+			}
+			secede_province = RUS
+			add_core = RUS
+			remove_core = THIS 
 		}
-		diplomatic_influence = { who = KOR value = -100 } 
-		remove_fro
+		diplomatic_influence = { who = KOR value = -400 } 
+		any_country = {
+			limit = {
+				tag = KOR
+				vassal_of = THIS
+				exists = yes
+			}
+			THIS = { release_vassal = KOR }
+		}
+		RUS = { diplomatic_influence = { who = KOR value = 400 } }
 		prestige = -30 
 		any_pop = { 
 			militancy = 3 
 		}
 		FROM = { country_event = 784525 }
-		set_global_flag = russo_japanese_war_end
 		
 		ai_chance = { 
 		factor = 0.5
@@ -346,9 +381,6 @@ country_event = {
 	option = { 
 		name = "We are battered, but not defeated!"
 		war_exhaustion = 40 
-		any_pop = { 
-			militancy = 1 
-		} 
 		FROM = { country_event = 784526 } 
 		
 		ai_chance = { 
@@ -368,10 +400,10 @@ country_event = {
 			modifier = { 
 				factor = 1.5
 				any_owned_province = { 
-					limit = { 
+					OR = {
 						region = JAP_1088
 						region = JAP_1086
-					} 
+					}
 					controlled_by = FROM 
 					NOT = { province_control_days = 30 } 
 				} 
@@ -392,7 +424,7 @@ country_event = {
 	option = { 
 		name = "Smart choice."
 		prestige = 30 
-		set_global_flag = russo_japanese_war_end
+		clr_global_flag = russo_japanese_war
 	}
 }
 
@@ -406,7 +438,6 @@ country_event = {
 	
 	option = { 
 		name = "They fight on futilely."
-		set_global_flag = continued_russian_aggresion
 	} 
 }
 
@@ -415,25 +446,13 @@ country_event = {
 	title = "EVTNAME784527" 
 	desc = "EVTDESC784527"
 	picture = "japan_peace_negotiations"
-	
 	is_triggered_only = yes 
 	
 	option = { 
-		name = "Sakhalin, the Kurils, Outer Manchuria, and any Chinese or Korean territory. §RGain 5 infamy§W"
-		RUS = { 
-			
-			any_owned_province = { 
-				limit = { 
-					region = JAP_1086
-					region = CHI_1082
-				} 
-				secede_province = FROM 
-			} 
-		} 
+		name = "Sakhalin, the Kurils, Outer Manchuria, Kamchatka and any Chinese or Korean territory. §RGain 5 infamy§W"
 		badboy = 5 
 		prestige = 20 
 		RUS = { country_event = 784528 }
-		set_country_flag = wants_to_annex_russian_east
 		
 		ai_chance = { 
 			factor = 0.5 
@@ -454,62 +473,32 @@ country_event = {
 	
 	option = { 
 		name = "We shall take Russia's Pacific coastline. §RGain 10 infamy§W" 
-		RUS = { 
-			148
-			any_owned_province = { 
-				limit = { 
-					region = JAP_1086
-					region = CHI_1082
-					region = RUS_1071
-					region = RUS_1072
-					region = RUS_1074
-					region = RUS_2618
-				}
-					secede_province = FROM 
+		badboy = 10 
+		prestige = 30 
+		RUS = { country_event 784529 } 
+		
+		ai_chance = { 
+			factor = 0.4 
+			modifier = { 
+				factor = 2
+				badboy = 5
 			}
-		} 	
-			badboy = 10 
-			prestige = 30 
-			RUS = { country_event 784529 } 
-			set_country_flag = wants_to_annex_russian_east
-			
-			ai_chance = { 
-				factor = 0.4 
-				modifier = { 
-					factor = 2
-					badboy = 5
-				}
-				modifier = { 
-					factor = 0 
-					badboy = 15 
-				}
-				modifer = { 
-					factor = 2.5 
-					badboy = 0 
-				}
+			modifier = { 
+				factor = 0 
+				badboy = 15 
 			}
+			modifer = { 
+				factor = 2.5 
+				badboy = 0 
+			}
+		}
 	}
 
 	option = { 
-		name = "Russia shall no longer have a presence in the East Asia nor the Pacific. §RGain 20 infamy§W" 
-		RUS = { 
-			any_owned_province = { 
-				limit = { 
-					region = JAP_1086 
-					region = CHI_1082
-					region = RUS_1071
-					region = RUS_1072
-					region = RUS_1074
-					region = RUS_1079
-					region = RUS_2618
-				} 
-				secede_province = THIS  
-			}
-		}
-		prestige = 40 
-		badboy = 20
+		name = "Russia shall no longer have a presence in the East Asia nor the Pacific. §RGain 15 infamy§W" 
+		prestige = 40
+		badboy = 15
 		RUS = { country_event = 784530 } 
-		set_country_flag = wants_to_annex_russian_east
 		
 		ai_chance = { 
 			factor = 0.4
@@ -526,7 +515,7 @@ country_event = {
 }
 
 country_event = { 
-	id = 784528	#Japan demands Port Arthur, Outer Manchuria, and Sakhalin 
+	id = 784528	#Japan demands Port Arthur, Outer Manchuria, Kamchatka and Sakhalin 
 	title = "EVTNAME784528" 
 	desc = "EVTDESC784528"
 	picture = "japan_peace_negotiations"
@@ -536,6 +525,64 @@ country_event = {
 	
 	option = { 
 		name = "This is reasonable for our humiliating defeat."
+		random_owned = {
+			limit = {
+				owner = {
+					tag = RUS
+					TKG = { exists = yes }
+				}
+			}
+			THIS = {
+				any_owned = {
+					limit = {
+						OR = {
+							is_core = CHI
+							is_core = KOR
+							is_core = JAP
+							is_core = TKG
+							province_id = 1087
+							province_id = 1088
+							province_id = 1089
+							province_id = 1086
+							province_id = 1074
+							province_id = 2633
+							province_id = 1083
+							province_id = 1082
+						}
+					} 
+					secede_province = TKG 
+				} 
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					tag = RUS
+					JAP = { exists = yes }
+				}
+			}
+			THIS = {
+				any_owned = {
+					limit = {
+						OR = {
+							is_core = CHI
+							is_core = KOR
+							is_core = JAP
+							is_core = TKG
+							province_id = 1087
+							province_id = 1088
+							province_id = 1089
+							province_id = 1086
+							province_id = 1074
+							province_id = 2633
+							province_id = 1083
+							province_id = 1082
+						}
+					} 
+					secede_province = JAP
+				} 
+			}
+		}
 		prestige = -20 
 		any_pop = { 
 			militancy = 2 
@@ -544,7 +591,7 @@ country_event = {
 }   
 
 country_event = { 
-	id = 784529 #Japan demands Port Arthur, Sakhalin, Outer Manchuria, and Kamchatka
+	id = 784529 #Japan demands Port Arthur, Sakhalin, Outer Manchuria, Kamchatka and the Pacific Coast
 	title = "EVTNAME784529"
 	desc = "EVTDESC784529"
 	picture = "japan_peace_negotiations"
@@ -553,7 +600,72 @@ country_event = {
 	
 	option = { 
 		name = "Fair enough."
-		prestige = -30 
+		prestige = -30 		
+				
+		random_owned = {
+			limit = {
+				owner = {
+					tag = RUS
+					TKG = { exists = yes }
+				}
+			}
+			THIS = {
+				any_owned = {
+					limit = {
+						OR = {
+							is_core = CHI
+							is_core = KOR
+							is_core = JAP
+							is_core = TKG
+							is_core = KAM
+							province_id = 1087
+							province_id = 1088
+							province_id = 1089
+							province_id = 1086
+							province_id = 1083
+							province_id = 1082
+							province_id = 2617
+							province_id = 1085
+							province_id = 1084
+						}
+						NOT = { is_core = BRY }
+					} 
+					secede_province = TKG 
+				} 
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					tag = RUS
+					JAP = { exists = yes }
+				}
+			}
+			THIS = {
+				any_owned = {
+					limit = {
+						OR = {
+							is_core = CHI
+							is_core = KOR
+							is_core = JAP
+							is_core = TKG
+							is_core = KAM
+							province_id = 1087
+							province_id = 1088
+							province_id = 1089
+							province_id = 1086
+							province_id = 1083
+							province_id = 1082
+							province_id = 2617
+							province_id = 1085
+							province_id = 1084
+						}
+						NOT = { is_core = BRY }
+					} 
+					secede_province = JAP
+				} 
+			}
+		}
 		any_pop = { 
 			militancy = 3
 		}
@@ -574,6 +686,78 @@ country_event = {
 		prestige = -40
 		any_pop = { 
 			militancy = 4
+		}		
+		random_owned = {
+			limit = {
+				owner = {
+					tag = RUS
+					TKG = { exists = yes }
+				}
+			}
+			THIS = {
+				any_owned = {
+					limit = {
+						OR = {
+							is_core = CHI
+							is_core = KOR
+							is_core = JAP
+							is_core = TKG
+							is_core = KAM
+							is_core = BRY
+							is_core = LSK
+							province_id = 2645
+							province_id = 2696
+							province_id = 2644
+							province_id = 1087
+							province_id = 1088
+							province_id = 1089
+							province_id = 1086
+							province_id = 1083
+							province_id = 1082
+							province_id = 2617
+							province_id = 1085
+							province_id = 1084
+						}
+					} 
+					secede_province = TKG 
+				} 
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					tag = RUS
+					JAP = { exists = yes }
+				}
+			}
+			THIS = {
+				any_owned = {
+					limit = {
+						OR = {
+							is_core = CHI
+							is_core = KOR
+							is_core = JAP
+							is_core = TKG
+							is_core = KAM
+							is_core = BRY
+							is_core = LSK
+							province_id = 2645
+							province_id = 2696
+							province_id = 2644
+							province_id = 1087
+							province_id = 1088
+							province_id = 1089
+							province_id = 1086
+							province_id = 1083
+							province_id = 1082
+							province_id = 2617
+							province_id = 1085
+							province_id = 1084
+						}
+					} 
+					secede_province = JAP
+				} 
+			}
 		}
 	} 
 }
@@ -588,62 +772,50 @@ country_event = {
 	
 	option = { 
 		name = "Sakhalin, Tsushima, and Hokkaido will be ours. §RGain 5 infamy§W"
-		prestige = 30 
-		badboy = 5 
-		any_country = { 
-			limit = { primary_culture = japanese }
-			any_owned_province = { 
-				limit = { 
-					region = JAP_1086
-					region = JAP_1088
-				} 
-				secede_province = THIS 
+		prestige = 20
+		any_country = {
+			limit = {
+				OR = {
+					tag = JAP
+					tag = TKG
+				}
+				exists = yes
 			}
-			2589 = { secede_province = THIS } 
-			diplomatic_influence = { who = KOR value = -100 } 
-			country_event = 784532 
+			country_event = 784532
 		}
 		badboy = 5 
 	}
 	
 	option = { 
 		name = "Sakhalin, Tsushima, Hokkaido, and Taiwan. §RGain 10 infamy§W"
-		any_country = { 
-			limit = { primary_culture = japanese } 
-			any_owned_province = { 
-				limit = { 
-					region = JAP_1086 
-					region = JAP_1088
-				}
-				secede_province = THIS 
-			}
-			2589 = { secede_province = THIS } 
-			diplomatic_influence = { who = KOR value = -100 } 
-			country_event = 784533	
-		} 
+		prestige = 25
 		badboy = 10
-		set_country_flag = wants_to_annex_taiwan
+		any_country = {
+			limit = {
+				OR = {
+					tag = JAP
+					tag = TKG
+				}
+				exists = yes
+			}
+			country_event = 784533
+		}
 	} 
 	
 	option = { 
-		name = "All of the above and any Chinese and Korean territory. §RGain 20 infamy§W"
-		prestige = 50
-		badboy = 20 
-		any_country = { 
-			limit = { primary_culture = japanese } 
-			any_owned_province = { 
-				limit = { 
-					region = JAP_1086
-					region = JAP_1088
+		name = "All of the above and any Chinese and Korean territory. §RGain 15 infamy§W"
+		prestige = 30
+		badboy = 15
+		any_country = {
+			limit = {
+				OR = {
+					tag = JAP
+					tag = TKG
 				}
-				secede_province = THIS 
+				exists = yes
 			}
-			2589 = { secede_province = THIS } 
-			diplomatic_influence = { who = KOR value = -100 } 
 			country_event = 784534
 		}
-		badboy = 20
-		set_country_flag = wants_to_annex_chinese_and_korean_territories
 	}
 }
 
@@ -661,6 +833,24 @@ country_event = {
 		any_pop = { 
 			militancy = 2 
 		} 
+		any_owned = { 
+			limit = { 
+				OR = {
+					province_id = 1642
+					province_id = 1643
+					province_id = 1644
+					province_id = 1086
+					province_id = 1087
+					province_id = 1089
+					province_id = 1088
+					province_id = 2589
+					is_core = RUS
+				}
+			} 
+			secede_province = RUS 
+		} 
+		diplomatic_influence = { who = KOR value = -400 } 
+		RUS = { diplomatic_influence = { who = KOR value = -400 } }
 	} 
 }   
 
@@ -675,6 +865,28 @@ country_event = {
 	option = {
 		name = "Curses."
 		prestige = -30 
+		any_owned = { 
+			limit = { 
+				OR = {
+					province_id = 1642
+					province_id = 1643
+					province_id = 1644
+					province_id = 1086
+					province_id = 1087
+					province_id = 1089
+					province_id = 1088
+					province_id = 2589
+					province_id = 2406
+					province_id = 2681
+					province_id = 1485
+					province_id = 2562
+					is_core = RUS
+				}
+			} 
+			secede_province = RUS 
+		} 
+		diplomatic_influence = { who = KOR value = -400 } 
+		RUS = { diplomatic_influence = { who = KOR value = -400 } }
 		any_pop = { 
 			militancy = 3 
 		}
@@ -695,153 +907,25 @@ country_event = {
 		any_pop = { 
 			militancy = 4 
 		}
-	}
-}
-
-country_event = { 
-	id = 784535 #Cleanup event: Russia gains Taiwan if second treaty is chosen
-	title = "EVTNAME784535"
-	desc = "EVTDESC784535"
-	picture = "formosa_island"
-	
-	trigger = {
-		tag = RUS 
-		has_country_flag = wants_to_annex_taiwan 
-		has_global_flag = taiwan_administration
-		JAP = { any_owned = { core = TAI } } 
-		NOT = { has_global_flag = russian_formosa } 
-	}
-
-	option = { 
-		name = "Long live Russian Formosa!"
-		681 = {
-				annex_to = THIS 
-                change_province_name = "Taipei"
-        }
-		2562 = {
-			annex_to = THIS 
-               change_province_name = "Taitung"
-		}
-        2406 = {
-                annex_to = THIS 
-                change_province_name = "Penghu"
-        }
-        1485 = {
-            annex_to = THIS 
-            change_province_name = "Tainan"
-            state_scope = { change_region_name = "Formosa" }
-        }
-		set_global_flag = russian_formosa
-		TAI = { remove_accepted_culture = japanese } 
-		clr_global_flag = taiwan_administration
-		clr_country_flag = wants_to_annex_taiwan 
-	}
-
-	mean_time_to_happen = { days = 1 } 
-} 
-
-
-country_event = { 
-	id = 784536 #Cleanup event: Russia gains all former Japanese-controlled Chinese and Korean territories 
-	title = "EVTNAME784536"
-	desc = "EVTDESC784536"
-	picture = "china_and_korea_map"
-	
-	trigger = { 
-		tag = RUS
-		has_global_flag = russo_japanese_war_end
-		has_country_flag = wants_to_annex_chinese_and_korean_territories
-		has_global_flag = taiwan_administration 
-		JAP = { any_owned = { core = KOR } } 
-		JAP = { any_owned = { core = CHI } } 
-		NOT = { has_global_flag = russia_steals_more_japanese_colonies } 
-	}
-	
-	option = { 
-		name = "Our empire grows beyond our wildest dreams!"
-		any_country = { 
+		any_owned = { 
 			limit = { 
-				primary_culture = japanese
-				has_country_flag = japanese_defeat_russo_japanese_war 
-			}
-			any_owned_province = { 
-				limit = { 
-					core = KOR 
-					core = CHI 
+				OR = {
+					province_id = 1642
+					province_id = 1643
+					province_id = 1644
+					province_id = 1086
+					province_id = 1087
+					province_id = 1089
+					province_id = 1088
+					province_id = 2589
+					is_core = RUS
+					is_core = KOR
+					is_core = CHI
 				}
-				secede_province = THIS 
 			} 
-		}
-		set_global_flag = russia_steals_more_japanese_colonies
-		clr_country_flag = wants_to_annex_chinese_and_korean_territories
+			secede_province = RUS 
+		} 
+		diplomatic_influence = { who = KOR value = -400 } 
+		RUS = { diplomatic_influence = { who = KOR value = -400 } }
 	}
-	
-	mean_time_to_happen = { days = 1 } 
-} 
-
-country_event = { 
-	id = 784537 #Cleanup event: Japan gains all former Russian-controlled East Asian territories
-	title = "EVTNAME784537"
-	desc = "EVTDESC784537"
-	picture = "china_and_korea_map"
-	
-	trigger = { 
-		OR = { 
-			tag = TKG 
-			tag = JAP 
-		}
-		has_country_flag = wants_to_annex_russian_east 	
-		RUS = { any_owned = { core = KOR } } 
-		RUS = { any_owned = { core = CHI } } 
-		RUS = { any_owned = { core = JAP } }
-		has_global_flag = russo_japanese_war_end
-		NOT = { has_global_flag = japan_steals_russian_east } 
-	}
-	
-	option = { 
-		"Nippon banzai!" 
-		RUS = { 
-			any_owned_province = { 
-				limit = { 
-					core = CHI
-					core = KOR 
-					core = JAP 
-				}
-				secede_province = THIS 
-			}
-		}
-		clr_country_flag = wants_to_annex_russian_east
-		set_global_flag = japan_steals_russian_east 
-	}
-	mean_time_to_happen = { days = 1 } 
 }
-
-country_event = { 
-	id = 784538 #Cleanup event: Japan gets Alaska from Russia if they still own it 
-	title = "EVTNAME784538"
-	desc = "EVTDESC784538"
-	picture = "alaska"
-	
-	trigger = { 
-		OR = { 
-			tag = TKG 
-			tag = JAP 
-		}
-		has_global_flag = japan_steals_russian_east 
-		RUS = { any_owned = { core = LSK } } 
-		has_global_flag = russo_japanese_war_end_japanese_victory
-		NOT = { has_global_flag = japan_steals_russian_alaska } 
-	}
-	
-	option = { 
-		"Alaska shall now be known as Sankaido--the circuit of three seas."
-		RUS = { 
-			any_owned_province = {
-				limit = { core = LSK } 
-				secede_province = THIS 
-			}
-		}
-		set_global_flag = japan_steals_russian_alaska 
-	}
-	mean_time_to_happen = { days = 1 } 
-}  	
