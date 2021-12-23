@@ -1,0 +1,248 @@
+#	This exists in order to test/debug Ai modifiers clearly without needing a full dismantlement 
+
+##### Event Modifer Debug #####
+
+country_event = {
+    id = 777770350
+    title = "Chance Test Event Targets"
+    desc = "Target Ai"
+	picture = "Dismantle 3"
+	allow_multiple_instances = yes
+    is_triggered_only = yes
+    option = {
+        name = "USA as Victor, RUS as Defeated"
+		USA = { set_variable = { which = Simulation_Dismantlement_Chair value = 1 } }
+		set_global_flag = Total_One_Victor
+		RUS = { country_event = 777770351 }
+    }
+}
+
+country_event = {
+	id = 777770351
+	title = "AI: Dismantlement Event Trigger Simulation"
+	desc = "AI: Dismantlement Event Trigger Sim"
+	
+	is_triggered_only = yes
+	
+    option = {
+        name = "Very Well"
+		set_variable = { which = Simulation_Major_Defeated value = 1 }
+		any_country = {
+			limit = {
+				any_core = {
+					owner = {
+						OR = {
+							check_variable = { which = Simulation_Major_Defeated value = 0.99 }
+							overlord = { check_variable = { which = Simulation_Major_Defeated value = 0.99 } }
+						}
+					}
+				}
+				exists = no
+				NOT = { check_variable = { which = Simulation_Freedom_Event_Sent value = 0.99 } }
+				NOT = { check_variable = { which = Simulation_Major_Defeated value = 0.99 } }
+			}
+			country_event = 777770352
+			set_variable = { which = Outcome_Required value = 1 }
+			set_variable = { which = Simulation_Freedom_Event_Sent value = 1 }
+			set_variable = { which = Rewritable_State value = 1 }
+		}
+	}
+}
+
+country_event = {
+    id = 777770352
+	#no pic needed
+    title = "Is this what freedom feels like?"
+    desc = "Our freedom is being considered."
+    is_triggered_only = yes
+	
+    option = {
+        name = "Very Well"
+		set_variable = { which = Rewritable_State value = 1 }
+		any_country = {
+			limit = {
+				check_variable = { which = Simulation_Dismantlement_Chair value = 0.99 }
+			}
+			THIS = { set_variable = { which = Freedom_Event_Sent value = 1 } }
+			country_event = 777770353
+		}
+    }
+}
+
+country_event = {
+    id = 777770353
+    title = "What would you like to do with $FROMCOUNTRY$?"
+    desc = "The concept of $FROMCOUNTRY$ is present within the borders of the defeated, should we demand the creation of a $FROMCOUNTRY_ADJ$ state?"
+	picture = "Dismantle 3"
+	allow_multiple_instances = yes
+    is_triggered_only = yes
+    option = {
+        name = "$FROMCOUNTRY$ shall exist (Overwrite new states)"
+		FROM = {
+			set_variable = { which = Freedom_Overwrite value = 1 }
+			country_event = 777770354
+		}
+		create_alliance = FROM
+    }
+    option = {
+        name = "$FROMCOUNTRY$ shall exist"
+		FROM = {
+			set_variable = { which = Freedom_NonOverwrite value = 1 }
+			country_event = 777770354
+		}
+		create_alliance = FROM
+    }
+    option = {
+        name = "Other Victors can say on $FROMCOUNTRY$"
+		FROM = {
+			set_variable = { which = Freedom_Apathy value = 1 }
+			country_event = 777770354
+		}
+    }
+    option = {
+        name = "$FROMCOUNTRY$ shall stay as it is"
+		FROM = {
+			set_variable = { which = Freedom_NonFreedom value = 1 }
+			set_variable = { which = Outcome_Required value = 0 }
+			country_event = 777770354
+		}
+    }
+    option = {
+        name = "$FROMCOUNTRY$ shall be ours"
+		FROM = {
+			set_variable = { which = Freedom_OurFreedom value = 1 }
+			country_event = 777770354
+		}
+    }
+    option = {
+        name = "$FROMCOUNTRY$ shall be our vassal"
+		FROM = {
+			set_variable = { which = Freedom_OurVassal value = 1 }
+			country_event = 777770354
+		}
+    }
+}
+
+country_event = {
+    id = 777770354
+    title = "Bounce Event"
+    desc = "Bouncing"
+    is_triggered_only = yes
+    option = {
+        name = "Very Well"
+		country_event = 777770355
+    }
+}
+
+country_event = {
+    id = 777770355
+    title = "$FROMCOUNTRY$ has made a decision!"
+    desc = "The choice will be passed on to players"
+    is_triggered_only = yes
+    option = {
+        name = "Very Well"
+		country_event = 777770440
+		random_country = {
+			limit = {
+				FROM = { check_variable = { which = Freedom_Overwrite value = 0.99 } } 
+				ai = no
+			}
+			country_event = 777770356
+		}
+		random_country = {
+			limit = {
+				FROM = { check_variable = { which = Freedom_NonOverwrite value = 0.99 } } 
+				ai = no
+			}
+			country_event = 777770356
+		}
+		random_country = {
+			limit = {
+				FROM = { check_variable = { which = Freedom_Apathy value = 0.99 } } 
+				ai = no
+			}
+			country_event = 777770356
+		}
+		random_country = {
+			limit = {
+				FROM = { check_variable = { which = Freedom_NonFreedom value = 0.99 } } 
+				ai = no
+			}
+			country_event = 777770356
+		}
+		random_country = {
+			limit = {
+				FROM = { check_variable = { which = Freedom_OurFreedom value = 0.99 } } 
+				ai = no
+			}
+			country_event = 777770356
+		}
+		random_country = {
+			limit = {
+				FROM = { check_variable = { which = Freedom_OurVassal value = 0.99 } } 
+				ai = no
+			}
+			country_event = 777770356
+		}
+    }
+}
+
+country_event = {
+    id = 777770356
+    title = "Result"
+    desc = "Ai has chosen Release Cores (Overwrite)"
+    is_triggered_only = yes
+    option = {
+        name = "Very Well"
+    }
+}
+
+country_event = {
+    id = 777770357
+    title = "Result"
+    desc = "Ai has chosen Release Cores"
+    is_triggered_only = yes
+    option = {
+        name = "Very Well"
+    }
+}
+
+country_event = {
+    id = 777770358
+    title = "Result"
+    desc = "Ai has chosen Other Victors"
+    is_triggered_only = yes
+    option = {
+        name = "Very Well"
+    }
+}
+
+country_event = {
+    id = 777770359
+    title = "Result"
+    desc = "Ai has chosen To Do Nothing"
+    is_triggered_only = yes
+    option = {
+        name = "Very Well"
+    }
+}
+
+country_event = {
+    id = 777770360 
+    title = "Result"
+    desc = "Ai has chosen to Annex Cores"
+    is_triggered_only = yes
+    option = {
+        name = "Very Well"
+    }
+}
+
+country_event = {
+    id = 777770361
+    title = "Result"
+    desc = "Ai has chosen to Puppet"
+    is_triggered_only = yes
+    option = {
+        name = "Very Well"
+    }
+}
