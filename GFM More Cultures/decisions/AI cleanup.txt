@@ -2718,52 +2718,6 @@ political_decisions = {
 
         ai_will_do = { factor = 1 }
     }
-
-    remove_any_french_cores = {
-        potential = {
-            ai = yes
-            OR = {
-                any_owned_province = { is_core = BOR }
-                any_owned_province = { is_core = FRA }
-                primary_culture = french
-                neighbour = FRA
-                neighbour = BOR
-            }
-        }
-        allow = {
-            OR = {
-                AND = {
-                    FRA = { exists = yes }
-                    BOR = { exists = no }
-                    OR = {
-                        any_owned_province = { is_core = BOR }
-                        FRA = { any_owned_province = { is_core = BOR } }
-                    }
-                }
-                AND = {
-                    BOR = { exists = yes }
-                    FRA = { exists = no }
-                    OR = {
-                        any_owned_province = { is_core = FRA }
-                        BOR = { any_owned_province = { is_core = FRA } }
-                    }
-                }
-            }
-        }
-
-        effect = {
-            random_owned = {
-                limit = { exists = FRA }
-                BOR = { all_core = { remove_core = BOR add_core = FRA } }
-            }
-            random_owned = {
-                limit = { exists = BOR }
-                FRA = { all_core = { remove_core = FRA add_core = BOR } }
-            }
-        }
-
-        ai_will_do = { factor = 1 }
-    }
 	
 	vassal_rebellion = {
         potential = {
@@ -2979,6 +2933,98 @@ political_decisions = {
         potential = {
             ai = yes
             OR = {
+				AND = {
+					primary_culture = japanese
+					NOT = {
+						JAP = { government = parliamentary_republic }
+						JAP = { government = presidential_dictatorship }
+						AND = {
+							government = fascist_dictatorship
+							JAP = {
+								NOT = { government = fascist_dictatorship }
+							}
+						}
+						AND = {
+							government = proletarian_dictatorship
+							JAP = {
+								NOT = { government = proletarian_dictatorship }
+							}
+						}
+						AND = {
+							OR = {
+								government = democracy
+								government = hms_government
+								government = constitutional_empire
+								has_country_flag = Government_Democracy
+							}
+							JAP = {
+								NOT = {
+									OR = {
+										government = democracy
+										government = hms_government
+										government = constitutional_empire
+										has_country_flag = Government_Democracy
+									}
+								}
+							}
+						}
+						AND = {
+							NOT = {
+								OR = {
+									government = democracy
+									government = hms_government
+									government = constitutional_empire
+									has_country_flag = Government_Democracy
+								}
+							}
+							JAP = {
+								OR = {
+									government = democracy
+									government = hms_government
+									government = constitutional_empire
+									has_country_flag = Government_Democracy
+								}
+							}
+						}
+					}
+					NOT = {
+						tag = JAP
+						tag = TKG
+						tag = RYU
+						has_country_flag = unite_with_japan
+					}
+					war = no
+					OR = {
+						in_sphere = JAP
+						sphere_owner = { is_sphere_leader_of = JAP }
+					}
+					JAP = {
+						war = no
+						neighbour = THIS
+						exists = yes
+						has_country_modifier = fukoku_kyohei
+					}
+				}
+				AND = {
+					OR = {
+						AND = {
+							FRA = { exists = yes }
+							BOR = { exists = no }
+							OR = {
+								any_owned_province = { is_core = BOR }
+								FRA = { any_owned_province = { is_core = BOR } }
+							}
+						}
+						AND = {
+							BOR = { exists = yes }
+							FRA = { exists = no }
+							OR = {
+								any_owned_province = { is_core = FRA }
+								BOR = { any_owned_province = { is_core = FRA } }
+							}
+						}
+					}
+				}
 				AND = {
 					OR = {
 						tag = SAR
@@ -3243,6 +3289,135 @@ political_decisions = {
         }
 
         effect = {
+			random_owned = {
+				limit = {
+					owner = {
+						primary_culture = japanese
+						NOT = {
+							JAP = { government = parliamentary_republic }
+							JAP = { government = presidential_dictatorship }
+							government = parliamentary_republic
+							government = presidential_dictatorship
+							AND = {
+								government = fascist_dictatorship
+								JAP = {
+									NOT = { government = fascist_dictatorship }
+								}
+							}
+							AND = {
+								government = proletarian_dictatorship
+								JAP = {
+									NOT = { government = proletarian_dictatorship }
+								}
+							}
+							AND = {
+								OR = {
+									government = democracy
+									government = hms_government
+									government = constitutional_empire
+									has_country_flag = Government_Democracy
+								}
+								JAP = {
+									NOT = {
+										OR = {
+											government = democracy
+											government = hms_government
+											government = constitutional_empire
+											has_country_flag = Government_Democracy
+										}
+									}
+								}
+							}
+							AND = {
+								NOT = {
+									OR = {
+										government = democracy
+										government = hms_government
+										government = constitutional_empire
+										has_country_flag = Government_Democracy
+									}
+								}
+								JAP = {
+									OR = {
+										government = democracy
+										government = hms_government
+										government = constitutional_empire
+										has_country_flag = Government_Democracy
+									}
+								}
+							}
+						}
+						NOT = {
+							tag = JAP
+							tag = TKG
+							tag = RYU
+							has_country_flag = unite_with_japan
+						}
+						war = no
+						OR = {
+							in_sphere = JAP
+							sphere_owner = { is_sphere_leader_of = JAP }
+						}
+						JAP = {
+							war = no
+							neighbour = THIS
+							exists = yes
+							has_country_modifier = fukoku_kyohei
+						}
+					}
+				}
+				owner = {
+					set_country_flag = unite_with_japan
+					random_country = {
+						limit = {
+							tag = JAP
+							ai = yes
+						}
+						inherit = THIS
+					}
+					random_country = {
+						limit = {
+							tag = JAP
+							ai = no
+						}
+						country_event = 60130
+					}
+				}
+			}
+            random_owned = {
+                limit = { 
+					owner = { 
+						FRA = { exists = yes }
+						BOR = { exists = no }
+						OR = {
+							any_owned_province = { is_core = BOR }
+							FRA = { any_owned_province = { is_core = BOR } }
+						}
+					} 
+				}
+                owner = { 
+					BOR = { 
+						all_core = { remove_core = BOR add_core = FRA } 
+					} 
+				}
+            }
+            random_owned = {
+                limit = { 
+					owner = { 
+						BOR = { exists = yes }
+						FRA = { exists = no }
+						OR = {
+							any_owned_province = { is_core = FRA }
+							BOR = { any_owned_province = { is_core = FRA } }
+						}
+					} 
+				}
+                owner = { 
+					FRA = { 
+						all_core = { remove_core = FRA add_core = BOR } 
+					} 
+				}
+            }
 			random_owned = {
 				limit = {
 					owner = {
@@ -3863,115 +4038,6 @@ political_decisions = {
 
         ai_will_do = {
             factor = 1
-        }
-    }
-	
-	unite_with_japan = {
-        potential = {
-            primary_culture = japanese
-            JAP = {
-                exists = yes
-                has_country_modifier = fukoku_kyohei
-            }
-            ai = yes
-            NOT = {
-                tag = JAP
-                tag = TKG
-                tag = RYU
-                has_country_flag = unite_with_japan
-            }
-            war = no
-            OR = {
-                in_sphere = JAP
-                sphere_owner = { is_sphere_leader_of = JAP }
-            }
-            JAP = {
-                war = no
-                neighbour = THIS
-            }
-        }
-
-        allow = {
-        }
-
-        effect = {
-            set_country_flag = unite_with_japan
-            random_country = {
-                limit = {
-                    tag = JAP
-                    ai = yes
-                }
-                inherit = THIS
-            }
-            random_country = {
-                limit = {
-                    tag = JAP
-                    ai = no
-                }
-                country_event = 60130
-            }
-        }
-
-        ai_will_do = {
-            factor = 1
-            modifier = {
-                factor = 0
-                government = fascist_dictatorship
-                JAP = {
-                    NOT = { government = fascist_dictatorship }
-                }
-            }
-            modifier = {
-                factor = 0
-                NOT = { government = fascist_dictatorship }
-                JAP = { government = fascist_dictatorship }
-            }
-            modifier = {
-                factor = 0
-                NOT = { government = proletarian_dictatorship }
-                JAP = { government = proletarian_dictatorship }
-            }
-            modifier = {
-                factor = 0
-                OR = {
-                    government = democracy
-                    government = hms_government
-                    government = constitutional_empire
-					has_country_flag = Government_Democracy
-                }
-                JAP = {
-                    NOT = {
-                        government = democracy
-                        government = hms_government
-                        government = constitutional_empire
-						has_country_flag = Government_Democracy
-                    }
-                }
-            }
-            modifier = {
-                factor = 0
-                JAP = {
-                    OR = {
-                        government = democracy
-                        government = hms_government
-                        government = constitutional_empire
-						has_country_flag = Government_Democracy
-                    }
-                }
-                NOT = {
-                    government = democracy
-                    government = hms_government
-                    government = constitutional_empire
-					has_country_flag = Government_Democracy
-                }
-            }
-            modifier = {
-                factor = 0
-                OR = {
-                    government = presidential_dictatorship
-                    government = parliamentary_republic
-                }
-            }
         }
     }
 
