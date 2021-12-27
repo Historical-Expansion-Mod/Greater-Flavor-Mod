@@ -503,7 +503,7 @@ float4 PixelShader_Far( VS_OUTPUT_WATER_FAR IN ) : COLOR
 	OutColor.b += 0.02;
 	OutColor.r /= 1.88;
 	OutColor.g /= 1.85;
-	OutColor.b /= 1.55;
+	OutColor.b /= 1.25;
 	OutColor.rgb /= 1.35;
 
 	return OutColor * saturate(contour_darken * 0.6 + 0.4);
