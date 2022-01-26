@@ -1,5 +1,5 @@
 #
-# V2ME Cleanup 1.0.1 by Bob Bobington and Dr, configured for GFM
+# V2ME Cleanup 1.0.3b by Bob Bobington and Dr, configured for GFM
 #
 # Features:
 #	
@@ -23,6 +23,9 @@
 #	-Permanent fix to craftsmen exploit/bug, without player interaction
 #	-Dynamically adressing the liquidity crisis, effectively
 #
+# Most Recent Version Change:
+#	-1.0.3b: GFM Version Only, Added Indochina Organization
+#
 
 
 country_event = {
@@ -34,6 +37,85 @@ country_event = {
 	
 	option = {
 		name = "Checking..."
+		random_owned = {
+			limit = {
+				owner = {
+					SWI = {
+						has_country_modifier = neutrality_modifier
+						ai = no
+						OR = {
+							any_greater_power = { military_access = SWI }
+							any_neighbor_country = { NOT = { vassal_of = SWI } military_access = SWI }
+							sphere_owner = { military_access = SWI }
+							AND = {
+								num_of_allies = 1
+								NOT = { NCT = { alliance_with = SWI } }
+							}
+							AND = {
+								num_of_allies = 2
+								NCT = { exists = yes alliance_with = SWI }
+							}
+							war = yes
+						}
+					}
+				}
+			}
+			owner = {
+				any_country = {
+					limit = {
+						exists = yes
+						NOT = { vassal_of = SWI }
+						OR = {
+							military_access = SWI
+							alliance_with = SWI
+						}
+					}
+					relation = { who = SWI value = -125 }
+				}
+				any_country = {
+					limit = {
+						exists = yes
+						alliance_with = SWI
+						NOT = { vassal_of = SWI }
+					}
+					leave_alliance = SWI
+				}
+				any_country = {
+					limit = {
+						exists = yes
+						war_with = SWI
+					}
+					end_war = SWI
+				}
+				any_country = {
+					limit = {
+						exists = yes
+						military_access = SWI
+						NOT = { vassal_of = SWI }
+					}
+					end_military_access = SWI
+				}
+			}
+		}
+		any_country = {
+            limit = {
+				exists = yes
+                civilized = yes
+				has_country_modifier = western_presence
+            }
+            remove_country_modifier = western_presence
+        }
+		
+		any_country = {
+			limit = {
+				ai = no
+				OR = {
+					has_country_flag = preparations_to_kill
+					has_country_flag = preparations_to_kill_lmao
+				}
+			}
+			country_event = 4434
+		}
 		
 		#abolishing serfdom
 		any_country = {
@@ -64,6 +146,31 @@ country_event = {
                 any_pop = { limit = { type = serfs } pop_type = farmers money = 1000 }
             }
         }
+		
+		random_owned = {
+			limit = {
+				owner = {
+					NOT = { has_global_flag = clean_up_france_lost_rhine_crisis }
+					OR = {
+						FRA = { truce_with = PRU has_country_modifier = rhine_crisis }
+						BOR = { truce_with = PRU has_country_modifier = rhine_crisis }
+					}
+					575 = { OR = {owned_by = PRU owned_by = NGF owned_by = GER owned_by = GCF owned_by = AUS owned_by = SGF } }
+					PRU = { is_disarmed = no }
+				}
+			}
+			owner = {
+				set_global_flag = clean_up_france_lost_rhine_crisis
+				random_country = {
+					limit = {
+						primary_culture = french
+						is_greater_power = yes
+						exists = yes
+					}
+					country_event = 99993
+				}
+			}
+		}	
 		
 		#updating missing flags
 		any_country = {
@@ -200,6 +307,112 @@ country_event = {
 	option = {
 		name = "Checking..."
 		
+		random_owned = {
+			limit = {
+				owner = {
+					OR = {
+						1162 = {
+							trade_goods = precious_goods
+							NOT = { has_province_modifier = pearl_season }
+						}
+						1165 = {
+							trade_goods = precious_goods
+							NOT = { has_province_modifier = pearl_season }
+						}
+						1167 = {
+							trade_goods = precious_goods
+							NOT = { has_province_modifier = pearl_season }
+						}
+						2664 = {
+							trade_goods = precious_goods
+							NOT = { has_province_modifier = pearl_season }
+						}
+					}
+				}
+			}
+			owner = {
+				any_country = {
+					limit = { owns = 1162 1162 = { trade_goods = precious_goods NOT = { has_province_modifier = pearl_season } } }
+					1162 = { trade_goods = fruit }
+				}
+				any_country = {
+					limit = { owns = 1165 1165 = { trade_goods = precious_goods NOT = { has_province_modifier = pearl_season } } }
+					1165 = { trade_goods = fish }
+				}
+				any_country = {
+					limit = { owns = 1167 1167 = { trade_goods = precious_goods NOT = { has_province_modifier = pearl_season } } }
+					1167 = { trade_goods = fish }
+				}
+				any_country = {
+					limit = { owns = 2664 2664 = { trade_goods = precious_goods NOT = { has_province_modifier = pearl_season } } }
+					2664 = { trade_goods = fish }
+				}
+			}
+		}
+		
+		random_owned = {
+			limit = {
+				owner = {
+					OR = {
+						1162 = { #Bahrain
+							NOT = { trade_goods = precious_goods }
+							NOT = { has_province_modifier = pearl_season }
+						}
+						1167 = { #Abu Dhabi
+							NOT = { trade_goods = precious_goods }
+							NOT = { has_province_modifier = pearl_season }
+						}
+						1165 = { #Doha
+							NOT = { trade_goods = precious_goods }
+							NOT = { has_province_modifier = pearl_season }
+						}
+
+						2664 = { #Khasab
+							NOT = { trade_goods = precious_goods }
+							NOT = { has_province_modifier = pearl_season }
+						}
+					}
+					month = 4
+					NOT = { month = 6 }
+					NOT = { year = 1909 }
+				}
+			}
+			owner = {
+				1162 = {
+					random_list = {
+						25 = { trade_goods = precious_goods add_province_modifier = { name = pearl_season duration = 93 } }
+						25 = { trade_goods = precious_goods add_province_modifier = { name = pearl_season duration = 124 } }
+						25 = { trade_goods = precious_goods add_province_modifier = { name = pearl_season duration = 155 } }
+						25 = { trade_goods = precious_goods add_province_modifier = { name = pearl_season duration = 186 } }
+					}
+				}
+				1165 = {
+					random_list = {
+						25 = { trade_goods = precious_goods add_province_modifier = { name = pearl_season duration = 93 } }
+						25 = { trade_goods = precious_goods add_province_modifier = { name = pearl_season duration = 124 } }
+						25 = { trade_goods = precious_goods add_province_modifier = { name = pearl_season duration = 155 } }
+						25 = { trade_goods = precious_goods add_province_modifier = { name = pearl_season duration = 186 } }
+					}
+				}
+				1167 = {
+					random_list = {
+						25 = { trade_goods = precious_goods add_province_modifier = { name = pearl_season duration = 93 } }
+						25 = { trade_goods = precious_goods add_province_modifier = { name = pearl_season duration = 124 } }
+						25 = { trade_goods = precious_goods add_province_modifier = { name = pearl_season duration = 155 } }
+						25 = { trade_goods = precious_goods add_province_modifier = { name = pearl_season duration = 186 } }
+					}
+				}
+				2664 = {
+					random_list = {
+						25 = { trade_goods = precious_goods add_province_modifier = { name = pearl_season duration = 93 } }
+						25 = { trade_goods = precious_goods add_province_modifier = { name = pearl_season duration = 124 } }
+						25 = { trade_goods = precious_goods add_province_modifier = { name = pearl_season duration = 155 } }
+						25 = { trade_goods = precious_goods add_province_modifier = { name = pearl_season duration = 186 } }
+					}
+				}
+			}
+		}
+		
 		#clean up crisis tension
 		any_country = {
             limit = {
@@ -278,6 +491,7 @@ country_event = {
                     OR = {
                         is_core = SOK
                         is_core = DND
+						is_core = BGU
                         is_core = TOU
                         is_core = OYO
                         is_core = BEN
@@ -507,9 +721,6 @@ country_event = {
 				civilized = no
 				any_state = { is_colonial = yes }
 				NOT = {
-					tag = EIC
-					tag = EGY
-					tag = TKG
 					UTI = { exists = yes }
 				}
 			}
@@ -525,9 +736,17 @@ country_event = {
 				limit = {
 					is_core = UTI
 				}
-				secede_province = UTI
+				secede_province = THIS
 			}
-			create_vassal = UTI
+			THIS = {
+				any_owned = {
+					limit = {
+						is_core = UTI
+					}
+					secede_province = UTI
+				}
+				create_vassal = UTI
+			}
 			inherit = UTI
 			any_owned = {
 				limit = {
@@ -617,7 +836,10 @@ country_event = {
 						NOT = { has_country_flag = clean_up_colonial_government }
 					}
 					AND = {
-						government = dominion
+						OR = {
+						    government = dominion
+						    government = viceroyalty
+						}
 						NOT = { has_country_flag = Government_Dominion }
 					}
 					AND = {
@@ -714,7 +936,10 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
-						government = dominion
+						OR = { 
+						    government = dominion
+						    government = viceroyalty
+					    }
 					}
 				}
 				owner = { set_country_flag = Government_Dominion }
@@ -901,6 +1126,37 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1923
+						owns = 1924
+						owns = 1925
+						owns = 1926
+						owns = 1927
+						owns = 1928
+						owns = 1929
+						owns = 1930
+						owns = 1931
+						owns = 1932
+						owns = 1933
+						owns = 1934
+						owns = 1935
+						owns = 1936
+						owns = 1937
+						owns = 1942
+						owns = 1943
+						owns = 1944
+						owns = 1950
+						owns = 1951
+						owns = 1953
+						owns = 1948
+						owns = 1938
+						owns = 1939
+						owns = 1940
+						owns = 1941
+						owns = 1946
+						owns = 1945
+						owns = 1947
+						owns = 1949
+						owns = 1952
 						machine_guns = 1
 						has_global_flag = nigeria_organized
 						NOT = {
@@ -927,6 +1183,37 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1923
+						owns = 1924
+						owns = 1925
+						owns = 1926
+						owns = 1927
+						owns = 1928
+						owns = 1929
+						owns = 1930
+						owns = 1931
+						owns = 1932
+						owns = 1933
+						owns = 1934
+						owns = 1935
+						owns = 1936
+						owns = 1937
+						owns = 1942
+						owns = 1943
+						owns = 1944
+						owns = 1950
+						owns = 1951
+						owns = 1953
+						owns = 1948
+						owns = 1938
+						owns = 1939
+						owns = 1940
+						owns = 1941
+						owns = 1946
+						owns = 1945
+						owns = 1947
+						owns = 1949
+						owns = 1952
 						organic_chemistry = 1
 						NOT = { has_country_flag = nigeria_prospected }
 						OR = {
@@ -1072,6 +1359,10 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1899
+						owns = 1893
+						owns = 1898
+						owns = 1894
 						machine_guns = 1
 						has_global_flag = ivory_coast_organized
 						NOT = {
@@ -1098,6 +1389,10 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1899
+						owns = 1893
+						owns = 1898
+						owns = 1894
 						organic_chemistry = 1
 						NOT = { has_country_flag = ivory_coast_prospected }
 						OR = {
@@ -1246,6 +1541,9 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1879
+						owns = 1880
+						owns = 1882
 						machine_guns = 1
 						has_global_flag = guinea_organized
 						NOT = {
@@ -1272,6 +1570,9 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1879
+						owns = 1880
+						owns = 1882
 						organic_chemistry = 1
 						NOT = { has_country_flag = guinea_prospected }
 						OR = {
@@ -1338,6 +1639,12 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1783
+						owns = 2573
+						owns = 1786
+						owns = 1788
+						owns = 1792
+						owns = 1793
 						machine_guns = 1
 						has_global_flag = senegal_organized
 						NOT = {
@@ -1364,6 +1671,12 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1783
+						owns = 2573
+						owns = 1786
+						owns = 1788
+						owns = 1792
+						owns = 1793
 						organic_chemistry = 1
 						NOT = { has_country_flag = senegal_prospected }
 						OR = {
@@ -1422,6 +1735,9 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1812
+						owns = 1808
+						owns = 1810
 						machine_guns = 1
 						has_global_flag = niger_organized
 						NOT = {
@@ -1448,6 +1764,9 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1812
+						owns = 1808
+						owns = 1810
 						organic_chemistry = 1
 						NOT = { has_country_flag = niger_prospected }
 						OR = {
@@ -1591,6 +1910,8 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1959
+						owns = 1961
 						machine_guns = 1
 						has_global_flag = cameroon_organized
 						NOT = {
@@ -1617,6 +1938,8 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1959
+						owns = 1961
 						organic_chemistry = 1
 						NOT = { has_country_flag = cameroon_prospected }
 						OR = {
@@ -1693,6 +2016,8 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1972
+						owns = 1975
 						machine_guns = 1
 						has_global_flag = gabon_organized
 						NOT = {
@@ -1719,6 +2044,8 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1972
+						owns = 1975
 						organic_chemistry = 1
 						NOT = { has_country_flag = gabon_prospected }
 						OR = {
@@ -1909,6 +2236,23 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1985
+						owns = 1982
+						owns = 1984
+						owns = 1986
+						owns = 1994
+						owns = 1992
+						owns = 1993
+						owns = 1995
+						owns = 1990
+						owns = 1991
+						owns = 1996
+						owns = 1997
+						owns = 1998
+						owns = 1987
+						owns = 1988
+						owns = 1989
+						owns = 3296
 						machine_guns = 1
 						has_global_flag = zaire_organized
 						NOT = { has_country_flag = not_congo_primary_culture }
@@ -1936,6 +2280,23 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1985
+						owns = 1982
+						owns = 1984
+						owns = 1986
+						owns = 1994
+						owns = 1992
+						owns = 1993
+						owns = 1995
+						owns = 1990
+						owns = 1991
+						owns = 1996
+						owns = 1997
+						owns = 1998
+						owns = 1987
+						owns = 1988
+						owns = 1989
+						owns = 3296
 						organic_chemistry = 1
 						NOT = { has_country_flag = zaire_prospected }
 						OR = {
@@ -2009,6 +2370,14 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 790
+						owns = 2012
+						owns = 2013
+						owns = 2014
+						owns = 2015
+						owns = 2016
+						owns = 2017
+						owns = 2018
 						machine_guns = 1
 						has_global_flag = zambia_organized
 						NOT = {
@@ -2035,6 +2404,14 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 790
+						owns = 2012
+						owns = 2013
+						owns = 2014
+						owns = 2015
+						owns = 2016
+						owns = 2017
+						owns = 2018
 						organic_chemistry = 1
 						NOT = { has_country_flag = zambia_prospected }
 						OR = {
@@ -2105,6 +2482,16 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 2026
+						owns = 2025
+						owns = 2028
+						owns = 2031
+						owns = 2024
+						owns = 2030
+						owns = 2032
+						owns = 2027
+						owns = 2029
+						owns = 2033
 						machine_guns = 1
 						has_global_flag = kenya_organized
 						NOT = {
@@ -2131,6 +2518,16 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 2026
+						owns = 2025
+						owns = 2028
+						owns = 2031
+						owns = 2024
+						owns = 2030
+						owns = 2032
+						owns = 2027
+						owns = 2029
+						owns = 2033
 						organic_chemistry = 1
 						NOT = { has_country_flag = kenya_prospected }
 						OR = {
@@ -2215,6 +2612,19 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 2044
+						owns = 2043
+						owns = 2046
+						owns = 2042
+						owns = 2036
+						owns = 2048
+						owns = 2045
+						owns = 2037
+						owns = 2047
+						owns = 2039
+						owns = 2040
+						owns = 2041
+						owns = 2038
 						machine_guns = 1
 						has_global_flag = tanzania_organized
 						NOT = {
@@ -2241,6 +2651,19 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 2044
+						owns = 2043
+						owns = 2046
+						owns = 2042
+						owns = 2036
+						owns = 2048
+						owns = 2045
+						owns = 2037
+						owns = 2047
+						owns = 2039
+						owns = 2040
+						owns = 2041
+						owns = 2038
 						organic_chemistry = 1
 						NOT = { has_country_flag = tanzania_prospected }
 						OR = {
@@ -2328,6 +2751,21 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1803
+						owns = 1805
+						owns = 1807
+						owns = 2609
+						owns = 1804
+						owns = 1802
+						owns = 3431
+						owns = 1794
+						owns = 1795
+						owns = 1796
+						owns = 1797
+						owns = 1798
+						owns = 1799
+						owns = 1800
+						owns = 1801
 						machine_guns = 1
 						has_global_flag = mali_organized
 						NOT = {
@@ -2354,6 +2792,21 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1803
+						owns = 1805
+						owns = 1807
+						owns = 2609
+						owns = 1804
+						owns = 1802
+						owns = 3431
+						owns = 1794
+						owns = 1795
+						owns = 1796
+						owns = 1797
+						owns = 1798
+						owns = 1799
+						owns = 1800
+						owns = 1801
 						organic_chemistry = 1
 						NOT = { has_country_flag = mali_prospected }
 						OR = {
@@ -2714,6 +3167,18 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 2003
+						owns = 2004
+						owns = 2005
+						owns = 2008
+						owns = 2006
+						owns = 2007
+						owns = 2010
+						owns = 2011
+						owns = 1999
+						owns = 2001
+						owns = 2002
+						owns = 2009
 						machine_guns = 1
 						has_global_flag = angola_created
 						NOT = {
@@ -2740,6 +3205,18 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 2003
+						owns = 2004
+						owns = 2005
+						owns = 2008
+						owns = 2006
+						owns = 2007
+						owns = 2010
+						owns = 2011
+						owns = 1999
+						owns = 2001
+						owns = 2002
+						owns = 2009
 						organic_chemistry = 1
 						NOT = { has_country_flag = angola_prospected }
 						OR = {
@@ -2825,6 +3302,23 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 2060
+						owns = 2061
+						owns = 2063
+						owns = 2064
+						owns = 2581
+						owns = 2053
+						owns = 2055
+						owns = 2059
+						owns = 2065
+						owns = 2054
+						owns = 2056
+						owns = 2057
+						owns = 2052
+						owns = 2058
+						owns = 2049
+						owns = 2050
+						owns = 2051
 						machine_guns = 1
 						has_global_flag = mozambique_created
 						NOT = {
@@ -2851,6 +3345,23 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 2060
+						owns = 2061
+						owns = 2063
+						owns = 2064
+						owns = 2581
+						owns = 2053
+						owns = 2055
+						owns = 2059
+						owns = 2065
+						owns = 2054
+						owns = 2056
+						owns = 2057
+						owns = 2052
+						owns = 2058
+						owns = 2049
+						owns = 2050
+						owns = 2051
 						organic_chemistry = 1
 						NOT = { has_country_flag = mozambique_prospected }
 						OR = {
@@ -3280,6 +3791,31 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1844
+						owns = 1845
+						owns = 1846
+						owns = 1847
+						owns = 1832
+						owns = 1834
+						owns = 1836
+						owns = 1833
+						owns = 1835
+						owns = 1837
+						owns = 2564
+						owns = 1806
+						owns = 1842
+						owns = 1841
+						owns = 1843
+						owns = 1817
+						owns = 1839
+						owns = 1838
+						owns = 1840
+						owns = 1739
+						owns = 1827
+						owns = 1829
+						owns = 1828
+						owns = 1830
+						owns = 1831
 						machine_guns = 1
 						has_global_flag = sudan_organized
 						NOT = {
@@ -3308,6 +3844,31 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1844
+						owns = 1845
+						owns = 1846
+						owns = 1847
+						owns = 1832
+						owns = 1834
+						owns = 1836
+						owns = 1833
+						owns = 1835
+						owns = 1837
+						owns = 2564
+						owns = 1806
+						owns = 1842
+						owns = 1841
+						owns = 1843
+						owns = 1817
+						owns = 1839
+						owns = 1838
+						owns = 1840
+						owns = 1739
+						owns = 1827
+						owns = 1829
+						owns = 1828
+						owns = 1830
+						owns = 1831
 						organic_chemistry = 1
 						NOT = { has_country_flag = sudan_prospected }
 						OR = {
@@ -3387,6 +3948,13 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1908
+						owns = 1909
+						owns = 1907
+						owns = 1912
+						owns = 1911
+						owns = 1913
+						owns = 1910
 						machine_guns = 1
 						has_global_flag = ghana_organized
 						NOT = {
@@ -3413,6 +3981,13 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
+						owns = 1908
+						owns = 1909
+						owns = 1907
+						owns = 1912
+						owns = 1911
+						owns = 1913
+						owns = 1910
 						organic_chemistry = 1
 						NOT = { has_country_flag = ghana_prospected }
 						OR = {
@@ -3591,6 +4166,7 @@ country_event = {
 						remove_core = TOU
 						remove_core = MAS
 					}
+					BGU = { all_core = { remove_core = BGU } }
 					DAH = {
 						set_country_flag = post_colonial_country
 						government = democracy
@@ -3660,6 +4236,16 @@ country_event = {
 				civilized = yes
 				NOT = {
 					exists = INO
+					exists = JAV
+					exists = DJA
+					exists = SAK
+					exists = ATJ
+					exists = BAL
+					exists = SLW
+					exists = MAL
+					exists = KLM
+					exists = LAN
+					exists = KTI
 					has_global_flag = indonesia_organized
 					has_global_flag = indonesia_formed
 					is_culture_group = southeast_asian
@@ -3713,9 +4299,6 @@ country_event = {
 						remove_core = KLM
 						remove_core = LAN
 						remove_core = KTI
-						remove_core = SUL
-						remove_core = BRU
-						remove_core = PPG
 					}
 		
 					INO = {
@@ -3760,9 +4343,104 @@ country_event = {
 						remove_core = KLM
 						remove_core = LAN
 						remove_core = KTI
-						remove_core = SUL
-						remove_core = BRU
-						remove_core = PPG
+					}
+				}
+			}
+		}
+		#indochina
+		random_country = {
+			limit = {
+				exists = yes
+				war = no
+				machine_guns = 1
+				market_regulations = 1
+				owns = 1369
+				civilized = yes
+				NOT = {
+					exists = IDC
+                    exists = DAI
+                    exists = CAM
+					exists = LUA
+					exists = WIA
+					exists = CHK
+					has_global_flag = indochina_organized
+					has_global_flag = indochina_formed
+					is_culture_group = southeast_asian
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { has_global_flag = indochina_organized has_country_flag = indochina_master }
+					}
+				}
+				owner = {
+					set_global_flag = indochina_organized
+					set_country_flag = indochina_master
+					country_event = 199064
+		
+					any_owned = {
+						limit = {
+							OR = {
+								region = LUA_1356 #Laos
+								region = SIA_1366 #Cambodia
+								region = DAI_1369 #Tonkin
+								region = DAI_1375 #Annam
+								region = DAI_1380 #Cochinchina
+							}
+						}
+						add_core = IDC
+					}
+		
+					any_owned = {
+						limit = {
+							is_core = IDC
+#							NOT = { province_id = 1446 province_id = 2647 }
+						}
+						remove_core = DAI
+						remove_core = CAM
+						remove_core = LUA
+						remove_core = WIA
+						remove_core = CHK
+					}
+		
+					IDC = {
+						set_country_flag = post_colonial_country
+						tech_school = unciv_tech_school # HPM 0.4.5.2 port: use old HFM tech school name
+					}
+					random_owned = { limit = { is_core = IDC any_pop = { has_pop_culture = vietnamese } } IDC = { add_accepted_culture = vietnamese } }
+					random_owned = { limit = { is_core = IDC any_pop = { has_pop_culture = thai } } IDC = { add_accepted_culture = thai } }
+					random_owned = { limit = { is_core = IDC any_pop = { has_pop_culture = asian_minor } } IDC = { add_accepted_culture = asian_minor } }
+					random_owned = { limit = { is_core = IDC any_pop = { has_pop_culture = burmese } } IDC = { add_accepted_culture = burmese } }
+					random_owned = { limit = { is_core = IDC any_pop = { has_pop_culture = khmer } } IDC = { add_accepted_culture = khmer } }
+					random_owned = { limit = { owner = { primary_culture = french } } IDC = { add_accepted_culture = french government = colonial_company } }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						has_global_flag = indochina_organized
+						NOT = { has_country_flag = indochina_master }
+					}
+				}
+				owner = {
+					any_country = {
+						limit = { has_country_flag = indochina_master }
+						clr_country_flag = indochina_master
+					}
+					set_country_flag = indochina_master
+					country_event = 199064
+		
+					any_owned = {
+						limit = {
+							is_core = IDC
+#							NOT = { province_id = 1446 province_id = 2647 }
+						}
+						remove_core = DAI
+						remove_core = CAM
+						remove_core = LUA
+						remove_core = WIA
+						remove_core = CHK
 					}
 				}
 			}
@@ -3844,7 +4522,7 @@ country_event = {
 					TMR = {
 						tech_school = unciv_tech_school
 						nationalvalue = nv_autocracy
-						government = democracy
+						government = colonial_company
 						set_country_flag = Government_Democracy
 						set_country_flag = post_colonial_country
 					}
@@ -4911,6 +5589,7 @@ country_event = {
 	option = {
 		name = "OK"
 		set_country_flag = interacted_with
+		FROM = { clr_country_flag = possible_interactions }
 		overlord = { country_event = 477877792 }
 	}
 }

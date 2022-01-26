@@ -159,8 +159,10 @@ dismantle_cb = {
     is_triggered_only = yes
     months = 12
     crisis = no
-
-    construction_speed = 0.25
+	
+	constructing_cb = no
+	always = yes
+    #construction_speed = 0.25
 
     badboy_factor = 2
     prestige_factor = 10
@@ -177,31 +179,43 @@ dismantle_cb = {
     good_relation_militancy_factor = 0
 
     can_use = {
-        OR = {
-            is_greater_power = yes
-            is_secondary_power = yes
-            colonial_nation = yes
-            any_owned_province = { is_overseas = yes }
-        }
-        is_disarmed = no
-        is_vassal = no
-        NOT = { is_our_vassal = THIS }
-        NOT = { has_country_flag = dismantle_declared }
-        OR = {
-            NOT = { relation = { who = THIS value = -100 } }
-            war_with = THIS
-        }
-        THIS = {
-            is_greater_power = yes
-            is_disarmed = no
-            mass_politics = 1
-            NOT = {
-                has_country_flag = in_great_war
-                has_country_modifier = no_more_war
-                has_country_modifier = neutrality_modifier
-            }
-        }
-        NOT = { has_country_modifier = neutrality_modifier }
+		OR = {
+			AND = {
+				OR = {
+					is_greater_power = yes
+					is_secondary_power = yes
+					colonial_nation = yes
+					any_owned_province = { is_overseas = yes }
+				}
+				is_disarmed = no
+				is_vassal = no
+				NOT = { is_our_vassal = THIS }
+				NOT = { has_country_flag = target_of_dismantlement }
+				NOT = { has_country_modifier = neutrality_modifier }
+				NOT = { check_variable = { which = target_of_dismantlement value = 0.99 } }
+				OR = {
+					NOT = { relation = { who = THIS value = -100 } }
+					war_with = THIS
+				}
+				THIS = {
+					NOT = { check_variable = { which = dismantlement_leader value = 0.99 } }
+					is_greater_power = yes
+					is_disarmed = no
+					mass_politics = 1
+					NOT = {
+						has_country_flag = in_great_war
+						has_country_modifier = no_more_war
+						has_country_modifier = neutrality_modifier
+					}
+				}
+			}
+			AND = {
+				THIS = {
+					ai = no
+					has_country_flag = literally_cheating
+				}
+			}
+		}
     }
 
     po_disarmament = yes
@@ -211,150 +225,23 @@ dismantle_cb = {
 
     on_add = {
         FROM = {
-            set_country_flag = dismantle_declared
+            set_country_flag = target_of_dismantlement
         }
+		THIS = {
+			country_event = 4778743
+		}
         move_issue_percentage = {
             from = pro_military
             to = jingoism
             value = 0.10
         }
-        country_event = 96000
+        #country_event = 96000
     }
 
     on_po_accepted = {
-        set_country_flag = dismantling_treaty
-    }
-}
-
-dismantle_cb_add = {
-    sprite_index = 20
-    is_triggered_only = yes
-    months = 12
-    crisis = no
-
-    construction_speed = 1.5
-
-    badboy_factor = 0
-    prestige_factor = 10
-    peace_cost_factor = 35
-    penalty_factor = 3
-    always = yes
-
-    break_truce_prestige_factor = 5
-    break_truce_infamy_factor = 3
-    break_truce_militancy_factor = 1
-    truce_months = 108
-
-    good_relation_prestige_factor = 0
-    good_relation_infamy_factor = 0
-    good_relation_militancy_factor = 0
-
-    can_use = {
-        NOT = { is_our_vassal = THIS }
-        NOT = { has_country_modifier = neutrality_modifier }
-        NOT = { has_country_flag = dismantle_declared }
-        has_country_flag = in_great_war
-        OR = {
-            is_greater_power = yes
-            is_secondary_power = yes
-            colonial_nation = yes
-            any_owned_province = { is_overseas = yes }
-        }
-        civilized = yes
-        is_disarmed = no
-        is_vassal = no
-        war_with = THIS
-        THIS = {
-            NOT = { has_country_modifier = neutrality_modifier }
-            has_country_flag = in_great_war
-            is_greater_power = yes
-            is_disarmed = no
-            is_vassal = no
-            mass_politics = 1
-        }
-    }
-
-    po_disarmament = yes
-    po_reparations = yes
-
-    war_name = WAR_DISMANTLE_NAME
-
-    on_add = {
-        FROM = {
-            set_country_flag = dismantle_declared
-        }
-        move_issue_percentage = {
-            from = pro_military
-            to = jingoism
-            value = 0.10
-        }
-    }
-
-    on_po_accepted = {
-        set_country_flag = dismantling_treaty
-    }
-}
-
-dismantle_cb_add_new = {
-    sprite_index = 20
-    is_triggered_only = yes
-    months = 12
-    crisis = no
-
-    construction_speed = 1.5
-
-    badboy_factor = 0
-    prestige_factor = 10
-    peace_cost_factor = 35
-    penalty_factor = 3
-    always = yes
-
-    break_truce_prestige_factor = 5
-    break_truce_infamy_factor = 3
-    break_truce_militancy_factor = 1
-    truce_months = 108
-
-    good_relation_prestige_factor = 0
-    good_relation_infamy_factor = 0
-    good_relation_militancy_factor = 0
-
-    can_use = {
-        NOT = { is_our_vassal = THIS }
-        NOT = { has_country_flag = dismantle_declared }
-        NOT = { has_country_modifier = neutrality_modifier }
-        is_greater_power = yes
-        is_disarmed = no
-        is_vassal = no
-        war_with = THIS
-        THIS = {
-            NOT = { has_country_modifier = neutrality_modifier }
-            NOT = { has_country_flag = in_great_war }
-            is_greater_power = yes
-            is_disarmed = no
-            is_vassal = no
-            mass_politics = 1
-        }
-    }
-
-    po_disarmament = yes
-    po_reparations = yes
-
-    war_name = WAR_DISMANTLE_NAME
-
-    on_add = {
-        FROM = {
-            set_country_flag = dismantle_declared
-        }
-        move_issue_percentage = {
-            from = pro_military
-            to = jingoism
-            value = 0.10
-        }
-        country_event = 96000
-    }
-
-    on_po_accepted = {
-        set_country_flag = dismantling_treaty
+		set_country_flag = Major_Defeated
+		THIS = { set_country_flag = conference_sanity_check }
+		CLN = { country_event = 4778746 }
     }
 }
 
@@ -7261,29 +7148,45 @@ establish_protectorate_casus_belli = {
     always = no
 
     can_use = {
-        civilized = no
-        OR = {
+	
+		OR = {
             any_owned_province = { any_neighbor_province = { owned_by = THIS } }
             AND = {
                 any_owned_province = { port = yes }
                 THIS = { any_owned_province = { port = yes } }
             }
         }
-        NOT = { is_our_vassal = THIS }
+		civilized = no
         NOT = {
-            has_country_modifier = neutrality_modifier
-            number_of_states = 2
+			is_our_vassal = THIS
+			has_country_modifier = neutrality_modifier
+			number_of_states = 2
+		}
+		THIS = {
+            civilized = yes
+			NOT = {
+				nationalism_n_imperialism = 1
+				has_global_flag = berlin_conference
+				has_country_modifier = neutrality_modifier
+			}
+        }
+        OR = {
+            war_with = THIS
+            THIS = { total_amount_of_divisions = 1 }
+        }
+        OR = {
+            war_with = THIS
+            NOT = {
+                has_country_flag = post_colonial_country
+            }
+            AND = {
+                tag = KOR
+                THIS = { tag = JAP }
+            }
         }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = punitive_effects } }
-        }
-        OR = {
-            THIS = { war_policy = jingoism }
-            THIS = { civilized = no }
-            war_with = THIS
-            NOT = { relation = { who = THIS value = 0 } }
-            THIS = { ai = no }
         }
 
         OR = {
@@ -7297,31 +7200,6 @@ establish_protectorate_casus_belli = {
                         capital_scope = { continent = australia_new_zealand }
                     }
                 }
-            }
-        }
-        OR = {
-            war_with = THIS
-            THIS = { total_amount_of_divisions = 1 }
-        }
-        THIS = {
-            civilized = yes
-            NOT = { nationalism_n_imperialism = 1 }
-            NOT = { has_global_flag = berlin_conference }
-            NOT = { has_country_modifier = neutrality_modifier }
-        }
-        OR = {
-            THIS = { NOT = { nationalism_n_imperialism = 1 } }
-            NOT = { has_global_flag = berlin_conference }
-            civilization_progress = 0.6
-            has_country_flag = post_colonial_country
-        }
-        OR = {
-            THIS = { NOT = { nationalism_n_imperialism = 1 } }
-            civilization_progress = 0.6
-            has_country_flag = post_colonial_country
-            AND = {
-                THIS = { nationalism_n_imperialism = 1 }
-                capital_scope = { continent = africa }
             }
         }
 
@@ -7469,7 +7347,6 @@ establish_protectorate_NI_casus_belli = {
         OR = {
             war_with = THIS
             NOT = {
-                civilization_progress = 0.6
                 has_country_flag = post_colonial_country
             }
             AND = {
@@ -7627,7 +7504,6 @@ establish_protectorate_BC_casus_belli = {
         OR = {
             war_with = THIS
             NOT = {
-                civilization_progress = 0.6
                 has_country_flag = post_colonial_country
             }
             AND = {
@@ -8776,7 +8652,7 @@ acquire_substate_region = {
 
     po_demand_state = yes
 
-    war_name = WAR_TAKE_NAME
+    war_name = WAR_TAKE_SUBSTATE_REGION_NAME
 
     on_add = {
         move_issue_percentage = {
