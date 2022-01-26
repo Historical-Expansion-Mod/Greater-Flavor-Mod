@@ -25,6 +25,16 @@ political_decisions = {
 					owns = 3440
 					owns = 1533 
 				}
+				CHI = { 
+					owns = 1479
+					owns = 1480
+					owns = 1552
+					owns = 1553
+					owns = 1554
+					owns = 1555
+					owns = 3440
+					owns = 1533 
+				}
 				TPG = { 
 					owns = 1479
 					owns = 1480
@@ -84,6 +94,7 @@ political_decisions = {
 		effect = { 
 			country_event = 784527
 			set_country_flag = other_treaties_with_russia 
+			set_global_flag = rjw_over
 			clr_global_flag = russo_japanese_war
 		} 
 		ai_will_do = { factor = 1 } 
@@ -112,6 +123,7 @@ political_decisions = {
 		effect = { 
 			country_event = 784531
 			set_country_flag = other_treaties_with_japan 
+			set_global_flag = rjw_over
 			clr_global_flag = russo_japanese_war
 		} 
 		ai_will_do = { factor = 1 } 
@@ -120,21 +132,23 @@ political_decisions = {
 	remove_jap_and_rus_military_access = { 
 		
 		potential = {
+			has_country_flag = humble_access_giver
+			OR = {
+				has_global_flag = rjw_over
+				NOT = { TKG = { has_country_modifier = aggression_against_russia } }
+				NOT = { JAP = { has_country_modifier = aggression_against_russia } }
+			}
 			OR = { 
 				tag = QNG 
 				tag = TPG 
 				tag = CHI 
 				tag = MCK 
-				tag = KOR 
 				tag = RCH 
 				tag = HUI 
 				tag = KMT 
 				tag = KOR 
 			}
 			OR = { 
-				has_global_flag = russo_japanese_war
-				has_global_flag = russo_japanese_war_japanese_treaty
-				has_global_flag = russo_japanese_war_russian_treaty
 				AND = { 
 					JAP = { 
 						war = no 
@@ -142,7 +156,6 @@ political_decisions = {
 					} 
 					RUS = { 
 						war = no 
-						is_disarmed = yes
 						military_access = THIS
 					}
 				} 	
@@ -153,18 +166,6 @@ political_decisions = {
 					} 
 					RUS = { 
 						war = no 
-						is_disarmed = yes 
-						military_access = THIS
-					} 
-				}	 
-				AND = { 
-					RUS = { 
-						war = no 
-						military_access = THIS 
-					} 
-					JAP = { 
-						war = no 
-						is_disarmed = yes 
 						military_access = THIS
 					} 
 				}
@@ -173,23 +174,25 @@ political_decisions = {
 		} 
 		
 		allow = { 
-			NOT = { is_vassal_of = TKG } 
-			NOT = { is_vassal_of = JAP } 
-			NOT = { is_vassal_of = RUS } 
+			NOT = { vassal_of = TKG } 
+			NOT = { vassal_of = JAP } 
+			NOT = { vassal_of = RUS } 
 			NOT = { in_sphere = TKG } 
 			NOT = { in_sphere = JAP } 
 			NOT = { in_sphere = RUS } 
 		} 
 		
 		effect = { 
+			clr_country_flag = humble_access_giver
 			any_country = { 
 				limit = { 
 					OR = { 
 						tag = TKG 
 						tag = JAP 
 						tag = RUS 
-						exists = yes 
+						has_country_flag = participating_in_rj_war
 					}
+					exists = yes
 				} 
 				end_military_access = THIS
 				country_event = 666611
@@ -198,20 +201,13 @@ political_decisions = {
 		}
 		ai_will_do = { 
 			factor = 1 
-			modifier = { 
-				factor = 0 
-				OR = { 
-					relation = { who = TKG value = 50 } 
-					relation = { who = JAP value = 50 } 
-					relation = { who = RUS value = 50 } 
-				} 	
-			} 
 		} 
 	} 	
 	
 	invade_manchuria = { 
 		picture = manchuria_map
 		potential = {
+			has_global_flag = rjw_over
 			OR = { 
 				AND = {
 					OR = {
@@ -254,44 +250,50 @@ political_decisions = {
 		
 		allow = { 
 			war = no 
-			NOT = { 
-				alliance_with = QNG 
-				relation = { who = QNG value = 100 } 
-			} 
-			NOT = { 
-				alliance_with = TPG
-				relation = { who = TPG value = 100 }
-			} 
-			NOT = { 
-				alliance_with = CHI 
-				relation = { who = CHI value = 100 }
-			} 
-			NOT = { 
-				alliance_with = HUI 
-				relation = { who = HUI value = 100 }
-			} 
-			NOT = { 
-				alliance_with = RCH 
-				relation = { who = RCH value = 100 }
-			} 
-			NOT = { 
-				alliance_with = KMT
-				relation = { who = KMT value = 100 }
-			} 
-			NOT = { 
-				alliance_with = MCK 
-				relation = { who = QNG value = 100 }
-			} 
-			
+			OR = {
+				QNG = { 
+					any_owned_province = { is_core = MCK }
+					NOT = { relation = { who = THIS value = 100 } }
+				} 
+				TPG = { 
+					any_owned_province = { is_core = MCK }
+					NOT = { relation = { who = THIS value = 100 } }	
+				}
+				CHI = { 
+					any_owned_province = { is_core = MCK } 
+					NOT = { relation = { who = THIS value = 100 } }
+				}
+				HUI = { 
+					any_owned_province = { is_core = MCK } 
+					NOT = { relation = { who = THIS value = 100 } }
+				}
+				RCH = { 
+					any_owned_province = { is_core = MCK }
+					NOT = { relation = { who = THIS value = 100 } }
+				}
+				KMT = { 
+					any_owned_province = { is_core = MCK } 	
+					NOT = { relation = { who = THIS value = 100 } }
+				}
+				MCK = { 
+					any_owned_province = { is_core = MCK }
+					NOT = { relation = { who = THIS value = 100 } }
+				} 
+			}
 		}
 		
 		effect = { 
-			any_country = {  
-				limit = { 
-					OR = { 
-						primary_culture = han_chinese
-						primary_culture = manchu 
-					} 
+			any_country = {
+				limit = {
+					OR = {
+						tag = MCK
+						tag = KMT
+						tag = RCH
+						tag = HUI
+						tag = CHI
+						tag = TPG
+						tag = QNG
+					}
 					any_owned_province = { is_core = MCK }  
 				}
 				country_event = 666605
@@ -313,61 +315,47 @@ political_decisions = {
 		
 		allow = {
 			OR = { 
-				QNG = { 
-					AND = { 
-						is_disarmed = yes 
-						truce_with = THIS 
-						has_country_flag = being_invaded_for_manchuria
-					}
+				QNG = {  
+					is_disarmed = yes 
+					truce_with = THIS 
+					has_country_flag = being_invaded_for_manchuria
 				}	
 				TPG = { 
-					AND = { 
-						is_disarmed = yes 
-						truce_with = THIS 
-						has_country_flag = being_invaded_for_manchuria
-					}
+					is_disarmed = yes 
+					truce_with = THIS 
+					has_country_flag = being_invaded_for_manchuria
 				}	 
 				CHI = { 
-					AND = {
-						is_disarmed = yes 
-						truce_with = THIS 
-						has_country_flag = being_invaded_for_manchuria
-					}
+					is_disarmed = yes 
+					truce_with = THIS 
+					has_country_flag = being_invaded_for_manchuria
 				} 	
 				HUI = { 
-					AND = { 
-						is_disarmed = yes 
-						truce_with = THIS 
-						has_country_flag = being_invaded_for_manchuria
-					}
+					is_disarmed = yes 
+					truce_with = THIS 
+					has_country_flag = being_invaded_for_manchuria
 				}  	
 				RCH = { 
-					AND = {
-						is_disarmed = yes 
-						truce_with = THIS 
-						has_country_flag = being_invaded_for_manchuria
-					}
+					is_disarmed = yes 
+					truce_with = THIS 
+					has_country_flag = being_invaded_for_manchuria
 				} 	
 				KMT = { 
-					AND = { 
-						is_disarmed = yes 
-						truce_with = THIS 	
-						has_country_flag = being_invaded_for_manchuria
-					}
+					is_disarmed = yes 
+					truce_with = THIS 	
+					has_country_flag = being_invaded_for_manchuria
 				} 
-				MCK = { 
-					AND = { 
-						is_disarmed = yes 
-						truce_with = THIS  
-						has_country_flag = being_invaded_for_manchuria
-					}
+				MCK = {
+					is_disarmed = yes 
+					truce_with = THIS  
+					has_country_flag = being_invaded_for_manchuria
 				} 	
 			}
 		}
 
 		effect = { 
-			random_country = { 
-				limit = { 
+			random_country = {
+				limit = {
 					OR = { 
 						AND = { 
 							primary_culture = han_chinese
@@ -379,6 +367,8 @@ political_decisions = {
 						}
 					}
 					has_country_flag = being_invaded_for_manchuria
+					is_disarmed = yes
+					truce_with = THIS
 				}
 				any_owned = { 
 					limit = { is_core = MCK } 
