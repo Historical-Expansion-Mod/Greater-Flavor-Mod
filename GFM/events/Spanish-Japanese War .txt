@@ -50,7 +50,7 @@ country_event = {
 	} 
 	
 	option = { 
-		name = "We will support the rebels and prepare for war with Spain. Â§RGain 2 infamyÂ§W"
+		name = "We will support the rebels and prepare for war with Spain. §RGain 2 infamy§W"
 		random_country = { 
 			limit = { 
 				OR = { 
@@ -58,7 +58,7 @@ country_event = {
 					tag = SPC 
 				}
 			} 
-			country_event = { id = 756230 } 
+			country_event = 756230
 			
 		}	
 		badboy = 2 
@@ -120,6 +120,7 @@ country_event = {
 	option = { 
 		name = "To arms!"
 		set_global_flag = spanish_japanese_war	
+		set_country_flag = being_attacked_by_japan
 		FROM = { 
 			country_event = { 
 				id = 756231
@@ -130,13 +131,14 @@ country_event = {
 	} 
 	
 	option = { 
-		name = "Get out the war drums, but do not play them just yet."
-		add_casus_belli = { 
-			target = FROM 
-			 type = cut_down_to_size
-             months = 24
+		name = "Better leave the Philippines to its inhabitants than Japan."
+		any_owned = {
+			limit = {
+				is_core = PHL
+			}
+			secede_province = PHL
 		}
-		set_global_flag = spanish_japanese_war_cb_given 
+		PHL = { civilized = yes } 
 		ai_chance = { factor = 0 } 
 	} 
 } 
@@ -153,8 +155,8 @@ country_event = {
 		name = "Nippon banzai!"
 		war = { 
 			target = FROM 
-			attacker_goal = { casus_belli = humiliate_no_infamy } 
-			defender_goal = { casus_belli = status_quo}
+			attacker_goal = { casus_belli = cut_down_to_size_no_infamy } 
+			defender_goal = { casus_belli = cut_down_to_size_no_infamy }
 		}
 	}
 } 
@@ -174,63 +176,66 @@ country_event = {
 		}
 		has_global_flag = spanish_japanese_war
 		OR = { 
-			SPA = { truce_with = THIS }
-			SPC = { truce_with = THIS } 
+			SPA = { truce_with = THIS is_disarmed = yes }
+			SPC = { truce_with = THIS is_disarmed = yes } 
 		} 		
 	} 
 	
 	option = { 
-		name = "Free the Philippines and take the Mariana and Caroline Islands. Â§RGain 3 infamyÂ§W"
+		name = "Free the Philippines and take the Mariana and Caroline Islands. §RGain 3 infamy§W"
 		any_country = { 
 			limit = { 
 				primary_culture = spanish
-				has_global_flag = spanish_japanese_war 
+				exists = yes
+				has_country_flag = being_attacked_by_japan
 			}
-			country_event = { id = 756233 } 
+			country_event = 756233
 		}
 		badboy = 3 
 		ai_chance = { 
 			factor = 30 
 			modifier = { 
-				badboy = 17 
+				badboy = 0.8 
 				factor = 0 
 			}
 		}
 	}
 
 	option = { 
-		name = "Establish a Philippine puppet state and annex the surrounding islands. Â§RGain 5 infamyÂ§W"
+		name = "Establish a Philippine puppet state and annex the surrounding islands. §RGain 5 infamy§W"
 		any_country = { 
 			limit = { 
 				primary_culture = spanish
-				has_global_flag = spanish_japanese_war 
+				exists = yes
+				has_country_flag = being_attacked_by_japan 
 			}
-			country_event = { id = 756234 }
+			country_event = 756234
 		}
 		badboy = 5 
 		ai_chance = { 
-			factor = 50
+			factor = 0
 			modifier = { 
-				badboy = 15 
+				badboy = 0.6 
 				factor = 0 
 			}
 		}
 	}
 		
 	option = { 
-		name = "Annex the Philippines and its surrounding islands. Â§RGain 15 infamyÂ§W" 
+		name = "Annex the Philippines and its surrounding islands. §RGain 12 infamy§W" 
 		any_country = { 
 			limit = { 
 				primary_culture = spanish
-				has_global_flag = spanish_japanese_war 
+				exists = yes
+				has_country_flag = being_attacked_by_japan
 			}
-			country_event = { id = 756234 } 
+			country_event = 756235
 		} 
-		badboy = 15
+		badboy = 12
 		ai_chance = { 
 			factor = 20 
 			modifier = { 
-				badboy = 5 
+				badboy = 0.2
 				factor = 0 
 			}
 		}
@@ -251,9 +256,11 @@ country_event = {
 		name = "If the Filipinos want freedom, they shall have it. We have no choice."
 		any_owned = { 
 			limit = { 
-				province_id = 2521 
-				province_id = 2518
-				province_id = 2517
+				OR = {
+					province_id = 2521 
+					province_id = 2518
+					province_id = 2517
+				}
 			}
 			secede_province = FROM 
 		}
@@ -262,7 +269,7 @@ country_event = {
 		any_country = { 
 			limit = { has_country_flag = japanese_philippine_alliance }
 			relation = { who = PHL value = 100 } 
-			add_alliance = PHL 
+			create_alliance = PHL 
 			diplomatic_influence = {
 				who = PHL
                 value = 100
@@ -285,20 +292,21 @@ country_event = {
 		name = "Interesting how they would turn their backs on their allies so quickly." 
 		any_owned = { 
 			limit = { 
-				province_id = 2521 
-				province_id = 2518
-				province_id = 2517
-				continent = polynesia 
+				OR = {
+					province_id = 2521 
+					province_id = 2518
+					province_id = 2517
+				}
 			}
 			secede_province = FROM 
 		}
 		release = PHL
-		create_vassal = PHL 
 		PHL = { civilized = yes } 
 		any_country = { 
 			limit = { has_country_flag = japanese_philippine_alliance }
 			relation = { who = PHL value = 100 } 
-			add_alliance = PHL 
+			create_alliance = PHL 
+			create_vassal = PHL
 			diplomatic_influence = {
 				who = PHL
                 value = 100
@@ -321,18 +329,25 @@ country_event = {
 		name = "This is an utter disgrace to our nation."
 		any_owned = { 
 			limit = { 
-				province_id = 2521 
-				province_id = 2518
-				province_id = 2517
 				is_core = PHL 
 			}
 			secede_province = FROM  
 		}
 		clr_global_flag = spanish_japanese_war
 		set_global_flag = japanese_victory_over_spain 
-		country_event = { 
-			id = 756238
-			days = 5
+		random_owned = {
+			limit = {
+				owner = {
+					CUB = { all_core = { owned_by = THIS } }
+					PRI = { all_core = { owned_by = THIS } }
+				}
+			}
+			owner = {
+				country_event = { 
+					id = 756238
+					days = 5
+				}
+			}
 		}
 	}
 } 	
@@ -352,8 +367,8 @@ country_event = {
 		} 
 		has_global_flag = spanish_japanese_war
 		OR = { 
-			truce_with = TKG 
-			truce_with = JAP 
+			AND = { TKG = { truce_with = THIS is_disarmed = yes } } 
+			AND = { TKG = { truce_with = THIS is_disarmed = yes } }
 		}
 	} 
 
@@ -361,7 +376,7 @@ country_event = {
 		name = "We must continuously remind them of their defeat. They will see our triumphant smirks as we gaze down at their shores." 
 		any_country = { 
 			limit = { has_country_flag = japanese_philippine_alliance } 
-			country_event = { id = 756237 }
+			country_event = 756237
 		} 	
 		clr_global_flag = spanish_japanese_war
 		set_global_flag = spanish_victory_over_japan 
@@ -381,21 +396,32 @@ country_event = {
 	option = { 
 		name = "This defeat is unimaginably humiliating." 
 		any_owned = { 
-			limit = { 
-				owner = { 
-					OR = { 
-						tag = TKG 
-						tag = JAP 
-					}
-				is_core = TAI 
-				province_id = 1678
-				continent = polynesia 
+			limit = {
+				OR = {
+					province_id = 1678
+					province_id = 1679
+					province_id = 1637
+					province_id = 2589
+					province_id = 3260
+					province_id = 1654
+					province_id = 2525
+					is_core = TAI
 				}
-			secede_province = FROM 
 			}
+			secede_province = FROM 
+		}
+		random_owned = {
+			limit = {
+				owner = { 
+					KOR = { all_core = { owned_by = THIS } }
+				}
+			}
+			owner = {
+				country_event = { id = 756240 days = 5 }
+			}
+		}
 		treasury = -200000
 		prestige = -20 
-		}
 	} 
 } 
 country_event = { 
@@ -405,18 +431,7 @@ country_event = {
 	picture = "cubanrebels"
 	
 	fire_only_once = yes 
-	
-	trigger = { 
-		OR = { 
-			tag = SPA 
-			tag = SPC 
-		}
-		has_global_flag = japanese_victory_over_spain
-		CUB = { 
-			all_core = { owned_by = THIS }
-		}
-		owns = 2222
-	}
+	is_triggered_only = yes
 	
 	option = { 
 		name = "Restore order to these territories."
@@ -451,10 +466,12 @@ country_event = {
 		release = CUB 
 		any_pop = { 
 			limit = { 
-				has_pop_culture = spanish
-				has_pop_culture = catalan
-				has_pop_culture = basque
-				has_pop_culture = galician
+				OR = {
+					has_pop_culture = spanish
+					has_pop_culture = catalan
+					has_pop_culture = basque
+					has_pop_culture = galician
+				}
 			} 
 			scaled_consciousness = { 
 				ideology = conservative 
@@ -490,9 +507,7 @@ country_event = {
 			}
 		}
 		ai_chance = { factor = 0 } 
-	} 
-	
-	mean_time_to_happen = { days = 5 } 
+	}  
 } 
 
 country_event = { 
@@ -539,17 +554,7 @@ country_event = {
 	picture = "korean_revolt"
 	
 	fire_only_once = yes 
-	
-	trigger = { 
-		OR = { 
-			tag = JAP
-			tag = TKG 
-		}
-		has_global_flag = spanish_victory_over_japan 
-		KOR = { 
-			all_core = { owned_by = THIS }
-		} 	
-	}  
+	is_triggered_only = yes
 	
 	option = { 
 		name = "We must crush this revolt immediately!"
@@ -606,9 +611,7 @@ country_event = {
 				factor = 4
 			}
 		}
-	}
-	
-	mean_time_to_happen = { days = 10 } 
+	} 
 }  
 
 country_event = { 
@@ -638,11 +641,8 @@ country_event = {
 		} 	
 		NOT = {
 			alliance_with = JAP 
-			relation = { who = JAP value = 100 } 
 			alliance_with = TKG 
-			relation = { who = TKG value = 100 } 
 			war_policy = pacifism 
-			war_policy = anti_military
 		}
 		war = no 
 		
@@ -650,54 +650,19 @@ country_event = {
 
 	option = { 
 		name = "Time to reassert our hegemony over the Far East." 
-		random_country = { 
+		any_country = { 
 			limit = { 
-				primary_culture = japanese 
+				OR = {
+					tag = TKG
+					tag = JAP
+				}
+				exists = yes
 				war_with = KOR 
 			}
-			country_event = { id = 756242 } 
+			country_event = 756242
 		}
 		ai_chance = { 
 			factor = 80
-			modifier = { 
-				random_country = { 
-					limit = { 
-						OR = { 
-							tag = JAP
-							tag = TKG 
-						}
-						war_with = KOR 
-					}
-					THIS = { brigades_compare = 1 }
-				}
-				factor = 1.5 
-			}
-			modifier = { 
-				random_country = { 
-					limit = { 
-						OR = { 
-							tag = JAP
-							tag = TKG 
-						}
-						war_with = KOR 
-					}
-					THIS = { brigades_compare = 1 }
-				}
-				factor = 1.5 
-			}
-			modifier = { 
-				random_country = { 
-					limit = { 
-						OR = { 
-							tag = JAP
-							tag = TKG 
-						}
-						war_with = KOR 
-					}
-					THIS = { brigades_compare = 0.5 }
-				}
-				factor = 0  
-			}
 		}
 	}
 
@@ -705,20 +670,7 @@ country_event = {
 		name = "Let the Japanese handle this themselves." 
 		prestige = -2 
 		ai_chance = { 
-			factor = 20 
-			modifier = { 
-				random_country = { 
-					limit = { 
-						OR = { 
-							tag = JAP
-							tag = TKG 
-						}
-						war_with = KOR 
-					}
-					THIS = { brigades_compare = 1.5 }
-				}
-				factor = 0  
-			}
+			factor = 20
 		}
 	} 
 	mean_time_to_happen = { days = 3 } 
@@ -738,8 +690,8 @@ country_event = {
 		FROM = { 
 			war = { 
 				target = THIS 
-				attacker_goal = { casus_belli = free_country country = KOR } 
-				defender_goal = { casus_belli = status_quo } 
+				attacker_goal = { casus_belli = liberate_country country = KOR } 
+				defender_goal = { casus_belli = humiliate_no_infamy } 
 			}		
 		}
 	}
@@ -774,17 +726,15 @@ country_event = {
 		}
 		NOT = { 
 			alliance_with = SPA 
-			relation = { who = SPA value = 100 } 
 		}
 		has_global_flag = caribbean_revolt 
 	}
 
 	option = { 
 		name = "By Jingo, this is our chance!"
-		random_country = { 
+		random_owned = { 
 			limit = { 
-				exists = yes 
-				tag = SPA 	
+				SPA = { exists = yes }
 			}
 			THIS = { 
 				war = { 
@@ -793,19 +743,17 @@ country_event = {
 				}
 			}
 		}	
-		random_country = { 
+		random_owned = { 
 			limit = { 
-				exists = yes 
-				tag = SPC	
+				SPC = { exists = yes }
 			}
-			country_event = { id = 756252 } 
 			THIS = { 
 				war = { 
 					target = SPC 
 					attacker_goal = { casus_belli = humiliate_no_infamy } 
 				}
 			}
-		}
+		}	
 		ai_chance = { factor = 90 }
 	}
 	
@@ -843,51 +791,90 @@ country_event = {
 	}
 
 	option = { 
-		name = "Grant Cuba and Puerto Rico total independence.  Â§RGain 2 infamyÂ§W"
+		name = "Grant Cuba and Puerto Rico total independence."
 		end_war = SPA 
 		end_war = SPC
-		random_country = { 
+		random_owned = { 
 			limit = { 
-				OR = { 
-					tag = SPA 
-					tag = SPC 
+				SPA = { exists = yes }
+			}
+			owner = {
+				SPA = {
+					random_owned = {
+						limit = {
+							owner = {
+								owns = 2222
+								NOT = { exists = PRI } 
+							}
+						}
+						owner = { release = PRI }
+					}
+					random_owned = {
+						limit = {
+							owner = {
+								owns = 2209
+								NOT = { exists = CUB } 
+							}
+						}
+						owner = { release = CUB }
+					}
+					country_event = 756247
 				}
 			}
-			random_owned = {
-				limit = {
-					province_id = 2222
-					NOT = { exists = PRI } 
-				}
-				owner = { release = PRI }
-			}
-			random_owned = {
-				limit = {
-					province_id = 2209
-					NOT = { exists = CUB } 
-				}
-				owner = { release = CUB }
-			}
-			country_event = { id = 756247 } 
 		}
-		random_country = { 
+		random_owned = { 
 			limit = { 
-				tag = CUB 
-				OR = { 
-					vassal_of = SPA 
-					vassal_of = SPC 
+				SPC = { exists = yes }
+			}
+			owner = {
+				SPC = {
+					random_owned = {
+						limit = {
+							owner = {
+								owns = 2222
+								NOT = { exists = PRI } 
+							}
+						}
+						owner = { release = PRI }
+					}
+					random_owned = {
+						limit = {
+							owner = {
+								owns = 2209
+								NOT = { exists = CUB } 
+							}
+						}
+						owner = { release = CUB }
+					}
+					country_event = 756247
+				}
+			}
+		}
+		random_owned = { 
+			limit = { 
+				owner = {
+					CUB = {
+						OR = { 
+							vassal_of = SPA 
+							vassal_of = SPC 
+						}
+					}
 				}
 			} 	
-			overlord = { release_vassal = CUB } 	
+			owner = { CUB = { overlord = { release_vassal = CUB } } }
 		} 
-		random_country = { 
+		random_owned = { 
 			limit = { 
-				tag = PRI 
-				OR = { 
-					vassal_of = SPA 
-					vassal_of = SPC 
+				owner = {
+					PRI = {
+						OR = { 
+							vassal_of = SPA 
+							vassal_of = SPC 
+						}
+					}
 				}
 			} 	
-			overlord = { release_vassal = PRI } 	
+			owner = { PRI = { overlord = { release_vassal = PRI } } }
 		} 
 		diplomatic_influence = { who = CUB value = 100 } 
 		diplomatic_influence = { who = PRI value = 100 } 
@@ -895,60 +882,95 @@ country_event = {
 		badboy = 2 
 		ai_chance = { 
 			factor = 30
-			modifier = { 
-				badboy = 18 
-				factor = 0
-			}
 		}
 	}
 	
 	option = { 
-		name = "Puppet Cuba and Puerto Rico. Â§RGain 3 infamyÂ§W" 
+		name = "Puppet Cuba and Puerto Rico. §RGain 3 infamy§W" 
 		end_war = SPA 
 		end_war = SPC
-		random_country = { 
+		random_owned = { 
 			limit = { 
-				OR = { 
-					tag = SPA 
-					tag = SPC 
+				SPA = { exists = yes }
+			}
+			owner = {
+				SPA = {
+					random_owned = {
+						limit = {
+							owner = {
+								owns = 2222
+								NOT = { exists = PRI } 
+							}
+						}
+						owner = { release = PRI }
+					}
+					random_owned = {
+						limit = {
+							owner = {
+								owns = 2209
+								NOT = { exists = CUB } 
+							}
+						}
+						owner = { release = CUB }
+					}
+					country_event = 756248
 				}
 			}
-			random_owned = {
-				limit = {
-					province_id = 2222
-					NOT = { exists = PRI } 
-				}
-				owner = { release = PRI }
-			}
-			random_owned = {
-				limit = {
-					province_id = 2209
-					NOT = { exists = CUB } 
-				}
-				owner = { release = CUB }
-			}
-			country_event = { id = 756248 } 
 		}
-		random_country = { 
+		random_owned = { 
 			limit = { 
-				tag = CUB 
-				OR = { 
-					vassal_of = SPA 
-					vassal_of = SPC 
+				SPC = { exists = yes }
+			}
+			owner = {
+				SPC = {
+					random_owned = {
+						limit = {
+							owner = {
+								owns = 2222
+								NOT = { exists = PRI } 
+							}
+						}
+						owner = { release = PRI }
+					}
+					random_owned = {
+						limit = {
+							owner = {
+								owns = 2209
+								NOT = { exists = CUB } 
+							}
+						}
+						owner = { release = CUB }
+					}
+					country_event = 756248
+				}
+			}
+		}
+		random_owned = { 
+			limit = { 
+				owner = {
+					CUB = {
+						OR = { 
+							vassal_of = SPA 
+							vassal_of = SPC 
+						}
+					}
 				}
 			} 	
-			overlord = { release_vassal = CUB } 	
+			owner = { CUB = { overlord = { release_vassal = CUB } } }
 		} 
-		random_country = { 
+		random_owned = { 
 			limit = { 
-				tag = PRI 
-				OR = { 
-					vassal_of = SPA 
-					vassal_of = SPC 
+				owner = {
+					PRI = {
+						OR = { 
+							vassal_of = SPA 
+							vassal_of = SPC 
+						}
+					}
 				}
 			} 	
-			overlord = { release_vassal = PRI } 	
-		}
+			owner = { PRI = { overlord = { release_vassal = PRI } } }
+		} 
 		THIS = { create_vassal = CUB } 
 		THIS = { create_vassal = PRI } 
 		diplomatic_influence = { who = CUB value = 100 } 
@@ -958,60 +980,99 @@ country_event = {
 		ai_chance = { 
 			factor = 30
 			modifier = { 
-				badboy = 17
+				badboy = 0.8
 				factor = 0
 			}
 		}
 	}
 	
 	option = { 
-		name = "Puppet Cuba and annex Puerto Rico. Â§RGain 4 infamyÂ§W" 
+		name = "Puppet Cuba and annex Puerto Rico. §RGain 4 infamy§W" 
 		end_war = SPA 
 		end_war = SPC
-		random_country = { 
+		random_owned = { 
 			limit = { 
-				OR = { 
-					tag = SPA 
-					tag = SPC 
+				SPA = { exists = yes }
+			}
+			owner = {
+				SPA = {
+					random_owned = {
+						limit = {
+							owner = {
+								owns = 2222
+								NOT = { exists = PRI } 
+							}
+						}
+						owner = { release = PRI }
+					}
+					random_owned = {
+						limit = {
+							owner = {
+								owns = 2209
+								NOT = { exists = CUB } 
+							}
+						}
+						owner = { release = CUB }
+					}
+					country_event = 756249
 				}
 			}
-			random_owned = {
-				limit = {
-					province_id = 2222
-					NOT = { exists = PRI } 
-				}
-				secede_province = THIS 
-			}
-			random_owned = {
-				limit = {
-					province_id = 2209
-					NOT = { exists = CUB } 
-				}
-				owner = { release = CUB }
-			}
-			country_event = { id = 756249 } 
 		}
-		random_country = { 
+		random_owned = { 
 			limit = { 
-				tag = CUB 
-				OR = { 
-					vassal_of = SPA 
-					vassal_of = SPC 
+				SPC = { exists = yes }
+			}
+			owner = {
+				SPC = {
+					random_owned = {
+						limit = {
+							owner = {
+								owns = 2222
+								NOT = { exists = PRI } 
+							}
+						}
+						owner = { release = PRI }
+					}
+					random_owned = {
+						limit = {
+							owner = {
+								owns = 2209
+								NOT = { exists = CUB } 
+							}
+						}
+						owner = { release = CUB }
+					}
+					country_event = 756249
+				}
+			}
+		}
+		random_owned = { 
+			limit = { 
+				owner = {
+					CUB = {
+						OR = { 
+							vassal_of = SPA 
+							vassal_of = SPC 
+						}
+					}
 				}
 			} 	
-			overlord = { release_vassal = CUB } 	
+			owner = { CUB = { overlord = { release_vassal = CUB } } }
 		} 
-		random_country = { 
+		random_owned = { 
 			limit = { 
-				tag = PRI 
-				OR = { 
-					vassal_of = SPA 
-					vassal_of = SPC 
+				owner = {
+					PRI = {
+						OR = { 
+							vassal_of = SPA 
+							vassal_of = SPC 
+						}
+					}
 				}
 			} 	
-			overlord = { release_vassal = PRI } 
-			annex_to = THIS 
-		}
+			owner = { PRI = { overlord = { release_vassal = PRI } } }
+		} 
+		PRI = { annex_to = THIS }
 		THIS = { create_vassal = CUB } 
 		diplomatic_influence = { who = CUB value = 100 } 
 		set_global_flag = alt_american_victory_over_spain 
@@ -1019,65 +1080,106 @@ country_event = {
 		ai_chance = { 
 			factor = 20
 			modifier = { 
-				badboy = 16
+				badboy = 0.8
 				factor = 0
 			}
 		}
 	}
 	
 	option = { 
-		name = "Annex Cuba and Puerto Rico. Â§RGain 5 infamyÂ§W" 
+		name = "Annex Cuba and Puerto Rico. §RGain 5 infamy§W" 
 		end_war = SPA 
 		end_war = SPC
-		random_country = { 
+		random_owned = { 
 			limit = { 
-				OR = { 
-					tag = SPA 
-					tag = SPC 
+				SPA = { exists = yes }
+			}
+			owner = {
+				SPA = {
+					random_owned = {
+						limit = {
+							owner = {
+								owns = 2222
+								NOT = { exists = PRI } 
+							}
+						}
+						owner = { release = PRI }
+					}
+					random_owned = {
+						limit = {
+							owner = {
+								owns = 2209
+								NOT = { exists = CUB } 
+							}
+						}
+						owner = { release = CUB }
+					}
+					country_event = 756247
 				}
 			}
-			random_owned = {
-				limit = {
-					province_id = 2222
-					NOT = { exists = PRI } 
-				}
-				secede_province = THIS 
-			}
-			all_owned = {
-				limit = {
-					is_core = CUB 
-					NOT = { exists = CUB } 
-				}
-				secede_province = THIS 
-			}
-			country_event = { id = 756250 } 
 		}
-		random_country = { 
+		random_owned = { 
 			limit = { 
-				tag = CUB 
-				OR = { 
-					vassal_of = SPA 
-					vassal_of = SPC 
+				SPC = { exists = yes }
+			}
+			owner = {
+				SPC = {
+					random_owned = {
+						limit = {
+							owner = {
+								owns = 2222
+								NOT = { exists = PRI } 
+							}
+						}
+						owner = { release = PRI }
+					}
+					random_owned = {
+						limit = {
+							owner = {
+								owns = 2209
+								NOT = { exists = CUB } 
+							}
+						}
+						owner = { release = CUB }
+					}
+					country_event = 756247
 				}
-			}	
-			annex_to = THIS 
+			}
 		}
-		random_country = { 
+		random_owned = { 
 			limit = { 
-				tag = PRI  
-				OR = { 
-					vassal_of = SPA 
-					vassal_of = SPC 
+				owner = {
+					CUB = {
+						OR = { 
+							vassal_of = SPA 
+							vassal_of = SPC 
+						}
+					}
 				}
-			}	
-			annex_to = THIS 
-		}
+			} 	
+			owner = { CUB = { overlord = { release_vassal = CUB } } }
+		} 
+		random_owned = { 
+			limit = { 
+				owner = {
+					PRI = {
+						OR = { 
+							vassal_of = SPA 
+							vassal_of = SPC 
+						}
+					}
+				}
+			} 	
+			owner = { PRI = { overlord = { release_vassal = PRI } } }
+		} 
+		PRI = { annex_to = THIS }
+		CUB = { annex_to = THIS }
 		set_global_flag = alt_american_victory_over_spain 
 		badboy = 5 
 		ai_chance = { 
 			factor = 20
 			modifier = { 
-				badboy = 15
+				badboy = 0.6
 				factor = 0
 			}
 		}
