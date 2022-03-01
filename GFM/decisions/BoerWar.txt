@@ -17,7 +17,7 @@ political_decisions = {
             set_country_flag = republic_founded
             random_owned = {
                 limit = {
-                    owner = { NOT = { government = democracy } }
+                    owner = { NOT = { OR = { government = democracy has_country_flag = Government_Democracy } } }
                 }
                 owner = { government = democracy }
             }
@@ -63,6 +63,7 @@ political_decisions = {
     }
 
     sand_river_convention = {
+		picture = sand_river_convention
         potential = {
             is_our_vassal = TRN
             TRN = { NOT = { any_owned_province = { is_core = THIS } } }
@@ -83,6 +84,7 @@ political_decisions = {
     }
 
     orange_river_convention = {
+		picture = orange_river_convention
         potential = {
             is_our_vassal = ORA
             NOT = { has_country_flag = boer_accepted }
@@ -114,7 +116,13 @@ political_decisions = {
                 has_global_flag = south_africa_formed
                 has_country_flag = claimed_transvaal
             }
-            NOT = { 2105 = { is_core = THIS } }
+			OR = {
+				NOT = { 2105 = { is_core = THIS } }
+				AND = {
+					any_owned_province = { is_core = TRN}
+					tag = SAF
+				}
+			}
         }
 
         allow = {
@@ -143,6 +151,14 @@ political_decisions = {
                 }
                 THIS = { inherit = TRN }
             }
+			
+			random_owned = { limit = { province_id = 2105 } change_province_name = "Pretoria" }
+            random_owned = { limit = { province_id = 2106 } change_province_name = "Johannesburg" }
+            random_owned = { limit = { province_id = 2107 } change_province_name = "Klerksdorp" }
+            random_owned = { limit = { province_id = 2108 } change_province_name = "Nylstroom" }
+            random_owned = { limit = { province_id = 2109 } change_province_name = "Lydenburg" }
+            random_owned = { limit = { province_id = 2110 } change_province_name = "Hoedspruit" }
+			random_owned = { limit = { province_id = 2105 } state_scope = { change_region_name = "Transvaal" } }
         }
 
         ai_will_do = {
@@ -159,7 +175,13 @@ political_decisions = {
                 has_global_flag = south_africa_formed
                 has_country_flag = claimed_oranje
             }
-            NOT = { 2101 = { is_core = THIS } }
+			OR = {
+				NOT = { 2101 = { is_core = THIS } }
+				AND = {
+					any_owned_province = { is_core = ORA }
+					tag = SAF
+				}
+			}
         }
 
         allow = {
@@ -188,6 +210,11 @@ political_decisions = {
                 }
                 THIS = { inherit = ORA }
             }
+			
+			random_owned = { limit = { province_id = 2101 } change_province_name = "Bloemfontein" }
+            random_owned = { limit = { province_id = 2102 } change_province_name = "Winburg" }
+            random_owned = { limit = { province_id = 2103 } change_province_name = "Philippolis" }
+			random_owned = { limit = { province_id = 2102 } state_scope = { change_region_name = "Vrystaat" } }
         }
 
         ai_will_do = {
@@ -203,7 +230,13 @@ political_decisions = {
                 tag = NAL
                 has_country_flag = claimed_natalia
             }
-            NOT = { 2111 = { is_core = THIS } }
+			OR = {
+				NOT = { 2111 = { is_core = THIS } }
+				AND = {
+					any_owned_province = { is_core = NAL }
+					tag = SAF
+				}
+			}
         }
 
         allow = {
@@ -232,12 +265,63 @@ political_decisions = {
                 }
                 THIS = { inherit = NAL }
             }
+			
+			random_owned = { limit = { province_id = 2111 } change_province_name = "Durban" }
+            random_owned = { limit = { province_id = 2112 } change_province_name = "Ladysmith" }
+			random_owned = { limit = { province_id = 2113 } change_province_name = "Richards Bay" }
+			random_owned = { limit = { province_id = 2111 } state_scope = { change_region_name = "Natal" } }
         }
 
         ai_will_do = {
             factor = 1
         }
     }
+	
+	claim_northern_cape = {
+		picture = claim_transvaal
+        potential = {
+            primary_culture = boer
+			NOT = { 2088 = { is_core = THIS } }
+			NOT = { 2558 = { is_core = THIS } }
+			NOT = { 2093 = { is_core = THIS } }
+			NOT = { 2094 = { is_core = THIS } }
+			NOT = { 2095 = { is_core = THIS } }
+        }
+
+        allow = {
+			OR = {
+				2088 = { NOT = { is_core = THIS } owned_by = THIS }
+				2558 = { NOT = { is_core = THIS } owned_by = THIS }
+				2093 = { NOT = { is_core = THIS } owned_by = THIS }
+				2094 = { NOT = { is_core = THIS } owned_by = THIS }
+				2095 = { NOT = { is_core = THIS } owned_by = THIS }
+			}
+        }
+
+        effect = {
+            prestige = 10
+			random_owned = { limit = { province_id = 2088 } change_province_name = "Springbok" }
+            random_owned = { limit = { province_id = 2558 } change_province_name = "De Aar" }
+            random_owned = { limit = { province_id = 2093 } change_province_name = "Calvinia" }
+            random_owned = { limit = { province_id = 2094 } change_province_name = "Kimberley" }
+			any_owned = {
+				limit = {
+					OR = {
+						province_id = 2088
+						province_id = 2558
+						province_id = 2093
+						province_id = 2094
+						province_id = 2095
+					}
+				}
+				add_core = THIS
+			}
+        }
+
+        ai_will_do = {
+            factor = 1
+        }
+    }	
 
     reorganize_south_africa = {
         picture = form_south_africa
@@ -351,6 +435,7 @@ political_decisions = {
                 tag = SAF
                 SAF = { exists = no }
             }
+			NOT = { has_global_flag = won_boer_war }
         }
 
         allow = {
@@ -396,7 +481,6 @@ political_decisions = {
             OR = {
                 tag = ENG
                 tag = ENL
-				tag = ENG
             }
             2093 = {
                 empty = no
@@ -619,8 +703,18 @@ political_decisions = {
                     secede_province = THIS
                 }
             }
-            2099 = { change_province_name = "King William's Town" }
-            2098 = { change_province_name = "Port Rex" }
+			any_owned = {
+				limit = {
+					province_id = 2098
+				}
+				change_province_name = "Port Rex"
+			}
+			any_owned = {
+				limit = {
+					province_id = 2099
+				}
+				change_province_name = "Aliwal North"
+			}
         }
 
         ai_will_do = { factor = 1 }

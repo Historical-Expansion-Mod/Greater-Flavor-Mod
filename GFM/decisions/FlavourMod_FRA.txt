@@ -301,7 +301,13 @@ political_decisions = {
         }
         effect = {
             any_owned = {
-                limit = { is_core = GUY }
+                limit = { 
+					OR = {
+						is_core = RIG
+						is_core = GUY
+						is_core = AMA
+					} 
+				}
                 add_province_modifier = {
                     name = core_integration
                     duration = -1
@@ -324,6 +330,7 @@ political_decisions = {
                 government = hms_government
                 government = democracy
                 government = constitutional_empire
+				has_country_flag = Government_Democracy
             }
             slavery = no_slavery
             HAI = { all_core = { owned_by = THIS } }
@@ -353,6 +360,7 @@ political_decisions = {
                 secede_province = DOM
             }
             add_accepted_culture = afro_french
+			add_accepted_culture = mulatto
             FRA = { set_country_flag = integrated_haiti }
             BOR = { set_country_flag = integrated_haiti }
         }
@@ -372,8 +380,9 @@ political_decisions = {
 
         allow = {
             war = no
-            ruling_party_ideology = liberal
-            394 = {    average_militancy = 7 }
+			citizenship_policy = full_citizenship
+            social_alienation = 1
+			has_country_flag = enacted_french_schooling
         }
 
         effect = {
@@ -453,6 +462,7 @@ political_decisions = {
             499 = { add_core = THIS }
             500 = { add_core = THIS }
             501 = { add_core = THIS }
+			3433 = { add_core = THIS }
             random_country = {
                 limit = { owns = 499 }
                 leave_alliance = THIS
@@ -554,75 +564,6 @@ political_decisions = {
             }
         }
         ai_will_do = { factor = 1 }
-    }
-
-    clean_up_france_lost_rhine_crisis = {
-        picture = adolphe_thiers
-        potential = {
-            ai = yes
-            NOT = { has_global_flag = clean_up_france_lost_rhine_crisis }
-            OR = {
-                FRA = { truce_with = PRU has_country_modifier = rhine_crisis }
-                BOR = { truce_with = PRU has_country_modifier = rhine_crisis }
-            }
-            575 = { OR = {owned_by = PRU owned_by = NGF owned_by = GER owned_by = GCF owned_by = AUS owned_by = SGF } }
-            PRU = { is_disarmed = no }
-        }
-
-        allow = {
-            war = no
-        }
-
-        effect = {
-            set_global_flag = clean_up_france_lost_rhine_crisis
-            random_country = {
-                limit = {
-                    primary_culture = french
-                    is_greater_power = yes
-                    exists = yes
-                }
-                country_event = 99993
-            }
-        }
-
-        ai_will_do = { factor = 1 }
-    }
-
-    take_the_channel_islands = {
-        picture = channel_islands
-        potential = {
-            OR = {
-                419 = { owner = { war_with = THIS } }
-                419 = { owner = { truce_with = THIS } }
-            }
-            NOT = { owns = 419 }
-            primary_culture = french
-            is_greater_power = yes
-            capital = 425
-            419 = { NOT = { is_core = THIS } }
-        }
-
-        allow = {
-            war = no
-            is_vassal = no
-            is_greater_power = yes
-            NOT = { is_disarmed = yes }
-            NOT = { has_recently_lost_war = yes }
-            owns = 418
-            war_policy = jingoism
-            419 = { owner = { is_disarmed = yes truce_with = THIS war = no NOT = { military_score = THIS } } }
-        }
-
-        effect = {
-            badboy = 1
-            419 = { secede_province = THIS }
-            419 = { add_core = THIS }
-        }
-
-        ai_will_do = {
-            factor = 1
-            modifier = { factor = 0 badboy = 0.8 }
-        }
     }
 
     annex_rhineland = {
@@ -865,120 +806,6 @@ political_decisions = {
         ai_will_do = { factor = 1 }
     }
 
-    switch_bor_back_to_fra = {
-        potential = {
-            OR = {
-                AND = {
-                    ai = yes
-                    tag = JAN
-                }
-                AND = {
-                    NOT = { exists = JAN }
-                    tag = SIK
-                    ai = yes
-                }
-                AND = {
-                    NOT = { exists = JAN }
-                    NOT = { exists = SIK }
-                    tag = HAI
-                    ai = yes
-                }
-                AND = {
-                    NOT = { exists = JAN }
-                    NOT = { exists = SIK }
-                    NOT = { exists = HAI }
-                    tag = SWI
-                    ai = yes
-                }
-                AND = {
-                    NOT = { exists = JAN }
-                    NOT = { exists = SIK }
-                    NOT = { exists = HAI }
-                    NOT = { exists = SWI }
-                    tag = LIE
-                    ai = yes
-                }
-                AND = {
-                    NOT = { exists = JAN }
-                    NOT = { exists = SIK }
-                    NOT = { exists = HAI }
-                    NOT = { exists = SWI }
-                    NOT = { exists = LIE }
-                    tag = SMR
-                    ai = yes
-                }
-                AND = {
-                    NOT = { exists = SMR }
-                    NOT = { exists = SWI }
-                    NOT = { exists = LIE }
-                    NOT = { exists = JAN }
-                    NOT = { exists = SIK }
-                    NOT = { exists = HAI }
-                    ai = yes
-                }
-
-            }
-            NOT = { neighbour = BOR }
-            BOR = {
-                NOT = {
-                    government = absolute_monarchy
-                    government = prussian_constitutionalism
-                    government = hms_government
-                }
-            }
-        }
-        allow = { ai = yes }
-        effect = { BOR = { all_core = { add_core = FRA remove_core = BOR } change_tag = FRA } }
-
-        ai_will_do = { factor = 1 }
-    }
-
-    remove_any_french_cores = {
-        potential = {
-            ai = yes
-            OR = {
-                any_owned_province = { is_core = BOR }
-                any_owned_province = { is_core = FRA }
-                primary_culture = french
-                neighbour = FRA
-                neighbour = BOR
-            }
-        }
-        allow = {
-            OR = {
-                AND = {
-                    FRA = { exists = yes }
-                    BOR = { exists = no }
-                    OR = {
-                        any_owned_province = { is_core = BOR }
-                        FRA = { any_owned_province = { is_core = BOR } }
-                    }
-                }
-                AND = {
-                    BOR = { exists = yes }
-                    FRA = { exists = no }
-                    OR = {
-                        any_owned_province = { is_core = FRA }
-                        BOR = { any_owned_province = { is_core = FRA } }
-                    }
-                }
-            }
-        }
-
-        effect = {
-            random_owned = {
-                limit = { exists = FRA }
-                BOR = { all_core = { remove_core = BOR add_core = FRA } }
-            }
-            random_owned = {
-                limit = { exists = BOR }
-                FRA = { all_core = { remove_core = FRA add_core = BOR } }
-            }
-        }
-
-        ai_will_do = { factor = 1 }
-    }
-
     jules_ferry_laws = {
         picture = jules_ferry
         potential = {
@@ -987,7 +814,7 @@ political_decisions = {
             capital = 425
             year = 1870
             NOT = { school_reforms = good_schools}
-            NOT = { has_country_flag = enacted_french_schooling }
+            NOT = { has_country_flag = jules_ferry_enacted }
         }
 
         allow = {
@@ -999,8 +826,8 @@ political_decisions = {
         }
 
         effect = {
-            FRA = { set_country_flag = enacted_french_schooling }
-            BOR = { set_country_flag = enacted_french_schooling }
+            FRA = { set_country_flag = jules_ferry_enacted }
+            BOR = { set_country_flag = jules_ferry_enacted }
             random_owned = {
                 limit = { owner = { school_reforms = acceptable_schools } }
                 owner = { social_reform = good_schools }
@@ -1094,7 +921,7 @@ political_decisions = {
         ai_will_do = { factor = 1 }
     }
     create_PLC_FRA = {
-        picture = become_poland_lithuania
+        picture = form_poland_lithuania
         potential = {
             primary_culture = french
             is_greater_power = yes
@@ -1176,4 +1003,93 @@ political_decisions = {
             }
         }
     }
+
+    blockade_rosas  = {
+        picture = dreams_of_empire
+        potential = {
+            tag = FRA
+            NOT = { has_country_flag = blockaded_rosas }
+        }
+
+        allow = {
+			ARC = { war_with = PBC }
+        }
+
+        effect = {
+            set_country_flag = blockaded_rosas
+            ARC = { country_event = 97095 }
+            relation = {
+                who = ARC
+                value = -100
+            }
+            diplomatic_influence = {
+                who = ARC
+                value = -100
+            }
+        }
+        ai_will_do = { factor = 100 }
+	}
+	
+	patagonia_araucania = {
+	    picture = map_patagonia
+		potential = {
+            has_global_flag = fantasy_countries_enabled
+		    ai = no
+		    primary_culture = french
+			OR = {
+				government = absolute_empire
+				government = absolute_monarchy
+				government = semi_constitutional_empire
+				government = prussian_constitutionalism
+				government = constitutional_empire
+				government = hms_government
+			}
+			is_greater_power = yes
+            capital = 425
+			year = 1880
+			NOT = {
+			    OR = {
+				    has_global_flag = patagonia_organized
+				    exists = PTG
+				}
+			}
+		}
+		
+		allow = {
+		    war = no
+			2400 = { empty = no }
+			2335 = { empty = no }
+			2339 = { empty = no }
+			NOT = {
+			    OR = {
+					exists = PTG
+					has_global_flag = patagonia_organized
+			    }
+		    }
+		}
+		
+		effect = {
+		    badboy = 10
+			prestige = -10
+            set_global_flag = patagonia_organized
+            set_country_flag = patagonia_master
+			CHL_2327 = { 
+			    add_core = THIS
+				add_core = PTG
+			}
+			CHL_2332 = { 
+			    add_core = THIS
+                add_core = PTG			
+			}
+			ARG_2391 = { 
+			    add_core = THIS
+				add_core = PTG
+			}
+			ARG_2398 = { 
+			    add_core = THIS 
+				add_core = PTG
+			}
+        }
+    }
+	
 }

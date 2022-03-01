@@ -99,6 +99,7 @@ political_decisions = {
                 }
             }
             USA = { remove_accepted_culture = cajun }
+			US2 = { remove_accepted_culture = cajun }
             remove_accepted_culture = cajun
         }
 
@@ -359,6 +360,7 @@ political_decisions = {
             random_owned = {
                 limit = { owner = { has_country_flag = quebec_and_acadia_only } }
                 USA = { all_core = { remove_core = ACA } } #Removes Acadian Cores from the US
+				US2 = { all_core = { remove_core = ACA } } #Removes Acadian Cores from the US
                 ULA = { all_core = { remove_core = ULA } }
                 owner = { badboy = -5 } #Reduces your infamy for dropping the rest of your claims
                 46 = { state_scope = { change_region_name = "Southern Ontario" } }
@@ -410,81 +412,6 @@ political_decisions = {
         ai_will_do = { factor = 1 }
     }
 
-    french_louisiana = {
-        picture = new_france_louisiana
-        potential = {
-            primary_culture = french
-            is_greater_power = yes
-            capital = 425
-            has_country_flag = french_total_victory
-            has_country_flag = french_america
-            has_country_flag = canada_organized
-            NOT = {
-                has_country_flag = war_for_louisiana
-                exists = ULA
-                exists = FCA
-            }
-        }
-
-        allow = {
-            war = no
-            NOT = { truce_with = USA }
-            NOT = { war_policy = pacifism }
-            NOT = { revolution_n_counterrevolution = 1 }
-        }
-
-        effect = {
-            badboy = 25
-            USA = {
-                add_casus_belli = {
-                    target = THIS
-                    type = cut_down_to_size
-                    months = 60
-                }
-            }
-            FRA = { set_country_flag = war_for_louisiana }
-            BOR = { set_country_flag = war_for_louisiana }
-            relation = { who = USA value = -200 }
-            diplomatic_influence = { who = USA value = -200 }
-            leave_alliance = USA
-            random_country = { limit = { tag = USA vassal_of = THIS } THIS = { release_vassal = USA } }
-            random_country = { limit = { is_our_vassal = USA NOT = { tag = THIS } } relation = { who = THIS value = -200 } leave_alliance = THIS }
-            any_pop = { dominant_issue = { factor = 0.05 value = jingoism } consciousness = 2 }
-            casus_belli = {
-                target = USA
-                type = cut_down_to_size
-                months = 12
-            }
-            war = {
-                target = USA
-                attacker_goal = { casus_belli = cut_down_to_size }
-                defender_goal = { casus_belli = cut_down_to_size }
-            }
-            any_pop = {
-                limit = {
-                    OR = {
-                        has_pop_culture = mexican
-                        has_pop_culture = yankee
-                        has_pop_culture = british
-                        has_pop_culture = anglo_canadian
-                    }
-                }
-                militancy = 6
-            }
-            any_country = {
-                limit = {
-                    is_greater_power = yes
-                    NOT = { truce_with = THIS }
-                }
-                casus_belli = {
-                    target = THIS
-                    type = cut_down_to_size
-                    months = 24
-                }
-            }
-        }
-    }
-
     treaty_of_new_york = {
         picture = establish_panfrenchism
         potential = {
@@ -497,19 +424,40 @@ political_decisions = {
 
         allow = {
             money = 75000
-            USA = {
-                is_disarmed = yes
-                truce_with = THIS
-            }
+			OR = {
+				USA = {
+					exists = yes
+					is_disarmed = yes
+					truce_with = THIS
+				}
+				US2 = {
+					exists = yes
+					is_disarmed = yes
+					truce_with = THIS
+				}
+			}
         }
 
         effect = {
             set_global_flag = treaty_of_new_york
             clr_global_flag = american_frontier
             ###Secede Southern Ontario to USA###
-            CAN_46 = { add_core = USA }
-            51 = { remove_core = USA }
-            50 = { remove_core = USA }
+			any_country = {
+				limit = {
+						tag = USA
+						exists = yes
+				}
+				CAN_46 = { add_core = USA }
+			}
+			any_country = {
+				limit = {
+						tag = US2
+						exists = yes
+				}
+				CAN_46 = { add_core = US2 }
+			}
+            51 = { remove_core = USA remove_core = US2 }
+            50 = { remove_core = USA remove_core = US2 }
             USA = {
                 remove_accepted_culture = cajun
                 ###Add Lousiana Cores###
@@ -561,18 +509,92 @@ political_decisions = {
                 }
                 treasury = 75000
             }
-            ULA = { all_core = { remove_core = FCA } }
-            THIS = {
+            US2 = {
+                remove_accepted_culture = cajun
+                ###Add Lousiana Cores###
                 any_owned = {
                     limit = {
-                        is_core = USA
-                        NOT = { is_core = ACA is_core = ULA region = USA_78 }
+                        OR = {
+                            region = USA_139 #Louisiana
+                            region = USA_144 #Arkansas
+                            region = USA_148 #Missouri
+                            region = USA_118 #North Dakota
+                            region = USA_121 #South Dakota
+                            region = USA_124 #Nebraska
+                            region = USA_151 #Idaho
+                            region = USA_158 #Iowa
+                            region = USA_126 #Kansas
+                            region = USA_129 #Oklahoma
+                            region = USA_111 #Wyoming
+                            region = USA_116 #Montana
+                            region = USA_78 #Washington
+                            region = USA_81 #Oregon
+                            region = USA_91 #Idaho
+                            province_id = 106
+                            province_id = 78
+                            province_id = 79
+                        }
+                        NOT = {
+                            province_id = 129
+                            province_id = 110
+                            province_id = 107
+                            province_id = 128
+                        }
                     }
-                    secede_province = USA
-                    remove_core = THIS
-                    remove_core = FCA
+                    add_core = ULA
                 }
+                ###Population Transfers
+                any_pop = { limit = { has_pop_culture = french_canadian } move_pop = 65 }
+                ###Remove Acadia Cores###
+                any_owned = { limit = { is_core = ACA } remove_core = ACA }
+                ###Secede Provinces
+                any_owned = {
+                    limit = {
+                        OR = {
+                            is_core = ULA
+                            is_core = ACA
+                            is_core = FCA
+                        }
+                    }
+                    secede_province = THIS
+                }
+                treasury = 75000
             }
+            ULA = { all_core = { remove_core = FCA } }
+            any_owned = {
+				limit = {
+					USA = { exists = yes }
+					is_core = USA
+					NOT = { is_core = ACA is_core = ULA region = USA_78 }
+				}
+				secede_province = USA
+				remove_core = THIS
+				remove_core = FCA
+			}
+			any_owned = {
+				limit = {
+					US2 = { exists = yes }
+					is_core = US2
+					NOT = { is_core = ACA is_core = ULA region = USA_78 }
+				}
+				secede_province = US2
+				remove_core = THIS
+				remove_core = FCA
+			}
+			any_owned = {
+				limit = {
+					USA = { exists = no }
+					US2 = { exists = no }
+					OR = {
+						is_core = USA
+						is_core = US2
+					}
+					NOT = { is_core = ACA is_core = ULA region = USA_78 }
+				}
+				secede_province = USA
+				remove_core = THIS
+				remove_core = FCA
+			}
             ###Turn all these states into colonies
             any_owned = {
                 limit = {
@@ -598,49 +620,57 @@ political_decisions = {
             inherit = UTI
             treasury = -75000
             USA = { any_pop = { limit = { has_pop_culture = french_canadian } move_pop = 71 } }
+            US2 = { any_pop = { limit = { has_pop_culture = french_canadian } move_pop = 71 } }
             FCA = { remove_accepted_culture = anglo_canadian }
-            random_country = {
-                limit = { tag = FCA }
-                any_owned = {
-                    limit = { region = CAN_46 }
-                    remove_core = FCA
-                    secede_province = USA
-                }
-            }
+			random_country = {
+				limit = {
+					tag = FCA
+					USA = { exists = yes }
+				}
+				any_owned = {
+					limit = { region = CAN_46 }
+					remove_core = FCA
+					secede_province = USA
+				}
+			}
+			random_country = {
+				limit = {
+					tag = FCA
+					US2 = { exists = yes }
+				}
+				any_owned = {
+					limit = { region = CAN_46 }
+					remove_core = FCA
+					secede_province = US2
+				}
+			}
+			random_country = {
+				limit = {
+					tag = FCA
+					USA = { exists = no }
+					US2 = { exists = no }
+				}
+				any_owned = {
+					limit = { region = CAN_46 }
+					remove_core = FCA
+					secede_province = USA
+				}
+			}
             46 = { state_scope = { change_region_name = "Southern Ontario" } }
-            USA = { country_event = 99971 }
-        }
-
-        ai_will_do = { factor = 1 }
-    }
-
-    become_the_fsa_french_lousiana = {
-        potential = {
-            tag = USA
-            ai = yes
-            NOT = { owns = 139 }
-            has_global_flag = treaty_of_new_york
-            exists = CSA
-            NOT = { has_country_modifier = no_more_war }
-            has_global_flag = american_civil_war_has_happened
-        }
-
-        allow = {
-            war = no
-        }
-
-        effect = {
-            release_vassal = CAL
-            release_vassal = DES
-            release_vassal = TEX
-            any_owned = {
-                limit = {
-                    owned_by = USA
-                    is_core = USA
-                }
-                add_core = FSA
-            }
-            change_tag = FSA
+			any_country = {
+				limit = {
+						tag = USA
+						exists = yes
+				}
+				country_event = 99971
+			}
+			any_country = {
+				limit = {
+						tag = US2
+						exists = yes
+				}
+				country_event = 99971
+			}
         }
 
         ai_will_do = { factor = 1 }
@@ -864,8 +894,11 @@ political_decisions = {
                 }
                 secede_province = D01
             }
+			# Audax Validator "." Ignore_NEXT
             D01 = {
+				# Audax Validator "." Ignore_NEXT
                 146 = { assimilate = yes }
+				# Audax Validator "." Ignore_NEXT
                 143 = { assimilate = yes }
             }
             THIS = { inherit = D01 }
@@ -1021,7 +1054,6 @@ political_decisions = {
             2513 = { change_province_name = "Michel" }
             2515 = { change_province_name = "Jeanne" }
             2516 = { change_province_name = "Akaroa" }
-            2571 = { change_province_name = "Jeanne" }
             any_pop = {
                 limit = { culture = maori }
                 consciousness = 7
@@ -1096,10 +1128,15 @@ political_decisions = {
                 limit = { is_core = NZF }
                 secede_province = UTI
             }
+			# Audax Validator "." Ignore_NEXT
             UTI = {
+				# Audax Validator "." Ignore_NEXT
                 ENG_2513 = { assimilate = yes }
+				# Audax Validator "." Ignore_NEXT
                 2510 = { assimilate = yes }
+				# Audax Validator "." Ignore_NEXT
                 2511 = { assimilate = yes }
+				# Audax Validator "." Ignore_NEXT
                 2512 = { assimilate = yes }
             }
             inherit = UTI
@@ -1345,6 +1382,7 @@ political_decisions = {
                 limit = { is_core = FAS }
                 secede_province = UTI
             }
+			# Audax Validator "." Ignore_NEXT
             ENG_2468 = { assimilate = yes }
             THIS = { inherit = UTI }
             any_owned = {
@@ -1492,694 +1530,9 @@ political_decisions = {
                 change_province_name = "Alger"
                 state_scope = { change_region_name = "Alger" }
             }
+			1720 = { remove_core = MOR }
         }
 
-        ai_will_do = { factor = 1 }
-    }
-
-    louisiana_rename = {
-        picture = new_france_louisiana
-        potential = {
-            OR = {
-                AND = {
-                    OR = {
-                        primary_culture = french_canadian
-                        primary_culture = neo_zelandais
-                        primary_culture = french_australian
-                        primary_culture = cajun
-                        primary_culture = louisianan
-                        is_culture_group = french
-                    }
-                    OR = {
-                        AND = { owns = 139 NOT = { has_global_flag = french_renamed_louisiana } }
-                        AND = { owns = 143 NOT = { has_global_flag = french_renamed_arkansas } }
-                        AND = { owns = 130 NOT = { has_global_flag = french_renamed_oklahoma } }
-                        AND = { owns = 148 NOT = { has_global_flag = french_renamed_missouri } }
-                        AND = { owns = 154 NOT = { has_global_flag = french_renamed_iowa } }
-                        AND = { owns = 126 NOT = { has_global_flag = french_renamed_kansas } }
-                        AND = { owns = 124 NOT = { has_global_flag = french_renamed_nebraska } }
-                        AND = { owns = 155 NOT = { has_global_flag = french_renamed_minnesota } }
-                        AND = { owns = 120 NOT = { has_global_flag = french_renamed_south_dakota } }
-                        AND = { owns = 117 NOT = { has_global_flag = french_renamed_north_dakota } }
-                        AND = { owns = 116 NOT = { has_global_flag = french_renamed_montana } }
-                        AND = { owns = 112 NOT = { has_global_flag = french_renamed_wyoming } }
-                        AND = { owns = 78 NOT = { has_global_flag = french_renamed_washington } }
-                        AND = { owns = 81 NOT = { has_global_flag = french_renamed_oregon } }
-                        AND = { owns = 91 NOT = { has_global_flag = french_renamed_idaho } }
-                    }
-                }
-                AND = {
-                    is_culture_group = american_cultures
-                    OR = {
-                        AND = { owns = 139 has_global_flag = french_renamed_louisiana }
-                        AND = { owns = 143 has_global_flag = french_renamed_arkansas }
-                        AND = { owns = 130 has_global_flag = french_renamed_oklahoma }
-                        AND = { owns = 148 has_global_flag = french_renamed_missouri }
-                        AND = { owns = 154 has_global_flag = french_renamed_iowa }
-                        AND = { owns = 126 has_global_flag = french_renamed_kansas }
-                        AND = { owns = 124 has_global_flag = french_renamed_nebraska }
-                        AND = { owns = 155 has_global_flag = french_renamed_minnesota }
-                        AND = { owns = 120 has_global_flag = french_renamed_south_dakota }
-                        AND = { owns = 117 has_global_flag = french_renamed_north_dakota }
-                        AND = { owns = 116 has_global_flag = french_renamed_montana }
-                        AND = { owns = 112 has_global_flag = french_renamed_wyoming }
-                        AND = { owns = 78 has_global_flag = french_renamed_washington }
-                        AND = { owns = 81 has_global_flag = french_renamed_oregon }
-                        AND = { owns = 91 has_global_flag = french_renamed_idaho }
-                    }
-                }
-            }
-        }
-
-        allow = {
-            war = no
-        }
-
-        effect = {
-            ###Louisiana - American###
-            random_owned = {
-                limit = {
-                    province_id = 139 #New Orleans
-                    owner = {
-                        is_culture_group = american_cultures
-                    }
-                }
-                139 = {
-                    change_province_name = "New Orleans"
-                    state_scope = {
-                        change_region_name = "Louisiana"
-                    }
-                }
-                140 = { change_province_name = "Baton Rouge" }
-                141 = { change_province_name = "Lake Charles" }
-                142 = { change_province_name = "Shreveport" }
-                owner = { clr_global_flag = french_renamed_louisiana }
-            }
-            ###Louisiana - French###
-            random_owned = {
-                limit = {
-                    province_id = 139 #New Orleans
-                    owner = {
-                        OR = {
-                            primary_culture = french_canadian
-                            primary_culture = neo_zelandais
-                            primary_culture = french_australian
-                            primary_culture = cajun
-                            primary_culture = louisianan
-                            is_culture_group = french
-                        }
-                    }
-                }
-                139 = {
-                    change_province_name = "Nouvelle-Orléans"
-                    state_scope = {
-                        change_region_name = "Basse-Louisiane"
-                    }
-                }
-                140 = { change_province_name = "Bâton-Rouge" }
-                141 = { change_province_name = "Lac Charles" }
-                142 = { change_province_name = "Madele" }
-                owner = { set_global_flag = french_renamed_louisiana }
-            }
-            ###Arkansas - American###
-            random_owned = {
-                limit = {
-                    province_id = 143
-                    owner = {
-                        is_culture_group = american_cultures
-                    }
-                }
-                #Arkansas
-                143 = {
-                    change_province_name = "Little Rock"
-                    state_scope = {
-                        change_region_name = "Arkansas"
-                    }
-                }
-                144 = { change_province_name = "Hotsprings" }
-                owner = { clr_global_flag = french_renamed_arkansas }
-            }
-            ###Arkansas - French###
-            random_owned = {
-                limit = {
-                    province_id = 143
-                    owner = {
-                        OR = {
-                            primary_culture = french_canadian
-                            primary_culture = neo_zelandais
-                            primary_culture = french_australian
-                            primary_culture = cajun
-                            primary_culture = louisianan
-                            is_culture_group = french
-                        }
-                    }
-                }
-                #Arkansas
-                143 = {
-                    change_province_name = "Chevreuils"
-                    state_scope = {
-                        change_region_name = "Arcansas"
-                    }
-                }
-                144 = { change_province_name = "Adaie" }
-                owner = { set_global_flag = french_renamed_arkansas }
-            }
-            ###Oklahoma - American###
-            random_owned = {
-                limit = {
-                    province_id = 130
-                    owner = {
-                        is_culture_group = american_cultures
-                    }
-                }
-                130 = {
-                    change_province_name = "Fort Gibson"
-                    state_scope = {
-                        change_region_name = "Oklahoma"
-                    }
-                }
-                131 = { change_province_name = "Fort Washita" }
-                owner = {  clr_global_flag = french_renamed_oklahoma }
-            }
-            ###Oklahoma###
-            random_owned = {
-                limit = {
-                    province_id = 130
-                    owner = {
-                        OR = {
-                            primary_culture = french_canadian
-                            primary_culture = neo_zelandais
-                            primary_culture = french_australian
-                            primary_culture = cajun
-                            primary_culture = louisianan
-                            is_culture_group = french
-                        }
-                    }
-                }
-                130 = {
-                    change_province_name = "Champlain"
-                    state_scope = {
-                        change_region_name = "Cadodaquois"
-                    }
-                }
-                131 = { change_province_name = "Nacanne" }
-                owner = { set_global_flag = french_renamed_oklahoma }
-            }
-            ###Missouri - American###
-            random_owned = {
-                limit = {
-                    province_id = 148
-                    owner = {
-                        is_culture_group = american_cultures
-                    }
-                }
-                148 = { change_province_name = "Malden" }
-                147 = { change_province_name = "Joplin" }
-                149 = { change_province_name = "Jefferson City" }
-                150 = { change_province_name = "Kansas City" }
-                owner = { clr_global_flag = french_renamed_missouri }
-            }
-            ###Missouri###
-            random_owned = {
-                limit = {
-                    province_id = 148
-                    owner = {
-                        OR = {
-                            primary_culture = french_canadian
-                            primary_culture = neo_zelandais
-                            primary_culture = french_australian
-                            primary_culture = cajun
-                            primary_culture = louisianan
-                            is_culture_group = french
-                        }
-                    }
-                }
-                148 = { change_province_name = "Oxiers" }
-                147 = { change_province_name = "Petit Rocher" }
-                149 = { change_province_name = "Mines" }
-                150 = { change_province_name = "Lafayette" }
-                owner = { set_global_flag = french_renamed_missouri }
-            }
-            ###Iowa - American###
-            random_owned = {
-                limit = {
-                    province_id = 154
-                    owner = {
-                        is_culture_group = american_cultures
-                    }
-                }
-                154 = {
-                    change_province_name = "Sioux City"
-                    state_scope = {
-                        change_region_name = "Iowa"
-                    }
-                }
-                152 = { change_province_name = "Oskaloosa" }
-                153 = { change_province_name = "Cedar Rapids" }
-                owner = { clr_global_flag = french_renamed_iowa }
-            }
-            ###Iowa###
-            random_owned = {
-                limit = {
-                    province_id = 154
-                    owner = {
-                        OR = {
-                            primary_culture = french_canadian
-                            primary_culture = neo_zelandais
-                            primary_culture = french_australian
-                            primary_culture = cajun
-                            primary_culture = louisianan
-                            is_culture_group = french
-                        }
-                    }
-                }
-                154 = {
-                    change_province_name = "Aiaouez"
-                    state_scope = {
-                        change_region_name = "Haute-Louisiane"
-                    }
-                }
-                152 = { change_province_name = "La Sonde" }
-                153 = { change_province_name = "Cèdre Rapides" }
-                owner = { set_global_flag = french_renamed_iowa }
-            }
-            ###Kansas - American###
-            random_owned = {
-                limit = {
-                    province_id = 126
-                    owner = {
-                        is_culture_group = american_cultures
-                    }
-                }
-                126 = {
-                    change_province_name = "Fort Leavenworth"
-                    state_scope = {
-                        change_region_name = "Kansas"
-                    }
-                }
-                127 = { change_province_name = "Fort Mann" }
-                owner = { clr_global_flag = french_renamed_kansas }
-            }
-            ###Kansas###
-            random_owned = {
-                limit = {
-                    province_id = 126
-                    owner = {
-                        OR = {
-                            primary_culture = french_canadian
-                            primary_culture = neo_zelandais
-                            primary_culture = french_australian
-                            primary_culture = cajun
-                            primary_culture = louisianan
-                            is_culture_group = french
-                        }
-                    }
-                }
-                126 = {
-                    change_province_name = "Canfez"
-                    state_scope = {
-                        change_region_name = "Cansez"
-                    }
-                }
-                127 = { change_province_name = "Grinaiches" }
-                owner = { set_global_flag = french_renamed_kansas }
-            }
-            ###Nebraska - American###
-            random_owned = {
-                limit = {
-                    province_id = 124
-                    owner = {
-                        is_culture_group = american_cultures
-                    }
-                }
-                124 = {
-                    change_province_name = "Bordeaux's Post"
-                    state_scope = {
-                        change_region_name = "Nebraska"
-                    }
-                }
-                123 = { change_province_name = "Fort Robidoux" }
-                125 = { change_province_name = "Fontenelle's Post" }
-                owner = { clr_global_flag = french_renamed_nebraska }
-            }
-            ###Nebraska###
-            random_owned = {
-                limit = {
-                    province_id = 124
-                    owner = {
-                        OR = {
-                            primary_culture = french_canadian
-                            primary_culture = neo_zelandais
-                            primary_culture = french_australian
-                            primary_culture = cajun
-                            primary_culture = louisianan
-                            is_culture_group = french
-                        }
-                    }
-                }
-                124 = {
-                    change_province_name = "Baptisteville"
-                    state_scope = {
-                        change_region_name = "Eau-Plattte"
-                    }
-                }
-                123 = { change_province_name = "Panis" }
-                125 = { change_province_name = "La Colline" }
-                owner = { set_global_flag = french_renamed_nebraska }
-            }
-            ###Minnesota - American###
-            random_owned = {
-                limit = {
-                    province_id = 155
-                    owner = {
-                        is_culture_group = american_cultures
-                    }
-                }
-                155 = {
-                    change_province_name = "Fort Snelling"
-                    state_scope = {
-                        change_region_name = "Minnesota"
-                    }
-                }
-                156 = { change_province_name = "Fort Renville" }
-                157 = { change_province_name = "Fort Ripley" }
-                owner = { clr_global_flag = french_renamed_minnesota }
-            }
-            ###Minnesota###
-            random_owned = {
-                limit = {
-                    province_id = 155
-                    owner = {
-                        OR = {
-                            primary_culture = french_canadian
-                            primary_culture = neo_zelandais
-                            primary_culture = french_australian
-                            primary_culture = cajun
-                            primary_culture = louisianan
-                            is_culture_group = french
-                        }
-                    }
-                }
-                155 = {
-                    change_province_name = "Huillier"
-                    state_scope = {
-                        change_region_name = "L'étoile du Nord"
-                    }
-                }
-                156 = { change_province_name = "Moingana" }
-                157 = { change_province_name = "Vieux Fort" }
-                owner = { set_global_flag = french_renamed_minnesota }
-            }
-            ###South Dakota - American###
-            random_owned = {
-                limit = {
-                    province_id = 120
-                    owner = {
-                        is_culture_group = american_cultures
-                    }
-                }
-                120 = {
-                    change_province_name = "Fort Kiowa"
-                    state_scope = {
-                        change_region_name = "South Dakota"
-                    }
-                }
-                121 = { change_province_name = "Fort Cedar" }
-                122 = { change_province_name = "Fort Pierre" }
-                owner = { clr_global_flag = french_renamed_south_dakota }
-            }
-            ###South Dakota###
-            random_owned = {
-                limit = {
-                    province_id = 120
-                    owner = {
-                        OR = {
-                            primary_culture = french_canadian
-                            primary_culture = neo_zelandais
-                            primary_culture = french_australian
-                            primary_culture = cajun
-                            primary_culture = louisianan
-                            is_culture_group = french
-                        }
-                    }
-                }
-                120 = {
-                    change_province_name = "Tintonoux"
-                    state_scope = {
-                        change_region_name = "Dakota du Sud"
-                    }
-                }
-                121 = { change_province_name = "Le Cèdre" }
-                122 = { change_province_name = "Pierreville" }
-                owner = { set_global_flag = french_renamed_south_dakota }
-            }
-            ###North Dakota - American###
-            random_owned = {
-                limit = {
-                    province_id = 117
-                    owner = {
-                        is_culture_group = american_cultures
-                    }
-                }
-                117 = {
-                    change_province_name = "Fort Clark"
-                    state_scope = { change_region_name = "North Dakota" }
-                }
-                118 = { change_province_name = "Fort James" }
-                119 = { change_province_name = "Fort Union" }
-                owner = { clr_global_flag = french_renamed_north_dakota }
-            }
-            ###North Dakota###
-            random_owned = {
-                limit = {
-                    province_id = 117
-                    owner = {
-                        OR = {
-                            primary_culture = french_canadian
-                            primary_culture = neo_zelandais
-                            primary_culture = french_australian
-                            primary_culture = cajun
-                            primary_culture = louisianan
-                            is_culture_group = french
-                        }
-                    }
-                }
-                117 = {
-                    change_province_name = "Ouidaou"
-                    state_scope = {
-                        change_region_name = "Dakota du Nord"
-                    }
-                }
-                118 = { change_province_name = "Choumans" }
-                119 = { change_province_name = "Mentous" }
-                owner = { set_global_flag = french_renamed_north_dakota }
-            }
-            ###Montana - American###
-            random_owned = {
-                limit = {
-                    province_id = 116
-                    owner = {
-                        is_culture_group = american_cultures
-                    }
-                }
-                113 = {
-                    change_province_name = "Gallatin Valley"
-                    state_scope = {
-                        change_region_name = "Montana"
-                    }
-                }
-                114 = { change_province_name = "Fort Owen" }
-                115 = { change_province_name = "Fort Benton" }
-                116 = { change_province_name = "Fort Van Buren" }
-                owner = { clr_global_flag = french_renamed_montana }
-            }
-            ###Montana###
-            random_owned = {
-                limit = {
-                    province_id = 116
-                    owner = {
-                        OR = {
-                            primary_culture = french_canadian
-                            primary_culture = neo_zelandais
-                            primary_culture = french_australian
-                            primary_culture = cajun
-                            primary_culture = louisianan
-                            is_culture_group = french
-                        }
-                    }
-                }
-                113 = {
-                    change_province_name = "Montagneville"
-                    state_scope = {
-                        change_region_name = "Assiniboine"
-                    }
-                }
-                114 = { change_province_name = "Rochambeau" }
-                115 = { change_province_name = "Rancé" }
-                116 = { change_province_name = "La Salle" }
-                owner = { set_global_flag = french_renamed_montana }
-            }
-            ###Wyoming - American###
-            random_owned = {
-                limit = {
-                    province_id = 112
-                    owner = {
-                        is_culture_group = american_cultures
-                    }
-                }
-                112 = {
-                    change_province_name = "Fort Laramie"
-                    state_scope = {
-                        change_region_name = "Wyoming"
-                    }
-                }
-                111 = { change_province_name = "Fort Bonneville" }
-                owner = { clr_global_flag = french_renamed_wyoming }
-            }
-            ###Wyoming###
-            random_owned = {
-                limit = {
-                    province_id = 112
-                    owner = {
-                        OR = {
-                            primary_culture = french_canadian
-                            primary_culture = neo_zelandais
-                            primary_culture = french_australian
-                            primary_culture = cajun
-                            primary_culture = louisianan
-                            is_culture_group = french
-                        }
-                    }
-                }
-                112 = {
-                    change_province_name = "Cheyenne"
-                    state_scope = {
-                        change_region_name = "Contreforts"
-                    }
-                }
-                111 = { change_province_name = "Fontainebleau" }
-                owner = { set_global_flag = french_renamed_wyoming }
-            }
-
-            ###Washington - American###
-            random_owned = {
-                limit = {
-                    province_id = 78
-                    owner = {
-                        is_culture_group = american_cultures
-                    }
-                }
-                78 = {
-                    change_province_name = "Seattle"
-                    state_scope = {
-                        change_region_name = "Washington"
-                    }
-                }
-                79 = { change_province_name = "Olympia" }
-                owner = { clr_global_flag = french_renamed_washington }
-            }
-            ###Washington###
-            random_owned = {
-                limit = {
-                    province_id = 78
-                    owner = {
-                        OR = {
-                            primary_culture = french_canadian
-                            primary_culture = neo_zelandais
-                            primary_culture = french_australian
-                            primary_culture = cajun
-                            primary_culture = louisianan
-                            is_culture_group = french
-                        }
-                    }
-                }
-                78 = {
-                    change_province_name = "St Brieux"
-                    state_scope = {
-                        change_region_name = "Colombie du Sud"
-                    }
-                }
-                79 = { change_province_name = "Charlesbourg-Royal" }
-                owner = { set_global_flag = french_renamed_washington }
-            }
-            ###Oregon - American###
-            random_owned = {
-                limit = {
-                    province_id = 81
-                    owner = {
-                        is_culture_group = american_cultures
-                    }
-                }
-                3462 = {
-                    change_province_name = "Eugene"
-                    state_scope = { change_region_name = "Oregon" }
-                }
-                81 = { change_province_name = "Portland" }
-                82 = { change_province_name = "Baker City" }
-                owner = { clr_global_flag = french_renamed_oregon }
-            }
-            ###Oregon###
-            random_owned = {
-                limit = {
-                    province_id = 81
-                    owner = {
-                        OR = {
-                            primary_culture = french_canadian
-                            primary_culture = neo_zelandais
-                            primary_culture = french_australian
-                            primary_culture = cajun
-                            primary_culture = louisianan
-                            is_culture_group = french
-                        }
-                    }
-                }
-                83 = {
-                    state_scope = {
-                        change_region_name = "Ourican"
-                    }
-                }
-                81 = { change_province_name = "Nouvelle-Toulon" }
-                82 = { change_province_name = "Nouvelle-Avignon" }
-                owner = { set_global_flag = french_renamed_oregon }
-            }
-            ###Idaho - American###
-            random_owned = {
-                limit = {
-                    province_id = 91
-                    owner = {
-                        is_culture_group = american_cultures
-                    }
-                }
-                91 = {
-                    state_scope = {
-                        change_region_name = "Idaho"
-                    }
-                }
-                owner = { clr_global_flag = french_renamed_idaho }
-            }
-            ###Idaho###
-            random_owned = {
-                limit = {
-                    province_id = 91
-                    owner = {
-                        OR = {
-                            primary_culture = french_canadian
-                            primary_culture = neo_zelandais
-                            primary_culture = french_australian
-                            primary_culture = cajun
-                            primary_culture = louisianan
-                            is_culture_group = french
-                        }
-                    }
-                }
-                91 = {
-                    state_scope = {
-                        change_region_name = "Cascadia"
-                    }
-                }
-                owner = { set_global_flag = french_renamed_idaho }
-            }
-        }
         ai_will_do = { factor = 1 }
     }
 

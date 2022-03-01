@@ -2,7 +2,10 @@ political_decisions = {
     restore_mexican_empire = {
         potential = {
             tag = MEX
-            government = democracy
+            OR = {
+				government = democracy
+				has_country_flag = Government_Democracy
+			}
             NOT = { has_country_flag = we_have_tried_this_once }
             OR = {
                 FRA = {
@@ -36,10 +39,25 @@ political_decisions = {
                 ruling_party_ideology = reactionary
             }
             average_militancy = 3
+			has_recently_lost_war = no
+			any_core = { 
+				continent = north_america 
+				NOT = { 
+					province_id = 2190 
+					province_id = 2196 
+					province_id = 2200 
+					province_id = 3411
+					province_id = 3491
+				} 
+				owned_by = THIS 
+			}
+			rank = 12
         }
 
         effect = {
             government = constitutional_empire
+			set_country_flag = constitutional_monarchy_gov
+			clr_country_flag = Government_Democracy
             election = yes
             random_owned = {
                 limit = { owner = { has_country_modifier = santa_ana_rule } }
@@ -81,7 +99,8 @@ political_decisions = {
         picture = treaty_of_guadalupe_hidalgo
         potential = {
             NOT = { has_country_flag = alternate_history_us_mexico_war }
-            tag = USA
+			has_country_flag = US_MEX_peace_agreement
+            OR = { tag = USA tag = US2 }
             has_country_flag = hasmanifestdestiny
             NOT = { has_country_flag = treaty_of_guadalupe_hidalgo }
             MEX = { is_greater_power = no NOT = { has_country_flag = manifest_destiny_refuted } }
@@ -89,23 +108,13 @@ political_decisions = {
 
         allow = {
             OR = {
-                money = 100000
+                money = 32000
                 ai = yes
             }
             OR = {
                 2172 = { controlled_by = USA }
+				2172 = { controlled_by = US2 }
                 has_global_flag = guadalupe_should_happen_now
-                AND = {
-                    MEX = {
-                        ai = yes
-                        war_exhaustion = 0.65
-                    }
-                    ai = yes
-                    is_sphere_leader_of = MEX
-                    war = no
-                    truce_with = MEX
-                    has_recently_lost_war = no
-                }
             }
             NOT = {
                 any_owned_province = { controlled_by = MEX }
@@ -116,124 +125,22 @@ political_decisions = {
         }
 
         effect = {
-            set_country_flag = treaty_of_guadalupe_hidalgo
+            USA = { set_country_flag = treaty_of_guadalupe_hidalgo }
+			US2 = { set_country_flag = treaty_of_guadalupe_hidalgo }
+			random_owned = {
+				limit = {
+					owner = {
+						2172 = { controlled_by = THIS }
+						THIS = { war_with = MEX }
+					}
+				}
+				owner = { MEX = { set_country_flag = guadalupe_enforced } }
+			}
             MEX = { country_event = 44825 }
         }
 
         ai_will_do = {
             factor = 1
-        }
-    }
-
-    refute_manifest_destiny = {
-        picture = manifest_destiny
-        potential = {
-            exists = yes
-            OR = {
-                tag = MEX
-                tag = TEX
-                tag = DES
-                tag = CAL
-            }
-            USA = { has_country_flag = hasmanifestdestiny }
-            NOT = {
-                has_country_flag = treaty_of_guadalupe_hidalgo
-                has_country_flag = manifest_destiny_refuted
-            }
-        }
-
-        allow = {
-            war = no
-            NOT = { has_recently_lost_war = yes }
-            OR = {
-                AND = {
-                    is_greater_power = yes
-                    invention = manifest_destiny
-                }
-                AND = {
-                    truce_with = USA
-                    USA = { has_recently_lost_war = yes }
-                }
-            }
-            all_core = { owned_by = THIS }
-        }
-
-        effect = {
-            set_country_flag = manifest_destiny_refuted
-            prestige = 10
-            USA = {
-                prestige = -10
-                relation = { who = THIS value = -200 }
-            }
-
-            any_owned = {
-                limit = {
-                    is_core = USA
-                    is_core = THIS
-                }
-                remove_core = USA
-            }
-
-            random_owned = {
-                limit = { owner = { OR = { tag = DES tag = CAL } } }
-                    owner = {
-                    any_owned = {
-                        limit = {
-                            is_core = MEX
-                            is_core = THIS
-                        }
-                remove_core = MEX
-                    }
-                }
-            }
-
-            random_owned = {
-                limit = { owner = { primary_culture = texan } }
-                    owner = {
-                    any_owned = {
-                        limit = {
-                            is_core = MEX
-                            is_core = THIS
-                        }
-                remove_core = MEX
-                    }
-                }
-            }
-
-            random_owned = {
-                limit = { owner = { primary_culture = mexican } }
-                owner = {
-                    129 = { add_core = MEX }
-                    128 = { add_core = MEX }
-                    103 = { add_core = MEX }
-                    107 = { add_core = MEX }
-                    108 = { add_core = MEX }
-                    109 = { add_core = MEX }
-                    110 = { add_core = MEX }
-                }
-            }
-        }
-    }
-    relcaim_UCA = {
-        picture = map_central_america
-        potential = {
-            tag = MEX
-            has_country_flag = manifest_destiny_refuted
-            NOT = { has_country_flag = relcaim_UCA }
-        }
-        allow = {
-            war = no
-            nationalism_n_imperialism = 1
-            war_policy = jingoism
-        }
-        effect = {
-            set_country_flag = relcaim_UCA
-            badboy = 15
-            GUA = { all_core = { add_core = MEX } }
-            ELS = { all_core = { add_core = MEX } }
-            HON = { all_core = { add_core = MEX } }
-            NIC = { all_core = { add_core = MEX } }
-            COS = { all_core = { add_core = MEX } }
         }
     }
     puppet_ULA = {
@@ -242,6 +149,12 @@ political_decisions = {
             tag = MEX
             has_country_flag = manifest_destiny_refuted
             NOT = { has_country_flag = puppet_ULA }
+			NOT = { ULA = { exists = yes } }
+			NOT = { owns = 139 }
+			OR = {
+				USA = { exists = yes }
+				US2 = { exists = yes }
+			}
         }
         allow = {
             war = no
@@ -275,14 +188,30 @@ political_decisions = {
             118 = { add_core = ULA }
             3468 = { add_core = ULA }
             set_country_flag = puppet_ULA
-            badboy = -4
-            THIS = {
-                war = {
-                    target = USA
-                    attacker_goal = { casus_belli = liberate_puppet country = ULA }
-                    defender_goal = { casus_belli = status_quo }
-                }
-            }
+            random_owned = {
+				limit = {
+					owner = { USA = { exists = yes } }
+				}
+				owner = {
+					war = {
+						target = USA
+						attacker_goal = { casus_belli = liberate_puppet_no_infamy country = ULA }
+						defender_goal = { casus_belli = status_quo }
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = { US2 = { exists = yes } }
+				}
+				owner = {
+					war = {
+						target = US2
+						attacker_goal = { casus_belli = liberate_puppet_no_infamy country = ULA }
+						defender_goal = { casus_belli = status_quo }
+					}
+				}
+			}
         }
     }
     philippines_n_cuba = {
@@ -291,17 +220,237 @@ political_decisions = {
             tag = MEX
             has_country_flag = manifest_destiny_refuted
             NOT = { has_country_flag = philippines_n_cuba }
+			has_country_flag = has_taken_oregon_or_more
         }
         allow = {
             war = no
             nationalism_n_imperialism = 1
             war_policy = jingoism
+			is_greater_power = yes
         }
         effect = {
             set_country_flag = philippines_n_cuba
-            badboy = 15
-            CUB = { all_core = { add_core = MEX } }
+            badboy = 12
             PHL = { all_core = { add_core = MEX } }
         }
     }
+	
+	cleanup_rio_rebellion = {
+		picture = Rio_Grande_flag
+		potential = {
+			OR = { tag = USA tag = US2 }
+			war = no
+			RGR = { in_sphere = THIS war = no ai = yes }
+			MEX = { in_sphere = THIS war = no ai = yes }
+			NOT = { has_country_flag = rio_cleanup }
+			NOT = { has_global_flag = RGR_Free }
+			NOT = { has_global_flag = sw_set }
+		}
+		
+		allow = {
+		}
+		
+		effect = {
+			USA = { set_country_flag = rio_cleanup }
+			US2 = { set_country_flag = rio_cleanup }
+			RGR = {
+				any_owned = {
+					limit = {
+						is_core = THIS
+					}
+					secede_province = THIS
+				}
+				annex_to = MEX
+			}
+		}
+	}
+	constitution_of_eighteenfiftyseven = {
+		picture = mex_constitution
+		potential = {
+			tag = MEX
+			has_country_flag = do_1857_constitution
+		}
+		
+		allow = {
+			war = no
+			ruling_party_ideology = liberal
+			is_vassal = no
+		}
+		
+		effect = {
+			clr_country_flag = do_1857_constitution
+			political_reform = federalism
+			social_reform = incarceration
+			social_reform = low_schools
+			political_reform = no_slavery
+			political_reform = free_press
+			political_reform = universal_voting
+			political_reform = population_equal_weight
+			political_reform = first_past_the_post
+			political_reform = yes_meeting
+			political_reform = all_trade_unions
+			political_reform = secret_ballots
+			political_reform = all_voting_pops
+			political_reform = bankruptcy
+			political_reform = open_borders
+			country_event = { id = 111011 days = 150 }
+		}
+	}
+	reform_war_conservative_victory = {
+		picture = zuloaga
+		potential = {
+			tag = MEE
+			government = prov_gov_conservative
+			exists = yes
+			NOT = { exists = MEX }
+			MEX = { has_country_flag = reform_war }
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+		}
+		
+		effect = {
+			all_core = {
+				remove_core = MEE
+			}
+			change_tag = MEX
+			government = democracy
+			ruling_party_ideology = conservative
+			political_reform = no_slavery
+			political_reform = appointed
+			political_reform = landed_voting
+			political_reform = no_meeting
+			political_reform = censored_press
+			political_reform = state_controlled
+			political_reform = first_past_the_post
+			political_reform = harassment
+			political_reform = debtors_prisons
+			social_reform = capital_punishment
+			political_reform = culture_voting_only
+			political_reform = open_borders
+			political_reform = unitary
+			capital = 2172
+			clr_country_flag = reform_war
+		}
+	}
+	reform_war_liberal_victory = {
+		picture = juarez
+		potential = {
+			tag = MEX
+			exists = yes
+			NOT = { exists = MEE }
+			has_country_flag = reform_war
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+		}
+		
+		effect = {
+			set_global_flag = conservatives_lost_reform_war
+			all_core = {
+				remove_core = MEE
+			}
+			capital = 2172
+			clr_country_flag = reform_war
+		}
+	}
+	reform_war_stalemate = {
+		picture = juarez
+		potential = {
+			tag = MEX
+			exists = yes
+			exists = MEE
+			MEE = { government = prov_gov_conservative }
+			MEE = { war = no is_vassal = no }
+			has_country_flag = reform_war
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+		}
+		
+		effect = {
+			all_core = {
+				remove_core = MEE
+			}
+			clr_country_flag = reform_war
+			MEE = { annex_to = THIS }
+			set_global_flag = conservatives_lost_reform_war
+			capital = 2172
+		}
+	}
+	french_intervention_in_mexico = {
+		picture = invade_mexico_as_france
+		potential = {
+			NOT = { MEX = { is_greater_power = yes } }
+			tag = FRA
+			has_global_flag = conservatives_lost_reform_war
+			has_country_flag = 2nd_empire
+			has_country_modifier = louis_napoleon_iii
+			exists = CSA
+			exists = MEX
+			NOT = { has_global_flag = french_intervention_in_mexico }
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+			is_greater_power = yes
+			NOT = { war_with = MEX truce_with = MEX is_sphere_leader_of = MEX alliance_with = MEX }
+		}
+		
+		effect = {
+			any_country = {
+				limit = {
+					OR = {
+						tag = ENG
+						tag = SPA
+						tag = SPC
+					}
+					NOT = {
+						war_with = MEX
+						truce_with = MEX
+						alliance_with = MEX
+						is_sphere_leader_of = MEX 
+					}
+					exists = yes
+				}
+				country_event = 111012
+			}
+			set_global_flag = french_intervention_in_mexico
+			country_event = { id = 111015 days = 7 }
+		}
+	}
+	install_max = {
+		picture = emperor_max
+		potential = {
+			tag = FRA
+			has_global_flag = conservatives_lost_reform_war
+			has_country_flag = 2nd_empire
+			has_country_modifier = louis_napoleon_iii
+			has_country_flag = installing_max
+			has_global_flag = french_intervention_in_mexico
+			exists = MEX
+			MEX = { is_disarmed = yes has_recently_lost_war = yes truce_with = THIS}
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+			is_greater_power = yes
+			NOT = { war_with = MEX }
+		}
+		
+		effect = {
+			clr_country_flag = installing_max
+			MEX = { annex_to = MEE }
+			prestige = 25
+			create_vassal = MEE
+		}
+	}
 }

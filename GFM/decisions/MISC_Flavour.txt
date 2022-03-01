@@ -88,12 +88,15 @@ political_decisions = {
     #    }
     #
     #    ai_will_do = { factor = 1 }
-    #}
+    # }
 
     claim_artois = {
         picture = NET_claim_artois
         potential = {
-            tag = NET
+            OR = {
+				tag = NET
+				tag = BNF
+			}
             OR = {
                 AND = {
                     owns = 394 #Wallonia
@@ -106,7 +109,7 @@ political_decisions = {
                     owns = 397 #Luxembourg
                 }
             }
-            NOT = { has_country_flag = artois_claimed }
+            NOT = { has_global_flag = artois_claimed }
         }
 
         allow = {
@@ -122,8 +125,8 @@ political_decisions = {
 
         effect = {
             badboy = 5
-            set_country_flag = artois_claimed
-            FRA_404 = { add_core = NET }
+            set_global_flag = artois_claimed
+            FRA_404 = { add_core = THIS }
             random_country = {
                 limit = {
                     primary_culture = french
@@ -182,4 +185,176 @@ political_decisions = {
 
         ai_will_do = { factor = 1 }
     }
+	
+	claim_madagascar_lowdesert = {
+		picture = madagascar_old
+		potential = {
+			tag = MAD
+			2117 = { empty = yes }
+		}
+		
+		allow = { 
+			war = no
+			is_vassal = no
+			owns = 2116
+		}
+		
+		effect = {
+			2117 = { secede_province = MAD }
+		}
+		
+		ai_will_do = { factor = 1 }
+    }
+	
+	the_antankarana_question = {
+		picture = antankarana_old
+		potential = {
+			tag = MAD
+			ai = no
+			AKR = { owns = 2120 }
+			NOT = { has_country_flag = vassalized_antankarana }
+			AKR = { is_vassal = no }
+		}
+		
+		allow = { 
+			war = no
+			is_vassal = no
+			owns = 2117
+			NOT = { exists = BAR }
+		}
+		
+		effect = {
+			set_country_flag = vassalized_antankarana
+			create_vassal = AKR
+		}
+		
+		ai_will_do = { factor = 1 }
+    }
+	
+	conquer_antankarana = {
+		picture = antankarana_old
+		potential = {
+			tag = MAD
+			NOT = { has_country_flag = vassalized_antankarana }
+			NOT = { has_country_flag = annexed_antankarana_novassal }
+		}
+		
+		allow = {
+			NOT = { exists = BOI }
+			war = no
+			is_vassal = no
+			AKR = { is_vassal = no }
+			AKR = { owns = 2120 }
+			owns = 2117
+			NOT = { exists = BAR }
+		}
+		
+		effect = {
+			leave_alliance = AKR
+			war = {
+				target = AKR
+				attacker_goal = { casus_belli = conquest_any }
+				defender_goal = { casus_belli = humiliate_no_infamy }
+			}
+			2120 = { add_core = MAD }
+			set_country_flag = annexed_antankarana_novassal
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	annex_antankarana = {
+		picture = antankarana_old
+		potential = {
+			tag = MAD
+			has_country_flag = vassalized_antankarana
+			is_our_vassal = AKR
+			NOT = { has_country_flag = annexed_antankarana_novassal }
+			owns = 2117
+			NOT = { exists = BAR }
+			AKR = { vassal_of = THIS }
+			AKR = { owns = 2120 }
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+			civilized = yes
+		}
+		
+		effect = {
+			release_vassal = AKR
+			leave_alliance = AKR
+			war = {
+				target = AKR
+				attacker_goal = { casus_belli = conquest_any }
+				defender_goal = { casus_belli = humiliate_no_infamy }
+			}
+			2120 = { add_core = MAD }
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	annex_boina = {
+		picture = bara_map
+		potential = {
+			tag = MAD
+			BOI = { 
+				owns = 3541
+			}
+			NOT = { has_country_flag = yeah_boi }
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+			NOT = { exists = BAR }
+			BOI = { vassal_of = THIS }
+		}
+		
+		effect = {
+			set_country_flag = yeah_boi
+			release_vassal = BOI
+			leave_alliance = BOI
+			war = {
+				target = BOI
+				attacker_goal = { casus_belli = conquest_any }
+				defender_goal = { casus_belli = humiliate_no_infamy }
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	troll_pauil = {
+		picture = madagascar_old
+		potential = {
+			tag = MAD
+			BAR = { exists = yes }
+			war = no
+			NOT = { has_country_flag = trolling_complete }
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+			OR = {
+				year = 1840
+				civilization_progress = 0.05
+			}
+		}
+		
+		effect = {
+			leave_alliance = BAR
+			war = {
+				target = BAR
+				attacker_goal = { casus_belli = conquest_any }
+				defender_goal = { casus_belli = humiliate_no_infamy }
+			}
+			set_country_flag = trolling_complete
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
 }

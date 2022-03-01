@@ -102,6 +102,7 @@ country_event = {
     id = 36971
     title = "EVTNAME36971"
     desc = "EVTDESC36971"
+	major = yes
     picture = "suez_canal_built"
 
     fire_only_once = yes
@@ -147,25 +148,6 @@ country_event = {
                         militancy = 1.5
                     }
                 }
-            }
-        }
-        #Return the Suez to Egypt
-        random_owned = {
-            limit = {
-                province_id = 1755
-                EGY = {
-                    exists = yes
-                    owns = 1757
-                }
-            }
-            secede_province = EGY
-            remove_core = THIS
-            THIS = {
-                diplomatic_influence = {
-                    who = EGY
-                    value = 400
-                }
-                badboy = -2
             }
         }
     }
@@ -330,27 +312,22 @@ country_event = {
                 tag = EGY
                 civilized = no
                 has_global_flag = berlin_conference
+				NOT = { vassal_of = THIS }
             }
             add_casus_belli = {
                 target = THIS
-                type = establish_protectorate_BC_casus_belli
+                type = conquest_any
                 months = 60
             }
         }
-        random_country = {
-            limit = {
-                tag = EGY
-                OR = {
-                    civilized = yes
-                    NOT = { has_global_flag = berlin_conference }
-                }
-            }
-            add_casus_belli = {
-                target = THIS
-                type = make_puppet
-                months = 60
-            }
-        }
+        random_owned = {
+			limit = {
+				owner = { EGY = { vassal_of = THIS } }
+			}
+			owner = {
+				inherit = EGY
+			}
+		}
         ai_chance = {
             factor = 90
             modifier = {
@@ -444,6 +421,7 @@ country_event = {
 country_event = {
     id = 36977
     title = "EVTNAME36977"
+	major = yes
     desc = "EVTDESC36977"
     picture = "kiel_canal_finished"
 
@@ -464,7 +442,6 @@ country_event = {
         name = "EVT36977OPTA"
         clr_global_flag = kiel_canal_construction
         enable_canal = 1
-        369 = { set_province_flag = kiel_canal }
         prestige = 5
     }
 }
@@ -507,6 +484,7 @@ country_event = {
             10 = { 1723 = { add_province_modifier = { name = panama_canal_construction duration = 4015 } } }
             10 = { 1723 = { add_province_modifier = { name = panama_canal_construction duration = 3650 } } }
         }
+		1723 = { add_province_modifier = { name = province_small_immigration_boom duration = 365 } }
         ai_chance = {
             factor = 0.25
             modifier = { factor = 0 NOT = { money = 450000 } }
@@ -525,6 +503,7 @@ country_event = {
             15 = { 1723 = { add_province_modifier = { name = panama_canal_construction duration = 3650 } } }
             15 = { 1723 = { add_province_modifier = { name = panama_canal_construction duration = 2190 } } }
         }
+		1723 = { add_province_modifier = { name = province_small_immigration_boom duration = 365 } }
         ai_chance = {
             factor = 0.25
             modifier = { factor = 0 NOT = { money = 350000 } }
@@ -543,6 +522,7 @@ country_event = {
             20 = { 1723 = { add_province_modifier = { name = panama_canal_construction duration = 2555 } } }
             10 = { 1723 = { add_province_modifier = { name = panama_canal_construction duration = 2190 } } }
         }
+		1723 = { add_province_modifier = { name = province_small_immigration_boom duration = 365 } }
         ai_chance = {
             factor = 0.25
             modifier = { factor = 0 NOT = { money = 300000 } }
@@ -561,6 +541,7 @@ country_event = {
             5 = { 1723 = { add_province_modifier = { name = panama_canal_construction duration = 2190 } } }
             5 = { 1723 = { add_province_modifier = { name = panama_canal_construction duration = 2555 } } }
         }
+		1723 = { add_province_modifier = { name = province_small_immigration_boom duration = 365 } }
         ai_chance = {
             factor = 0.25
             modifier = { factor = 0 money = 250000 }
@@ -573,6 +554,7 @@ country_event = {
     id = 36979
     title = "EVTNAME36979"
     desc = "EVTDESC36979"
+	major = yes
     picture = "panama_canal_finished"
 
     fire_only_once = yes
@@ -703,5 +685,194 @@ country_event = {
         plurality = -15
         relation = { who = FROM value = 100 }
         1755 = { secede_province = FROM }
+    }
+}
+
+country_event = {
+
+    id = 97350
+    title = "Panama Canal Dividends"
+    desc = "Annual dividends received from ownership of the Panama Canal."
+    picture = "Panama3"
+
+    trigger = {
+        1723 = { has_province_modifier = panama_canal }
+        NOT = { has_country_modifier = panama_canal_dividend }
+        NOT = { month = 1 }
+        owns = 1723
+    }
+
+    mean_time_to_happen = {
+        days = 3
+    }
+
+    option = {
+        name = "Until next year."
+        treasury = 80000
+        add_country_modifier = {
+            name = panama_canal_dividend
+            duration = 31
+        }
+    }
+}
+
+country_event = {
+
+    id = 97355
+    title = "The Panama Canal"
+    desc = "We have assumed control over the Panama Canal."
+    news = yes
+    news_title = "EVTNAME97355_NEWS_TITLE"
+    news_desc_long = "EVTDESC97355_NEWS_LONG"
+    news_desc_medium = "EVTDESC97355_NEWS_MEDIUM"
+    news_desc_short = "EVTDESC97355_NEWS_SHORT"
+    picture = "Panama3"
+
+    trigger = {
+        is_canal_enabled = 3
+        1723 = {
+            owned_by = THIS
+            NOT = { has_province_modifier = panama_canal }
+        }
+    }
+
+    mean_time_to_happen = {
+        months = 1
+    }
+
+    option = {
+        name = "Excellent."
+        1723 = {
+            add_province_modifier = {
+                name = panama_canal
+                duration = -1
+            }
+        }
+    }
+}
+
+country_event = {
+
+    id = 97250
+    title = "Suez Canal Dividends"
+    desc = "Annual dividends received from control over the Suez Canal."
+    picture = "Suez3"
+
+    trigger = {
+        1755 = { has_province_modifier = suez_canal }
+        NOT = { has_country_modifier = suez_canal_dividend }
+        NOT = { month = 1 }
+        owns = 1755
+    }
+
+    mean_time_to_happen = {
+        days = 3
+    }
+
+    option = {
+        name = "Until next year."
+        treasury = 110000
+        add_country_modifier = {
+            name = suez_canal_dividend
+            duration = 31
+        }
+    }
+}
+
+country_event = {
+
+    id = 97255
+    title = "The Suez Canal"
+    desc = "We have assumed control over the Suez Canal."
+    news = yes
+    news_title = "EVTNAME97255_NEWS_TITLE"
+    news_desc_long = "EVTDESC97255_NEWS_LONG"
+    news_desc_medium = "EVTDESC97255_NEWS_MEDIUM"
+    news_desc_short = "EVTDESC97255_NEWS_SHORT"
+    picture = "Suez3"
+
+    trigger = {
+        is_canal_enabled = 2
+        1755 = {
+            owned_by = THIS
+            NOT = { has_province_modifier = suez_canal }
+        }
+    }
+
+    mean_time_to_happen = {
+        months = 1
+    }
+
+    option = {
+        name = "Excellent."
+        1755 = {
+            add_province_modifier = {
+                name = suez_canal
+                duration = -1
+            }
+        }
+    }
+}
+
+country_event = {
+
+    id = 97200
+    title = "Kiel Canal Dividends"
+    desc = "Annual dividends received from control over the Kiel Canal."
+    picture = "Kiel"
+
+    trigger = {
+        369 = { has_province_modifier = kiel_canal }
+        NOT = { has_country_modifier = kiel_canal_dividend }
+        NOT = { month = 1 }
+        owns = 369
+    }
+
+    mean_time_to_happen = {
+        days = 3
+    }
+
+    option = {
+        name = "Until next year."
+        treasury = 20000
+        add_country_modifier = {
+            name = kiel_canal_dividend
+            duration = 31
+        }
+    }
+}
+
+country_event = {
+
+    id = 97205
+    title = "The Kiel Canal"
+    desc = "We have assumed control over the Kiel Canal."
+    news = yes
+    news_title = "EVTNAME97205_NEWS_TITLE"
+    news_desc_long = "EVTDESC97205_NEWS_LONG"
+    news_desc_medium = "EVTDESC97205_NEWS_MEDIUM"
+    news_desc_short = "EVTDESC97205_NEWS_SHORT"
+    picture = "Kiel"
+
+    trigger = {
+        is_canal_enabled = 1
+        369 = {
+            owned_by = THIS
+            NOT = { has_province_modifier = kiel_canal }
+        }
+    }
+
+    mean_time_to_happen = {
+        months = 1
+    }
+
+    option = {
+        name = "Excellent!"
+        369 = {
+            add_province_modifier = {
+                name = kiel_canal
+                duration = -1
+            }
+        }
     }
 }

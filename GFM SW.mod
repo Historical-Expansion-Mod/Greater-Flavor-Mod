@@ -1,4 +1,4 @@
-name = "GFM SW Submod"
+name = "GFM Shattered World Submod"
 path = "mod/GFM SW"
 replace_path = "mod/GFM/history/provinces"
-dependencies = { "GFM" }
+dependencies = { "Greater Flavor Mod" }

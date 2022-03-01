@@ -44,7 +44,10 @@ political_decisions = {
                 tag = CSA
                 tag = TEX
             }
-            government = democracy
+            OR = {
+				government = democracy
+				has_country_flag = Government_Democracy
+			}
             NOT = {
                 has_country_modifier = the_homestead_act
             }
@@ -79,6 +82,11 @@ political_decisions = {
                     has_country_flag = custers_expedition_sent
                 }
             }
+            US2 = {
+                NOT = {
+                    has_country_flag = custers_expedition_sent
+                }
+            }
         }
 
         allow = {
@@ -97,9 +105,6 @@ political_decisions = {
         potential = {
             tag = CSA
             slavery = yes_slavery
-            SPA_2209 = {
-                is_slave = yes
-            }
             NOT = {
                 has_country_flag = golden_cuba
             }
@@ -153,7 +158,8 @@ political_decisions = {
             RGR = { all_core = { add_core = CSA    } }
             2143 = { add_core = CSA } #Paso del Norte
             2144 = { add_core = CSA } #Delicias
-            HAI_2213 = { add_core = CSA } #Hispanola
+            HAI_2213 = { add_core = CSA } #Haiti
+			HAI_2214 = { add_core = CSA } #Dominican Republic
             2222 = { add_core = CSA } #Puerto Rico
             any_pop = {
                 limit = {
@@ -527,6 +533,7 @@ political_decisions = {
                 has_global_flag = slave_trade_reinstated
                 has_global_flag = berlin_conference
                 tag = USA
+				tag = US2
                 tag = EGY
             }
             OR = {
@@ -547,6 +554,7 @@ political_decisions = {
                 is_sphere_leader_of = BEN
                 is_sphere_leader_of = CLA
                 is_sphere_leader_of = DAH
+				is_sphere_leader_of = BGU
                 is_sphere_leader_of = GBU
                 is_sphere_leader_of = MAS
                 is_sphere_leader_of = MOS
@@ -628,6 +636,7 @@ political_decisions = {
             has_global_flag = slave_trade_reinstated
             NOT = { has_country_flag = slave_trade_leader }
             NOT = { tag = USA }
+			NOT = { tag = US2 }
             NOT = { tag = EGY }
             NOT = { has_country_flag = slave_trader }
             capital_scope = {
@@ -758,6 +767,7 @@ political_decisions = {
                         OR = {
                             government = democracy
                             government = hms_government
+							has_country_flag = Government_Democracy
                         }
                     }
                 }
@@ -921,6 +931,7 @@ political_decisions = {
     #
     #Aberdeen Act for UK
     aberdeen_act = {
+		picture = aberdeen_act
         potential = {
             tag = ENG
             is_greater_power = yes
@@ -980,64 +991,6 @@ political_decisions = {
         }
     }
 
-    pro_slavery_propaganda = {
-        picture = slavery_propaganda
-        alert = no
-        potential = {
-            OR = {
-                is_greater_power = yes
-                is_secondary_power = yes
-            }
-            OR = {
-                NOT = { tag = USA }
-                year = 1860
-            }
-            slavery = yes_slavery
-            has_country_flag = government_decisions_on
-            civilized = yes
-            NOT = {
-                has_country_modifier = slavery_propaganda
-            }
-        }
-        allow = {
-            prestige = 100
-            war = no
-            money = 25000
-        }
-
-        effect = {
-            any_pop = {
-                militancy = -1
-                consciousness = -2
-                dominant_issue = {
-                    value = yes_slavery
-                    factor = 0.1
-                }
-            }
-            add_country_modifier = {
-                name = slavery_propaganda
-                duration = 5475
-            }
-            prestige = -15
-            badboy = 2
-            plurality = -5
-            treasury = -25000
-        }
-        ai_will_do = {
-            factor = 0.5
-            modifier = {
-                factor = 0
-                OR = {
-                    war = yes
-                    tag = USA
-                    capital_scope = {
-                        continent = europe
-                    }
-                }
-            }
-        }
-    }
-
     tex_support_csa = {
         picture = reform_csa
         potential = {
@@ -1046,6 +999,7 @@ political_decisions = {
             is_vassal = no
             NOT = {    alliance_with = CSA }
             NOT = { alliance_with = USA }
+			NOT = { alliance_with = US2 }
             NOT = { has_country_flag = tex_supported_csa }
         }
         allow = {
@@ -1063,6 +1017,12 @@ political_decisions = {
                     value = -100
                 }
             }
+            US2 = {
+                relation = {
+                    who = THIS
+                    value = -100
+                }
+            }
             relation = {
                 who = CSA
                 value = 200
@@ -1074,6 +1034,11 @@ political_decisions = {
             }
             add_casus_belli = {
                 target = USA
+                type = cut_down_to_size
+                months = 36
+            }
+            add_casus_belli = {
+                target = US2
                 type = cut_down_to_size
                 months = 36
             }
@@ -1185,6 +1150,7 @@ political_decisions = {
                 OR = {
                     war = yes
                     tag = USA
+					tag = US2
                 }
             }
             modifier = {
@@ -1202,8 +1168,14 @@ political_decisions = {
         picture = switch_to_liberty
         potential = {
             tag = TEX
-            exists = USA
-            any_owned_province = { is_core = USA }
+            OR = {
+				exists = USA
+				exists = US2
+			}
+            OR = {
+				any_owned_province = { is_core = USA }
+				any_owned_province = { is_core = US2 }
+			}
             NOT = { has_country_flag = texas_final_independence }
         }
         allow = {
@@ -1214,14 +1186,28 @@ political_decisions = {
             war = no
         }
         effect = {
-            set_country_flag = texas_final_independence
+            USA = { set_country_flag = texas_final_independence }
+			US2 = { set_country_flag = texas_final_independence }
+			set_country_flag = texas_final_independence
             prestige = 10
             any_pop = {
                 militancy = -5
                 consciousness = -5
             }
             all_core = { remove_core = USA }
+			all_core = { remove_core = US2 }
             USA = {
+                prestige = -10
+                relation = {
+                    who = THIS
+                    value = -200
+                }
+                diplomatic_influence = {
+                    who = THIS
+                    value = -200
+                }
+            }
+            US2 = {
                 prestige = -10
                 relation = {
                     who = THIS

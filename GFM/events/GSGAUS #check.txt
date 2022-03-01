@@ -146,7 +146,7 @@ country_event = {
     }
 
     option = {
-        name = "Time for some aggressive negotiations."
+        name = "Time for some aggressive negotiations. §RGain 8 infamy§W"
         badboy = 8
         release_vassal = HUN
         diplomatic_influence = { who = HUN value = -200 }
@@ -216,7 +216,7 @@ country_event = {
     is_triggered_only = yes
 
     option = {
-        name = "When diplomacy fails, warfare begins."
+        name = "When diplomacy fails, warfare begins. §RGain 12 infamy§W"
         badboy = 12
         release_vassal = HUN
         diplomatic_influence = { who = HUN value = -200 }
@@ -273,7 +273,7 @@ country_event = {
     fire_only_once = yes
 
     option = {
-        name = "Divide Hungary."
+        name = "Divide Hungary. §RGain 6 infamy§W"
         badboy = 6
         inherit = HUN
         inherit = BAN
@@ -388,7 +388,7 @@ country_event = {
     }
 
     option = {
-        name = "Restore the Status Quo, with Eisenstadt and Sopron to us."
+        name = "Restore the Status Quo, with Eisenstadt and Sopron to us. §GLose 2 infamy§W"
         prestige = 5
         badboy = -2
         inherit = HUN
@@ -410,7 +410,7 @@ country_event = {
     }
 
     option = {
-        name = "Annex them."
+        name = "Annex them. §RGain 12 infamy§W"
         prestige = 5
         badboy = 12
         inherit = HUN
@@ -856,6 +856,7 @@ country_event = {
         NOT = {
             HUN = { involved_in_crisis = yes }
             exists = HUN
+			war_with = HUN
             has_global_flag = hungarian_revolution_occurred
         }
     }
@@ -876,7 +877,7 @@ country_event = {
         }
         set_country_flag = pest_revolution
         set_global_flag = hungarian_revolution_occurring
-        country_event = { id = 10225 days = 30 }
+        set_country_flag = fire_the_hungarian_revolution_in_30_days_if_this_flag_applies
         set_country_flag = april_laws
     }
 }
@@ -1024,7 +1025,7 @@ country_event = {
         }
         any_pop = {
             limit = {
-                has_pop_culture = north_italian
+                is_culture_group = italian
                 location = { is_core = ITA }
             }
             militancy = 8
@@ -1281,6 +1282,7 @@ country_event = {
     fire_only_once = yes
 
     trigger = {
+		NOT = { exists = RUM }
         tag = BUL
         war = no
         is_vassal = no
@@ -1303,7 +1305,7 @@ country_event = {
     }
 
     option = {
-        name = "Prepare the war plans!"
+        name = "Prepare the war plans! §RGain 4 infamy§W"
         prestige = 5
         badboy = 4
         leave_alliance = SER
@@ -1490,7 +1492,7 @@ country_event = {
             owns = 806
             has_global_flag = second_balkan_war_victory
         }
-        OR ={
+        OR = {
             ROM = {
                 has_country_flag = second_balkan_war_help
                 truce_with = BUL
@@ -1700,11 +1702,28 @@ country_event = {
     fire_only_once = yes
 
     trigger = {
+		NOT = { exists = RUM }
+		TUR = {
+			is_vassal = no
+		}
         OR = {
-            tag = SER
-            tag = BUL
-            tag = GRE
-            tag = MON
+			AND = {
+				TUR = { owns = 806 }
+				OR = {
+					AND = {
+						tag = SER
+						owns = 798
+					}
+					AND = {
+						tag = BUL
+						owns = 816
+					}
+				}
+			}
+			AND = {
+				TUR = { owns = 805 }
+				tag = GRE
+			}
         }
         has_global_flag = ottomans_supported
         has_global_flag = berlin_conference
@@ -2019,7 +2038,7 @@ country_event = {
     id = 188170 #balkan war start
     title = "EVTNAME188170"
     desc = "EVTDESC188170"
-    picture = "balkan_war"
+    picture = "first_balkan_war_start"
     major = yes
 
     fire_only_once = yes
@@ -2088,7 +2107,7 @@ country_event = {
                         casus_belli = status_quo
                     }
                     defender_goal = {
-                        casus_belli = liberate_balkans
+                        casus_belli = free_balkans
                     }
                     call_ally = no
                 }
@@ -2108,7 +2127,7 @@ country_event = {
                         casus_belli = status_quo
                     }
                     defender_goal = {
-                        casus_belli = liberate_balkans
+                        casus_belli = free_balkans
                     }
                     call_ally = no
                 }
@@ -2128,7 +2147,7 @@ country_event = {
                         casus_belli = status_quo
                     }
                     defender_goal = {
-                        casus_belli = liberate_balkans
+                        casus_belli = free_balkans
                     }
                     call_ally = no
                 }
@@ -2148,13 +2167,26 @@ country_event = {
                         casus_belli = status_quo
                     }
                     defender_goal = {
-                        casus_belli = liberate_balkans
+                        casus_belli = free_balkans
                     }
                     call_ally = no
                 }
             }
         }
     }
+}
+
+country_event = {
+	id = 131710
+	title = "EVTNAME131710"
+	desc = "EVTDESC131710"
+	picture = "balkan_war"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT131710OPTA"
+	}
 }
 
 country_event = {
@@ -2583,387 +2615,6 @@ country_event = {
 }
 
 country_event = {
-    id = 188193 #GP asks to mediate Transylvania
-    title = "EVTNAME188193"
-    desc = "EVTDESC188193"
-    picture = "treaty"
-
-    is_triggered_only = yes
-
-    option = {
-        name = "Ask for $FROMCOUNTRY$ arbitration."
-        set_country_flag = transylvanian_question_agree
-        badboy = -1
-        relation = { who = FROM value = 50 }
-        ai_chance = {
-            factor = 90
-            modifier = {
-                factor = 10
-                relation = {
-                    who = FROM
-                    value = 150
-                }
-            }
-        }
-    }
-
-    option = {
-        name = "Never!"
-        clr_country_flag = transylvanian_question_agree
-        badboy = 1
-        relation = { who = FROM value = -50 }
-        ai_chance = {
-            factor = 10
-            modifier = {
-                factor = 10
-                government = fascist_dictatorship
-                FROM = { NOT = { government = fascist_dictatorship } }
-            }
-            modifier = {
-                factor = 5
-                SIE = { all_core = { owned_by = THIS } }
-            }
-        }
-    }
-}
-
-country_event = {
-    id = 188194 #both agree
-    title = "EVTNAME188193"
-    desc = "EVTDESC188194"
-    picture = "treaty"
-
-    trigger = {
-        war = no
-        has_country_flag = transylvanian_question
-        HUN = {
-            has_country_flag = transylvanian_question_agree
-            war = no
-        }
-        ROM = {
-            has_country_flag = transylvanian_question_agree
-            war = no
-        }
-    }
-
-    fire_only_once = yes
-
-    mean_time_to_happen = {
-        days = 7
-    }
-
-    option = {
-        name = "Transylvania belongs to Hungary."
-        relation = { who = HUN value = 200 }
-        relation = { who = ROM value = -200 }
-        ROM = { country_event = 188195 }
-        ai_chance = {
-            factor = 25
-            modifier = {
-                factor = 10
-                relation = {
-                    who = HUN
-                    value = 100
-                }
-                NOT = {
-                    relation = {
-                        who = ROM
-                        value = 0
-                    }
-                }
-            }
-            modifier = {
-                factor = 10
-                HUN = { vassal_of = THIS }
-                ROM = { NOT = { vassal_of = THIS } }
-            }
-        }
-    }
-
-    option = {
-        name = "Transylvania belongs to Romania."
-        relation = { who = HUN value = -200 }
-        relation = { who = ROM value = 200 }
-        HUN = { country_event = 188197 }
-        ai_chance = {
-            factor = 25
-            modifier = {
-                factor = 10
-                relation = {
-                    who = ROM
-                    value = 100
-                }
-                NOT = {
-                    relation = {
-                        who = HUN
-                        value = 0
-                    }
-                }
-            }
-            modifier = {
-                factor = 10
-                ROM = { vassal_of = THIS }
-                HUN = { NOT = { vassal_of = THIS } }
-            }
-        }
-    }
-
-    option = {
-        name = "Split Transylvania between Hungary and Romania."
-        random_country = {
-            limit = {
-                tag = HUN
-                AUS_654 = { owned_by = HUN }
-                AUS_657 = { owned_by = HUN }
-
-            }
-            relation = { who = THIS value = -100 }
-        }
-        random_country = {
-            limit = {
-                tag = HUN
-                AUS_654 = { NOT = { owned_by = HUN } }
-                AUS_657 = { NOT = { owned_by = HUN } }
-
-            }
-            relation = { who = THIS value = 100 }
-        }
-        random_country = {
-            limit = {
-                tag = ROM
-                AUS_654 = { owned_by = ROM }
-                AUS_657 = { owned_by = ROM }
-
-            }
-            relation = { who = THIS value = -100 }
-        }
-        random_country = {
-            limit = {
-                tag = ROM
-                AUS_654 = { NOT = { owned_by = ROM } }
-                AUS_657 = { NOT = { owned_by = ROM } }
-
-            }
-            relation = { who = THIS value = 100 }
-        }
-        HUN = { country_event = 188199 }
-        ROM = { country_event = 188200 }
-        ai_chance = {
-            factor = 50
-        }
-    }
-}
-
-country_event = {
-    id = 188195 #romania loses
-    title = "EVTNAME188193"
-    desc = "EVTDESC188195"
-    picture = "treaty"
-
-    is_triggered_only = yes
-
-    option = {
-        name = "Why did we agree to this arbitration?"
-        relation = { who = HUN value = -200 }
-        any_pop = {
-            limit = {
-                has_pop_culture = romanian
-            }
-            militancy = 1
-            consciousness = 2
-        }
-        any_owned = {
-            limit = {
-                OR = {
-                    region = AUS_652
-                    region = AUS_654
-                    region = AUS_657
-                }
-            }
-            add_core = SIE
-            add_core = ROM
-            add_core = HUN
-            secede_province = HUN
-        }
-        HUN = { country_event = 188196 }
-    }
-}
-
-country_event = {
-    id = 188196 #hungary wins
-    title = "EVTNAME188193"
-    desc = "EVTDESC188196"
-    picture = "treaty"
-
-    is_triggered_only = yes
-
-    option = {
-        name = "Wonderful!"
-        any_pop = {
-            limit = {
-                has_pop_culture = hungarian
-                location = { is_core = SIE }
-            }
-            militancy = -6
-            consciousness = -6
-        }
-        any_pop = {
-            limit = {
-                has_pop_culture = hungarian
-                location = { NOT = { is_core = SIE } }
-            }
-            militancy = -1
-            consciousness = -2
-        }
-        any_pop = {
-            limit = {
-                has_pop_culture = romanian
-            }
-            militancy = 1
-            consciousness = 2
-        }
-    }
-}
-
-country_event = {
-    id = 188197 #hungary loses
-    title = "EVTNAME188193"
-    desc = "EVTDESC188197"
-    picture = "treaty"
-
-    is_triggered_only = yes
-
-    option = {
-        name = "Why did we agree to this arbitration?"
-        relation = { who = ROM value = -200 }
-        any_pop = {
-            limit = {
-                has_pop_culture = hungarian
-            }
-            militancy = 1
-            consciousness = 2
-        }
-        any_owned = {
-            limit = {
-                OR = {
-                    region = AUS_652
-                    region = AUS_654
-                    region = AUS_657
-                }
-            }
-            add_core = SIE
-            add_core = HUN
-            add_core = ROM
-            secede_province = ROM
-        }
-        ROM = { country_event = 188198 }
-    }
-}
-
-country_event = {
-    id = 188198 #romania wins
-    title = "EVTNAME188193"
-    desc = "EVTDESC188196"
-    picture = "treaty"
-
-    is_triggered_only = yes
-
-    option = {
-        name = "Wonderful!"
-        any_pop = {
-            limit = {
-                has_pop_culture = romanian
-                location = { is_core = SIE }
-            }
-            militancy = -6
-            consciousness = -6
-        }
-        any_pop = {
-            limit = {
-                has_pop_culture = romanian
-                location = { NOT = { is_core = SIE } }
-            }
-            militancy = -1
-            consciousness = -2
-        }
-        any_pop = {
-            limit = {
-                has_pop_culture = hungarian
-            }
-            militancy = 1
-            consciousness = 2
-        }
-    }
-}
-
-country_event = {
-    id = 188199 #Hungary gives half
-    title = "EVTNAME188193"
-    desc = "EVTDESC188199"
-    picture = "treaty"
-
-    is_triggered_only = yes
-
-    option = {
-        name = "One day all of Transylvania will be ours."
-        any_owned = {
-            limit = {
-                OR = {
-                    region = AUS_652
-                    region = AUS_657
-                }
-            }
-            add_core = SIE
-            add_core = HUN
-            add_core = ROM
-            secede_province = ROM
-        }
-        any_pop = {
-            limit = {
-                OR = {
-                    has_pop_culture = hungarian
-                    has_pop_culture = romanian
-                }
-            }
-            militancy = 1
-            consciousness = 2
-        }
-    }
-}
-
-country_event = {
-    id = 188200 #Romania gives half
-    title = "EVTNAME188193"
-    desc = "EVTDESC188199"
-    picture = "treaty"
-
-    is_triggered_only = yes
-
-    option = {
-        name = "One day all of Transylvania will be ours."
-        any_owned = {
-            limit = {
-                region = AUS_654
-            }
-            add_core = SIE
-            add_core = ROM
-            add_core = HUN
-            secede_province = HUN
-        }
-        any_pop = {
-            limit = {
-                OR = {
-                    has_pop_culture = hungarian
-                    has_pop_culture = romanian
-                }
-            }
-            militancy = 1
-            consciousness = 2
-        }
-    }
-}
-
-country_event = {
     id = 188201 #GP asks to mediate Kosovo
     title = "EVTNAME188201"
     desc = "EVTDESC188201"
@@ -2972,7 +2623,7 @@ country_event = {
     is_triggered_only = yes
 
     option = {
-        name = "Ask for $FROMCOUNTRY$ arbitration."
+        name = "Ask for $FROMCOUNTRY$ arbitration. §GLose 1 infamy§W"
         set_country_flag = kosovo_question_agree
         badboy = -1
         relation = { who = FROM value = 50 }
@@ -2989,7 +2640,7 @@ country_event = {
     }
 
     option = {
-        name = "Never!"
+        name = "Never! §RGain 1 infamy§W"
         clr_country_flag = kosovo_question_agree
         badboy = 1
         relation = { who = FROM value = -50 }
@@ -3366,7 +3017,7 @@ country_event = {
     is_triggered_only = yes
 
     option = {
-        name = "Ask for $FROMCOUNTRY$ arbitration."
+        name = "Ask for $FROMCOUNTRY$ arbitration. §GLose 1 infamy§W"
         set_country_flag = slovak_question_agree
         badboy = -1
         relation = { who = FROM value = 50 }
@@ -3383,7 +3034,7 @@ country_event = {
     }
 
     option = {
-        name = "Never!"
+        name = "Never! §RGain 1 infamy§W"
         clr_country_flag = slovak_question_agree
         badboy = 1
         relation = { who = FROM value = -50 }
@@ -3517,6 +3168,38 @@ country_event = {
             }
             relation = { who = THIS value = 100 }
         }
+		random_country = {
+            limit = {
+                tag = HUN
+                AUS_635 = { owned_by = HUN }
+
+            }
+            relation = { who = THIS value = -100 }
+        }
+        random_country = {
+            limit = {
+                tag = HUN
+                AUS_635 = { NOT = { owned_by = HUN } }
+
+            }
+            relation = { who = THIS value = 100 }
+        }
+        random_country = {
+            limit = {
+                tag = CZH
+                AUS_635 = { owned_by = CZH }
+
+            }
+            relation = { who = THIS value = -100 }
+        }
+        random_country = {
+            limit = {
+                tag = CZH
+                AUS_635 = { NOT = { owned_by = CZH } }
+
+            }
+            relation = { who = THIS value = 100 }
+        }
         HUN = { country_event = 188215 }
         CZH = { country_event = 188216 }
         ai_chance = {
@@ -3549,6 +3232,15 @@ country_event = {
         any_owned = {
             limit = {
                 region = AUS_633
+            }
+            add_core = HUN
+            add_core = SLV
+            add_core = CZH
+            secede_province = HUN
+        }
+        any_owned = {
+            limit = {
+                region = AUS_635
             }
             add_core = HUN
             add_core = SLV
@@ -3619,6 +3311,15 @@ country_event = {
         any_owned = {
             limit = {
                 region = AUS_633
+            }
+            add_core = HUN
+            add_core = SLV
+            add_core = CZH
+            secede_province = CZH
+        }
+        any_owned = {
+            limit = {
+                region = AUS_635
             }
             add_core = HUN
             add_core = SLV
@@ -3755,7 +3456,7 @@ country_event = {
     is_triggered_only = yes
 
     option = {
-        name = "Ask for $FROMCOUNTRY$ arbitration."
+        name = "Ask for $FROMCOUNTRY$ arbitration. §GLose 1 infamy§W"
         set_country_flag = vojvodina_question_agree
         badboy = -1
         relation = { who = FROM value = 50 }
@@ -3772,7 +3473,7 @@ country_event = {
     }
 
     option = {
-        name = "Never!"
+        name = "Never! §RGain 1 infamy§W"
         clr_country_flag = vojvodina_question_agree
         badboy = 1
         relation = { who = FROM value = -50 }
@@ -4088,9 +3789,11 @@ country_event = {
         name = "One day all of Vojvodina will be ours."
         any_owned = {
             limit = {
-                province_id = 2538
-                province_id = 3331
-                province_id = 3330
+				OR = {
+					province_id = 2538
+					province_id = 3331
+					province_id = 3330
+				}
             }
             add_core = HUN
             add_core = SER
@@ -4118,7 +3821,7 @@ country_event = {
     is_triggered_only = yes
 
     option = {
-        name = "Ask for $FROMCOUNTRY$ arbitration."
+        name = "Ask for $FROMCOUNTRY$ arbitration. §GLose 1 infamy§W"
         set_country_flag = dobrudja_question_agree
         badboy = -1
         relation = { who = FROM value = 50 }
@@ -4135,7 +3838,7 @@ country_event = {
     }
 
     option = {
-        name = "Never!"
+        name = "Never! §RGain 1 infamy§W"
         clr_country_flag = dobrudja_question_agree
         badboy = 1
         relation = { who = FROM value = -50 }
@@ -4296,6 +3999,7 @@ country_event = {
                 OR = {
                     province_id = 818
                     province_id = 674
+					province_id = 675
                     province_id = 3371
                     province_id = 3372
                 }
@@ -4376,6 +4080,7 @@ country_event = {
                 OR = {
                     province_id = 818
                     province_id = 674
+					province_id = 675
                     province_id = 3371
                     province_id = 3372
                 }
@@ -4545,7 +4250,7 @@ country_event = {
     is_triggered_only = yes
 
     option = {
-        name = "Ask for $FROMCOUNTRY$ arbitration."
+        name = "Ask for $FROMCOUNTRY$ arbitration. §GLose 1 infamy§W"
         set_country_flag = eastern_macedonia_question_agree
         badboy = -1
         relation = { who = FROM value = 50 }
@@ -4562,7 +4267,7 @@ country_event = {
     }
 
     option = {
-        name = "Never!"
+        name = "Never! §RGain 1 infamy§W"
         clr_country_flag = eastern_macedonia_question_agree
         badboy = 1
         relation = { who = FROM value = -50 }
@@ -4844,8 +4549,10 @@ country_event = {
         name = "One day all of Eastern Macedonia will be ours."
         any_owned = {
             limit = {
-                province_id = 825
-                province_id = 829
+				OR = {
+					province_id = 825
+					province_id = 829
+				}
             }
             add_core = BUL
             add_core = GRE
@@ -4878,7 +4585,6 @@ country_event = {
             limit = {
                 OR = {
                     province_id = 823
-                    province_id = 830
                     province_id = 3304
                 }
             }

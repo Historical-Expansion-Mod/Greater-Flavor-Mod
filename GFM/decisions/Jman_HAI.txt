@@ -70,24 +70,30 @@ political_decisions = {
             has_recently_lost_war = no
             total_amount_of_ships = 10
             NOT = { relation = { who = USA value = 0 } }
+			NOT = { relation = { who = US2 value = 0 } }
 			NOT = { NAF = { all_core = { owned_by = THIS } } }
         }
         allow = {
             money = 75000
-            USA = { average_militancy = 4 }
+            OR = { USA = { average_militancy = 4 } US2 = { average_militancy = 4 } }
             NOT = { alliance_with = USA }
+			NOT = { alliance_with = US2 }
         }
         effect = {
             set_country_flag = NAF_revolt
             money = -75000
-            USA = {
-                release = NAF
+            random_country = {
+				limit = {
+					OR = { tag = USA tag = US2 }
+					exists = yes
+				}
+				release = NAF
                 war = {
                     target = NAF
                     attacker_goal = { casus_belli = civil_war }
                     defender_goal = { casus_belli = status_quo }
                 }
-            }
+			}
             create_alliance = NAF
             NAF = {
                 capital_scope = {
@@ -104,6 +110,7 @@ political_decisions = {
                 }
             }
             relation = { who = USA value = -200 }
+			relation = { who = US2 value = -200 }
         }
     }
     ### Unoffical Claims ###
@@ -111,6 +118,7 @@ political_decisions = {
     claim_glp_mtq = {
         picture = claim_the_caribbean
         potential = {
+			ai = no
             tag = HAI
             NOT = { has_country_flag = claim_glp_mtq }
         }
@@ -146,6 +154,7 @@ political_decisions = {
     claim_ULA = {
         picture = new_france_louisiana
         potential = {
+			ai = no
             tag = HAI
             NOT = {
                 has_country_flag = claim_ULA
@@ -159,8 +168,12 @@ political_decisions = {
                 is_secondary_power = yes
             }
             total_amount_of_ships = 20
-            NOT = { relation = { who = USA value = 0 } }
+			OR = {
+				AND = { NOT = { relation = { who = USA value = 0 } } USA = { exists = yes } }
+				AND = { NOT = { relation = { who = US2 value = 0 } } US2 = { exists = yes } }
+			}
             NOT = { alliance_with = USA }
+			NOT = { alliance_with = US2 }
         }
         effect = {
             add_accepted_culture = cajun
@@ -176,16 +189,15 @@ political_decisions = {
             USA_158 = { add_core = ULA } #Iowa
             USA_116 = { add_core = ULA } #Montana
             127 = { add_core = ULA } #Kansas
-            126 = { add_core = ULA }
+            126 = { add_core = ULA } #Kansas
             130 = { add_core = ULA } #Oklahoma
-            131 = { add_core = ULA }
-            106 = { add_core = ULA }
+            131 = { add_core = ULA } #Oklahoma
+            106 = { add_core = ULA } #Colorado
             3468 = { add_core = ULA } #Wyoming
-            112 = { add_core = ULA }
-            118 = { add_core = ULA }
-            156 = { add_core = ULA }
-            24 = { add_core = ULA }
-            30 = { add_core = ULA }
+            112 = { add_core = ULA } #Wyoming
+            156 = { add_core = ULA } #Minnesota
+            24 = { add_core = ULA } #bits of Lousianna territory in Canada
+            30 = { add_core = ULA } #bits of Lousianna territory in Canada
             USA_139 = { add_core = HAI } #Louisiana
             USA_144 = { add_core = HAI } #Arkansas
             USA_148 = { add_core = HAI } #Missouri
@@ -196,20 +208,19 @@ political_decisions = {
             USA_158 = { add_core = HAI } #Iowa
             USA_116 = { add_core = HAI } #Montana
             127 = { add_core = HAI } #Kansas
-            126 = { add_core = HAI }
+            126 = { add_core = HAI } #Kansas
             130 = { add_core = HAI } #Oklahoma
-            131 = { add_core = HAI }
-            106 = { add_core = HAI }
-            111 = { add_core = HAI } #Wyoming
-            112 = { add_core = HAI }
-            118 = { remove_core = HAI }
-            156 = { add_core = HAI }
-            24 = { add_core = HAI }
-            30 = { add_core = HAI }
+            131 = { add_core = HAI } #Oklahoma
+            106 = { add_core = HAI } #Colorado
+            3468 = { add_core = HAI } #Wyoming
+            112 = { add_core = HAI } #Wyoming
+            156 = { add_core = HAI } #Minnesota
+            24 = { add_core = HAI } #bits of Lousianna territory in Canada
+            30 = { add_core = HAI } #bits of Lousianna territory in Canada
             relation = { who = USA value = -200 }
+			relation = { who = US2 value = -200 }
         }
     }
-    ### You are good Human ###
     create_new_poland = {
         picture = become_poland
         potential = {
@@ -252,10 +263,10 @@ political_decisions = {
                     move_pop = 2216
                 }
             }
-            DAI = {
+            AUS = {
                 any_pop = {
                     limit = {
-                        culture = vietnamese
+                        culture = polish
                         type = serfs
                     }
                     move_pop = 2214
@@ -264,29 +275,28 @@ political_decisions = {
             DOM = {
                 all_core = {
                     add_core = PLG
-                    remove_core = DOM
                 }
             }
         }
     }
     ### Internal Politics ###
-    #form_national_guard = {
-    #    picture = force_publique
-    #    potential = {
-    #        tag = HAI
-    #        NOT = { has_country_flag = form_national_guard }
-    #    }
-    #    allow = {
-    #        money = 100000
-    #        military_staff_system = 1
-    #    }
-    #    effect = {
-    #        money = -100000
-    #        set_country_flag = form_national_guard
-    #        conscription = mandatory_service
-    #        add_country_modifier = { name = liberte_or_mort duration = -1 }
-    #    }
-    #}
+    form_national_guard = {
+        picture = force_publique
+        potential = {
+            tag = HAI
+            NOT = { has_country_flag = form_national_guard }
+        }
+        allow = {
+            money = 100000
+            military_staff_system = 1
+        }
+        effect = {
+            money = -100000
+            set_country_flag = form_national_guard
+            conscription = mandatory_service
+            add_country_modifier = { name = liberte_or_mort duration = -1 }
+        }
+    }
     #mobilize_guard = {
     #    picture = force_publique
     #    potential = {
@@ -298,7 +308,6 @@ political_decisions = {
     #                war_with = THIS
     #            }
     #            any_country = {
-    #                stronger_army_than = THIS
     #                war_with = THIS
     #            }
     #        }
@@ -350,6 +359,7 @@ political_decisions = {
     wealth_distribution = {
         picture = embrace_minority
         potential = {
+			ai = no
             tag = HAI
             NOT = { has_country_modifier = law_changed_by_force }
 			NOT = { has_country_flag = wealth_distribution_used }

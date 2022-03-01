@@ -29,7 +29,7 @@ country_event = {
     option = {
         name = "EVT37238OPTA"
         random_list = {
-            25 = { badboy = 3 }
+            25 = { badboy = 2 }
             25 = { badboy = 2.5 }
             25 = { badboy = 3.0 }
             25 = { badboy = 3.5 }
@@ -141,7 +141,7 @@ country_event = {
     is_triggered_only = yes
 
     option = {
-        name = "EVT37238OPTA"
+        name = "EVT372384OPTA"
         relation = { who = ALD value = 400 }
         create_alliance = ALD
         military_access = ALD
@@ -157,11 +157,11 @@ country_event = {
             diplomatic_influence = { who = THIS value = -200 }
         }
 
-        ai_chance = { factor = 1 }
+        ai_chance = { factor = 0 }
     }
 
     option = {
-        name = "EVT37238OPTB"
+        name = "EVT372384OPTB"
         badboy = -1
         prestige = -10
         relation = { who = ALD value = -400 }
@@ -179,8 +179,128 @@ country_event = {
             }
         }
 
+        ai_chance = { factor = 1 }
+    }
+}
+
+country_event = {
+    id = 060844
+    title = "FRANCE_DEMANDS_BECHAR_TITLE"
+    desc = "FRANCE_DEMANDS_BECHAR_DESC"
+    picture = "battle_of_isly"
+	mean_time_to_happen = { months = 1 }
+	fire_only_once = yes
+    trigger = {
+	    1713 = { owned_by = FRA }
+		1720 = { owned_by = MOR }
+		capital = 425
+		NOT = { has_global_flag = morocco_supports_france }
+		NOT = { year = 1850 }
+	}
+
+    option = {
+        name = "Let the Moroccans keep Béchar."
+        relation = { who = MOR value = 400 }
         ai_chance = { factor = 0 }
     }
+
+    option = {
+        name = "Demand that the Moroccans abandon Béchar! §RGain 1 infamy§W"
+		badboy = 1
+        relation = { who = MOR value = -50 }
+		MOR = { country_event = 100944 }
+        ai_chance = { factor = 1 }
+    }
+}
+
+country_event = {
+    id = 100944
+    title = "MOR_RESPONDS_FRA_TITLE"
+    desc = "MOR_RESPONDS_FRA_DESC"
+    picture = "battle_of_isly"
+    is_triggered_only = yes
+
+    option = {
+        name = "We refuse to abandon Béchar! (France declares war)"
+		FRA = { country_event = 100945 }
+        ai_chance = { factor = 1 }
+    }
+
+    option = {
+        name = "We're not prepared to defend it. Abandon Béchar!"
+		1720 = { secede_province = FRA }
+		1720 = { remove_core = THIS }
+		prestige = -3
+        relation = { who = FRA value = 100 }
+        ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+    id = 100945
+    title = "FRA_RESPONDS_MOR_TITLE"
+    desc = "FRA_RESPONDS_MOR_DESC"
+    picture = "battle_of_isly"
+    is_triggered_only = yes
+
+    option = {
+        name = "They've left us with no choice!"
+		war = {
+			target = MOR
+			attacker_goal = { casus_belli = demand_concession_casus_belli_no_infamy state_province_id = 1720 }
+			defender_goal = { casus_belli = humiliate_no_infamy }
+			call_ally = no
+		}
+        ai_chance = { factor = 1 }
+    }
+}
+
+country_event = {
+    id = 100946
+    title = "MOR_SUPPORT_ALD_TITLE"
+    desc = "MOR_SUPPORT_ALD_DESC"
+    picture = "french_fight_algeria"
+	fire_only_once = yes
+    trigger = { tag = MOR }
+	mean_time_to_happen = { months = 1 }
+
+    option = {
+        name = "We must come to the aid of our Algerian brothers-in-arms."
+		end_military_access = FRA
+		military_access = ALD
+		relation = { who = FRA value = -200 }
+		prestige = 5
+		treasury = -10000
+		ALD = { treasury = 10000 }
+		ai_chance = { factor = 0 }
+    }
+	
+	option = {
+        name = "A French presence in Africa would be catastrophic! (Historical)"
+		end_military_access = FRA
+		military_access = ALD
+		relation = { who = FRA value = -200 }
+		prestige = 5
+		ai_chance = { factor = 1 }
+    }
+
+    option = {
+        name = "Their case is doomed. We must support the French to survive."
+		end_military_access = ALD
+		military_access = FRA
+        relation = { who = FRA value = 200 }
+		relation = { who = ALD value = -200 }
+		prestige = -2
+		ALD = {
+		    casus_belli = {
+	            target = MOR
+	            type = humiliate_no_infamy
+	            months = 12
+			}
+		}
+		set_global_flag = morocco_supports_france
+		ai_chance = { factor = 0 }
+	}
 }
 
 #The Treaty of Tafna
@@ -358,7 +478,7 @@ country_event = {
             25 = { badboy = 1.5 }
             25 = { badboy = 2.0 }
         }
-        casus_belli ={
+        casus_belli = {
             target = ABA
             type = establish_protectorate_NI_casus_belli
             months = 60
@@ -436,15 +556,15 @@ country_event = {
     mean_time_to_happen = { months = 6 }
 
     immediate = {
-        ALD_1718 = { secede_province = THIS add_core = ALD }
+        ALD_1718 = { secede_province = THIS add_core = ALD add_core = RGA }
         random_country = {
             limit = {
                 tag = TUG
                 ai = yes
                 exists = yes
             }
-            annex_to = ALD
-            TUG = { any_core = { remove_core = TUG } }
+            annex_to = THIS
+            TUG = { all_core = { remove_core = TUG } }
         }
         random_country = {
             limit = {
@@ -452,8 +572,8 @@ country_event = {
                 ai = yes
                 exists = yes
             }
-            annex_to = ALD
-            ABA = { any_core = { remove_core = ABA } }
+            annex_to = THIS
+            ABA = { all_core = { remove_core = ABA } }
         }
     }
 
@@ -494,7 +614,7 @@ country_event = {
         FRA_1700 = { add_province_modifier = { name = nationalist_agitation duration = 365 } }
         ALD_1708 = { add_province_modifier = { name = nationalist_agitation duration = 365 } }
 
-        casus_belli ={
+        casus_belli = {
             target = ALD
             type = conquest_any
             months = 60
@@ -502,43 +622,8 @@ country_event = {
         war = {
             target = ALD
             attacker_goal = { casus_belli = conquest_any }
+			defender_goal = { casus_belli = acquire_all_cores }
             call_ally = no
-        }
-
-        random_country = {
-            limit = {
-                tag = ALD
-                exists = yes
-                neighbour = THIS
-                NOT = { number_of_states = 2 }
-                NOT = { civilized = yes }
-                THIS = { nationalism_n_imperialism = 1 has_global_flag = berlin_conference }
-            }
-            add_casus_belli = { target = THIS type = establish_protectorate_BC_casus_belli months = 48 }
-        }
-
-        random_country = {
-            limit = {
-                tag = ALD
-                exists = yes
-                neighbour = THIS
-                NOT = { number_of_states = 2 }
-                NOT = { civilized = yes }
-                THIS = { nationalism_n_imperialism = 1 NOT = { has_global_flag = berlin_conference } }
-            }
-            add_casus_belli = { target = THIS type = establish_protectorate_NI_casus_belli months = 48 }
-        }
-
-        random_country = {
-            limit = {
-                tag = ALD
-                exists = yes
-                neighbour = THIS
-                NOT = { number_of_states = 2 }
-                NOT = { civilized = yes }
-                THIS = { NOT = { nationalism_n_imperialism = 1 } }
-            }
-            add_casus_belli = { target = THIS type = establish_protectorate_casus_belli months = 48 }
         }
     }
 }

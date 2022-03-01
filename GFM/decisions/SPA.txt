@@ -199,7 +199,7 @@ political_decisions = {
                     }
                 }
                 consciousness = 9
-                militancy = 6
+                militancy = 7
             }
             any_pop = {
                 limit = { NOT = { has_pop_culture = spanish } }
@@ -464,32 +464,18 @@ political_decisions = {
             OR = {
                 SPA = { exists = yes }
                 SPC = { exists = yes }
-                AND = {
-                    NOT = {
-                        any_owned_province = { is_core = SPA }
-                    }
-                    NOT = {
-                        any_owned_province = { is_core = SPC }
-                    }
-                }
+			}
+            NOT = {
+                any_owned_province = { is_core = SPA }
+            }
+            NOT = {
+                any_owned_province = { is_core = SPC }
             }
         }
 
         allow = {
             war = no
             owns = 521
-            OR = {
-                SPA = { exists = yes }
-                SPC = { exists = yes }
-                AND = {
-                    NOT = {
-                        any_owned_province = { is_core = SPA }
-                    }
-                    NOT = {
-                        any_owned_province = { is_core = SPC }
-                    }
-                }
-            }
         }
 
         effect = {
@@ -522,6 +508,7 @@ political_decisions = {
                 primary_culture = british
                 primary_culture = portuguese
             }
+			NOT = { tag = EIC }
         }
 
         allow = {
@@ -600,4 +587,98 @@ political_decisions = {
 
         ai_will_do = { factor = 1 }
     }
-}
+
+    # Andorran Iberian Annexation
+    the_andorran_question = {
+    	picture = create_iberia
+    	potential = {
+			tag = IBR
+			NOT = { has_country_flag = annexed_andorra }
+		}
+	
+		allow = {
+			war = no
+			is_greater_power = yes
+			OR = {
+				ADO = { vassal_of = THIS }
+				ADO = { in_sphere = THIS }
+			}
+			prestige = 100
+		}
+	
+		effect = {
+			badboy = 1
+			inherit = ADO
+			any_owned = {
+				limit = {
+					is_core = ADO
+					NOT = { is_core = IBR }
+				}
+				add_core = IBR
+			}
+			any_pop = { 
+				limit = { has_pop_culture = catalan }
+				consciousness = 1
+			}
+			
+			set_country_flag = annexed_andorra
+		}
+	
+		ai_will_do = { factor = 1 }
+    }
+	
+	# Coring the Hispaniola
+    core_hispaniola_spain = {
+    	picture = spain_reconquest
+    	potential = {
+			OR = {
+				tag = IBR
+				tag = SPA
+				tag = SPC
+			}
+			NOT = { has_country_flag = cored_hispaniola_sp }
+            owns = 2214
+            owns = 2216
+			owns = 3403
+		}
+	
+		allow = {
+			war = no
+			prestige = 60
+		}
+	
+		effect = {
+			badboy = 1
+            2214 = { add_core = THIS }
+            2216 = { add_core = THIS }
+            3403 = { add_core = THIS }
+			set_country_flag = cored_hispaniola_sp
+		}
+	
+		ai_will_do = { factor = 1 }
+    }
+	
+	# The Moret Law (1837)
+    the_peninsular_moret_law = {
+    	picture = spain_reconquest
+    	potential = {
+			OR = {
+				tag = IBR
+				tag = SPA
+			}
+			NOT = { has_global_flag = the_peninsular_moret_law }
+		}
+	
+		allow = {
+			war = no
+			year = 1837
+		}
+	
+		effect = {
+			country_event = 31721
+			set_global_flag = the_peninsular_moret_law
+		}
+	
+		ai_will_do = { factor = 1 }
+    }
+}	    
