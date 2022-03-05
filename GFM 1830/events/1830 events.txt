@@ -984,6 +984,7 @@ country_event = {
 				background = priest
 			}
 			government = theocracy
+			2436 = { sub_unit = { type = infantry value = current } }
 		}
 		war = {
 			target = BAH
@@ -1004,6 +1005,7 @@ country_event = {
 				background = priest
 			}
 			government = theocracy
+			2436 = { sub_unit = { type = infantry value = current } }
 		}
 		war = {
 			target = BAH
@@ -1025,10 +1027,13 @@ country_event = {
 	fire_only_once = yes
 
     trigger = {
-        has_country_flag = male
-		OR = {
-			truce_with = BAH
-			2447 = { owned_by = BAH } #Porto Seguro
+        tag = BAH
+		BRZ = {
+			has_country_flag = male
+		    OR = {
+			    truce_with = BAH
+			    2447 = { controlled_by = BAH } #Porto Seguro
+		    }
 		}
 	}
 
@@ -1142,6 +1147,12 @@ country_event = { #NO LOC
 				personality = harsh
 				background = expert_raider
 			}
+			capital_scope = {
+				sub_unit = { type = infantry value = current }
+				sub_unit = { type = infantry value = current }
+				sub_unit = { type = cavalry value = current }
+				sub_unit = { type = artillery value = current }
+			}
 		}
 		war = {
 			target = RGS
@@ -1170,6 +1181,12 @@ country_event = { #NO LOC
 				personality = harsh
 				background = expert_raider
 			}
+			capital_scope = {
+				sub_unit = { type = infantry value = current }
+				sub_unit = { type = infantry value = current }
+				sub_unit = { type = cavalry value = current }
+				sub_unit = { type = artillery value = current }
+			}
 		}
 		war = {
 			target = RGS
@@ -1181,7 +1198,7 @@ country_event = { #NO LOC
 	}
 }
 
-#Farrapos win event NO LOC
+#Farrapos win event (Republic) NO LOC
 country_event = { 
 	id = 127865
 	name = "Farrapos victorious!"
@@ -1192,11 +1209,12 @@ country_event = {
 
     trigger = {
 		tag = RGS
+		has_country_flag = rgs_republic_declared
         BRZ = { 
 			has_country_flag = rgs_revolt_flag
 		    OR = {
 			    truce_with = RGS
-			    2447 = { owned_by = RGS } #Rio de Janeiro
+			    2447 = { controlled_by = RGS } #Rio de Janeiro
 		    }
 		}
 	}
@@ -1271,9 +1289,77 @@ country_event = {
 	}
 }
 
+#Farrapos win event (Province) NO LOC
+country_event = { 
+	id = 127868
+	name = "Farrapos victorious!"
+	desc = "farrapos_win_desc"
+	picture = "farrapos"
+
+	fire_only_once = yes
+
+    trigger = {
+		tag = RGS
+		NOT = { has_country_flag = rgs_republic_declared }
+        BRZ = { 
+			has_country_flag = rgs_revolt_flag
+		    OR = {
+			    truce_with = RGS
+			    2447 = { controlled_by = RGS } #Rio de Janeiro
+		    }
+		}
+	}
+
+	option = { #Switch to Brazil and end the Empire (switch to Republic)
+		name = "Morte a Monarquia! §BSwitch to §RBrazil §Band turn it into a Republic§W"
+		any_pop = { limit = { has_pop_culture = brazilian } militancy = -4 consciousness = -4 }
+		change_tag = BRZ
+		BRZ = {
+			inherit = RGS
+			SAC = { annex_to = BRZ }
+            ruling_party_ideology = liberal
+            government = democracy
+            nationalvalue = nv_liberty
+            political_reform = no_slavery
+            political_reform = federalism
+            political_reform = free_press
+            set_country_flag = democracy_gov
+			clr_country_flag = theocratic_government
+			clr_country_flag = communist_gov
+			clr_country_flag = absolute_monarchy_gov
+			clr_country_flag = semi_constitutional_monarchy_gov
+			clr_country_flag = constitutional_monarchy_gov
+			clr_country_flag = presidential_dictatorship_gov
+			clr_country_flag = fascist_gov
+			clr_country_flag = clean_up_colonial_government
+			clr_country_flag = rgs_revolt_flag
+			any_pop = { limit = { is_accepted_culture = yes } ideology = { factor = 0.3 value = liberal } } 
+			capital = 2447
+		}
+	}
+
+	option = { #Switch to Brazil and make it Liberal but keep the Empire
+		name = "Get rid of the reactionaries in the governement!"
+		any_pop = { limit = { has_pop_culture = brazilian } militancy = -4 consciousness = -4 }
+		change_tag = BRZ
+		BRZ = {
+			RGS = { annex_to = BRZ }
+			SAC = { annex_to = BRZ }
+			ruling_party_ideology = liberal
+			nationalvalue = nv_liberty
+			political_reform = federalism
+			political_reform = free_press
+			any_pop = { limit = { is_accepted_culture = yes } ideology = { factor = 0.3 value = liberal } }
+			clr_country_flag = rgs_revolt_flag
+			capital = 2447
+		}
+	}
+
+}
+
 #Santa Catharina annexation event NO LOC
 country_event = {
-	id = 127865
+	id = 127869
 	title = "Unification with the Rio-Grandese Republic?"
 	desc = "sac_rgs_union_desc"
 	picture = "sul"
@@ -1299,6 +1385,169 @@ country_event = {
 		}
 	}
 }
+
+#Farroupilha revolt start NO LOC
+country_event = {
+	id = 127866
+	title = "The Farroupilha Revolution!"
+	desc = "farrapos_revolt_start"
+	picture = "farrapos_revoltin"
+
+	fire_only_once = yes
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "These Liberals shall pay!"
+		set_country_flag = rgs_revolt_flag
+		any_owned = {
+			limit = { 
+               OR = {
+				   province_id = 2463
+				   province_id = 2464
+				   province_id = 3567
+				   province_id = 2467
+			   }
+		    }
+			secede_province = RGS
+		}
+		RGS = {
+			government = prov_gov_liberal_two
+			define_general = {
+				name = "Bento Gonçalves"
+				personality = harsh
+				background = expert_raider	
+			}
+			define_general = {
+				name = "Antônio de Souza Netto"
+				personality = harsh
+				background = expert_raider
+			}
+			capital_scope = {
+				sub_unit = { type = infantry value = current }
+				sub_unit = { type = infantry value = current }
+				sub_unit = { type = cavalry value = current }
+				sub_unit = { type = artillery value = current }
+			}
+			set_country_flag = rgs_revolt_normal
+		}
+		war = {
+			target = RGS
+			attacker_goal = { casus_belli = conquest }
+			defender_goal = { casus_belli = status_quo }
+		}
+		BRZ = { badboy = -23 }
+	}
+
+	option = {
+		name = "Those conservatives shall pay! §BPlay as the §RRio-Grandese Republic§W"
+		set_country_flag = rgs_revolt_flag
+		any_owned = {
+			limit = { 
+               OR = {
+				   province_id = 2463
+				   province_id = 2464
+				   province_id = 3567
+				   province_id = 2467
+			   }
+		    }
+			secede_province = RGS
+		}
+		RGS = {
+			government = prov_gov_liberal_two
+			define_general = {
+				name = "Bento Gonçalves"
+				personality = harsh
+				background = expert_raider	
+			}
+			define_general = {
+				name = "Antônio de Souza Netto"
+				personality = harsh
+				background = expert_raider
+			}
+			capital_scope = {
+				sub_unit = { type = infantry value = current }
+				sub_unit = { type = infantry value = current }
+				sub_unit = { type = cavalry value = current }
+				sub_unit = { type = artillery value = current }
+			}
+			set_country_flag = rgs_revolt_normal
+		}
+		war = {
+			target = RGS
+			attacker_goal = { casus_belli = conquest }
+			defender_goal = { casus_belli = status_quo }
+		}
+		BRZ = { badboy = -23 }
+		change_tag_no_core_switch = RGS
+	}
+}
+
+#RGS declare Republic #No LOC
+country_event = {
+	id = 127867
+	title = "A Rio-Grandese Republic?"
+	desc = "declare_rgs_republic_desc"
+    picture = "piratini"
+
+	fire_only_once = yes
+	mean_time_to_happen = { days = 20 }
+
+	trigger = {
+		tag = RGS
+		has_country_flag = rgs_revolt_normal
+		2466 = { controlled_by = RGS }
+		2465 = { controlled_by = RGS }
+		NOT = { year = 1840 }
+	}
+
+	option = {
+		name = "Viva a Republica de Piratini!"
+		set_country_flag = rgs_republic_declared
+		government = democracy
+		upper_house_composition = state_equal_weight
+        voting_system = proportional_representation
+		public_meetings = yes_meeting
+		press_rights = free_press
+		political_parties = non_secret_ballots
+		citizens_rights = all_voting_pops
+		centralization = federalism
+		vote_franschise = universal_voting
+		any_pop = { limit = { has_pop_culture = brazilian } militancy = 4 }
+		BRZ = { 2466 = { secede_province = RGS } 2465 = { secede_province = RGS } }
+	}
+
+	option = {
+		name = "We're still Brazilians for God's sake!"
+		prestige = 5
+		any_pop = { limit = { has_pop_culture = brazilian } militancy = -2 }
+		BRZ = { 2466 = { secede_province = RGS } 2465 = { secede_province = RGS } }
+	}
+}
+
+#RGS Federal Skeleton NO LOC
+#country_event = {
+#	id = 127870
+#	title = "The Riograndese demand more Federalism!"
+#	desc = "rgs_federal_askpls_desc"
+#	picture = "porto_alegre"
+#
+#	fire_only_once = yes
+#	mean_time_to_happen = { months = 5 }
+#
+#	trigger = { 
+#		tag = BRZ
+#		year = 1832
+#		NOT = { exists = RGS } 
+#	}
+#
+#	option = {
+#		name = "Support the Federal reforms!"
+#	}
+#
+#	option = {
+#		name = "Representation? In MY Empire?"
+#	}
+#}
 
 ######## END OF THE BRAZIL FILE ########
 
