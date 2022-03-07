@@ -52,7 +52,7 @@ This expanded version of GFM owes its existence to: (add your name here if you h
 * BloomerMagma
 * UlfDerDritte
 * Doble
-* Erling Kristiansen
+* Erling E. Kristiansen
 * Wooper Goldberg
 * General Garcia
 * Sarif#2056
