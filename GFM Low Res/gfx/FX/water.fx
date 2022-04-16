@@ -303,7 +303,7 @@ VS_OUTPUT_WATER VertexShader_Water_1_1(const VS_INPUT_WATER IN )
 
 float4 PixelShader_Water_1_1( VS_OUTPUT_WATER IN ) : COLOR
 {
-	float4 OutColor = float4( 0.3, 0.3, 0.7, 1 );
+	float4 OutColor = float4( 0.7, 1.1, 1.3, 1 );
 	
 	float4 TerraIncognita = tex2D( TerraIncognitaFiltered, IN.WorldTextureTI );
 	OutColor.rgba += ( TerraIncognita.g - 0.25 )*1.33;
