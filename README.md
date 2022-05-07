@@ -14,7 +14,7 @@ Para cambiar el idioma de Victoria 2 al español y jugar con la traducción, debes
 1. Ve a la carpeta de datos de Victoria 2 (debería estar en Documentos/Paradox Interactive)
 2. Busca la carpeta correspondiente al GFM (debes abrir el juego con el mod primero)
 3. Busca el archivo [settings.txt] y ábrelo
-4. En donde dice language, pon [l_spanish]
+4. En donde dice language, pon l_spanish
 5. Guarda la configuración.
 6. Abre el juego de nuevo; si lo hiciste bien, debería aparecer la traducción en español!
 
