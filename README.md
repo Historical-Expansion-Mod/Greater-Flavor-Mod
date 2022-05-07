@@ -72,10 +72,10 @@ Esta versión expandida del GFM debe su existencia a: (agrega tu nombre aquí si h
 ## Traducción al Español
 La traducción al español de GFM ha sido posible gracias a los aportes de los siguientes usuarios:
 * Abraham Lincoln (Asesoramiento)
-* Pauil81 (Asesoramiento)
 * Bob Bobington (Asesoramiento)
 
 * General Garcia (Asesoramiento + aportes menores)
+* Pauil81 (Asesoramiento + aportes menores)
 * Señor Rosas (Traductor líder + traductor de este texto)
 * TeamBegazo (Asesoramiento + traducciones varias)
 * RafaBlanco (Eventos y Decisiones)
@@ -84,6 +84,9 @@ La traducción al español de GFM ha sido posible gracias a los aportes de los sig
 * Key2 (Eventos y Decisiones)
 * Darkas (Provincias y Regiones)
 * Davince (Provincias y Regiones)
+* El Causa (Aportes varios)
+* ChileOwO (Aportes varios)
+* miguellll (Aportes varios)
 
 Así como del desarrollador original de HFM, el único e inigualable: SighPie
 
