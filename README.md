@@ -81,12 +81,12 @@ La traducción al español de GFM ha sido posible gracias a los aportes de los sig
 * RafaBlanco (Eventos y Decisiones)
 * Carlista Reformed (Eventos y Decisiones)
 * Elnokiafilosofal (Eventos y Decisiones)
-* Key2 (Eventos y Decisiones)
 * Darkas (Provincias y Regiones)
 * Davince (Provincias y Regiones)
 * El Causa (Aportes varios)
 * ChileOwO (Aportes varios)
-* miguellll (Aportes varios)
+* Key2 (Aportes menores)
+* miguellll (Aportes menores)
 
 Así como del desarrollador original de HFM, el único e inigualable: SighPie
 
