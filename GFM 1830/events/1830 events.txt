@@ -2329,3 +2329,232 @@ country_event = {
 		}
 	}
 }
+
+country_event = {
+	id = 4207010
+	title = "The Belgian rebels declare Independence"
+	desc = "EVTDESC4207010"
+	picture = "belgian_revolution"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = NET
+		year = 1831
+	}
+	
+	mean_time_to_happen = {
+		months = 8
+	}
+	
+	option = { 
+		name = "We cannot allow this!"
+		set_global_flag = belgian_revolution_war
+		any_owned = {
+			limit = {
+				is_core = BEL
+			}
+			secede_province = BEL
+		}
+		any_pop = {
+			limit = {
+				has_pop_religion = catholic
+			}
+			militancy = 5
+			consciousness = 8
+		}
+		BEL = { government = prov_gov_liberal_two }
+		any_country = {
+			limit = {
+				exists = yes
+				OR = {
+					tag = FRA
+					tag = BOR
+				}
+			}
+			create_alliance = BEL
+			diplomatic_influence = {
+				who = BEL
+				value = 100
+			}
+		}
+		ENG = {
+			diplomatic_influence = {
+				who = BEL
+				value = 100
+			}
+		}
+		war = { 
+			target = BEL
+			attacker_goal = { casus_belli = annex_core_country } 
+			defender_goal = { casus_belli = status_quo }
+			call_ally = yes
+		}
+		ai_chance = {
+			factor = 99
+			modifier = {
+				factor = 0
+				has_global_flag = railroaded_no_belgian_revolutionary_war 
+			}
+		}
+	}
+	
+	option = {
+		name = "Let them go."
+		prestige = -15
+		any_pop = {
+			limit = {
+				has_pop_religion = protestant
+			}
+			militancy = 3
+			consciousness = 5
+		}
+		any_owned = {
+			limit = {
+				is_core = BEL
+			}
+			remove_core = THIS
+			secede_province = BEL
+		}
+		diplomatic_influence = {
+			who = BEL
+			value = 15
+		}
+		BEL = {
+			government = hms_government
+			relation = {
+				who = NET
+				value = 15
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { has_global_flag = railroaded_no_belgian_revolutionary_war }
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 4207011
+	title = "The Belgian independence is Absolute"
+	desc = "EVTDESC4207011"
+	picture = "belgian_victory"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = BEL
+		war = no
+		has_global_flag = belgian_revolution_war
+	}
+	
+	mean_time_to_happen = {
+		months = 3
+	}
+	
+	option = { 
+		name = "Hurrah!"
+		set_global_flag = 1831_london_conference
+		government = hms_government
+		election = yes
+		prestige = 10
+		NET = { prestige = -15 }
+	}
+}
+
+country_event = {
+	id = 4207012
+	title = "The London Conference of $YEAR$"
+	desc = "EVTDESC4207012"
+	picture = "london_conference1831"
+	allow_multiple_instances = yes
+	
+	trigger = {
+		is_greater_power = yes
+		OR = {
+			tag = ENG
+			tag = AUS
+			tag = FRA
+			tag = PRU
+			tag = RUS
+			tag = NET
+		}
+		has_global_flag = 1831_london_conference
+		NOT = { has_country_flag = decided_on_london_conference }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = { 
+		name = "We do not support Belgian independence."
+		set_country_flag = decided_on_london_conference
+		relation = {
+			who = BEL
+			value = -50
+		}
+		diplomatic_influence = {
+			who = BEL
+			value = -50
+		}
+		relation = {
+			who = NET
+			value = 50
+		}
+		diplomatic_influence = {
+			who = NET
+			value = 50
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 100
+				tag = NET
+			}
+		}
+	}
+	
+	option = { 
+		name = "We recognize Belgian independence."
+		set_country_flag = decided_on_london_conference
+		relation = {
+			who = BEL
+			value = 15
+		}
+		diplomatic_influence = {
+			who = BEL
+			value = 15
+		}
+		ai_chance = {
+			factor = 99
+			modifier = {
+				factor = 0
+				OR = {
+					tag = ENG
+				}
+			}
+		}
+	}
+	
+	option = { 
+		name = "We guarantee Belgian independence!"
+		set_country_flag = decided_on_london_conference
+		relation = {
+			who = BEL
+			value = 50
+		}
+		diplomatic_influence = {
+			who = BEL
+			value = 50
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 100
+				tag = ENG
+			}
+		}
+	}
+}
