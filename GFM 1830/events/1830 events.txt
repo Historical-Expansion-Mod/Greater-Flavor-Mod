@@ -2120,12 +2120,14 @@ country_event = {
 		political_reform = free_press
 		political_reform = proportional_representation
 		any_pop = { militancy = -2 }
+		ai_chance = { factor = 0 }
 	}
 	
 	option = { 
 		name = "Never!"
 		scaled_consciousness = { factor = 5 ideology = liberal }
         scaled_militancy = { factor = 5 ideology = liberal }
+		ai_chance = { factor = 1 }
 	}
 }
 
@@ -2247,12 +2249,29 @@ country_event = {
 
 country_event = {
 	id = 16051843
-	title = "Massacre of the Albanian Beys"
+	title = "The Fight for Our Liberation"
 	desc = "EVTDESC16051843"
 	picture = "massacre_albbeys"
 
-	fire_only_once = yes
+	is_triggered_only = yes
+	
+	option = { 
+		name = "For freedom!"
+		aristocrats = { reduce_pop = 0.70 }
+		government = absolute_monarchy
+		add_country_modifier = { name = all_or_nothing duration = 365 }
+	}
+	
 	mean_time_to_happen = { days = 9 }
+}
+
+country_event = {
+	id = 16051844
+	title = "The Massacre of the Albanian Beys"
+	desc = "EVTDESC16051844"
+	picture = "massacre_albbeys"
+
+	fire_only_once = yes 
 
 	trigger = {
 		tag = TUR
@@ -2262,32 +2281,18 @@ country_event = {
 	
 	option = { 
 		name = "Put them down now!"
-		ALB = { country_event = 16051844 }
-		release_vassal = ALB
-		war = {
-            target = ALB
-            attacker_goal = { casus_belli = conquest_any }
-            defender_goal = { casus_belli = status_quo }
-        }
+		release_vassal = ALB 
+		ALB = { 
+			war = {
+				target = THIS 
+				attacker_goal = { casus_belli = become_independent }
+				defender_goal = { casus_belli = conquest_any }
+			}
+			country_event = 16051843
+		}	
 	}
 }
 
-country_event = {
-	id = 16051844
-	title = "Fight for our liberation"
-	desc = "EVTDESC16051844"
-	picture = "massacre_albbeys"
-
-	fire_only_once = yes
-	
-	is_triggered_only = yes 
-	
-	option = { 
-		name = "Oh no."
-		aristocrats = { reduce_pop = 0.70 }
-		government = absolute_monarchy
-	}
-}
 
 country_event = {
 	id = 16051845
@@ -2356,3 +2361,353 @@ country_event = {
 	mean_time_to_happen = { months = 2 } 
 }
 
+country_event = {
+
+    id = 16051848
+
+    trigger = {
+        tag = FRA
+		government = absolute_monarchy
+		year = 1831
+		month = 7
+		NOT = { year = 1833 }
+    }
+
+    fire_only_once = yes
+
+    mean_time_to_happen =  { days = 28 }
+
+    title = "An Assassination Attempt on Louis Philippe I"
+    desc = "PHILIPE1ASE1"
+    picture = "philipe1ase1"
+
+    option = {
+        name = "Good riddance to the terrorists!"
+        any_pop = {
+            consciousness = 0.5
+        }
+    }
+}
+
+country_event = {
+
+    id = 16051849
+
+    trigger = {
+        tag = SRN
+		year = 1833
+		month = 10
+    }
+
+    fire_only_once = yes
+
+    mean_time_to_happen =  { days = 10 }
+
+    title = "We've taken Zaxho."
+    desc = "ZAKHOISSORAN"
+    picture = "zakho_kurdistan"
+
+    option = {
+        name = "Oops!"
+        924 = { secede_province = SRN }
+		TUR = { country_event = 16051850 }
+    }
+}
+
+country_event = {
+
+    id = 16051850
+	
+	is_triggered_only = yes
+    fire_only_once = yes
+
+    title = "Soran has taken Zaxho"
+    desc = "ZAKHOISBOHTAN"
+    picture = "zakho_kurdistan"
+
+    option = {
+        name = "Declare war!"
+		casus_belli = { target = SRN type = free_allied_cores months = 36 }
+        war = {
+			target = SRN
+			attacker_goal = { casus_belli = free_allied_cores state_province_id = 924 country = BHT }
+			defender_goal = { casus_belli = humiliate_no_infamy }
+			call_ally = no
+		}
+		set_country_flag = zakho_kurdistan
+		ai_chance = { factor = 1 }
+    }
+	
+	option = {
+        name = "We'll keep an eye on them."
+		casus_belli = { target = SRN type = free_allied_cores months = 36 }
+		set_country_flag = zakho_kurdistan
+		ai_chance = { factor = 0 }
+    }
+	
+	option = {
+        name = "That isn't our priority."
+		prestige = -15
+		ai_chance = { factor = 0 }
+    }
+}
+
+country_event = {
+
+    id = 16051851
+	
+	is_triggered_only = yes
+    fire_only_once = yes
+
+    title = "The Turks are retaliating"
+    desc = "ZAKHOISABATTLEFIELD"
+	
+    picture = "zakho_kurdistan"
+
+    option = {
+        name = "We will fight to the last man!"
+    }
+}
+
+#Algeria Loses
+country_event = {
+
+    id = 16151852
+	
+	trigger = {
+        OR = {
+        	tag = FRA
+        	tag = BOR
+        }
+        has_country_flag = france_bullies_algeria
+        truce_with = RGA
+        NOT = { has_country_modifier = recently_lost_war }
+    }
+
+    title = "Algiera has been defeated"
+    desc = "RGADEADAF"
+	
+    picture = "RGA_is_dead"
+
+    option = {
+        name = "A great victory has been reached."
+		any_land_province = {
+            limit = {
+				OR = {
+					province_id = 1704
+					province_id = 1700
+					province_id = 1701
+					province_id = 1709
+				}
+            }
+        	secede_province = THIS
+        }
+        any_land_province = {
+           	limit = {
+				owned_by = RGA
+				NOT = {
+					province_id = 1721
+					province_id = 1708
+				}
+           	}
+        	secede_province = ALD
+        }
+        
+        casus_belli = { target = ALD type = establish_protectorate_casus_belli months = 72 }
+        ALD = {
+        	add_country_modifier = {
+        		name = rally_tribesmen
+        		duration = 3650
+        	}
+        	define_general = { name = "Emir Abdelkader" personality = defence_3.1 background = attack_4.1 }
+        }
+        set_country_flag = french_algerie
+    }
+}
+#Algeria Wins
+country_event = {
+
+    id = 16151853
+	
+	trigger = {
+        tag = RGA
+        OR =  { FRA = { has_country_flag = france_bullies_algeria } BOR = { has_country_flag = france_bullies_algeria } }
+        OR = {
+        	truce_with = FRA
+        	truce_with = BOR
+        }
+        NOT = { has_country_modifier = recently_lost_war }
+    }
+
+    title = "Victory against France"
+    desc = "FRANCETROLLED"
+	
+    picture = "algeria_victorious"
+
+    option = {
+        name = "The French remain at across the sea."
+		prestige = 10
+		treasury = 250000
+		years_of_research = 2.5
+		ai_chance = { factor = 75 }
+    }
+
+    option = {
+        name = "Attempt to regain Ottoman Protection."
+        years_of_research = 1
+        TUR = {
+			diplomatic_influence = {
+				who = RGA
+				value = 400
+			}
+			relation = { who = RGA value = 200 }
+		}
+		ai_chance = { factor = 25 }
+    }
+}
+country_event = {
+
+    id = 16051854
+	
+	is_triggered_only = yes
+    fire_only_once = yes
+
+    title = "French Settlement in Algeria"
+    desc = "ANDOURENA"
+	
+    picture = "pied_noir_settlement"
+
+    option = {
+        name = "Fully fund and buy slaves for them!"
+		any_pop = {
+			limit = {
+				has_pop_culture = french 
+				location = { is_core = ALD }
+			}
+			money = 2.5
+		}
+		any_pop = {
+			limit = {
+				location = { is_core = ALD }
+				has_pop_culture = afro_french
+			}
+			reduce_pop = 1.1
+		}
+    }
+    option = {
+        name = "Fully fund them to settle land."
+		any_pop = {
+			limit = {
+				has_pop_culture = french 
+				location = { is_core = ALD }
+			}
+			money = 2.5
+			reduce_pop = 1.05
+		}		
+    }
+    option = {
+        name = "They will be fine on their own, right?"
+		prestige = -5
+    }
+}
+country_event = {
+
+    id = 16051852
+
+    trigger = {
+        tag = TUR
+		year = 1832
+		month = 4
+    }
+
+    fire_only_once = yes
+
+    mean_time_to_happen =  { days = 4 }
+
+    title = "The Tuzcuoglu Revolt"
+    desc = "TUZCUOGLUREVOLTS"
+    picture = "tuzcuoglu_revolt"
+
+    option = {
+        name = "Well, to arms!"
+        3535 = { secede_province = PNT }
+		PNT = {
+			government = prov_gov_conservative
+			primary_culture = georgian
+			define_general = { name = "Tahir Aga Tuzcuoglu" personality = defence_3.1 background = attack_3.1 }
+			3535 = { sub_unit = { type = irregular value = current } sub_unit = { type = irregular value = current } sub_unit = { type = irregular value = current } sub_unit = { type = irregular value = current } }
+		}
+		882 = { remove_core = PNT }
+		883 = { remove_core = PNT }
+		884 = { remove_core = PNT }
+		war = {
+			target = PNT
+			attacker_goal = { casus_belli = conquest_any }
+			defender_goal = { casus_belli = humiliate_no_infamy }
+			call_ally = no
+		}
+		set_global_flag = lazitrolling
+    }
+	
+	option = {
+        name = "Long live the Laz! §BPlay the revolt§W"
+        3535 = { secede_province = PNT }
+		PNT = {
+			government = prov_gov_conservative
+			primary_culture = georgian
+			define_general = { name = "Tahir Aga Tuzcuoglu" personality = defence_3.1 background = attack_3.1 }
+			3535 = { sub_unit = { type = irregular value = current } sub_unit = { type = irregular value = current } sub_unit = { type = irregular value = current } sub_unit = { type = irregular value = current } }
+		}
+		882 = { remove_core = PNT }
+		883 = { remove_core = PNT }
+		884 = { remove_core = PNT }
+		war = {
+			target = PNT
+			attacker_goal = { casus_belli = conquest_any }
+			defender_goal = { casus_belli = humiliate_no_infamy }
+			call_ally = no
+		}
+		change_tag_no_core_switch = PNT
+		set_global_flag = lazitrolling
+    }
+}
+
+country_event = {
+
+    id = 16051853
+
+    trigger = {
+        tag = TUR
+		year = 1832
+		NOT = { year = 1836 }
+		has_global_flag = lazitrolling
+		NOT = { exists = PNT }
+	}
+
+    fire_only_once = yes
+
+    mean_time_to_happen =  { days = 4 }
+
+    title = "The Laz Crushed"
+    desc = "TUZCUOGLUCRUSHED"
+    picture = "tuzcuoglu_revolt"
+
+    option = {
+        name = "Finally."
+		PNT = {
+			government = absolute_monarchy
+			primary_culture = greek
+			kill_leader = 212
+		}
+		882 = { add_core = PNT }
+		883 = { add_core = PNT }
+		884 = { add_core = PNT }
+		any_pop = {
+			limit = {
+				has_pop_culture = georgian
+			}
+			militancy = -6
+			consciousness = 2
+		}
+    }
+}
