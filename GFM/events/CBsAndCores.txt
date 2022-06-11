@@ -770,66 +770,82 @@ country_event = {
 # Dealing with vassals
 country_event = {
     id = 2560
-    title = "EVTNAME2560"
+    title = "EVTNAME2560" #The Buffer State
     desc = "EVTDESC2560"
     picture = "administration"
 
     trigger = {
         ai = yes
-        any_neighbor_country = {
-            is_vassal = yes
-            NOT = { vassal_of = THIS }
-            overlord = { NOT = { truce_with = THIS } }
-            OR = {
-                any_owned_province = { is_core = THIS }
-                overlord = {
-                    NOT = { relation = { who = THIS value = -50 } }
-                    NOT = { neighbour = THIS }
-                }
-            }
-        }
+		OR = {
+			AND = {
+				any_neighbor_country = {
+					is_vassal = yes
+					overlord = { war_with = THIS brigades_compare = 1.5 }
+				}
+				civilized = yes
+			}
+			AND = {
+				any_neighbor_country = {
+					is_vassal = yes
+					overlord = { war_with = THIS civilized = no brigades_compare = 1.5 }
+				}
+				civilized = no			
+			}
+		}
+		NOT = { has_country_modifier = buffer_state_cooldown }
     }
 
     mean_time_to_happen = {
-        months = 24
-        modifier = {
-            factor = 0.5
-            war = yes
-        }
-        modifier = {
-            factor = 0.1
-            any_neighbor_country = {
-                is_vassal = yes
-                overlord = { war_with = THIS }
-            }
-        }
+        months = 1
     }
 
     option = {
         name = "EVT2560OPTA"
-        any_neighbor_country = {
-            limit = {
-                is_vassal = yes
-                NOT = { vassal_of = THIS }
-                overlord = { NOT = { truce_with = THIS } }
-                OR = {
-                    any_owned_province = { is_core = THIS }
-                    overlord = {
-                        NOT = { relation = { who = THIS value = -50 } }
-                        NOT = { neighbour = THIS }
-                    }
-                }
-            }
-            overlord = {
-                relation = { who = THIS value = -50 }
-                leave_alliance = THIS
-                add_casus_belli = {
-                    target = THIS
-                    type = release_puppet
-                    months = 24
-                }
-            }
-        }
+		random_owned = {
+			limit = {
+				owner = {
+					civilized = yes
+				}
+			}
+			owner = {
+				any_neighbor_country = {
+					limit = {
+						is_vassal = yes
+						overlord = { war_with = THIS brigades_compare = 1.5 }
+					}
+					overlord = {
+						add_casus_belli = {
+							target = THIS
+							type = release_puppet
+							months = 24
+						}
+					}
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					civilized = no
+				}
+			}
+			owner = {
+				any_neighbor_country = {
+					limit = {
+						is_vassal = yes
+						overlord = { civilized = no war_with = THIS brigades_compare = 1.5 }
+					}
+					overlord = {
+						add_casus_belli = {
+							target = THIS
+							type = release_puppet
+							months = 24
+						}
+					}
+				}
+			}
+		}
+		add_country_modifier = { name = buffer_state_cooldown duration = 730 }
     }
 }
 
