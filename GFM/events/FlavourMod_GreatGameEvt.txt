@@ -72,14 +72,14 @@ country_event = {
     news_desc_long = "EVTDESC99101_NEWS_LONG"
     news_desc_medium = "EVTDESC99101_NEWS_MEDIUM"
     news_desc_short = "EVTDESC99101_NEWS_SHORT"
-
+	fire_only_once = yes
+	
     trigger = {
         tag = ENG
         DUR = {
             vassal_of = ENG
             ai = yes
         }
-        NOT = { has_global_flag = graveyard_of_empires }
     }
 
     mean_time_to_happen = {
@@ -119,7 +119,8 @@ country_event = {
             }
         }
         DUR = { change_tag = AFG }
-        AFG = { create_vassal = MYN create_vassal = KND create_vassal = HNZ create_vassal = KSN create_vassal = CRL }
+        AFG = { create_vassal = MYN create_vassal = KND create_vassal = HNZ create_vassal = KSN create_vassal = CRL create_vassal = HAZ }
+		HAZ = { government = colonial_company }
 		any_country = {
 			limit = {
 				tag = HRT
@@ -590,7 +591,7 @@ country_event = {
 
 country_event = {
 	id = 992022
-	title = "Persia Victorious!"
+	title = "Persia Victorious"
 	desc = "EVTDESC992022"
 	
 	fire_only_once = yes
@@ -1529,14 +1530,10 @@ country_event = {
     trigger = {
         tag = ENG
         year = 1895
-		CRL = { war = no }
-        CRL = { owns = 1223 }
-		CRL = { is_vassal = no }
 		KSN = { war = no }
 		KSN = { owns = 3524 }
 		KSN = { is_vassal = no }
 		exists = KSN
-		exists = CRL
 		OR = {
 			owns = 3525
 			3525 = { owner = { vassal_of = THIS } }
@@ -1548,23 +1545,32 @@ country_event = {
     option = {
 		name = "Crush them! §RGain 1 infamy§W"
 		badboy = 1
-	    relation = { who = CRL value = -400 }
-        diplomatic_influence = { who = CRL value = -400 }
-        CRL = { leave_alliance = THIS }
-		casus_belli = { target = CRL type = make_puppet months = 12 }
-        war = {
-			target = CRL
-			attacker_goal = { casus_belli = make_puppet }
-            defender_goal = { casus_belli = humiliate_no_infamy }
-        }
-        CRL = { tech_school = developing_tech_school }
+		random_owned = {
+			limit = {
+				owner = {
+					CRL = { is_vassal = no }
+				}
+			}
+			owner = {
+				ENG = { relation = { who = CRL value = -400 }
+				diplomatic_influence = { who = CRL value = -400 } }
+				CRL = { leave_alliance = THIS }
+					ENG = { 
+						war = {
+							target = CRL
+							attacker_goal = { casus_belli = make_puppet_no_infamy }
+							defender_goal = { casus_belli = humiliate_no_infamy }
+						}
+					}
+				CRL = { tech_school = developing_tech_school }
+			}
+		}
 		relation = { who = KSN value = -400 }
         diplomatic_influence = { who = KSN value = -400 }
         KSN = { leave_alliance = THIS }
-		casus_belli = { target = KSN type = make_puppet months = 12 }
         war = {
 			target = KSN
-			attacker_goal = { casus_belli = make_puppet }
+			attacker_goal = { casus_belli = make_puppet_no_infamy }
             defender_goal = { casus_belli = humiliate_no_infamy }
         }
         KSN = { tech_school = developing_tech_school }
@@ -1664,10 +1670,9 @@ country_event = {
 	    relation = { who = SHD value = -400 }
         SHD = { leave_alliance = THIS }
 		release_vassal = SHD
-		casus_belli = { target = SHD type = make_puppet months = 12 }
         war = {
 			target = SHD
-			attacker_goal = { casus_belli = make_puppet }
+			attacker_goal = { casus_belli = make_puppet_no_infamy }
             defender_goal = { casus_belli = humiliate_no_infamy }
         }
 		any_owned = {
@@ -1928,7 +1933,8 @@ country_event = {
 		leave_alliance = AFG
 		RUS = { diplomatic_influence = { who = AFG value = 400 } }
 		RUS = { create_alliance = AFG }
-		AFG = { create_vassal = HNZ create_vassal = KSN create_vassal = CRL }
+		AFG = { create_vassal = HNZ create_vassal = KSN create_vassal = CRL create_vassal = HAZ }
+		HAZ = { government = colonial_company }
 		ai_chance = { factor = 0 }
     }
 	option = {
@@ -1938,7 +1944,8 @@ country_event = {
         relation = { who = AFG value = -200 }
         diplomatic_influence = { who = AFG value = -200 }
 		AFG = { add_casus_belli = { target = ENG type = cut_down_to_size_no_infamy months = 12 } }
-		AFG = { create_vassal = HNZ create_vassal = KSN create_vassal = CRL }
+		AFG = { create_vassal = HNZ create_vassal = KSN create_vassal = CRL create_vassal = HAZ }
+		HAZ = { government = colonial_company }
         war = {
             target = AFG
             attacker_goal = { casus_belli = cut_down_to_size_no_infamy }
@@ -1958,30 +1965,33 @@ country_event = {
 
     trigger = {
 		tag = AFG
-        has_global_flag = afghan_2b
-		owns = 1213
-		AFG = { vassal_of = THIS }
+		year = 1888
+		HAZ = { vassal_of = THIS exists = yes }
     }
 
     mean_time_to_happen = { months = 1 }
 
     option = {
 		name = "Crush them!"
+		release_vassal = HAZ
 		any_pop = {
 			limit = {
-				has_pop_culture = tajik
+				is_culture_group = iranian_turanian
+				NOT = { has_pop_culture = pashtun has_pop_culture = baluchi }
 				location = { is_core = AFG }
 			}
 			reduce_pop = 0.5
 		}
-		any_pop = {
-			limit = {
-				has_pop_culture = persian
-				location = { is_core = AFG }
+		HAZ = {
+			any_pop = {
+				limit = {
+					is_culture_group = iranian_turanian
+					NOT = { has_pop_culture = pashtun has_pop_culture = baluchi }
+					location = { is_core = AFG }
+				}
+				reduce_pop = 0.5
 			}
-			reduce_pop = 0.4
 		}
-		1213 = { secede_province = HAZ }
 		war = {
 			target = HAZ
             attacker_goal = { casus_belli = conquest_any }
@@ -2212,7 +2222,7 @@ country_event = {
 		name = "Bring Persia back under our heel! §RGain 6 infamy§W"
 		prestige = 5
 		badboy = 6
-		casus_belli = { target = PER type = make_puppet months = 40 }
+		casus_belli = { target = PER type = make_puppet_no_infamy months = 40 }
 		ai_chance = { factor = 0.7 }
     }
 	option = {

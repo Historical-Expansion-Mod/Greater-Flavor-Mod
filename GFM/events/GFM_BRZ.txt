@@ -218,7 +218,7 @@ country_event = {
 
 country_event = {
     id = 46311
-    title = "The Legalistas are Victorious!"
+    title = "Legalist Victory"
     desc = "42_legalist_vic_desc"
     picture = "rio_city"
 
@@ -243,7 +243,7 @@ country_event = {
 
 country_event = {
     id = 46312
-    title = "The Liberals are Victorious!"
+    title = "Liberal Victory"
     desc = "42_liberals_vic_desc"
     picture = "rio_city"
 
@@ -267,6 +267,7 @@ country_event = {
 
     option = {
         name = "Viva os Liberais!"
+		end_war = BRZ
         change_tag = BRZ
         BRZ = {
             clr_country_flag = liberal_revolt_brz
@@ -274,13 +275,17 @@ country_event = {
             inherit = MGR
             inherit = SAP
             capital = 2447
+			end_war = MGR
+			end_war = SAP
+			end_war = BRZ
         }
         ai_chance = { factor = 70 }
     }
 
     option = {
-        change_tag = BRZ
         name = "Off with their heads! §BBecome Republic§!"
+		end_war = BRZ
+        change_tag = BRZ
         BRZ = {
             clr_country_flag = liberal_revolt_brz
             ruling_party_ideology = liberal
@@ -293,6 +298,9 @@ country_event = {
             inherit = MGR
             inherit = SAP
             capital = 2447
+			end_war = MGR
+			end_war = SAP
+			end_war = BRZ
         }
         ai_chance = { factor = 30 }
     }
@@ -426,7 +434,7 @@ country_event = {
 
 country_event = {
     id = 46317
-    title = "The Rebellion captures Rio!"
+    title = "Rio Captured"
     desc = "praieira_lib_desc"
     picture = "rio_city"
 
@@ -455,6 +463,8 @@ country_event = {
             set_country_flag = democracy_gov
             inherit = PNB
             capital = 2447
+			end_war = PNB
+			end_war = BRZ
         }
     }
 }
@@ -740,7 +750,7 @@ country_event = {
 
 country_event = {
     id = 47083
-    title = "Brazil sets up a Military Colony in the Rio Branco!"
+    title = "A Brazilian Outpost in the Rio Branco"
     desc = "$FROMCOUNTRY$ is proposing a navigation treaty to delimit our borders and establish river transport regulations. While this would please Brazil, we would thereby give up our claims on a lot of land." 
     picture = "treaty_of_petropolis"
 
@@ -817,7 +827,7 @@ country_event = {
 
 country_event = {
     id = 47086
-    title = "$FROMCOUNTRY$ has accepted!"
+    title = "$FROMCOUNTRY$ has accepted"
     desc = "$FROMCOUNTRY$ has accepted our proposal and they do not claim the the east of Tabatinga anymore!"
     picture = "treaty_of_petropolis"
 
@@ -831,7 +841,7 @@ country_event = {
 
 country_event = {
     id = 47087
-    title = "$FROMCOUNTRY$ has refused!"
+    title = "$FROMCOUNTRY$ has refused"
     desc = "$FROMCOUNTRY$ has refused our proposal and continue to claim the the east of Tabatinga!"
     picture = "treaty_of_petropolis"
 
@@ -1107,3 +1117,159 @@ country_event = {
         any_pop = { limit = { has_pop_culture = brazilian } consciousness = -0.5 }
     }
 }
+
+country_event = { # Contestado War event caused by [sp_rgs_railway] - LOC will be revisited ig
+    id = 47091
+    title = "The Contestado War"
+    desc = "contestado_desc"
+    picture = "contestado"
+    
+    fire_only_once = yes
+    mean_time_to_happen = { months = 5 }
+
+    trigger = {
+        OR = {
+            tag = BRZ
+            tag = UPB
+        }
+        has_country_flag = sp_rgs_railway_1
+        NOT = { 2459 = { has_province_modifier = contestado_war } }
+    }
+    
+    option = {
+        name = "Send in the boys in beige!"
+        2459 = { add_province_modifier = { name = contestado_war duration = 1461 } }
+        any_pop = { limit = { location = { province_id = 2459 } pop_type = farmers } consciousness = 2 militancy = 2 }
+        set_country_flag = contestado_war
+    }
+}
+
+country_event = { # São Paulo-Rio Grande railway finished - fires whenever the Contestado ends - LOC will be revisited ig
+    id = 47092
+    title = "The São Paulo - Rio Grande railway"
+    desc = "sp_rgs_railway_event_desc"
+    picture = "sp_rgs_estrada"
+    
+    fire_only_once = yes
+    mean_time_to_happen = { days = 3 }
+
+    trigger = {
+        OR = {
+            tag = BRZ
+            tag = UPB
+        }
+        OR = {
+            AND = {
+                OR = {
+                    government = democracy
+                    government = parliamentary_republic
+                    government = presidential_dictatorship
+                }
+                has_country_flag = contestado_war
+                NOT = { 2459 = { has_province_modifier = contestado_war } }
+            }
+            AND = {
+                NOT = {
+                    OR = {   
+                        government = democracy
+                        government = parliamentary_republic
+                        government = presidential_dictatorship
+                    }
+                }
+                has_country_flag = sp_rgs_railway_2
+            }
+        }
+    }
+    
+    option = { 
+        name = "Give all of it to Paraná"
+        prestige = 5
+        money = -50000
+        any_owned = {
+            limit = {
+                OR = {
+                    province_id = 2459
+                    province_id = 2465
+                    province_id = 2463
+                    province_id = 2464
+                }
+            }
+            infrastructure = 5
+        }
+        2462 = { remove_core = SAC }
+    }
+
+    option = { 
+        name = "Give all of it to Santa Catharina"
+        prestige = 5
+        money = -50000
+        any_owned = {
+            limit = {
+                OR = {
+                    province_id = 2459
+                    province_id = 2465
+                    province_id = 2463
+                    province_id = 2464
+                }
+            }
+            infrastructure = 5
+        }
+        2462 = { remove_core = SAP }
+    }
+}
+
+country_event = { #placeholder loc i really just want to sleep
+    id = 47093
+    title = "Naming the new Capital"
+    desc = "brasilia_name_desc"
+    picture = "brasilia"
+    
+    fire_only_once = yes
+    is_triggered_only = yes
+    
+    option = { 
+        name = "Name it Brasília"
+        3584 = { change_province_name = "Brasília" }
+    }
+
+    option = {
+        name = "Name it after an important figure"
+        random_owned = { limit = { owner = { OR = { government = absolute_empire government = semi_constitutional_empire government = constitutional_empire } } } owner = { 3584 = { change_province_name = "Petrópole" } } }
+        random_owned = { limit = { owner = { NOT = { OR = { government = absolute_empire government = semi_constitutional_empire government = constitutional_empire } } } } owner = { 3584 = { change_province_name = "Tiradentes" } } }
+    }
+
+    option = {
+        name = "Name it after our Nation"
+        random_owned = { limit = { owner = { OR = { government = absolute_empire government = semi_constitutional_empire government = constitutional_empire } } } owner = { 3584 = { change_province_name = "Imperatoria" } } }
+        random_owned = { limit = { owner = { NOT = { OR = { government = absolute_empire government = semi_constitutional_empire government = constitutional_empire } } } } owner = { 3584 = { change_province_name = "Vera Cruz" } } }
+    }
+}
+country_event = { 
+    id = 47094
+    title = "Lei de Terras"
+    desc = "lei_de_terras_desc"
+    picture = "colonial_factory"
+	
+	fire_only_once = yes
+    mean_time_to_happen = { months = 8 }
+	
+	trigger = {
+		tag = BRZ
+		year = 1850
+		}
+    option = { 
+	    name = "Unoccupied land is property of the government, and it can only be bought!"
+	    aristocrats = { consciousness = -5 militancy = -5}
+		ai_chance = { factor = 90 }
+		}
+	option = { 
+	    name = "Unoccupied land is property of the government, and we will start giving it aways to settlers!"
+	    money = -100000
+		aristocrats = { consciousness = 5 militancy = 5}
+		add_country_modifier = {
+            name = the_homestead_act
+            duration = -1
+			}
+		ai_chance = { factor = 10 }
+		}	
+}	
