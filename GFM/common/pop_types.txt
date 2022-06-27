@@ -488,30 +488,10 @@ migration_chance = {
         }
     }
 
-    modifier = { #+0.2 if settlement
-        factor = 0.2
-        country = { colonial_policy = settlement }
-    }
-
-    modifier = { #+0.25 pop is germanic, loc cntrld, NOT states listed, country: has flag
-        factor = 0.25
-		is_culture_group = germanic
-        location = {
-            controlled_by = owner
-            NOT = {
-                state_id = 701 #Posen
-                state_id = 682 #Lower Silesia
-                state_id = 690 #Westpreussen
-                state_id = 695 #Ostpreussen
-                state_id = 354 #Latvia
-                state_id = 349 #Estonia
-                state_id = 706 #Masovia
-            }
-        }
-        country = {
-			has_country_flag = prussian_settlement_commission
-		}
-    }
+    #modifier = { #+0.2 if settlement #Abe edit: This is dumb af, why would all migration increase if you have settlement policy???
+    #    factor = 0.2
+    #    country = { colonial_policy = settlement }
+    #}
 
     group = { #higher migration if needs < num, max +0.3
         modifier = {
@@ -602,7 +582,7 @@ colonialmigration_chance = {
     }
 	
     modifier = {
-        factor = 0.05
+        factor = 0.15 #Abe edit: Used to be 0.05, increased to 0.15 to compensate for removing the -0.1 factor on general emigration
         country = { colonial_policy = settlement }
 		consciousness = 3
     }
@@ -792,12 +772,12 @@ emigration_chance = {
         }
     }
 
-    modifier = {
-        factor = -0.1
-        country = {
-            colonial_policy = settlement
-        }
-    }
+    #modifier = { #Abe edit: This is unnecessary, settlement shouldn't decrease emigration, I just added +0.1 to colonial migration chance to compensate
+    #    factor = -0.1
+    #    country = {
+    #        colonial_policy = settlement
+    #    }
+    #}
 
     group = {
 		modifier = {
@@ -1110,8 +1090,14 @@ assimilation_chance = {
         factor = -80
         country = {
             has_country_flag = new_world_nation
-            NOT = { has_country_flag = native_assimilation_enacted }
+			NOT = {
+				OR = {
+					has_country_flag = native_assimilation_enacted
+					has_country_flag = MEX_colonization_law
+				}
+			}
         }
+		NOT = { has_pop_culture = mayan }
         OR = {
             is_culture_group = native_american
             is_culture_group = oceanic
