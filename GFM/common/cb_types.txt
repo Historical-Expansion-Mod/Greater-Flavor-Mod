@@ -104,6 +104,9 @@ release_puppet_AI
 steal_puppet
 great_game_cb
 make_puppet
+make_puppet_small
+make_puppet_tiny
+make_puppet_minuscule
 make_puppet_no_infamy
 install_fascism_make_puppet
 install_communism_make_puppet
@@ -604,6 +607,95 @@ restore_austrian_empire = {
             }
             remove_core = KRA
         }
+    }
+
+}
+
+
+zemene_mesafint = {
+    sprite_index = 21
+    is_triggered_only = yes
+    months = 12
+
+    construction_speed = 0.8
+
+    badboy_factor = 0
+    prestige_factor = 2
+    peace_cost_factor = 0.7
+    penalty_factor = 1
+    always = yes
+
+    break_truce_prestige_factor = 5
+    break_truce_infamy_factor = 2
+    break_truce_militancy_factor = 2
+    truce_months = 48
+
+    good_relation_prestige_factor = 1
+    good_relation_infamy_factor = 1
+    good_relation_militancy_factor = 1
+
+    can_use = {
+        NOT = {
+            AND = {
+                has_global_flag = sw_set
+                NOT = { year = 1840 }
+            }
+        }
+        NOT = { is_our_vassal = THIS }
+		OR = {
+			tag = GJM
+			tag = GON
+			tag = SHW
+			tag = TIG
+			tag = WLO
+			tag = HAR
+		}
+        THIS = {
+			OR = {
+				tag = GJM
+				tag = GON
+				tag = SHW
+				tag = TIG
+				tag = WLO
+			}
+        }
+        neighbour = THIS
+        NOT = { has_country_modifier = neutrality_modifier }
+        NOT = { in_sphere = THIS }
+		NOT = { exists = ETH }
+        OR = {
+            THIS = {
+                NOT = { has_country_modifier = neutrality_modifier }
+                total_amount_of_divisions = 1
+            }
+            war_with = THIS
+        }
+        OR = {
+            war_with = THIS
+            THIS = { NOT = { has_country_modifier = punitive_effects } }
+        }
+    }
+
+    allowed_states = {
+        any_owned_province = {
+            is_core = ETH
+        }
+    }
+
+    po_demand_state = yes
+
+    war_name = WAR_ZEMENE_MESAFINT_NAME
+
+    on_add = {
+        move_issue_percentage = {
+            from = jingoism
+            to = pro_military
+            value = 0.25
+        }
+    }
+
+    on_po_accepted = {
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
     }
 
 }
@@ -6724,6 +6816,9 @@ annex_africa = {
 									region = ETH_1852
 									region = ETH_1865
 									region = ETH_1859
+									region = ETH_1867
+									region = ETH_1855
+									region = ETH_3591
 								}
 							}
 							OR = {
@@ -6735,6 +6830,9 @@ annex_africa = {
 											region = ETH_1852
 											region = ETH_1865
 											region = ETH_1859
+											region = ETH_1867
+											region = ETH_1855
+											region = ETH_3591
 										}
 									}
 								}
@@ -6745,6 +6843,9 @@ annex_africa = {
 											region = ETH_1852
 											region = ETH_1865
 											region = ETH_1859
+											region = ETH_1867
+											region = ETH_1855
+											region = ETH_3591
 										}
 									}
 								}
@@ -7301,6 +7402,9 @@ annex_africa_full = {
 									region = ETH_1852
 									region = ETH_1865
 									region = ETH_1859
+									region = ETH_1867
+									region = ETH_1855
+									region = ETH_3591
 								}
 							}
 							OR = {
@@ -7312,6 +7416,9 @@ annex_africa_full = {
 											region = ETH_1852
 											region = ETH_1865
 											region = ETH_1859
+											region = ETH_1867
+											region = ETH_1855
+											region = ETH_3591
 										}
 									}
 								}
@@ -7322,6 +7429,9 @@ annex_africa_full = {
 											region = ETH_1852
 											region = ETH_1865
 											region = ETH_1859
+											region = ETH_1867
+											region = ETH_1855
+											region = ETH_3591
 										}
 									}
 								}
@@ -8302,6 +8412,7 @@ make_puppet = {
 
     can_use = {
 		ai = yes
+		total_pops = 400000
         NOT = {
             is_our_vassal = THIS
             has_country_modifier = neutrality_modifier
@@ -8315,6 +8426,269 @@ make_puppet = {
 					has_global_flag = you_are_playing_mp
 				}
 			}
+        }
+        OR = {
+            AND = {
+                THIS = { total_amount_of_ships = 5 }
+                any_owned_province = { port = yes }
+            }
+            neighbour = THIS
+            war_with = THIS
+            any_neighbor_country = {
+                OR = {
+                    vassal_of = THIS
+                    substate_of = THIS
+                    in_sphere = THIS
+                }
+            }
+        }
+        is_vassal = no
+        is_greater_power = no
+        OR = {
+            war_with = THIS
+            THIS = {
+                NOT = { has_country_modifier = neutrality_modifier }
+                total_amount_of_divisions = 1
+            }
+        }
+        OR = {
+            war_with = THIS
+            THIS = { NOT = { has_country_modifier = no_more_war } }
+        }
+        OR = {
+            THIS = { government = fascist_dictatorship }
+            THIS = { government = proletarian_dictatorship }
+            war_with = THIS
+            NOT = { relation = { who = THIS value = 0 } }
+            THIS = { ai = no }
+        }
+    }
+
+    # THIS - us
+    # FROM - country scope is possible match?
+    # war target country of goal is scope
+
+    po_make_puppet = yes
+
+    war_name = WAR_PUPPET_NAME
+
+    on_add = {
+        move_issue_percentage = {
+            from = jingoism
+            to = pro_military
+            value = 0.25
+        }
+    }
+
+    on_po_accepted = {
+        country_event = 19370
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+    }
+}
+
+# Make Puppet
+make_puppet_small = {
+    sprite_index = 18
+    is_triggered_only = yes
+    months = 12
+    crisis = no
+
+    badboy_factor = 1.1
+    prestige_factor = 1
+    peace_cost_factor = 1
+    penalty_factor = 1
+
+    break_truce_prestige_factor = 1
+    break_truce_infamy_factor = 1
+    break_truce_militancy_factor = 1
+    truce_months = 48
+
+    good_relation_prestige_factor = 1
+    good_relation_infamy_factor = 1
+    good_relation_militancy_factor = 1
+
+    can_use = {
+		ai = yes
+		total_pops = 100000
+        NOT = {
+			total_pops = 400000
+            is_our_vassal = THIS
+            has_country_modifier = neutrality_modifier
+        }
+        OR = {
+            AND = {
+                THIS = { total_amount_of_ships = 5 }
+                any_owned_province = { port = yes }
+            }
+            neighbour = THIS
+            war_with = THIS
+            any_neighbor_country = {
+                OR = {
+                    vassal_of = THIS
+                    substate_of = THIS
+                    in_sphere = THIS
+                }
+            }
+        }
+        is_vassal = no
+        is_greater_power = no
+        OR = {
+            war_with = THIS
+            THIS = {
+                NOT = { has_country_modifier = neutrality_modifier }
+                total_amount_of_divisions = 1
+            }
+        }
+        OR = {
+            war_with = THIS
+            THIS = { NOT = { has_country_modifier = no_more_war } }
+        }
+        OR = {
+            THIS = { government = fascist_dictatorship }
+            THIS = { government = proletarian_dictatorship }
+            war_with = THIS
+            NOT = { relation = { who = THIS value = 0 } }
+            THIS = { ai = no }
+        }
+    }
+
+    # THIS - us
+    # FROM - country scope is possible match?
+    # war target country of goal is scope
+
+    po_make_puppet = yes
+
+    war_name = WAR_PUPPET_NAME
+
+    on_add = {
+        move_issue_percentage = {
+            from = jingoism
+            to = pro_military
+            value = 0.25
+        }
+    }
+
+    on_po_accepted = {
+        country_event = 19370
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+    }
+}
+
+# Make Puppet
+make_puppet_tiny = {
+    sprite_index = 18
+    is_triggered_only = yes
+    months = 12
+    crisis = no
+
+    badboy_factor = 0.4
+    prestige_factor = 1
+    peace_cost_factor = 1
+    penalty_factor = 1
+
+    break_truce_prestige_factor = 1
+    break_truce_infamy_factor = 1
+    break_truce_militancy_factor = 1
+    truce_months = 48
+
+    good_relation_prestige_factor = 1
+    good_relation_infamy_factor = 1
+    good_relation_militancy_factor = 1
+
+    can_use = {
+		ai = yes
+		total_pops = 10000
+        NOT = {
+			total_pops = 100000
+            is_our_vassal = THIS
+            has_country_modifier = neutrality_modifier
+        }
+        OR = {
+            AND = {
+                THIS = { total_amount_of_ships = 5 }
+                any_owned_province = { port = yes }
+            }
+            neighbour = THIS
+            war_with = THIS
+            any_neighbor_country = {
+                OR = {
+                    vassal_of = THIS
+                    substate_of = THIS
+                    in_sphere = THIS
+                }
+            }
+        }
+        is_vassal = no
+        is_greater_power = no
+        OR = {
+            war_with = THIS
+            THIS = {
+                NOT = { has_country_modifier = neutrality_modifier }
+                total_amount_of_divisions = 1
+            }
+        }
+        OR = {
+            war_with = THIS
+            THIS = { NOT = { has_country_modifier = no_more_war } }
+        }
+        OR = {
+            THIS = { government = fascist_dictatorship }
+            THIS = { government = proletarian_dictatorship }
+            war_with = THIS
+            NOT = { relation = { who = THIS value = 0 } }
+            THIS = { ai = no }
+        }
+    }
+
+    # THIS - us
+    # FROM - country scope is possible match?
+    # war target country of goal is scope
+
+    po_make_puppet = yes
+
+    war_name = WAR_PUPPET_NAME
+
+    on_add = {
+        move_issue_percentage = {
+            from = jingoism
+            to = pro_military
+            value = 0.25
+        }
+    }
+
+    on_po_accepted = {
+        country_event = 19370
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+    }
+}
+
+# Make Puppet
+make_puppet_minuscule = {
+    sprite_index = 18
+    is_triggered_only = yes
+    months = 12
+    crisis = no
+
+    badboy_factor = 0.1
+    prestige_factor = 1
+    peace_cost_factor = 1
+    penalty_factor = 1
+
+    break_truce_prestige_factor = 1
+    break_truce_infamy_factor = 1
+    break_truce_militancy_factor = 1
+    truce_months = 48
+
+    good_relation_prestige_factor = 1
+    good_relation_infamy_factor = 1
+    good_relation_militancy_factor = 1
+
+    can_use = {
+		ai = yes
+        NOT = {
+			total_pops = 10000
+            is_our_vassal = THIS
+            has_country_modifier = neutrality_modifier
         }
         OR = {
             AND = {
@@ -10964,6 +11338,9 @@ claim_colonial_region = {
                             region = ETH_1852
                             region = ETH_1865
                             region = ETH_1859
+							region = ETH_1867
+							region = ETH_1855
+							region = ETH_3591
                         }
                     }
                 }
@@ -10973,6 +11350,9 @@ claim_colonial_region = {
                         region = ETH_1852
                         region = ETH_1865
                         region = ETH_1859
+						region = ETH_1867
+						region = ETH_1855
+						region = ETH_3591
                     }
                 }
             }
@@ -11291,6 +11671,9 @@ claim_colonial_region = {
                             region = ETH_1852
                             region = ETH_1865
                             region = ETH_1859
+							region = ETH_1867
+							region = ETH_1855
+							region = ETH_3591
                         }
                     }
                 }
@@ -11300,6 +11683,9 @@ claim_colonial_region = {
                         region = ETH_1852
                         region = ETH_1865
                         region = ETH_1859
+						region = ETH_1867
+						region = ETH_1855
+						region = ETH_3591
                     }
                 }
             }
@@ -11653,6 +12039,9 @@ claim_colonial_region_full = {
                             region = ETH_1852
                             region = ETH_1865
                             region = ETH_1859
+							region = ETH_1867
+							region = ETH_1855
+							region = ETH_3591
                         }
                     }
                 }
@@ -11662,6 +12051,9 @@ claim_colonial_region_full = {
                         region = ETH_1852
                         region = ETH_1865
                         region = ETH_1859
+						region = ETH_1867
+						region = ETH_3591
+						region = ETH_1855
                     }
                 }
             }
