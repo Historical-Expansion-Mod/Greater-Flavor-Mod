@@ -7789,6 +7789,19 @@ country_event = {
 		tag = ENG
 		year = 1868
 		month = 5
+		NOT = { 
+			accepted_culture = irish 
+			exists = IRE 
+		}
+		OR = {
+			owns = 57
+			57 = { 
+				owner = { 
+					tag = CAN 
+					vassal_of = THIS 
+				} 
+			}
+		}
 	}
 
 	mean_time_to_happen = { days = 3 }
@@ -11015,7 +11028,7 @@ country_event = {
 }
 
 country_event = {
-	id = 18482194
+	id = 18482195
 	title = "$FROMCOUNTRY$ refuses"
 	desc = "HAWPROPOSESBUYSOLOMONNO"
 	picture = "champoeg_meetings"
@@ -11026,4 +11039,215 @@ country_event = {
 	option = {
         name = "Damn."
     }
-}	
+}
+
+country_event = {
+	id = 18482196
+	title = "The USA accepts, but wants the line to extend to Vancouver Island"
+	desc = "A discrepancy in the treaty has been found. The USA claims that the line dividing Oregon should partition Vancover Island."
+	picture = "treaty"
+    
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+        name = "We won't agree to split the island."
+		random_owned = {
+			limit = { owner = { USA = { exists = yes } } }
+			owner = {
+				USA = { country_event = 18482198 }
+			}
+		}
+		random_owned = {
+			limit = { owner = { US2 = { exists = yes } } }
+			owner = {
+				US2 = { country_event = 18482198 }
+			}
+		}
+		ai_chance = {
+            factor = 40
+        }
+    }
+	
+	option = {
+        name = "We agree to split the island."
+		random_owned = {
+			limit = { owner = { USA = { exists = yes } } }
+			owner = {
+				any_owned = {
+					limit = {
+						province_id = 14
+					}
+					remove_core = ENG
+					remove_core = COL
+					remove_core = CAN
+					secede_province = USA
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { US2 = { exists = yes } } }
+			owner = {
+				any_owned = {
+					limit = {
+						province_id = 14
+					}
+					remove_core = ENG
+					remove_core = COL
+					remove_core = CAN
+					secede_province = US2
+					US2 = { country_event = 18482197 }
+				}
+			}
+		}
+		ai_chance = {
+            factor = 60
+        }
+    }
+}
+
+country_event = {
+	id = 18482197
+	title = "The British Accept Our Demands"
+	desc = "After a day of intense negotiations, we have acquired the southern part of Vancouver Island."
+	picture = "treaty"
+    
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+        name = "Great!"
+    }
+}
+
+country_event = {
+    id = 18482198
+    title = "Negotiations over Vancouver Break Down" #Negotiations Break Down
+    desc = "VANCOUVERISLANDSPLITMAYBEWAR"
+    picture = "treaty"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "Abandon our claims."
+        prestige = -4
+        any_pop = {
+            scaled_militancy = {
+                issue = jingoism
+                factor = 3
+            }
+        }
+		random_owned = {
+				limit = { owner = { USA = { exists = yes } } }
+				owner = {
+					14 = { remove_core = USA }
+				}
+		}
+		random_owned = {
+				limit = { owner = { US2 = { exists = yes } } }
+				owner = {
+					14 = { remove_core = US2 }
+				}
+		}
+        ai_chance = {
+            factor = 90
+        }
+    }
+
+    option = {
+        name = "Press ahead with our claims."
+		inherit = UOR
+        prestige = 5
+        relation = { who = ENG value = -100 }
+		random_owned = {
+			limit = { owner = { USA = { exists = yes } } }
+			owner = {
+				COL = { all_core = { add_core = USA } }
+				CAN_13 = { add_core = USA }
+				war = {
+					target = ENG
+					attacker_goal = {
+						casus_belli = acquire_all_cores
+						country = USA
+					}
+					defender_goal = {
+						casus_belli = acquire_all_cores
+						country = ENG
+					}
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { US2 = { exists = yes } } }
+			owner = {
+				COL = { all_core = { add_core = US2 } }
+				CAN_13 = { add_core = US2 }
+				war = {
+					target = ENG
+					attacker_goal = {
+						casus_belli = acquire_all_cores
+						country = US2
+					}
+					defender_goal = {
+						casus_belli = acquire_all_cores
+						country = ENG
+					}
+				}
+			}
+		}
+        COL = { all_core = { add_core = ENG } }
+        CAN_13 = { add_core = ENG }
+        2629 = { remove_core = USA remove_core = US2 remove_core = ENG }
+        18 = { remove_core = USA remove_core = US2 remove_core = ENG }
+        any_pop = {
+            scaled_consciousness = {
+                issue = jingoism
+                factor = -3
+            }
+        }
+        ENG = {
+            country_event = 44157
+        }
+        ai_chance = {
+            factor = 10
+            modifier = {
+                factor = 0
+                is_greater_power = no
+            }
+            modifier = {
+                factor = 0.5
+                war = yes
+            }
+            modifier = {
+                factor = 0.5
+                war_policy = anti_military
+            }
+            modifier = {
+                factor = 0
+                war_policy = pacifism
+            }
+        }
+    }
+}
+
+#country_event = {
+#	id = ddddddddd
+#	title = "Champoeg Meetings"
+#	desc = "A conference of American and Metis fur traders have begun meetings to deliberate local policy. Held at the trading post of Champoeg, these meetings have become the first 'government' this remote has seen."
+#	picture = "champoeg_meetings"
+#    
+#    fire_only_once = yes
+#	
+#    trigger = {
+#        tag = UOR
+#        exists = UOR
+#    }
+#	
+#    mean_time_to_happen = { days = 1 }
+#
+#	option = {
+#        name = "The West shall be tamed."
+#		prestige = 10
+#		3010 = { any_pop = { move_pop = 81 } }
+#    }
+#}
