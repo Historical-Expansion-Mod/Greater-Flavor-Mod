@@ -9410,26 +9410,27 @@ country_event = {
 country_event = {
 
     id = 18482138
-    title = "Intervene in Hawaii?"
-    desc = "INTERVENEINHAWAII"
-    picture = "honolulu_courthouse"
+    title = "Our Monarchy Has Been Overthrown"
+    desc = "HAWAIIOVERTHROWN"
+    picture = "hawaii_annexationh"
 
     trigger = {
-        tag = USA
+        tag = HAW
 		year = 1893
 		month = 4
-		money = 10000
-		HAW = {
-			exists = yes
-			has_country_flag = first_wilcox_rebellion_loses 
-			OR = {
+		exists = yes
+		has_country_flag = second_wilcox_rebellion_loses
+		OR = {
                     government = absolute_monarchy
                     government = prussian_constitutionalism
                     government = hms_government
                     government = absolute_empire
                     government = semi_constitutional_empire
                     government = constitutional_empire
-			}
+		}
+		OR = {
+			USA = { is_sphere_leader_of = HAW }
+			US2 = { is_sphere_leader_of = HAW }
 		}
     }
 
@@ -9438,17 +9439,155 @@ country_event = {
     mean_time_to_happen = { days = 13 }
 
     option = {
-        name = "Yes. §RGain 1 infamy§W"
-		badboy = 1
-		treasury = 10000
-		HAW = { country_event = 18482139 }
+        name = "Damn..."
+		government = prov_gov_liberal
+		country_event = 184821381
 		ai_chance = { 
 			factor = 1
 		}
     }
+}
+
+country_event = {
+    id = 184821381
+    title = "An Annexation?"
+    desc = "HAWANNEXATIONQUESTIONMARK"
+	picture = "hawaii_annexationh"
+    fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+        name = "We might need this."
+		random_owned = {
+			limit = { owner = { USA = { exists = yes } } }
+			owner = {
+				USA = { country_event = 184821382 }
+			}
+		}
+		random_owned = {
+			limit = { owner = { US2 = { exists = yes } } }
+			owner = {
+				US2 = { country_event = 184821382 }
+			}
+		}
+		ai_chance = { 
+			factor = 10
+		}
+    }
+}
+
+country_event = {
+    id = 184821382
+    title = "Annex Hawaii?"
+    desc = "USAMIGHTANNEXHAWAII"
+	picture = "hawaii_annexationh"
+    fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+        name = "We accept. §RGain 10 infamy§W"
+		badboy = 10
+		HAW = {
+			government = democracy
+			set_country_flag = Government_Democracy
+			country_event = 184821383
+		}
+		ai_chance = { 
+			factor = 9
+		}
+    }
+	option = {
+        name = "We might not need another isolation."
+		HAW = {
+			country_event = 184821384
+		}
+		ai_chance = { 
+			factor = 91
+		}
+    }
+}
+
+country_event = {
+    id = 184821383
+    title = "Well, congrats, you are now dead"
+    desc = "USAACCEPTSANNEXATIONHAW"
+	picture = "hawaii_annexationh"
+    fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+        name = "Ok."
+		FROM = { inherit = HAW }
+    }
+}
+
+country_event = {
+    id = 184821384
+    title = "The United States of America refuse"
+    desc = "USAREFUSESANNEXATIONHAW"
+	picture = "not_annexed_haw"
+    fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+        name = "Ok..."
+		random_owned = {
+			limit = { owner = { USA = { exists = yes ai = no } } }
+			owner = {
+				USA = { country_event = 18482139 }
+			}
+		}
+		random_owned = {
+			limit = { owner = { US2 = { exists = yes ai = no } } }
+			owner = {
+				US2 = { country_event = 18482139 }
+			}
+		}
+		random_owned = {
+			limit = { owner = { ENG = { exists = yes ai = no } } }
+			owner = {
+				ENG = { country_event = 18482139 }
+			}
+		}
+		random_owned = {
+			limit = { owner = { JAP = { exists = yes ai = no } } }
+			owner = {
+				JAP = { country_event = 18482139 }
+			}
+		}
+		random_owned = {
+			limit = { owner = { TKG = { exists = yes ai = no } } }
+			owner = {
+				TKG = { country_event = 18482139 }
+			}
+		}
+		random_owned = {
+			limit = { owner = { TKG = { ai = yes } USA = { ai = yes } US2 = { ai = yes } JAP = { ai = yes } ENG = { ai = yes } } }
+			owner = {
+				HAW = { country_event = 184821391 }
+			}
+		}
+    }
+}
+
+country_event = {
+    id = 18482139
+    title = "Unrest in Hawaii"
+    desc = "UNRESTINHAWAII"
+	picture = "hawaii_got_some_unrest"
+    fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+        name = "Send ships to save them and calm Hawaii."
+		HAW = { country_event = 184821391 }
+		ai_chance = { 
+			factor = 100
+		}
+    }
 	
 	option = {
-        name = "No."
+        name = "This isn't a good idea..."
 		ai_chance = { 
 			factor = 0
 		}
@@ -9456,18 +9595,57 @@ country_event = {
 }
 
 country_event = {
-    id = 18482139
-    title = "The Hawaiian Republic"
-    desc = "MONARCHYOVERTHROWN"
-	picture = "hawaiian_republic"
+    id = 184821391
+    title = "Japan, the USA and the British send ships to calm us up"
+    desc = "HAWAIIREACTION"
+	picture = "hawaii_got_some_unrest"
     fire_only_once = yes
 	is_triggered_only = yes
 
 	option = {
-        name = "Great."
+        name = "Back down."
 		government = democracy
 		set_country_flag = Government_Democracy
-		diplomatic_influence = { who = USA value = 600 }
+		random_owned = {
+			limit = { owner = { USA = { exists = yes ai = no } } }
+			owner = {
+				USA = { country_event = 184821392 }
+			}
+		}
+		random_owned = {
+			limit = { owner = { US2 = { exists = yes ai = no } } }
+			owner = {
+				US2 = { country_event = 184821392 }
+			}
+		}
+		random_owned = {
+			limit = { owner = { ENG = { exists = yes ai = no } } }
+			owner = {
+				ENG = { country_event = 184821392 }
+			}
+		}
+		random_owned = {
+			limit = { owner = { JAP = { exists = yes ai = no } } }
+			owner = {
+				JAP = { country_event = 184821392 }
+			}
+		}
+		random_owned = {
+			limit = { owner = { TKG = { exists = yes ai = no } } }
+			owner = {
+				TKG = { country_event = 184821392 }
+			}
+		}
+		ai_chance = { 
+			factor = 100
+		}
+    }
+	
+	option = {
+        name = "This isn't a good idea..."
+		ai_chance = { 
+			factor = 0
+		}
     }
 }
 
@@ -9765,6 +9943,7 @@ country_event = {
 			NOT = { year = 1900 }
 			exists = HAW
             is_sphere_leader_of = HAW
+			HAW = { government = republic }
             NOT = { has_country_flag = annexed_hawaii }
             any_owned_province = { has_building = naval_base }
             OR = {
