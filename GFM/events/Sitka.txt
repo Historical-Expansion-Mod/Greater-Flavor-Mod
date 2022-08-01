@@ -11829,9 +11829,58 @@ country_event = {
 
 
 country_event = {
+    id = 20041216
+    title = "Ethiopian Expansionism"
+    desc = "Now that Ethiopia is united, various nobles have set their eyes on lands outside our domains. The sparsely populated kingdom of Aussa has become their ambition and many have begun advocating for conquering it."
+    fire_only_once = yes
+    picture = "annex_aussa"
+    mean_time_to_happen = { days = 15 }
+    trigger = {
+        tag = ETH
+		owns = 1865
+		owns = 1857
+		OR = {
+			civilized = yes
+			year = 1865
+		}
+    }
+    option = {
+        name = "Onwards, to Aussa!"
+		1851 = { add_core = THIS }
+		1858 = { add_core = THIS }
+    }
+}
+country_event = {
+    id = 20041215
+    title = "The Occupation of Outer Kaffa"
+    desc = "With Kaffa conquered, we can bring the remote region to its West under our control."
+    fire_only_once = yes
+    picture = "outer_kaffa"
+    mean_time_to_happen = { days = 15 }
+    trigger = {
+        tag = ETH
+		3591 = { owned_by = THIS is_core = THIS }
+		OR = {
+			AND = {
+				3595 = { empty = yes }
+				3596 = { empty = yes }
+			}
+			AND = {
+				3595 = { owned_by = THIS }
+				3596 = { owned_by = THIS }
+			}
+		}
+    }
+    option = {
+        name = "Huzzah!"
+		3595 = { secede_province = THIS add_core = THIS any_pop = { literacy = -0.99 } life_rating = 20 }
+		3596 = { secede_province = THIS add_core = THIS any_pop = { literacy = -0.99 } life_rating = 20 }
+    }
+}
+country_event = {
 	id = 20041214
 	title = "Ecuador breaks the Pando-Noboa Treaty"
-	desc = "The Ecuadorians have used our momentary vulnerability due to our war with Bolivia to tear up the Pando-Noboa Treaty and claim Tumbes and Jaï¿½n once again."
+	desc = "The Ecuadorians have used our momentary vulnerability due to our war with Bolivia to tear up the Pando-Noboa Treaty and claim Tumbes and Jaén once again."
 	picture = "peru_ecuador_border"
 	major = yes
 	fire_only_once = yes
@@ -11967,6 +12016,13 @@ country_event = {
 
     option = {
         name = "Splendid."
+		any_pop = { 
+			limit = { 
+				location = { province_id = 1955 } 
+				has_pop_culture = british 
+			} 
+			move_pop = 300 
+		}
 		ai_chance = { factor = 1 }
     }
 	
@@ -12574,8 +12630,8 @@ country_event = {
 	
 	option = {
 		name = "Those damn yanks!"
+		any_pop = { limit = { location = { province_id = 3491 } } reduce_pop = 0.2 }
 		3491 = { 
-			any_pop = { limit = { NOT = { type = farmers } } move_pop = 2200 } 
 			add_province_modifier = { name = greytown_shelled duration = 3650 } 
 		}
 		ai_chance = { factor = 1 }
@@ -12603,6 +12659,7 @@ country_event = {
 	
 	option = {
 		name = "They deserve it!"
+		prestige = 5
 		relation = { who = ENG value = -50 }
 		relation = { who = MSK value = -150 }
 		diplomatic_influence = { who = MSK value = -200 }
@@ -15012,14 +15069,7 @@ country_event = {
 	desc = "Slovaks, resentful of magyar rule, have begun gathering in regiments and ambushing Hungarian armies. Their independence has been proclaimed, making this a fight for Slovakia being put on the map."
 	picture = "slovak_revolt"
 	fire_only_once = yes
-	trigger = {
-		tag = AUS
-		has_global_flag = slovak_uprising
-	}
-
-	mean_time_to_happen = {
-		days = 7
-	}
+	is_triggered_only = yes
 
 	option = {
 		name = "Put them down!"
@@ -15036,14 +15086,7 @@ country_event = {
 	desc = "Slovaks have begun gathering in regiments and ambushing our armies stationed in the North. Slovakia has officially proclaimed itself independent, we are now officially at war."
 	picture = "slovak_revolt"
 	fire_only_once = yes
-	trigger = {
-		tag = HUN
-		has_global_flag = slovak_uprising
-	}
-
-	mean_time_to_happen = {
-		days = 7
-	}
+	is_triggered_only = yes
 
 	option = {
 		name = "Put them down!"
@@ -15072,7 +15115,8 @@ country_event = {
 
 	option = {
 		name = "Crush them!"
-		set_global_flag = slovak_uprising
+		AUS = { country_event = { id = 123902 days = 7 } }
+		HUN = { country_event = { id = 123901 days = 7 } }
 		any_owned = {
 			limit = {
 				OR = {
@@ -15090,7 +15134,8 @@ country_event = {
 	
 	option = {
 		name = "Slovakia will be free!"
-		set_global_flag = slovak_uprising
+		AUS = { country_event = { id = 123902 days = 7 } }
+		HUN = { country_event = { id = 123901 days = 7 } }
 		any_owned = {
 			limit = {
 				OR = {
@@ -17978,7 +18023,10 @@ country_event = {
 	picture = "wallstreetbomb"
 	fire_only_once = yes
 	trigger = {
-       tag = USA
+		OR = {
+		   tag = USA
+		   tag = US2
+	   }
 	   owns = 232
 	   year = 1920
     }
@@ -23157,6 +23205,17 @@ country_event = {
 			}
 			add_core = MEX
 		}
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 118
+					province_id = 157
+					province_id = 155
+					province_id = 158
+				}
+			}
+			remove_core = MEX
+		}
         random_owned = {
 			limit = { owner = { USA = { exists = yes } } }
 			owner = { USA = { country_event = 123576 prestige = -40 } }
@@ -23171,36 +23230,47 @@ country_event = {
     option = {
         name = "All lands West of the Mississippi and Florida are Mexican. §RGain 20 infamy§W"
         prestige = 50
-		    any_owned = {
-                limit = {
-                    OR = {
-                        region = USA_81
-                        region = USA_78
-                        region = USA_91
-                        region = USA_116
-                        region = USA_106
-                        region = USA_111
-                        region = USA_118
-                        region = USA_121
-                        region = USA_124
-                        region = USA_144
-                        region = USA_148
-                        region = USA_151
-                        region = USA_126
-                        region = USA_129
-                        region = USA_139
-                        region = TEX_132
-                        province_id = 157
-						province_id = 155
-						province_id = 158
-                        province_id = 156
-                        province_id = 197
-                        province_id = 194
-                        region = USA_200
-                    }
-                }
-                add_core = MEX
+		any_owned = {
+			limit = {
+				OR = {
+					region = USA_81
+					region = USA_78
+					region = USA_91
+					region = USA_116
+					region = USA_106
+					region = USA_111
+					region = USA_118
+					region = USA_121
+					region = USA_124
+					region = USA_144
+					region = USA_148
+					region = USA_151
+					region = USA_126
+					region = USA_129
+					region = USA_139
+					region = TEX_132
+					province_id = 157
+					province_id = 155
+					province_id = 158
+					province_id = 156
+					province_id = 197
+					province_id = 194
+					region = USA_200
+				}
 			}
+			add_core = MEX
+		}
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 118
+					province_id = 157
+					province_id = 155
+					province_id = 158
+				}
+			}
+			remove_core = MEX
+		}
 		random_owned = {
 			limit = { owner = { USA = { exists = yes } } }
 			owner = { USA = { country_event = 123577 prestige = -50 } }
@@ -23225,12 +23295,12 @@ country_event = {
         any_owned = {
             limit = {
                 OR = {
-                region = TEX_132
-                is_core = MEX
+					region = TEX_132
+					is_core = MEX
                 }
             }
+			add_core = MEX
             secede_province = MEX
-            add_core = MEX
         }
     }
 }
@@ -23243,44 +23313,43 @@ country_event = {
     is_triggered_only = yes
     option = {
         name = "What a humiliation."
+		CAN_13 = { remove_core = USA remove_core = US2 }
+		USA_81 = { remove_core = USA remove_core = US2 }
+		USA_78 = { remove_core = USA remove_core = US2 }
+		USA_91 = { remove_core = USA remove_core = US2 }
+		3468 = { remove_core = USA remove_core = US2 }
+		111 = { remove_core = USA remove_core = US2 }
+		113 = { remove_core = USA remove_core = US2 }
+		114 = { remove_core = USA remove_core = US2 }
+		3467 = { remove_core = USA remove_core = US2 }
         any_owned = {
 			limit = {
-					OR = {
+				OR = {
 					is_core = MEX
 					region = USA_81
 					region = USA_78
 					region = USA_91
 					region = TEX_132
+					region = CAN_13
 					province_id = 3468
 					province_id = 111
 					province_id = 113
 					province_id = 114
 					province_id = 3467
-					}
+				}
 			}
 			add_core = MEX
 			secede_province = MEX
 			USA = { remove_country_modifier = you_are_going_to_the_usa }
 			US2 = { remove_country_modifier = you_are_going_to_the_usa }
 		}
-		USA_81 = { add_core = MEX }
-		USA_78 = { add_core = MEX }
-		USA_91 = { add_core = MEX }
-		TEX_132 = { add_core = MEX }
-		3468 = { add_core = MEX }
-		111 = { add_core = MEX }
-		113 = { add_core = MEX }
-		114 = { add_core = MEX }
-		3467 = { add_core = MEX }
 		random_owned = {
 			limit = {
 				owner = {
 					UOR = { exists = yes vassal_of = THIS }
 				}
 			}
-			owner = {
-				UOR = { annex_to = MEX }
-			}
+			owner = { UOR = { all_core = { add_core = MEX } annex_to = MEX } }
 		}
     }
 }
@@ -23293,10 +23362,20 @@ country_event = {
     is_triggered_only = yes
     option = {
         name = "What a humiliation."
+		CAN_13 = { remove_core = USA remove_core = US2 }
+		USA_81 = { remove_core = USA remove_core = US2 }
+		USA_78 = { remove_core = USA remove_core = US2 }
+		USA_91 = { remove_core = USA remove_core = US2 }
+		3468 = { remove_core = USA remove_core = US2 }
+		111 = { remove_core = USA remove_core = US2 }
+		113 = { remove_core = USA remove_core = US2 }
+		114 = { remove_core = USA remove_core = US2 }
+		3467 = { remove_core = USA remove_core = US2 }
         any_owned = {
 			limit = {
 				OR = {
 					is_core = MEX
+					region = CAN_13	
 					region = USA_81
 					region = USA_78
 					region = USA_91
@@ -23313,27 +23392,55 @@ country_event = {
 					region = USA_129
 					region = USA_139
 					region = TEX_132
-					province_id = 157
-					province_id = 155
-					province_id = 158
-					province_id = 156
+					region = USA_158
 				}
 				NOT = { province_id = 140 }
 			}
 			add_core = MEX
-			secede_province = MEX
-			USA = { remove_country_modifier = you_are_going_to_the_usa }
-			US2 = { remove_country_modifier = you_are_going_to_the_usa }
         }
-		USA_81 = { add_core = MEX }
-		USA_78 = { add_core = MEX }
-		USA_91 = { add_core = MEX }
-		TEX_132 = { add_core = MEX }
-		3468 = { add_core = MEX }
-		111 = { add_core = MEX }
-		113 = { add_core = MEX }
-		114 = { add_core = MEX }
-		3467 = { add_core = MEX }
+		
+		random_owned = {
+			limit = {
+				owner = {
+					OR = {
+						tag = USA
+						tag = US2
+					}
+					truce_with = MEX
+					truce_with = ENG
+				}
+			}
+			
+			owner = {
+				158 = { remove_core = MEX remove_core = USA remove_core = US2 add_core = RPL add_core = CAN }
+				118 = { remove_core = MEX remove_core = USA remove_core = US2 add_core = RPL add_core = CAN }
+				157 = { remove_core = MEX remove_core = USA remove_core = US2 add_core = RPL add_core = CAN }
+				155 = { remove_core = MEX remove_core = USA remove_core = US2 add_core = RPL add_core = CAN }
+				24 = { secede_province = THIS add_core = MEX remove_core = RPL remove_core = CAN remove_core = USA remove_core = US2 }
+				30 = { secede_province = THIS add_core = MEX remove_core = RPL remove_core = CAN remove_core = USA remove_core = US2 }
+			}
+		}
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 158
+					province_id = 155
+					province_id = 157
+					province_id = 118
+				}
+				is_core = RPL
+			}
+			secede_province = RPL
+		}
+		any_owned = {
+			limit = {
+				is_core = MEX
+			}
+			secede_province = MEX
+		}
+		USA = { remove_country_modifier = you_are_going_to_the_usa }
+		US2 = { remove_country_modifier = you_are_going_to_the_usa }
+		
 		random_owned = {
 			limit = {
 				owner = {
@@ -23341,7 +23448,7 @@ country_event = {
 				}
 			}
 			owner = {
-				UOR = { annex_to = MEX }
+				UOR = { all_core = { add_core = MEX } annex_to = MEX }
 			}
 		}
     }
@@ -23355,10 +23462,19 @@ country_event = {
     is_triggered_only = yes
     option = {
         name = "What a humiliation."
+		USA_81 = { remove_core = USA remove_core = US2 }
+		USA_78 = { remove_core = USA remove_core = US2 }
+		USA_91 = { remove_core = USA remove_core = US2 }
+		3468 = { remove_core = USA remove_core = US2 }
+		111 = { remove_core = USA remove_core = US2 }
+		113 = { remove_core = USA remove_core = US2 }
+		114 = { remove_core = USA remove_core = US2 }
+		3467 = { remove_core = USA remove_core = US2 }
         any_owned = {
 			limit = {
 					OR = {
 					is_core = MEX
+					region = CAN_13
 					region = USA_81
 					region = USA_78
 					region = USA_91
@@ -23375,29 +23491,55 @@ country_event = {
 					region = USA_129
 					region = USA_139
 					region = TEX_132
-					province_id = 157
-					province_id = 155
-					province_id = 158
-					province_id = 156
-					province_id = 197
+					region = USA_158
 					province_id = 194
+					province_id = 197
 					region = USA_200
 					}
 			}
 			add_core = MEX
-			secede_province = MEX
-			USA = { remove_country_modifier = you_are_going_to_the_usa }
-			US2 = { remove_country_modifier = you_are_going_to_the_usa }
         }
-		USA_81 = { add_core = MEX }
-		USA_78 = { add_core = MEX }
-		USA_91 = { add_core = MEX }
-		TEX_132 = { add_core = MEX }
-		3468 = { add_core = MEX }
-		111 = { add_core = MEX }
-		113 = { add_core = MEX }
-		114 = { add_core = MEX }
-		3467 = { add_core = MEX }
+		USA = { remove_country_modifier = you_are_going_to_the_usa }
+		US2 = { remove_country_modifier = you_are_going_to_the_usa }
+		random_owned = {
+			limit = {
+				owner = {
+					OR = {
+						tag = USA
+						tag = US2
+					}
+					truce_with = MEX
+					truce_with = ENG
+				}
+			}
+			
+			owner = {
+				158 = { remove_core = MEX remove_core = USA remove_core = US2 add_core = RPL add_core = CAN }
+				118 = { remove_core = MEX remove_core = USA remove_core = US2 add_core = RPL add_core = CAN }
+				157 = { remove_core = MEX remove_core = USA remove_core = US2 add_core = RPL add_core = CAN }
+				155 = { remove_core = MEX remove_core = USA remove_core = US2 add_core = RPL add_core = CAN }
+				24 = { secede_province = THIS add_core = MEX remove_core = RPL remove_core = CAN remove_core = USA remove_core = US2 }
+				30 = { secede_province = THIS add_core = MEX remove_core = RPL remove_core = CAN remove_core = USA remove_core = US2 }
+			}
+		}
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 158
+					province_id = 155
+					province_id = 157
+					province_id = 118
+				}
+				is_core = RPL
+			}
+			secede_province = RPL
+		}
+		any_owned = {
+			limit = {
+				is_core = MEX
+			}
+			secede_province = MEX
+		}
 		random_owned = {
 			limit = {
 				owner = {
@@ -23405,7 +23547,7 @@ country_event = {
 				}
 			}
 			owner = {
-				UOR = { annex_to = MEX }
+				UOR = { all_core = { add_core = MEX } annex_to = MEX }
 			}
 		}
     }

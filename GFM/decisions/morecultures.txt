@@ -166,8 +166,21 @@ political_decisions = {
 			tag = MEX
 			NOT = { has_country_flag = MEX_colonization_law }
 			NOT = { year = 1880 }
+			NOT = { has_country_modifier = santa_ana_rule }
+			OR = {
+				AND = {
+					has_global_flag = 1830_startdate
+					year = 1838
+				}
+				has_country_flag = texas_recaptured
+			}
 		}
 		allow = {
+			OR = {
+				government = democracy
+				government = constitutional_empire
+				government = hms_government
+			}
 			centralization = federalism
 			NOT = { has_country_modifier = recently_lost_war }
 			war = no
@@ -1096,17 +1109,6 @@ political_decisions = {
 				}
 				militancy = 3
             }
-			994 = { remove_core = RUS }
-			996 = { remove_core = RUS }
-			3368 = { remove_core = RUS }
-			349 = { remove_core = RUS }
-			350 = { remove_core = RUS }
-			351 = { remove_core = RUS }
-			352 = { remove_core = RUS }
-			353 = { remove_core = RUS }
-			354 = { remove_core = RUS }
-			3424 = { remove_core = RUS }
-			355 = { remove_core = RUS }
 			343 = { add_province_modifier = { name = swedish_trade_baltics duration = -1 } }
 			349 = { add_province_modifier = { name = swedish_trade_baltics duration = -1 } }
 			353 = { add_province_modifier = { name = swedish_trade_baltics duration = -1 } }
@@ -1906,7 +1908,7 @@ political_decisions = {
                 government = semi_constitutional_empire
                 government = constitutional_empire
             }
-            NOT = { has_global_flag = annex_baltic_duchy }
+            NOT = { has_global_flag = annex_baltic_duchy has_global_flag = you_are_playing_mp }
         }
 
         allow = {
@@ -2001,8 +2003,16 @@ political_decisions = {
         allow = {
             war = no
             nationalism_n_imperialism = 1
-			RUS = { truce_with = THIS }
-			RUS = { has_country_modifier = recently_lost_war }
+			OR = {
+				AND = {
+					RUS = { truce_with = THIS }
+					RUS = { has_country_modifier = recently_lost_war }
+				}
+				AND = {
+					SOV = { truce_with = THIS }
+					SOV = { has_country_modifier = recently_lost_war }
+				}
+			}
         }
 
         effect = {
@@ -2539,6 +2549,7 @@ political_decisions = {
             854 = { add_core = THIS }
             473 = { add_core = THIS }
 			827 = { add_core = THIS }
+			1862 = { add_core = THIS }
         }
 
         ai_will_do = {
@@ -2597,7 +2608,6 @@ political_decisions = {
 						primary_culture = australian
 						primary_culture = anglo_canadian
 						primary_culture = french_canadian
-						primary_culture = alaskan
 					}
 					any_owned_province = {
 						is_core = THIS
@@ -2936,12 +2946,30 @@ political_decisions = {
             USA = { set_country_flag = hasmanifestdestiny }
 			US2 = { set_country_flag = hasmanifestdestiny }
 			set_global_flag = USA_demanded_MEX
-            random_list = {
-                25 = { badboy = 2 }
-                25 = { badboy = 3 }
-                25 = { badboy = 4 }
-                25 = { badboy = 5 }
-            }
+            random_owned = {
+				limit = {
+					owner = {
+						NOT = { owns = 133 }
+					}
+				}
+				owner = {
+					badboy = 7
+					add_country_modifier = {
+						name = american_army_debuff
+						duration = 730
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						owns = 133
+					}
+				}
+				owner = {
+					badboy = 3
+				}
+			}
             relation = { who = MEX value = -200 }
             diplomatic_influence = { who = MEX value = -200 }
             leave_alliance = MEX
@@ -3287,17 +3315,22 @@ political_decisions = {
                 prestige = -10
                 relation = { who = THIS value = -200 }
             }
-            any_core = {
+            any_owned = {
                 limit = {
+					is_core = MEX
 					OR = {
 						is_core = USA
 						is_core = US2
 						is_core = CSA
+						is_core = ULA
+						is_core = CHE
 					}
                 }
                 remove_core = USA
 				remove_core = US2
 				remove_core = CSA
+				remove_core = ULA
+				remove_core = CHE
             }
 
             random_owned = {
@@ -3339,47 +3372,54 @@ political_decisions = {
                     110 = { add_core = MEX }
                 }
             }
+			
+			CAN_13 = { remove_core = USA }
+			CAN_13 = { remove_core = US2 }
+			CAN_13 = { remove_core = CSA }
         }
     }
 	
-	forced_education = {
-		picture = support_ruhr_industrialism
+	organic_instruction_law = {
+		picture = juarez
 		potential = {
 			tag = MEX
-			year = 1860
-			is_greater_power = yes
-			war = no
-			NOT = { has_country_flag = forced_education }
-			OR = { 
-				has_country_flag = has_taken_oregon_or_more
-				has_country_flag = finished_expanding
-			}
+			year = 1867
+			NOT = { has_country_flag = juarez_education }
 		}
 		allow = {
-			functionalism = 1
-			money = 500000
+			war = no
+			biologism = 1
 		}
 		effect = {
-			random_list = {
-				25 = { treasury = -500000 }
-				25 = { treasury = -250000 }
-				25 = { treasury = -125000 }
-				25 = { treasury = -375000 }
-			}
-			set_country_flag = forced_education
+			set_country_flag = juarez_education
 			add_country_modifier = {
-				name = forced_education
-				duration = 5475
+				name = juarez_education_modifier
+				duration = -1
 			}
 			any_pop = {
-				limit = {
-					NOT = {
-						has_pop_culture = mexican
-						has_pop_culture = central_american
+				consciousness = 3
+			}
+			2177 = {
+				any_pop = {
+					limit = {
+						NOT = {
+							is_culture_group = native_american
+							literacy = 0.3
+						}
 					}
+					literacy = 0.3
 				}
-				consciousness = 5
-				militancy = 1.5
+			}
+			2178 = {
+				any_pop = {
+					limit = {
+						NOT = {
+							is_culture_group = native_american
+							literacy = 0.3
+						}
+					}
+					literacy = 0.3
+				}
 			}
 		}
 		ai_will_do = { factor = 1 }
@@ -3467,10 +3507,6 @@ political_decisions = {
 							primary_culture = dixie
 						}
 						AND    = {
-							pop_majority_culture = alaskan
-							primary_culture = alaskan
-						}
-						AND    = {
 							pop_majority_culture = caribeno
 							primary_culture = caribeno
 						}
@@ -3491,7 +3527,6 @@ political_decisions = {
 						primary_culture = australian
 						primary_culture = anglo_canadian
 						primary_culture = french_canadian
-						primary_culture = alaskan
 					}
 					any_owned_province = {
 						is_core = THIS
@@ -3581,10 +3616,6 @@ political_decisions = {
                 AND    = {
                     pop_majority_culture = dixie
                     primary_culture = dixie
-                }
-                AND    = {
-                    pop_majority_culture = alaskan
-                    primary_culture = alaskan
                 }
                 AND    = {
                     pop_majority_culture = caribeno
@@ -3699,10 +3730,6 @@ political_decisions = {
 							primary_culture = dixie
 						}
 						AND    = {
-							pop_majority_culture = alaskan
-							primary_culture = alaskan
-						}
-						AND    = {
 							pop_majority_culture = caribeno
 							primary_culture = caribeno
 						}
@@ -3723,7 +3750,6 @@ political_decisions = {
 						primary_culture = australian
 						primary_culture = anglo_canadian
 						primary_culture = french_canadian
-						primary_culture = alaskan
 					}
 					any_owned_province = {
 						is_core = THIS
@@ -3815,10 +3841,6 @@ political_decisions = {
                 AND    = {
                     pop_majority_culture = dixie
                     primary_culture = dixie
-                }
-                AND    = {
-                    pop_majority_culture = alaskan
-                    primary_culture = alaskan
                 }
                 AND    = {
                     pop_majority_culture = caribeno
