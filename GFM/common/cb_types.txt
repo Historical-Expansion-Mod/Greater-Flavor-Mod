@@ -866,6 +866,13 @@ restore_america = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = punitive_effects } }
         }
+        OR = {
+            THIS = {
+                NOT = { has_country_modifier = neutrality_modifier }
+                total_amount_of_divisions = 1
+            }
+            war_with = THIS
+        }
     }
 
     allowed_states = {
@@ -2885,6 +2892,62 @@ free_allied_cores = {
     }
 }
 
+free_allied_cores_no_infamy = {
+    sprite_index = 25
+    is_triggered_only = yes
+    months = 12
+
+    construction_speed = 0.75
+
+    badboy_factor = 0
+    prestige_factor = 1
+    peace_cost_factor = 0.8
+    penalty_factor = 0
+	constructing_cb = no
+	crisis = no
+
+    good_relation_prestige_factor = 0
+    good_relation_infamy_factor = 0
+    good_relation_militancy_factor = 0
+
+    break_truce_prestige_factor = 0
+    break_truce_infamy_factor = 0
+    break_truce_militancy_factor = 0
+    truce_months = 48
+
+    can_use = {
+    }
+
+    # THIS - us
+    # FROM - country scope is possible match?
+    # war target country of goal is scope
+    allowed_countries = {
+    }
+
+    # THIS - us
+    # FROM - country scope is possible match?
+    # war target country of goal's state
+    allowed_states = {
+    }
+
+    po_transfer_provinces = yes
+
+    war_name = WAR_FREE_ALLIED_CORE_NAME
+
+    on_add = {
+        move_issue_percentage = {
+            from = jingoism
+            to = pro_military
+            value = 0.25
+        }
+    }
+
+    on_po_accepted = {
+        country_event =    2651    # Territorial Loss event
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+    }
+}
+
 free_balkans = {
     sprite_index = 25
     is_triggered_only = yes
@@ -3114,6 +3177,7 @@ monroe_doctrine = {
                 province_id = 2200
 				province_id = 3393
 				province_id = 2236
+				province_id = 3340 #Fort Ross
             }
         }
         OR = {
@@ -8051,7 +8115,7 @@ negotiated_transfer = {
 }
 
 cut_down_to_size_no_add_wargoal = {
-    sprite_index = 8
+    sprite_index = 33
     is_triggered_only = yes
     months = 12
 
@@ -8084,7 +8148,55 @@ cut_down_to_size_no_add_wargoal = {
     }
 
     on_po_accepted = {
-		THIS = { set_country_flag = won_MEX_USA_war }
+		THIS = { 
+			set_country_flag = won_MEX_USA_war 
+			random_owned = {
+				limit = {
+					owner = {
+						exists = yes
+						tag = MEX
+					}
+				}
+				owner = {
+					country_event = 123573
+					set_global_flag = mexican_victory
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						exists = yes
+						OR = {
+							tag = USA
+							tag = US2
+						}
+						NOT = { has_global_flag = you_are_playing_mp }
+					}
+				}
+				owner = {
+					country_event = 123560
+					USA = { set_country_flag = US_MEX_peace_agreement }
+					US2 = { set_country_flag = US_MEX_peace_agreement }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						exists = yes
+						OR = {
+							tag = USA
+							tag = US2
+						}
+						has_global_flag = you_are_playing_mp
+					}
+				}
+				owner = {
+					country_event = 4207040
+					USA = { set_country_flag = US_MEX_peace_agreement }
+					US2 = { set_country_flag = US_MEX_peace_agreement }
+				}
+			}
+		}
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
     }
 }

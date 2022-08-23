@@ -521,7 +521,10 @@ political_decisions = {
         allow = {
             war = no
             prestige = 50
-            is_greater_power = yes
+			OR = {
+				is_greater_power = yes
+				has_global_flag = you_are_playing_mp
+			}
             nationalism_n_imperialism = 1
             SWE = {
                 all_core = {
@@ -652,7 +655,10 @@ political_decisions = {
         allow = {
             war = no
             prestige = 50
-            is_greater_power = yes
+			OR = {
+				is_greater_power = yes
+				has_global_flag = you_are_playing_mp
+			}
             nationalism_n_imperialism = 1
             SWE = {
                 all_core = {
@@ -1179,6 +1185,10 @@ political_decisions = {
         }
         ai_will_do = {
             factor = 1
+			modifier = {
+				factor = 0
+				has_global_flag = railroaded_mex_keeps_north_mexico
+			}
         }
     }
     mexico_central_america = {
@@ -1189,26 +1199,44 @@ political_decisions = {
         }
         allow = {
             war = no
-			is_vassal = no
-            is_disarmed = no
-            any_core = { 
-				continent = north_america 
-				NOT = { 
-					province_id = 2190 
-					province_id = 2196 
-					province_id = 2200 
-					province_id = 3393
-					province_id = 3411
-					province_id = 3491
-				} 
-				owned_by = THIS 
+			OR = {
+				AND = {
+					is_vassal = no
+					is_disarmed = no
+					any_core = { 
+						continent = north_america 
+						NOT = { 
+							province_id = 2190 
+							province_id = 2196 
+							province_id = 2200 
+							province_id = 3393
+							province_id = 3411
+							province_id = 3491
+						} 
+						owned_by = THIS 
+					}
+					war_policy = jingoism
+					is_greater_power = yes
+					prestige = 70
+				}
+				AND = {
+					NOT = { exists = UCA }
+					NOT = { exists = GUA }
+					NOT = { exists = ELS }
+					NOT = { exists = HON }
+					NOT = { exists = NIC }
+					NOT = { exists = COS }
+					2186 = { owned_by = THIS }
+					2191 = { owned_by = THIS }
+					2194 = { owned_by = THIS }
+					2197 = { owned_by = THIS }
+					2201 = { owned_by = THIS }
+				}
 			}
-            war_policy = jingoism
-			is_greater_power = yes
-			prestige = 70
         }
         effect = {
-            badboy = 8
+			random_owned = { limit = { owner = { tag = MEX owns = 2186 owns = 2191 owns = 2194 owns = 2197 owns = 2201 } } owner = { badboy = 3 } }
+			random_owned = { limit = { owner = { tag = MEX NOT = { OR = { owns = 2186 owns = 2191 owns = 2194 owns = 2197 owns = 2201 } } } } owner = { badboy = 8 } }
             set_country_flag = mexico_central_america
 			2182 = { add_core = MEX }
 			MEX_2181 = { add_core = MEX }
@@ -1220,13 +1248,16 @@ political_decisions = {
 			3447 = { remove_core = MEX }
         }
         ai_will_do = {
-            factor = 1
+            factor = 0
 			modifier = {
-				factor = 0
+				factor = 1
 				OR = {
-					NOT = { year = 1848 }
-					has_country_flag = guadalupe_enforced
-					USA = { has_country_flag = mexican_american_war_alternate_treaty }
+					has_global_flag = railroaded_mex_keeps_north_mexico
+					AND = {
+						year = 1848
+						NOT = { has_country_flag = guadalupe_enforced }
+						NOT = { USA = { has_country_flag = mexican_american_war_alternate_treaty } }
+					}
 				}
 			}
         }
@@ -1272,7 +1303,7 @@ political_decisions = {
         picture = guantanamo_bay
         potential = {
             tag = CSA
-            CUB = { all_core = { owned_by = THIS } }
+            CUB = { all_core = { OR = { owned_by = THIS empty = yes } } }
             NOT = { has_country_flag = csa_flee_cub }
             national_provinces_occupied = .80
             OR = { war_with = USA war_with = US2 }
