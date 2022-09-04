@@ -421,9 +421,7 @@ float4 PixelShader_HoiWater_2_0( VS_OUTPUT_WATER IN ) : COLOR
 	FOW = saturate ( FOW / 2 - 1 ); // /2 because we do /4 then * 2
 	FOW = saturate ( FOW + 0.5 );
 	
-	OutColor.rgb = lerp(OutColor.rgb, OutColor.bbb, 0.3);
-	
-	return float4( OutColor * FOW, vWaterTransparens );
+	return float4( OutColor * FOW, vWaterTransparens);
 }
 
 
@@ -492,21 +490,16 @@ VS_OUTPUT_WATER_FAR VertexShader_Far(const VS_INPUT_WATER_FAR IN )
 
 float4 PixelShader_Far( VS_OUTPUT_WATER_FAR IN ) : COLOR
 {
-	float4 color = float4( tex2D( WorldColor, IN.vUV ) );
-	float alpha = color.a;
-	float contour_darken = smoothstep(0.0, 0.08, abs(0.2 - alpha)) * smoothstep(0.0, 0.11, abs(0.525 - alpha)) * smoothstep(0.0, 0.06, abs(0.85 - alpha)) + step(0.6851, IN.vUV.x) + step(IN.vUV.x, 0.0001);
+	float4 color = float4( tex2D( WorldColor, IN.vUV ).rgb, 1.0f );
 	float4 overlay = tex2D( Overlay, IN.vWorldPos );
 	
-	float4 OutColor = lerp( color, overlay, 0.6);
-	OutColor.r += 0.34;
-	OutColor.g += 0.30;
-	OutColor.b += 0.24;
-	OutColor.r /= 1.85;
-	OutColor.g /= 1.65;
-	OutColor.b /= 1.55;
-	OutColor.rgb *= 1.2;
-
-	return OutColor * saturate(contour_darken * 0.6 + 0.4);
+	float4 OutColor;
+	OutColor.r = overlay.r < .5 ? (2 * overlay.r * color.r) : (1 - 2 * (1 - overlay.r) * (1 - color.r));
+	OutColor.g = overlay.r < .5 ? (2 * overlay.g * color.g) : (1 - 2 * (1 - overlay.g) * (1 - color.g));
+	OutColor.b = overlay.b < .5 ? (2 * overlay.b * color.b) : (1 - 2 * (1 - overlay.b) * (1 - color.b));
+	OutColor.a = color.a * overlay.a;
+	
+	return OutColor;
 }
 
 technique WaterShaderFar
@@ -516,7 +509,7 @@ technique WaterShaderFar
 		ALPHATESTENABLE = False;
 		ALPHABLENDENABLE = False;
 
-		VertexShader = compile vs_3_0 VertexShader_Far();
-		PixelShader = compile ps_3_0 PixelShader_Far();
+		VertexShader = compile vs_2_0 VertexShader_Far();
+		PixelShader = compile ps_2_0 PixelShader_Far();
 	}
 }
