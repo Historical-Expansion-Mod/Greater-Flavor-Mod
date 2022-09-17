@@ -469,12 +469,12 @@ political_decisions = {
 	}
 	
 	return_federalism_mex_1847 = {
-	picture = mex_constitution
+	picture = mex_1824_const
 		potential = {
-			has_global_flag = mexican_american_war
+			year = 1844
 			tag = MEX
 			NOT = { has_country_flag = mex_fed_1847 }
-			NOT = { year = 1855 }
+			NOT = { year = 1853 }
 			NOT = {
 				AND = {
 					centralization = federalism
@@ -485,12 +485,24 @@ political_decisions = {
 			}
 		}
 		
-		allow = { }
+		allow = { 
+			OR = {
+				war_with = USA
+				war_with = US2
+			}
+			NOT = {
+				AND = {
+					centralization = federalism
+					press_rights = free_press
+					slavery = no_slavery
+					border_policy = open_borders
+				}
+			}
+		}
 		
 		effect = {
 			set_country_flag = mex_fed_1847
-			prestige = -10
-			war_exhaustion = -25
+			war_exhaustion = -20
 			any_pop = {
 				militancy = -1
 				consciousness = -1
@@ -523,6 +535,7 @@ political_decisions = {
 				}
 				owner = { political_reform = universal_weighted_voting }
 			}
+			remove_country_modifier = santa_ana_rule
 		}
 		ai_will_do = { factor = 1 }
 	}
@@ -1205,6 +1218,9 @@ political_decisions = {
 			random_owned = { limit = { owner = { has_global_flag = mex_took_oregon_maw } } owner = { badboy = 5 } }
 			random_owned = { limit = { owner = { has_global_flag = mex_took_mississippi_maw } } owner = { badboy = 10 } }
 			random_owned = { limit = { owner = { has_global_flag = mex_took_florida_maw } } owner = { badboy = 15 } }
+			random_owned = { limit = { owner = { owns = 91 } } owner = { 91 = { add_core = THIS } } }
+			random_owned = { limit = { owner = { owns = 3462 } } owner = { USA_81 = { add_core = THIS } } }
+			random_owned = { limit = { owner = { owns = 130 } } owner = { 130 = { add_core = THIS } 131 = { add_core = THIS } } }
 			USA_200 = { add_core = THIS }
 			194 = { add_core = THIS }
 			197 = { add_core = THIS }
@@ -1332,41 +1348,150 @@ political_decisions = {
 		}
 	}
 	
-	#bravo_dissolve_congress = {
-	#picture = nicolas_bravo
-	#	potential = {
-	#		tag = MEX
-	#		has_country_flag = bases_of_tacubaya
-	#		year = 1843
-	#	}
-	#	
-	#	allow = { }
-	#	
-	#	effect = {
-	#		set_country_flag = bravo_dissolved_congress
-	#		any_pop = {
-	#			scaled_militancy = {
-	#				ideology = liberal
-	#				factor = 3
-	#			}
-	#			scaled_militancy = {
-	#				ideology = radical
-	#				factor = 6
-	#			}
-	#			scaled_militancy = {
-	#				ideology = conservative
-	#				factor = -1
-	#			}
-	#			scaled_militancy = {
-	#				ideology = reactionary
-	#				factor = -3
-	#			}
-	#			upper_house = {
-	#				ideology = liberal
-	#				value = -1
-	#			}
-	#		}
-	#		ai_will_do = { factor = 1 }
-	#	}
-	#}
+	organic_instruction_law = {
+		picture = juarez
+		potential = {
+			tag = MEX
+			year = 1867
+			NOT = { has_country_flag = juarez_education }
+		}
+		allow = {
+			war = no
+			biologism = 1
+		}
+		effect = {
+			set_country_flag = juarez_education
+			add_country_modifier = {
+				name = juarez_education_modifier
+				duration = -1
+			}
+			any_pop = {
+				consciousness = 3
+			}
+			2177 = {
+				any_pop = {
+					limit = {
+						NOT = {
+							is_culture_group = native_american
+							literacy = 0.3
+						}
+					}
+					literacy = 0.3
+				}
+			}
+			2178 = {
+				any_pop = {
+					limit = {
+						NOT = {
+							is_culture_group = native_american
+							literacy = 0.3
+						}
+					}
+					literacy = 0.3
+				}
+			}
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	refute_manifest_destiny = {
+        picture = manifest_destiny
+        potential = {
+            exists = yes
+			tag = MEX
+			has_global_flag = mexican_victory
+			OR = {
+				USA = { has_country_flag = hasmanifestdestiny }
+				US2 = { has_country_flag = hasmanifestdestiny }
+			}
+            NOT = { has_country_flag = treaty_of_guadalupe_hidalgo }
+			NOT = { has_country_flag = manifest_destiny_refuted }
+        }
+
+        allow = {
+            war = no
+            NOT = { has_country_modifier = recently_lost_war }
+            OR = {
+                AND = {
+                    is_greater_power = yes
+                    invention = manifest_destiny_invention
+                }
+                AND = {
+                    truce_with = USA
+                    USA = { has_country_modifier = recently_lost_war }
+                }
+                AND = {
+                    truce_with = US2
+                    US2 = { has_country_modifier = recently_lost_war }
+                }
+            }
+        }
+
+        effect = {
+            set_country_flag = manifest_destiny_refuted
+            prestige = 10
+            USA = {
+                prestige = -10
+                relation = { who = THIS value = -200 }
+            }
+            US2 = {
+                prestige = -10
+                relation = { who = THIS value = -200 }
+            }
+            any_owned = {
+                limit = {
+					is_core = MEX
+					OR = {
+						is_core = CSA
+						is_core = ULA
+						is_core = CHE
+					}
+                }
+				remove_core = CSA
+				remove_core = ULA
+				remove_core = CHE
+            }
+			CAN_13 = { remove_core = USA remove_core = US2 remove_core = CSA }
+			MEX_85_1 = { add_core = MEX remove_core = USA remove_core = US2 }
+			MEX_85_2 = { add_core = MEX remove_core = USA remove_core = US2 }
+			TEX_132 = { add_core = MEX remove_core = USA remove_core = US2 }
+			MEX_100 = { add_core = MEX remove_core = USA remove_core = US2 }
+			MEX_103 = { add_core = MEX remove_core = USA remove_core = US2 }
+			MEX_94 = { add_core = MEX remove_core = USA remove_core = US2 }
+			MEX_97 = { add_core = MEX remove_core = USA remove_core = US2 }
+			107 = { add_core = MEX remove_core = USA remove_core = US2 }
+			110 = { add_core = MEX remove_core = USA remove_core = US2 }
+			103 = { add_core = MEX remove_core = USA remove_core = US2 }
+			108 = { add_core = MEX remove_core = USA remove_core = US2 }
+			109 = { add_core = MEX remove_core = USA remove_core = US2 }
+			3560 = { add_core = MEX remove_core = USA remove_core = US2 }
+        }
+    }
+	
+	propose_treaty_mex = {
+	picture = mexico_map
+		potential = {
+			OR = {
+				tag = MEX
+				has_country_flag = i_am_hsa
+			}
+			has_global_flag = mexican_victory
+			OR = {
+				any_owned_province = { is_core = THIS is_core = USA }
+				any_owned_province = { is_core = THIS is_core = US2 }
+			}
+			NOT = { has_country_flag = mex_proposes_treaty }
+		}
+		
+		allow = {
+			war = no
+			money = 100000
+		}
+		
+		effect = {
+			set_country_flag = mex_proposes_treaty
+			random_owned = { limit = { owner = { USA = { exists = yes } } } owner = { USA = { country_event = 4207052 } } }
+			random_owned = { limit = { owner = { US2 = { exists = yes } } } owner = { US2 = { country_event = 4207052 } } }
+		}
+	}
 }
