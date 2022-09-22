@@ -7,6 +7,8 @@ IMPORTANT: If you downloaded from Github and for some reason the mod is broken, 
 - Redownload from Github maximum 1 day later.
 The mod gets constantly updated sometimes several times in MINUTES or HOURS, but if the mod breaks because of the developers, it gets fixed as fast as possible, so first check if you installed correctly and if so, wait some hours or minutes and re-download, a fix should've probably been uploaded by then.
 
+Failure to extract the mod may be due to a common GitHub issue, so try downloading again in the case of failure.
+
 ## Submods 
   * GFM is standalone - you do not need the original HFM to play.
   * GFM Shattered World Submod releases every single nation.
