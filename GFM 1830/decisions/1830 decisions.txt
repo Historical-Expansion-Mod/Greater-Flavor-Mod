@@ -46,7 +46,7 @@ political_decisions = {
 			PEU = { war = no }
         }
         effect = {
-			country_event = 20041213
+			PEU = { country_event = 20041213 }
         }
 
         ai_will_do = { factor = 1 }	
@@ -379,31 +379,6 @@ political_decisions = {
 			treasury = -10000
 			activate_technology = experimental_railroad
 			595 = { infrastructure = 1 }
-        }
-        ai_will_do = { factor = 1 }
-    }
-	
-	france_bullies_algeria = {
-        picture = france_bullies_algeria
-        potential = {
-        	tag = BOR
-            NOT = { has_country_flag = france_bullies_algeria }
-			year = 1830
-        }
-
-        allow = {
-            war = no
-			month = 5
-        }
-
-        effect = {
-			set_country_flag = france_bullies_algeria
-			war = {
-				target = RGA
-				attacker_goal = { casus_belli = humiliate_no_infamy }
-				#attacker_goal = { casus_belli = acquire_state state_province_id = 1704 } Commentted for back up reasons
-				defender_goal = { casus_belli = status_quo }
-			}
         }
         ai_will_do = { factor = 1 }
     }
@@ -833,18 +808,79 @@ political_decisions = {
 
         ai_will_do = { factor = 1 }	
 	}
+	
+	france_bullies_algeria = {
+        picture = france_bullies_algeria
+        potential = {
+			OR = {
+				tag = BOR
+				tag = FRA
+			}
+            NOT = { has_country_flag = france_bullies_algeria }
+			year = 1830
+			1700 = { owned_by = RGA }
+			NOT = { has_global_flag = algiers_french_war }
+        }
+
+        allow = {
+            war = no
+			month = 5
+        }
+
+        effect = {
+			set_country_flag = france_bullies_algeria
+			set_global_flag = algiers_french_war
+			war = {
+				target = RGA
+				attacker_goal = { casus_belli = treaty_port_casus_belli_no_infamy }
+				defender_goal = { casus_belli = status_quo }
+			}
+        }
+        ai_will_do = { factor = 1 }
+    }
+	oran_french_war = {
+        picture = oran_gettinrekt
+        potential = {
+			OR = {
+				tag = BOR
+				tag = FRA
+			}
+			ALD = { owns = 1704 }
+			owns = 1700
+			NOT = { has_global_flag = oran_french_war }
+        }
+        allow = {
+			war = no
+			year = 1831
+        }
+        effect = {
+			set_global_flag = oran_french_war
+			war = {
+				target = ALD
+				attacker_goal = { casus_belli = treaty_port_casus_belli_no_infamy }
+				defender_goal = { casus_belli = humiliate_no_infamy }
+			}
+        }
+
+        ai_will_do = { factor = 1 }	
+	}
 	bone_french_war = {
         picture = bone_gettinrekt
         potential = {
-			tag = FRA
-			NOT = { owns = 1701 }
-			owns = 1700
+			OR = {
+				tag = BOR
+				tag = FRA
+			}
+			RGA = { owns = 1701 }
+			owns = 1704
+			NOT = { has_global_flag = bone_french_war }
         }
         allow = {
 			war = no
 			year = 1832
         }
         effect = {
+			set_global_flag = bone_french_war
 			war = {
 				target = RGA
 				attacker_goal = { casus_belli = treaty_port_casus_belli_no_infamy }
@@ -857,16 +893,20 @@ political_decisions = {
 	bougie_french_war = {
         picture = bougie_gettinrekt
         potential = {
-			tag = FRA
-			NOT = { owns = 1709 }
-			owns = 1700
+			OR = {
+				tag = BOR
+				tag = FRA
+			}
+			ABA = { owns = 1701 }
 			owns = 1701
+			NOT = { has_global_flag = bougie_french_war }
         }
         allow = {
 			war = no
 			year = 1833
         }
         effect = {
+			set_global_flag = bougie_french_war
 			war = {
 				target = ABA
 				attacker_goal = { casus_belli = treaty_port_casus_belli_no_infamy }
@@ -956,7 +996,6 @@ political_decisions = {
 		potential = { 
 			tag = ENG 
 			is_greater_power = yes 
-			year = 1833
 			2131 = { 
 				owner = { 
 					primary_culture = platinean 
@@ -968,6 +1007,7 @@ political_decisions = {
 		
 		allow = { 
 			war = no 
+			year = 1833
 		}
 		
 		effect = { 
@@ -990,18 +1030,66 @@ political_decisions = {
 			PRR = { exists = no }
 			PEU = { is_vassal = no }
 			NOT = { has_global_flag = bolivia_annexes_peru }
+			has_global_flag = salaverry
         }
         allow = {
 			war = no
 			is_vassal = no
 			year = 1835
+			month = 7
         }
         effect = {
+			any_country = {
+				limit = {
+					alliance_with = PEU
+				}
+				leave_alliance = PEU
+			}
 			set_global_flag = bolivia_annexes_peru			
 			war = {
 				target = PEU
 				attacker_goal = { casus_belli = civil_war }
 				defender_goal = { casus_belli = humiliate_no_infamy }
+				call_ally = no
+			}
+			PEU = {
+				any_owned = {
+					limit = {
+						OR = {
+							province_id = 2301
+							province_id = 2302
+							province_id = 2303
+							province_id = 2304
+							province_id = 2578
+							province_id = 2307
+							province_id = 2308
+						}
+					}
+					change_controller = THIS
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = { PEU = { owns = 2304 } }
+				}
+				owner = {
+					BOL = { set_country_flag = yesnoyesno }
+					2304 = { secede_province = BOL }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = { BOL = { owns = 2304 has_country_flag = yesnoyesno } }
+				}
+				owner = {
+					2304 = {
+						sub_unit = { type = infantry value = current }
+						sub_unit = { type = infantry value = current }
+						sub_unit = { type = infantry value = current }
+						secede_province = PEU
+						change_controller = THIS
+					}
+				}
 			}
         }
 
@@ -1089,4 +1177,273 @@ political_decisions = {
 
         ai_will_do = { factor = 1 }	
 	}
+	
+	purchase_socotra = {
+        picture = briish_socotra
+        potential = {
+			tag = ENG
+			is_vassal = no
+			MHR = { owns = 1177 is_vassal = no }
+			NOT = {
+				owns = 1868
+				owns = 1869
+				owns = 1870
+				owns = 1871
+				owns = 1872
+				owns = 1873
+				owns = 1874
+				owns = 1875
+				owns = 1849
+				owns = 1851
+				owns = 1179
+				owns = 1878
+				owns = 3572
+				owns = 1412
+				owns = 1176
+				owns = 1173
+				owns = 1175
+				owns = 1177
+			}
+			NOT = { has_global_flag = purchase_socotra }
+        }
+        allow = {
+			war = no
+			MHR = { war = no NOT = { truce_with = THIS } }
+			year = 1834
+			money = 30000
+        }
+        effect = {
+			set_global_flag = purchase_socotra
+			MHR = { country_event = 16051961 }
+        }
+
+        ai_will_do = { factor = 1 }	
+	}
+	
+	invade_syria_egypt = {
+        picture = egypt_cansament
+        potential = {
+			tag = EGY
+			vassal_of = TUR
+			NOT = { has_global_flag = invade_syria_egypt }
+        }
+        allow = {
+			war = no
+			year = 1831
+			month = 9
+        }
+        effect = {
+			set_global_flag = invade_syria_egypt
+			government = absolute_monarchy
+			TUR = { casus_belli = { target = EGY type = make_puppet_no_add_wargoal months = 12 } release_vassal = EGY }
+			war = {
+					target = TUR
+					attacker_goal = { casus_belli = egyptian_ottoman_war }
+					defender_goal = { casus_belli = make_puppet_no_add_wargoal }
+					call_ally = no
+			}			
+        }
+
+        ai_will_do = { factor = 1 }	
+	}
+	
+	ottos_cry_to_russia = {
+        picture = ottos_cry_to_russia
+        potential = {
+			tag = TUR
+			war_with = EGY
+			NOT = { year = 1836 }
+			NOT = { has_global_flag = ottos_cry_to_russia }
+			has_global_flag = invade_syria_egypt
+        }
+        allow = {
+			war = yes
+			OR = {
+				war_exhaustion = 30
+				national_provinces_occupied = 0.35
+			}
+			NOT = { truce_with = RUS war_with = RUS }
+        }
+        effect = {
+			set_global_flag = ottos_cry_to_russia
+			prestige = -20
+			RUS = { country_event = 16051965 }
+        }
+
+        ai_will_do = { factor = 1 }	
+	}
+	
+	baden_tithe_abolition = {
+        picture = baden_tithe
+        potential = {
+			tag = BAD
+			NOT = { has_global_flag = baden_tithe_abolition }
+			has_country_flag = baden_reform_ready
+        }
+        allow = {
+			war = no
+			debt_law = serfdom
+			year = 1833
+			NOT = { ruling_party_ideology = reactionary }
+        }
+        effect = {
+			set_global_flag = baden_tithe_abolition
+			political_reform = peonage
+            scaled_militancy = {
+                ideology = liberal
+                factor = -3
+            }
+            scaled_militancy = {
+                ideology = radical
+                factor = -3
+            }
+            scaled_consciousness = {
+                ideology = liberal
+                factor = -1
+            }
+            scaled_consciousness = {
+                ideology = radical
+                factor = -1
+            }
+            scaled_militancy = {
+                ideology = reactionary
+                factor = 5
+            }
+            scaled_consciousness = {
+                ideology = reactionary
+                factor = 3
+            }
+			aristocrats = { militancy = 5 }
+            any_country = {
+                limit = {
+                    OR = {
+                        substate_of = THIS
+                        vassal_of = THIS
+                    }
+                    debt_law = serfdom
+                }
+                political_reform = peonage
+            }
+            any_pop = {
+                limit = {
+                    OR = {
+                        type = farmers
+                        type = labourers
+                        type = serfs
+                    }
+                }
+                militancy = -2
+                consciousness = 1
+            }
+        }
+
+        ai_will_do = { factor = 1 }	
+	}
+	
+	brunswick_constitution_1832 = {
+        picture = brunswick_1832
+        potential = {
+			tag = BRA
+			NOT = { has_global_flag = brunswick_constitution_1832 }
+        }
+        allow = {
+			war = no
+			year = 1832
+			month = 9
+			NOT = { ruling_party_ideology = reactionary }
+			has_country_flag = no_more_charles
+        }
+        effect = {
+			set_global_flag = brunswick_constitution_1832
+			political_reform = landed_voting
+			political_reform = yes_meeting
+			relation = { who = AUS value = -100 }
+        }
+
+        ai_will_do = { factor = 1 }	
+	}
+	staatsgrundgesetz_hanova = {
+        picture = han_const
+        potential = {
+			tag = HAN
+			NOT = { has_global_flag = staatsgrundgesetz_hanova }
+			OR = { 
+				government = absolute_empire
+				government = semi_constitutional_empire
+				government = constitutional_empire
+				government = absolute_monarchy
+				government = prussian_constitutionalism
+				government = hms_government
+			}
+        }
+        allow = {
+			war = no
+			year = 1833
+			NOT = { ruling_party_ideology = reactionary }
+        }
+        effect = {
+			set_global_flag = staatsgrundgesetz_hanova
+			scaled_consciousness = { factor = 4 ideology = conservative }
+			scaled_militancy = { factor = 3 ideology = conservative }
+			scaled_consciousness = { factor = 6 ideology = reactionary }
+			scaled_militancy = { factor = 4 ideology = reactionary }
+			scaled_consciousness = { factor = -4 ideology = liberal }
+			scaled_militancy = { factor = -3 ideology = liberal }
+			scaled_consciousness = { factor = -6 ideology = radical }
+			scaled_militancy = { factor = -4 ideology = radical }
+            any_country = {
+                limit = {
+                    OR = {
+                        substate_of = THIS
+                        vassal_of = THIS
+                    }
+                    debt_law = serfdom
+                }
+                political_reform = peonage
+            }
+			political_reform = peonage
+			political_reform = appointed
+			political_reform = culture_voting_only
+			political_reform = yes_meeting
+        }
+
+        ai_will_do = { factor = 1 }	
+	}
+	constitution_1831_saxonia = {
+        picture = constitution_1831_saxonia
+        potential = {
+			tag = HAN
+			NOT = { has_global_flag = constitution_1831_saxonia }
+			OR = { 
+				government = absolute_empire
+				government = semi_constitutional_empire
+				government = constitutional_empire
+				government = absolute_monarchy
+				government = prussian_constitutionalism
+				government = hms_government
+			}
+        }
+        allow = {
+			war = no
+			year = 1831
+			NOT = { ruling_party_ideology = reactionary }
+        }
+        effect = {
+			set_global_flag = constitution_1831_saxonia
+			scaled_consciousness = { factor = 4 ideology = conservative }
+			scaled_militancy = { factor = 3 ideology = conservative }
+			scaled_consciousness = { factor = 6 ideology = reactionary }
+			scaled_militancy = { factor = 4 ideology = reactionary }
+			scaled_consciousness = { factor = -4 ideology = liberal }
+			scaled_militancy = { factor = -3 ideology = liberal }
+			scaled_consciousness = { factor = -6 ideology = radical }
+			scaled_militancy = { factor = -4 ideology = radical }
+			political_reform = appointed
+			political_reform = culture_voting_only
+			political_reform = yes_meeting
+        }
+
+        ai_will_do = { factor = 1 }	
+	}
+	
 }

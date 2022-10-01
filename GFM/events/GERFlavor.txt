@@ -1,4 +1,3 @@
-# last editing date: 01.09.22
 country_event = {
 
     id = 33003 #parallel event is BAY 33403
@@ -1093,6 +1092,400 @@ country_event = {
     }
 }
 
+#The Rhine Crisis - French Declaration
+country_event = {
+    id = 33037
+    title = "EVTNAME33037"
+    desc = "EVTDESC33037"
+    picture = "rhineland"
+    major = yes
+
+    fire_only_once = yes
+
+    trigger = {
+        primary_culture = french
+        is_greater_power = yes
+        capital = 425
+        has_country_flag = crisis_on_the_rhine
+    }
+
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "EVT33037OPTA"
+        badboy = 5
+        set_country_flag = french_claimed_the_rhine
+        PRU = { set_country_flag = french_claimed_the_rhine }
+        any_country = {
+            limit = {
+                is_greater_power = yes
+                alliance_with = THIS
+            }
+            leave_alliance = THIS
+        }
+        PRU = { country_event = 99925 }
+        casus_belli = {
+            target = PRU
+            type = acquire_any_state
+            months = 6
+        }
+        casus_belli = {
+            target = PRU
+            type = liberate_country
+            months = 6
+        }
+        any_country = {
+            limit = {
+                is_greater_power = no
+                OR = {
+                    primary_culture = north_german
+                    primary_culture = south_german
+                }
+            }
+            casus_belli = {
+                target = THIS
+                type = cut_down_to_size
+                months = 24
+            }
+            end_military_access = THIS
+            leave_alliance = THIS
+            relation = { who = THIS value = -200 }
+        }
+        any_country = {
+            limit = {
+                is_greater_power = yes
+                OR = {
+                    primary_culture = north_german
+                    primary_culture = south_german
+                }
+            }
+            end_military_access = THIS
+            leave_alliance = THIS
+            relation = { who = THIS value = -150 }
+        }
+        ai_chance = {
+            factor = 0.15
+            modifier = {
+                factor = 0
+                has_country_modifier = recently_lost_war
+            }
+            modifier = {
+                factor = 0
+                is_disarmed = yes
+            }
+            modifier = {
+                factor = 0
+                war_exhaustion = 1
+            }
+            modifier = {
+                factor = 0
+                num_of_revolts = 1
+            }
+            modifier = {
+                factor = 0
+                war = yes
+            }
+        }
+    }
+
+
+    option = {
+        name = "EVT33037OPTB"
+        prestige = -10
+        badboy = -2
+        remove_country_modifier = rhine_crisis
+        any_country = {
+            limit = {
+                    OR = {
+                    primary_culture = north_german
+                    primary_culture = south_german
+                }
+            }
+            relation = { who = THIS value = 50 }
+        }
+        ai_chance = { factor = 0.85 }
+    }
+}
+
+
+#The Rhine is Lost - German states decide what to do
+country_event = {
+    id = 33038
+    title = "EVTNAME33038"
+    desc = "EVTDESC33038"
+    picture = "german_rhine"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "EVT33038OPTA"
+        any_owned = { limit = { is_core = THIS } add_core = FROM }
+        random_owned = { limit = { owner = { primary_culture = FROM } }
+            owner = { any_owned = { limit = { is_core = THIS } remove_core = THIS } }
+        }
+        annex_to = NGF
+
+        ai_chance = {
+            factor = 0.5
+            modifier = {
+                factor = 1.1
+                primary_culture = FROM
+                OR = {
+                    vassal_of = FROM
+                    in_sphere = FROM
+                    }
+                }
+            modifier = {
+                factor = 0.7
+                NOT = { total_num_of_ports = 1 }
+                primary_culture = FROM
+                is_vassal = no
+            }
+            modifier = {
+                factor = 0.1
+                OR = {
+                    vassal_of = AUS
+                    in_sphere = AUS
+                    in_sphere = BAV
+                    vassal_of = BAV
+                    in_sphere = HAN
+                    vassal_of = HAN
+                    vassal_of = FRA
+                    vassal_of = BOR
+                }
+            }
+        }
+    }
+
+    option = {
+        name = "EVT33038OPTB"
+        any_owned = { limit = { is_core = GER }
+            add_province_modifier = {
+                name = nationalist_agitation
+                duration = 3650
+                }
+            }
+        ai_chance = {
+            factor = 0.5
+            modifier = {
+                factor = 0.7
+                OR = {
+                    vassal_of = AUS
+                    in_sphere = AUS
+                    in_sphere = BAV
+                    vassal_of = BAV
+                    in_sphere = HAN
+                    vassal_of = HAN
+                    vassal_of = FRA
+                    vassal_of = BOR
+                }
+            }
+        }
+    }
+
+    option = {
+        name = "EVT33038OPTC"
+        all_core = {
+            add_core = NGF
+            remove_core = THIS
+        }
+        NGF = { inherit = THIS }
+        change_tag_no_core_switch = NGF
+
+        ai_chance = { factor = 0 }
+    }
+}
+
+#The Rhine is Lost - Prussia calls for Unity
+country_event = {
+    id = 33039
+    title = "EVTNAME33039"
+    desc = "EVTDESC33039"
+    picture = "german_rhine"
+    major = yes
+
+    trigger = {
+        tag = PRU
+        is_vassal = no
+        ai = yes
+        NOT = { exists = NGF }
+        NOT = { exists = GER }
+        NOT = { exists = GCF }
+        NOT = { year = 1890 }
+        has_country_flag = french_claimed_the_rhine
+        has_global_flag = watching_the_rhine
+        NOT = { has_global_flag = 3hurrahs }
+        OR = {
+            575 = { owner = { NOT = { is_culture_group = germanic } } }
+            576 = { owner = { NOT = { is_culture_group = germanic } } }
+            577 = { owner = { NOT = { is_culture_group = germanic } } }
+            572 = { owner = { NOT = { is_culture_group = germanic } } }
+            PRU_578 = { owner = { NOT = { is_culture_group = germanic } } }
+            PRU_570 = { owner = { NOT = { is_culture_group = germanic } } }
+            BAD_586 = { owner = { NOT = { is_culture_group = germanic } } }
+            WUR_589 = { owner = { NOT = { is_culture_group = germanic } } }
+            HES_2560 = { owner = { NOT = { is_culture_group = germanic } } }
+            AND = {
+                RHI = {
+                    exists = yes
+                    OR = {
+                        vassal_of = FRA
+                        vassal_of = BOR
+                    }
+                }
+                has_global_flag = left_bank_french_victory
+            }
+        }
+    }
+
+    fire_only_once = yes
+
+    mean_time_to_happen = { days = 10 }
+
+    option = {
+        name = "EVT33039OPTA"
+        NGF = { set_country_flag = formed_on_rhine_crisis }
+        any_owned = {
+            limit = {
+                is_core = GER
+                }
+            add_core = NGF
+            remove_core = THIS
+            }
+        change_tag = NGF
+        all_core = {
+            limit = { is_core = PRU }
+                remove_core = PRU
+                add_core = NGF
+            }
+        any_country = {
+            limit = {
+                exists = yes
+                is_greater_power = no
+            OR = {
+                primary_culture = north_german
+                primary_culture = south_german
+            }
+
+            NOT = {
+                OR = {
+                    tag = AUS
+                    tag = AUB
+                    tag = KUK
+                    tag = DNB
+                    tag = UBD
+                    tag = LAT
+                    tag = EST
+                    tag = PRU
+                    tag = NGF
+                    tag = LUX
+                    capital_scope = { NOT = { is_core = GER } }
+                    is_vassal = yes
+                    }
+                }
+            }
+            country_event = 33038
+        }
+        any_country = { limit = {
+            exists = yes
+            is_greater_power = no
+            OR = {
+                primary_culture = north_german
+                primary_culture = south_german
+                }
+            vassal_of = THIS
+            }
+            country_event = 33038
+        }
+        FRA_412 = { add_core = GER }
+        any_pop = {
+                limit = { is_culture_group = germanic }
+                dominant_issue = {
+                    factor = 0.1
+                    value = jingoism
+                }
+            }
+        ai_chance = { factor = 0.70 }
+        }
+
+
+        option = {
+        name = "EVT33039OPTB"
+        NGF = { set_country_flag = formed_on_rhine_crisis }
+        any_owned = {
+            limit = {  is_core = GER }
+            add_core = NGF
+            remove_core = THIS
+            }
+        change_tag = NGF
+        all_core = {
+            limit = { is_core = PRU }
+                remove_core = PRU
+                add_core = NGF
+            }
+        any_country = {
+            limit = {
+                ai = yes
+                primary_culture = north_german
+                is_substate = no
+                capital_scope = { is_core = GER }
+                OR = {
+                    is_vassal = no
+                    vassal_of = THIS
+                }
+                in_sphere = THIS
+            }
+            annex_to = THIS
+        }
+        random_country = {
+            limit = {
+                ai = yes
+                primary_culture = south_german
+                is_substate = no
+                capital_scope = { is_core = GER }
+                is_vassal = no
+                }
+            change_tag = SGF
+        }
+        any_country = {
+            limit = {
+                ai = yes
+                primary_culture = south_german
+                is_substate = no
+				NOT = { tag = SWI }
+                capital_scope = { is_core = GER }
+                OR = {
+                    is_vassal = no
+                    vassal_of = THIS
+                }
+            }
+            annex_to = SGF
+        }
+            relation = { who = SGF value = 400 }
+            diplomatic_influence = { who = SGF value = 100 }
+            create_alliance = SGF
+            random_country = { limit = { exists = yes OR = { tag = AUS tag = KUK tag = AUB } } relation = { who = SGF value = 100 }  diplomatic_influence = { who = SGF value = 50 } }
+        FRA_412 = { add_core = GER }
+        any_pop = {
+                limit = { is_culture_group = germanic }
+                dominant_issue = {
+                    factor = 0.1
+                    value = jingoism
+                }
+            }
+        SGF = {
+            any_pop = {
+                limit = { is_culture_group = germanic }
+                dominant_issue = {
+                    factor = 0.1
+                    value = jingoism
+                }
+            }
+        }
+        ai_chance = { factor = 0.80 }
+    }
+}
+
 #Germany LR Normalization
 country_event = {
     id = 33040
@@ -1356,6 +1749,199 @@ country_event = {
         badboy = -1
 
         ai_chance = { factor = 0 }
+    }
+}
+
+country_event = {
+    id = 99925
+    title = "The Rhine Crisis"
+    desc = "EVTDESC99925"
+    picture = "rhineland"
+
+    fire_only_once = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "EVT99925OPTA"
+        prestige = 10
+        FRA_412 = { add_core = GER }
+        any_country = {
+            limit = {
+                exists = yes
+                is_greater_power = no
+                OR = {
+                    primary_culture = north_german
+                    primary_culture = south_german
+                }
+            }
+            create_alliance = THIS
+            casus_belli = {
+                target = FROM
+                type = cut_down_to_size
+                months = 20
+            }
+        }
+        any_country = {
+            limit = {
+                exists = yes
+                is_greater_power = yes
+                NOT = { tag = THIS }
+                OR = {
+                    primary_culture = north_german
+                    primary_culture = south_german
+                }
+            }
+            country_event = 99978
+        }
+        war = {
+            target = FROM
+            attacker_goal = { casus_belli = humiliate }
+            attacker_goal = {
+                casus_belli = acquire_any_state
+                state_province_id = 412
+            }
+            defender_goal = { casus_belli = liberate_country country = RHI }
+            call_ally = yes
+        }
+        ai_chance = {
+            factor = 0.7
+            modifier = {
+                factor = 100
+                FROM = { ai = no }
+            }
+            modifier = {
+                factor = 0.5
+                truce_with = FROM
+            }
+            modifier = {
+                factor = 0.5
+                war = yes
+            }
+            modifier = {
+                factor = 0.1
+                FROM = { alliance_with = RUS }
+            }
+        }
+    }
+
+    option = {
+        name = "EVT99925OPTB"
+        prestige = -5
+        FROM = { remove_country_modifier = rhine_crisis }
+        any_country = {
+            limit = {
+                exists = yes
+                is_greater_power = yes
+                OR = {
+                    primary_culture = north_german
+                    primary_culture = south_german
+                }
+            }
+            end_military_access = FROM
+            leave_alliance = FROM
+            relation = { who = FROM value = -150 }
+        }
+
+        ai_chance = {
+            factor = 0.30
+            modifier = {
+                factor = 0
+                FROM = { ai = no }
+            }
+        }
+    }
+}
+
+country_event = {
+    id = 99978
+    title = "The Rhine Crisis"
+    desc = "EVTDESC99978"
+    picture = "rhineland"
+
+    fire_only_once = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "EVT99978OPTA"
+        prestige = 10
+        create_alliance = FROM
+        random_owned = {
+            limit = { exists = FRA }
+            owner = {
+                war = {
+                    target = FRA
+                    attacker_goal = { casus_belli = humiliate }
+                    attacker_goal = { casus_belli = war_reparations }
+                    defender_goal = { casus_belli = war_reparations }
+                    call_ally = yes
+                }
+            }
+        }
+        random_owned = {
+            limit = { exists = BOR }
+            owner = {
+                war = {
+                    target = BOR
+                    attacker_goal = { casus_belli = humiliate }
+                    attacker_goal = { casus_belli = war_reparations }
+                    defender_goal = { casus_belli = war_reparations }
+                    call_ally = yes
+                }
+            }
+        }
+
+        ai_chance = {
+            factor = 95
+            modifier = {
+                factor = 0.5
+                any_core = { owned_by = FROM }
+            }
+            modifier = {
+                factor = 0.5
+                truce_with = FROM
+            }
+            modifier = {
+                factor = 0.5
+                war = yes
+            }
+            modifier = {
+                factor = 5
+                FROM = { ai = no }
+            }
+        }
+    }
+
+    option = {
+        name = "EVT99978OPTB"
+        prestige = -5
+        relation = {
+            who = FROM
+            value = -200
+        }
+
+        ai_chance = {
+            factor = 5
+            modifier = {
+                factor = 5
+                any_core = { owned_by = FROM }
+            }
+            modifier = {
+                factor = 5
+                truce_with = FROM
+            }
+            modifier = {
+                factor = 5
+                war = yes
+            }
+            modifier = {
+                factor = 0
+                FRA = { ai = no }
+            }
+            modifier = {
+                factor = 0
+                BOR = { ai = no }
+            }
+        }
     }
 }
 
