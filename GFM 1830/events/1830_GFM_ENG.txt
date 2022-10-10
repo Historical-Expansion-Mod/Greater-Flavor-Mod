@@ -132,6 +132,22 @@ country_event = {
 		
         ai_chance = { factor = 100 }
     }
+	option = {
+        name = "Long Live Jamaica. §BPlay as Jamaica§W"
+		2217 = { secede_province = JAM add_core = JAM }
+		HAI = { create_alliance = JAM }
+		war = {
+            target = JAM
+            attacker_goal = { casus_belli = conquest_any }
+            defender_goal = { casus_belli = humiliate_no_infamy }
+			call_ally = yes
+        }
+		JAM = { political_reform = no_slavery  government = prov_gov_liberal }
+		set_global_flag = jamaicanrebell1831
+		diplomatic_influence = { who = JAM value = -400 }
+		change_tag_no_core_switch = JAM
+        ai_chance = { factor = 0 }
+    }
 }
 
 # Baptist War - fires for HAI - caused by event [Id = 127857] in "events/1830_GFM_ENG.txt"
@@ -151,26 +167,9 @@ country_event = {
             consciousness = 2
         }
 		ai_chance = { 
-			factor = 0 
+			factor = 1
 			modifier = {
                 factor = 100
-                NOT = { money = 50100 }
-            }
-		}
-    }
-
-	option = {
-        name = "Send minor support."
-		any_pop = {
-            limit = { has_pop_culture = afro_french }
-            consciousness = -2
-        }
-		treasury = -50000
-		JAM = { treasury = 50000 }
-		ai_chance = {
-			factor = 100
-			modifier = {
-                factor = 0
                 NOT = { money = 50100 }
             }
 		}
@@ -202,7 +201,7 @@ country_event = {
     # Declare war on Jamaica with the conquest_any Casus Belli - Stay as England
     option = {
         name = "Fight them."
-        2217 = { secede_province = JAM }
+        2217 = { secede_province = JAM add_core = JAM }
 		HAI = { create_alliance = JAM }
 		war = {
             target = JAM
@@ -211,60 +210,16 @@ country_event = {
 			call_ally = yes
         }
 		JAM = { political_reform = no_slavery  government = prov_gov_liberal }
-		set_country_flag = jamaicanrebell1831
+		set_global_flag  = jamaicanrebell1831
 		diplomatic_influence = { who = JAM value = -400 }
     }
 	
-	# Declare war on Jamaica with the conquest_any Casus Belli - Change TAG to Jamaica [JAM]
-	option = {
-        name = "Long Live Jamaica.  §BPlay as Jamaica§W"
-		2217 = { secede_province = JAM }
-		HAI = { create_alliance = JAM }
-		war = {
-            target = JAM
-            attacker_goal = { casus_belli = conquest_any }
-            defender_goal = { casus_belli = humiliate_no_infamy }
-			call_ally = yes
-        }
-		change_tag_no_core_switch = JAM
-		JAM = { political_reform = no_slavery  government = prov_gov_liberal }
-		set_country_flag = jamaicanrebell1831
-		diplomatic_influence = { who = JAM value = -400 }
-    }
-}
-
-# Baptist War win event for Jamaica - fires for JAM if they win against England
-country_event = {
-    id = 127960
-    title = "We won the Baptist War"
-    desc = "After fighting the British, we finally have won the revolt."
-    picture = "jamaica_slaverev"
-
-    fire_only_once = yes
-
-    trigger = {
-        tag = JAM
-		owns = 2217
-		year = 1831
-		war = no
-		NOT = { year = 1835 }
-		has_country_flag = jamaicanrebell1831
-    }
-
-    mean_time_to_happen = { days = 1 }
-
-    option = {
-        name = "Perfect!"
-        prestige = 20
-		government = democracy
-        ai_chance = { factor = 100 }
-    }
 }
 
 # Baptist War win event for England - fires for ENG if they win against Jamaica
 country_event = {
     id = 127961
-    title = "We won the Baptist War"
+    title = "Victory in the Baptist War"
     desc = "After fighting the Jamaican slaves, we finally have won the war."
     picture = "jamaica_slaverev"
 
@@ -276,16 +231,28 @@ country_event = {
 		year = 1831
 		NOT = { year = 1835 }
 		war = no
-		has_country_flag = jamaicanrebell1831
+		has_global_flag = jamaicanrebell1831
     }
 
     mean_time_to_happen = { days = 1 }
 
     option = {
         name = "Perfect!"
-        prestige = 5
-		JAM = { government = colonial_company }
-		any_pop = { limit = { location = { province_id = 2217 } has_pop_culture = afro_caribbean } pop_type = slaves }
+        JAM = { all_core = { remove_core = JAM } }
+		random_owned = {
+			limit = {
+				owner = {
+					OR = {
+						slavery = yes_slavery
+						slavery = freedom_of_womb
+					}
+				}
+			}
+			owner = {
+				ENG_203 = { is_slave = yes }
+				any_pop = { limit = { location = { province_id = 2217 } has_pop_culture = afro_caribbean } pop_type = slaves }
+			}
+		}
         ai_chance = { factor = 100 }
     }
 }
