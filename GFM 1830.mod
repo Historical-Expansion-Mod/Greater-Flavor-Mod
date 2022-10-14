@@ -1,4 +1,4 @@
-name = "GFM 1830 Startdate Submod"
+name = "GFM 1830 Startdate Submod (WIP)"
 path = "mod/GFM 1830"
 replace_path = "mod/GFM/history/provinces"
 dependencies = { "Greater Flavor Mod" }
