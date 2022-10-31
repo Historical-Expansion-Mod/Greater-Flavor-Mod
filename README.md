@@ -19,10 +19,9 @@ Failure to extract the mod may be due to a common GitHub issue, so try downloadi
   * GFM Fantasy Formables adds "fantasy" nations as formables
   * GFM No Swastikas removes every swastika in the game
   * GFM Belle Dark is a map submod that applies the Belle Dark map mod to GFM
-  * GFM 1830 is a very WIP submod that allows people to start the game in 1830. It is curently disabled until further notice
+  * GFM 1830 is a submod that allows people to start the game in 1830 and has content for the added years
   * Music Sub Mod adds more music to the game. This is located in a separate repository which can be found [here]( https://github.com/Elijah-maker/GFM-Music-Submod)
   * Absolute gigachad Jay de Brabant has [made a submod]( https://github.com/LePetitJayJay/Victoria-2-Anime-Flags-Mod) for GFM adding anime girl flags (the repo also includes regular HFM flags). 
-  * PS: The abandoned RGO submod has also been moved to [here](https://drive.google.com/file/d/1iDgmCTRm0dJFqJvqQbv9cRdXt1b0NDYZ/view?usp=sharing)
 
 ## Installation Instructions
 
