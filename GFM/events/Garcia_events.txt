@@ -101,6 +101,7 @@ country_event = {
 		tag = MEX
 		NOT = { has_country_flag = bye_rgr }
 		year = 1857
+		any_owned_province = { is_core = RGR }
 		NOT = { exists = RGR }
 		centralization = federalism
 	}
@@ -112,19 +113,11 @@ country_event = {
 	option = {
 		name = "There is no room for rebellion in $COUNTRY$"
 		set_country_flag = bye_rgr
-		all_core = {
+		any_land_province = {
 			limit = {
 				is_core = RGR
 			}
 			remove_core = RGR
-		}
-		TEX = {
-			all_core = {
-				limit = {
-					is_core = RGR
-				}
-				remove_core = RGR
-			}
 		}
 	}
 }
@@ -899,12 +892,16 @@ country_event = {
 	fire_only_once = yes
 	
 	trigger = {
+		year = 1896
 		capital = 2172
 		OR = {
-			primary_culture = mexican
 			accepted_culture = mexican
+			primary_culture = mexican
 		}
-		year = 1896
+		NOT = { accepted_culture = nahua }
+		NOT = { has_country_flag = native_protection_act_enacted }
+		own = 2177
+		own = 2178
 	}
 	
 	mean_time_to_happen = {
@@ -1447,8 +1444,6 @@ country_event = {
 		OR = {
 			USA = { slavery = yes_slavery exists = yes }
 			USA = { slavery = freedom_of_womb exists = yes }
-			US2 = { slavery = yes_slavery exists = yes }
-			US2 = { slavery = freedom_of_womb exists = yes }
 		}
 	}
 	
@@ -1908,14 +1903,8 @@ country_event = {
 	
 	trigger = {
 		tag = MEX
-		OR = {
-			USA = { has_country_flag = hasmanifestdestiny }
-			US2 = { has_country_flag = hasmanifestdestiny }
-		}
-		OR = {
-			war_with = USA
-			war_with = US2
-		}
+		USA = { has_country_flag = hasmanifestdestiny }
+		war_with = USA
 	}
 	
 	mean_time_to_happen = {
@@ -1974,6 +1963,7 @@ country_event = {
 		year = 1862
 		tag = MEX
 		owns = 2174
+		has_country_flag = 1857_constitution_done
 	}
 	
 	mean_time_to_happen = {
@@ -2263,7 +2253,6 @@ country_event = {
 		NOT = { truce_with = ENG }
 		ENG = {
 			NOT = { alliance_with = USA }
-			NOT = { alliance_with = US2 }
 		}
 		OR = {
 			has_global_flag = mex_took_mississippi_maw
@@ -2303,13 +2292,13 @@ country_event = {
 	option = {
 		name = "We accept the deal."
 		# Audax Validator "." Ignore_NEXT
-		118 = { secede_province = ENG add_core = RPL add_core = CAN remove_core = MEX remove_core = USA remove_core = US2 remove_core = CSA secede_province = RPL }
+		118 = { secede_province = ENG add_core = RPL add_core = CAN remove_core = MEX remove_core = USA remove_core = CSA secede_province = RPL }
 		# Audax Validator "." Ignore_NEXT
-		157 = { secede_province = ENG add_core = RPL add_core = CAN remove_core = MEX remove_core = USA remove_core = US2 remove_core = CSA secede_province = RPL }
+		157 = { secede_province = ENG add_core = RPL add_core = CAN remove_core = MEX remove_core = USA remove_core = CSA secede_province = RPL }
 		# Audax Validator "." Ignore_NEXT
-		158 = { secede_province = ENG add_core = RPL add_core = CAN remove_core = MEX remove_core = USA remove_core = US2 remove_core = CSA }
+		158 = { secede_province = ENG add_core = RPL add_core = CAN remove_core = MEX remove_core = USA remove_core = CSA }
 		# Audax Validator "." Ignore_NEXT
-		155 = { secede_province = ENG add_core = RPL add_core = CAN remove_core = MEX remove_core = USA remove_core = US2 remove_core = CSA }
+		155 = { secede_province = ENG add_core = RPL add_core = CAN remove_core = MEX remove_core = USA remove_core = CSA }
 		# Audax Validator "." Ignore_NEXT
 		24 = { secede_province = ENG remove_core = RPL remove_core = CAN remove_core = MTC add_core = MEX secede_province = MEX }
 		# Audax Validator "." Ignore_NEXT
@@ -2501,6 +2490,7 @@ country_event = {
 	
 	trigger = {
 		tag = MEE
+		NOT = { government = viceroyalty }
 		year = 1838
 		NOT = { exists = MEX }
 		has_global_flag = sonora_rebellion_urrea
@@ -2521,6 +2511,11 @@ country_event = {
 		set_country_flag = Government_Democracy
 		capital = 2172
 		ruling_party_ideology = liberal
+		add_accepted_culture = nahua
+		add_accepted_culture = pueblo
+		add_accepted_culture = native_american_minor
+		add_accepted_culture = mayan
+		add_accepted_culture = afro_latino
 		define_general = { name = "Mariano Arista" personality = no_personality background = no_background }
 		define_general = { name = "Antonio Canales Rosillo" personality = defence_minus_1.51 background = attack_1.1 }
 		define_general = { name = "Vicente Filísola" personality = defence_2.76 background = attack_1.1 }
@@ -2689,7 +2684,7 @@ country_event = {
 
 country_event = {
 	id = 4207052
-	title = "The Mexicans propose to revoke our claims!"
+	title = "The Mexican Proposal"
 	desc = "EVTDESC4207052"
 	picture = "treaty"
 	fire_only_once = yes
@@ -2698,7 +2693,6 @@ country_event = {
 	option = {
 		name = "We have to accept."
 		prestige = -5
-		set_country_flag = usa_loses_cores_in_mex
 		treasury = 100000
 		relation = {
 			who = FROM
@@ -2707,7 +2701,10 @@ country_event = {
 		FROM = { country_event = 4207053 }
 		any_pop = {
 			limit = {
-				is_accepted_culture = yes
+				OR = {
+					is_accepted_culture = yes
+					is_primary_culture = yes
+				}
 			}
 			militancy = 3
 			consciousness = 5
@@ -2724,7 +2721,10 @@ country_event = {
 		FROM = { country_event = 4207054 }
 		any_pop = {
 			limit = {
-				is_accepted_culture = yes
+				OR = {
+					is_accepted_culture = yes
+					is_primary_culture = yes
+				}
 			}
 			militancy = -1
 			consciousness = -1
@@ -2743,14 +2743,12 @@ country_event = {
 	
 	option = {
 		name = "Perfect."
-		set_country_flag = usa_loses_cores_in_mex
 		treasury = -100000
 		any_owned = {
 			limit = {
 				is_core = THIS
 			}
 			remove_core = USA
-			remove_core = US2
 		}
 		relation = {
 			who = FROM
@@ -2761,7 +2759,7 @@ country_event = {
 
 country_event = {
 	id = 4207054
-	title = "The Americans reject!"
+	title = "The American Refusal"
 	desc = "EVTDESC4207054"
 	picture = "treaty"
 	fire_only_once = yes
@@ -2794,12 +2792,7 @@ country_event = {
 	option = {
 		name = "Giddy-up, cowboy!"
 		prestige = 5
-		any_owned = {
-			limit = {
-				is_core = TEX
-			}
-			add_province_modifier = { name = texas_boom_small duration = 1800 }
-		}
+		TEX_132 = { add_province_modifier = { name = texas_boom_small duration = 1800 } }
 		133 = { add_province_modifier = { name = texas_boom_huge duration = 10 } }
 		137 = { add_province_modifier = { name = texas_boom_huge duration = 10 } }
 		132 = { add_province_modifier = { name = texas_boom_huge duration = 30 } }
@@ -2809,7 +2802,7 @@ country_event = {
 
 country_event = {
 	id = 4207056
-	title = "Law of April"
+	title = "The Law of April"
 	desc = "EVTDESC4207056"
 	picture = "bustamante_event"
 	fire_only_once = yes
@@ -2938,10 +2931,14 @@ country_event = {
 }
 
 country_event = {
-	id = 4207058
+	id = 4207059
 	title = "Napoleon's Repatriation"
 	desc = "EVTDESC4207059"
 	picture = "napoleon_returned"
+    news = yes
+    news_desc_long = "EVTDESC37204_NEWS_LONG"
+    news_desc_medium = "EVTDESC37204_NEWS_MEDIUM"
+    news_desc_short = "EVTDESC37204_NEWS_SHORT"
 	is_triggered_only = yes
 	
 	option = {
@@ -2967,3 +2964,27 @@ country_event = {
 		}
 	}
 }
+
+#4207061 and 4207062 in 1830 submod
+
+#country_event = {
+#	id = 4207063
+#	title = "Adelsverein"
+#	desc = "EVTDESC4207063"
+#	picture = "1854_Alamo"
+#	fire_only_once = yes
+#	
+#	mean_time_to_happen = {
+#		months = 4
+#	}
+#	
+#	trigger = {
+#		year = 1842
+#		owns = 133
+#	}
+#	option = {
+#		name = "Let's hope these settlers have success."
+#		3116 = { any_pop = { limit = { has_pop_culture = north_german } move_pop = 134 } }
+#		3115 = { any_pop = { limit = { has_pop_culture = north_german } move_pop = 43 } }
+#	}
+#}
