@@ -15948,7 +15948,7 @@ country_event = {
 		war = {
             target = TRN
             attacker_goal = { casus_belli = conquest_any }
-            defender_goal = { casus_belli = acquire_all_cores }
+            defender_goal = { casus_belli = acquire_core_state state_province_id = 2108 }
         }
 		ENG = { country_event = 184823052 }
         random_country = {
@@ -16050,9 +16050,9 @@ country_event = {
 		war = {
             target = TRN
             attacker_goal = { casus_belli = conquest_any }
-            defender_goal = { casus_belli = acquire_all_cores }
+            defender_goal = { casus_belli = status_quo }
         }
-		ENG = { country_event = 184823052 }
+		ENG = { country_event = 184823053 }
         random_country = {
             limit = { is_our_vassal = TRN }
             relation = { who = THIS value = -100 }
@@ -16123,6 +16123,35 @@ country_event = {
 	}
 }
 country_event = {
+    id = 184823053
+    title = "Potchefstroom's Plight"
+    desc = "MARICORIVERLOSTNOMATENGWAR"
+    picture = "matabele_goes_north"
+    fire_only_once = yes
+    is_triggered_only = yes
+    
+    option = {
+        name = "We are not getting involved."
+		prestige = -5
+        ai_chance = {
+            factor = 0
+        }
+	}
+    option = {
+        name = "Dispatch an expedition immediately!"
+		FROM = { set_country_flag = youarelosing }
+		create_alliance = TRN
+		set_global_flag = hecouldgoallthewaytransvaal
+		TRN = { 
+			# Audax Validator "." Ignore_NEXT
+			war = { attacker_goal = { casus_belli = call_allies_cb } call_ally = yes }
+		}
+        ai_chance = {
+            factor = 1
+        }
+	}
+}
+country_event = {
     id = 184823054
     title = "Victory in Potchefstroom"
     desc = "VICTORYPOTCHEFSTROOMWHATNOW"
@@ -16132,6 +16161,10 @@ country_event = {
     trigger = {
 		tag = ENG
 		TRN = { exists = yes war = no owns = 2105 }
+		OR = {
+			2108 = { owner = { has_country_modifier = recently_lost_war } }
+			2108 = { owned_by = TRN }
+		}
 		has_global_flag = hecouldgoallthewaytransvaal
 		NOT = { year = 1840 }
     }
@@ -16143,6 +16176,11 @@ country_event = {
     option = {
         name = "Great!"
 		create_vassal = TRN
+		MAT = {
+			any_owned = { limit = { is_core = TRN }
+			secede_province = THIS
+			secede_province = TRN
+		}
         relation = { who = TRN value = 100 }
         TRN = {
             prestige = -30
