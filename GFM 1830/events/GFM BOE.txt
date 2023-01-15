@@ -1,0 +1,276 @@
+#EVENT 79 - BOURBON EMPIRE FORMED, CHAIN BEGINS
+#EVENTS 50-81 ITALIAN UNIFICATION
+#EVENTS 82-85 GERMAN UNIFICATION
+#EVENTS 86-
+country_event = {
+	id = 000079
+	name = "The coronation of the Bourbon Monarchy"
+	desc = "A strange tide befalls the peoples of western Europe, as, almost anachronistically, a personal union has come to radically upend the balance of power in the European continent. In the midst of the liberal revolutions, the rise of nationalism and nation-states, and an era where the Ancien Regime was thought to have died with the advent of modern liberalism, it is the forces of traditionalism, of dynastic politics stretching back centuries, that have found themselves in this prime position. Now, the Bourbon King of France and the Carlist king of Spain are one and the same, uniting the two realms of Europe into a single state. This coronation vindicates the eternal beliefs of the traditionalist nobility and upper society, but raises the ire of not only the upstart liberals and nationalists, but falls in brazen violation of the treaty of Utrecht, which forbade the union of the lines of France and Spain. This action poses an existential threat to the balance of power in Europe, and undoubtedly there will be a vitriolic response from the international community. It is doubtless that the coming years will be ones of unmatched turbulence since the days of Napoleon."
+	fire_only_once = yes
+	mean_time_to_happen = { days = 1 }
+	trigger = {
+		tag = BOE
+		}
+	option = {
+		name = "We will endure the tide."
+		prestige = 100
+		add_country_modifier = { name = bourbon_threat duration = -1 }
+		set_global_flag = bourbon_empire_formed
+		}
+	}
+country_event = {
+	id = 000080
+	name = "Confederazione Italiana"
+	desc = "With the rise of the Bourbon Empire as a unified entity, it has come to pass that, inevitably, mutual security become more important than individual squabbles over such issues as Italian unification. A proposal has come into government circles of a Confederazione Italiana, a confederation of the Italian states into a single, loosely unified state, capable of withstanding the Bourbon Empire, or at least do so more reasonably than various disunited principalities."
+	fire_only_once = yes
+	mean_time_to_happen = { weeks = 1 }
+	trigger = {
+		has_global_flag = bourbon_empire_formed
+		OR = {
+			primary_culture = north_italian
+			primary_culture = south_italian
+			}
+		}
+	option = {
+		name = "Send the Proposal."
+		any_country = { limit = { primary_culture = north_italian NOT = { is_vassal = yes } } event = 000081 }
+		any_country = { limit = { primary_culture = south_italian NOT = { is_vassal = yes } } event = 000081 }
+		change_tag = ITA
+		ai_chance = { factor = 100 }
+		}
+	option = {
+		name = "No need."	
+		ai_chance = { factor = 0 }
+		}
+	}
+country_event = {
+	id = 000081
+	name = "Joining the Confederazione Italiana"
+	desc = "Event to make sure people join it."
+	is_triggered_only = yes
+	option = {
+		name = "Accept."
+		ITA = { inherit = THIS }
+		ai_chance = { factor = 100 }
+		}
+	option = {
+		name = "Only under our leadership. (emergency player option)"
+		inherit = ITA
+		change_tag = ITA
+		ai_chance = { factor = 0 }
+		}
+	option = {
+		name = "Refuse."
+		ai_chance = { factor = 0 }
+		}
+	}
+country_event = {
+	id = 000082
+	name = "Manifesto on German Unity"
+	desc = "With the formation of the Bourbon Empire on the border of the German Confederation, fears of French reprisal against Germany, irrespective of any prior guarantees or relationships. The German realms have gathered together to unite into a single federal state, without respect for the rivalry between Austria and Prussia to unify under a single banner, under hopes of stemming the tide of Bourbon expansion."
+	fire_only_once = yes
+	mean_time_to_happen = { months = 2 }
+	trigger = {
+		has_global_flag = bourbon_empire_formed
+		OR = {
+		primary_culture = north_german 
+		primary_culture = south_german
+		}
+		NOT = { tag = PRU tag = AUS tag = KUK }
+		}
+	option = {
+		name = "Send the proposal."
+		change_tag = GER
+		any_country = { limit = { primary_culture = south_german NOT = { OR = { tag = KUK tag = AUS is_vassal = yes } } } event = 000083 } 
+		any_country = { limit = { primary_culture = north_german NOT = { OR = { tag = PRU tag = NGF is_vassal = yes } } } event = 000083 } 
+		any_country = { limit = { OR = { tag = PRU tag = NGF } } event = 000084 }
+		any_country = { limit = { tag = AUS } event = 000085 }
+		ai_chance = { factor = 100 }
+		}
+	option = {
+		name = "We will weather this alone."
+		ai_chance = { factor = 0 }
+		}
+	}
+country_event = {
+	id = 000083
+	name = "Manifesto on German Unity"
+	desc = "Event to make sure everyone gets annexed"
+	is_triggered_only = yes
+	option = {
+		name = "Accept."
+		GER = { inherit = THIS }
+		ai_chance = { factor = 100 }
+		}
+	option = {
+		name = "But only under our leadership (player emergency option)"
+		inherit = GER
+		change_tag = GER
+		ai_chance = { factor = 0 }
+		}
+	option = {
+		name = "Refuse."
+		ai_chance = { factor = 0 }
+		}
+	}
+country_event = {
+	id = 000084
+	name = "Manifesto on German Unity"
+	desc = "Germany is uniting due to the Bourbon threat, with or without us."
+	is_triggered_only = yes
+	option = {
+		name = "Accept"
+		GER = { inherit = THIS }
+		ai_chance = { factor = 0 }
+		}
+	option = {
+		name = "Only under our leadership (player emergency option)"
+		inherit = GER
+		change_tag = GER
+		ai_chance = { factor = 0 }
+		}
+	option = {
+		name = "Refuse."
+		ai_chance = { factor = 100 }
+		}
+	}
+country_event = {
+	id = 000085
+	name = "Manifesto on German Unity"
+	desc = "Germany is uniting with or without us. If we join, our empire will be forfeit."
+	is_triggered_only = yes
+	option = {
+		name = "Accept."
+		release_country = HUN
+		release_country = GLC	
+		release_country = BAN
+		release_country = VEN
+		release_country = CRO
+		release_country = LOM
+		GER = { inherit = THIS }
+		ai_chance = { factor = 0 }
+		}
+	option = {
+		name = "Only under our leadership (Player emergency option)"
+		inherit = GER
+		change_tag = GER
+		release_country = HUN
+		release_country = GLC	
+		release_country = BAN
+		release_country = VEN
+		release_country = CRO
+		release_country = LOM
+		ai_chance = { factor = 0 }
+		}
+	option = {
+		name = "Refuse."
+		ai_chance = { factor = 100 }
+		}
+	}
+country_event = {
+	id = 000086
+	name = "The Declaration of Prague"
+	desc = "In the aftermath of the Bourbon Empire's declaration, the geopolitical situation in Europe has rapidly altered its course in response. Fears of a Franco-Spanish domineering force across the European continent has spurred on a fearful response unseen since the days of Napoleon Bonaparte himself. The brazen violation of the treaty of Utrecht has not gone unnoticed, and the beginnings of an international coalition have come into being. A declaration has been issued from the powers, meeting in Prague, declaring the state of the Bourbon Empire to be an illegitimate construct of a state and an existential threat to peace in Europe. It is expected that within a year, the empires of Europe will make their move. Whether we weather the storm or not will determine if the Bourbon Empire has a future in the world to begin with."
+	fire_only_once = yes
+	mean_time_to_happen = { months = 3 }
+	trigger = {
+		tag = BOE
+		has_global_flag = bourbon_empire_formed
+		}
+	option = {
+		name = "We will weather the storm."
+		set_country_flag = second_war_spanish_succession_trigger
+		}
+	}
+country_event = {
+	id = 000087
+	name = "The Second War of Spanish Succession"
+	desc = "The powers of Europe have now made their move, in hopes of putting an end to the personal union between Spain and France. With little room for error and little chance of leniency should the French nation fail to assert itself for a third time in recent memory, the result of this war will determine the fate of both realms, perhaps for the rest of the century."
+	fire_only_once = yes
+	mean_time_to_happen = { months = 6 }
+	trigger = {
+		tag = BOE
+		has_country_flag = second_war_spanish_succession_trigger
+		}
+	option = {
+		name = "The storm has arrived."
+		set_global_flag = second_war_spanish_succession
+		any_country = { limit = { OR = { tag = GER tag = KUK tag = AUS tag = ENG tag = ITA tag = RUS tag = GCF } } event = 000088 }
+		}
+	}
+country_event = {
+	id = 000088
+	name = "The Coalition of Prague"
+	desc = "As per the Declaration of Prague we are an interested party to the dismantling of the Bourbon Empire. It is in our best interest to take part in this war, though we can always choose to back out if it is necessary."
+	is_triggered_only = yes
+	option = {
+		name = "We will go to war."
+		casus_belli = { target = BOE type = cut_down_to_size duration = { weeks = 2 } }
+		war = {
+			target = BOE
+			attacker_goal = { casus_belli = cut_down_to_size }
+			defender_goal = { casus_belli = status_quo }
+			}
+		ai_chance = { factor = 100 }
+		}
+	option = {
+		name = "We will back down."
+		ai_chance = { factor = 0 }
+		}
+	}
+country_event = {
+	id = 000089
+	name = "The Peace of Lubeck"
+	desc = "Despite our best efforts, the realm of the Bourbon Empire has been beaten and broken by the vast efforts of the coalition levied against it. In the aftermath of the war, the Empire has been forced to split into its contituent parts, neither of which permitted to house the House de Bourbon any longer, but rather emplaced under responsible governments set up by the victors to ensure this situation never occurs again. The Empire is broken, and will likely never rise again."
+	fire_only_once = yes
+	mean_time_to_happen = { weeks = 2 }
+	trigger = {
+		tag = BOE
+		has_global_flag = second_war_spanish_succession
+		is_disarmed = yes
+		at_war = no
+		}
+	option = {
+		name = "We have no choice." 
+		remove_global_flag = second_war_spanish_succession
+		all_core = { remove_core = BOE }
+		any_owned = { limit = { OR = { is_core = CUB is_core = PHI is_core = USA is_core = ENG} } secede_province = ENG }
+		any_owned = { limit = { OR = { is_core = TUN is_core = ALD is_core = CRS is_core = ITA region = SAR_466 region = FRA_451 } } secede_province = ITA }
+		any_owned = { limit = { OR = { is_core = MOR is_core = GER region = FRA_412 region = FRA_411 } add_core = GER secede_province = GER }
+		any_owned = { limit = { is_core = SPC } remove_core = SPC add_core = SPA secede_province = SPA }
+		any_owned = { limit = { is_core = BOR } remove_core = BOR add_core = FRA }
+		change_tag = FRA
+		government = autonomous_dependency
+		prestige = -150
+		remove_country_modifier = bourbon_terror
+		remove_country_modifier = distributism
+		remove_country_modifier = bourbon_threat
+		all_core = { limit = { OR = { region = FRA_412 SAR_466 core = CRS } } remove_core = FRA }
+		political_reform = no_draft
+		political_reform = no_meetings
+		political_reform = confederalism
+		political_reform = no_voting
+		political_reform = state_press
+		add_country_modifier = { name = disarmed_debt_agency duration = 3650 }
+		}
+	}
+country_event = {
+	id = 000090
+	name = "The Peace of Montpellier"
+	desc = "Despite the best efforts of the international community, the superiority of Franco-Spanish arms on the field has been proven definitively over those of the powers arrayed against the Bourbon Empire. As the guns fall silent, Europe has been forced to acknowledge the existence of the rising power in the west, and to recognize the union between France and Spain as legitimate, undoing the treaty of Utrecht once and for all. While this, at least for the time being, ends the external threat to the existence of the monarchy, there yet remains many internal challenges for the Empire to sort out if it seeks to take its place in the sun."
+	fire_only_once = yes
+	mean_time_to_happen = { weeks = 2 }
+	trigger = { 
+		tag = BOE
+		has_global_flag = second_war_spanish_succession
+		NOT = { is_disarmed = yes }
+		at_war = no
+		}
+	option = {
+		name = "A new sun rises over Europe."
+		prestige = 125
+		badboy = 10
+		set_country_flag = bourbon_triumph
+		remove_global_flag = second_war_spanish_succession
+		}
+	}
