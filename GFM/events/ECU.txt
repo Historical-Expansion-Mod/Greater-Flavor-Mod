@@ -43,7 +43,7 @@ country_event = {
 		set_global_flag = marcista_revolution
     }
     option = {
-        name = "Crush the rebels! §RYou have 105 days to capture Guayaquil.§W"
+        name = "Crush the rebels! §RYou have 105 days to capture Guayaquil§W"
         any_owned = {
             limit = {
 				province_id = 2280
@@ -126,6 +126,44 @@ country_event = {
 }
 
 country_event = {
+    id = 198081
+    title = "The Marcista were Crushed" #Marcistas loses.
+    desc = "EVTDESC198072"
+    picture = "administration"
+	
+	fire_only_once = yes
+
+    trigger = {
+        tag = ECU
+		has_global_flag = marcista_revolution
+		any_owned_province = { is_core = ECM }
+        ECM = { exists = no }
+		owns = 2280
+    }
+
+    mean_time_to_happen = {
+        days = 1
+    }
+
+    option = {
+        name = "Goodbye Marcistas."
+		capital = 2279
+		ECM = { all_core = { remove_core = ECM } }
+
+        any_pop = {
+			limit = {
+				NOT = { ideology = liberal }
+			}
+			militancy -2
+			consciousness = 3
+        }
+        ai_chance = {
+            factor = 1
+        }
+    }
+}
+
+country_event = {
     id = 197071
     title = "EVTNAME197071" #coup of 1850
     desc = "EVTDESC197071"
@@ -141,7 +179,7 @@ country_event = {
 			ruling_party_ideology = reactionary
 			ruling_party_ideology = conservative
 		}
-        NOT = { year = 1859 }
+        NOT = { year = 1851 }
     }
 
     mean_time_to_happen = {
@@ -150,6 +188,7 @@ country_event = {
 
     option = {
         name = "he wasn't the legitimate president of Ecuador anyway!"
+		ruling_party_ideology = conservative
         any_pop = {
             limit = { pop_majority_ideology = liberal }
 			militancy = 3
@@ -188,7 +227,15 @@ country_event = {
     option = {
         name = "Goodbye Jesuitas."
         ruling_party_ideology = liberal
+		political_reform = wealth_weighted_voting
+		political_reform = censored_press
+		political_reform = state_equal_weight
+		political_reform = yes_meeting
+		political_reform = gerrymandering
 		political_reform = no_slavery
+		add_accepted_culture = afro_latino
+		ECU = { add_accepted_culture = afro_latino }
+		relation = { who = CLM value = 50 }
 
         add_country_modifier = {
             name = national_confusion
@@ -209,11 +256,11 @@ country_event = {
         }
         any_pop = {
             limit = {
-                is_primary_culture = yes
                 OR = {
 					type = capitalists
                     type = aristocrats
                     type = officers
+					type = bureaucrats
                 }
             }
 			ideology = {
@@ -224,5 +271,526 @@ country_event = {
         ai_chance = {
             factor = 1
         }
+    }
+}
+
+country_event = {
+    id = 197073
+    title = "EVTNAME197073"
+    desc = "EVTDESC197073"
+    picture = "carta_esclavitud_ecu"
+
+    fire_only_once = yes
+
+    trigger = {
+        tag = PEU
+		ECM = { exists = yes }
+		has_global_flag = icaza_pritchett_convenio
+		NOT = { war_with = ECM }
+    }
+
+    mean_time_to_happen = {
+        days = 15
+    }
+
+    option = {
+        name = "Those are our lands!"
+		set_global_flag = peu_ecm_conflict_escalation_1
+		ECM = { country_event = { id = 198073 days = 3 } }
+    }
+}
+
+country_event = {
+    id = 198073
+    title = "Peru issue a Protest."
+    desc = "EVTDESC198073"
+    picture = "carta_esclavitud_ecu"
+
+    fire_only_once = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "Silly Peruvians!"
+		relation = { who = PEU value = -20 }
+    }
+}
+
+country_event = {
+    id = 197074
+    title = "EVTNAME197074"
+    desc = "EVTDESC197074"
+    picture = "carta_esclavitud_ecu"
+
+    fire_only_once = yes
+
+    trigger = {
+        tag = PEU
+		year = 1858
+		ECM = { exists = yes }
+		NOT = { war_with = ECM }
+		has_global_flag = icaza_pritchett_convenio
+		has_global_flag = peu_ecm_conflict_escalation_1
+    }
+
+    mean_time_to_happen = {
+        months = 1
+    }
+
+    option = {
+        name = "Invite the Ecuadorians and tell them to back down."
+		ECM = { country_event = { id = 198074 days = 3 } }
+		ai_chance = { factor = 1 }
+    }
+
+	option = {
+        name = "No worth in negotiate with them."
+		relation = { who = ECM value = -100 }
+		badboy = 2
+		set_global_flag = peu_ecm_conflict_escalation_2
+
+		ai_chance = { factor = 0 }
+    }
+}
+
+country_event = {
+    id = 198074
+    title = "Peru invite us to negotiate"
+    desc = "EVTDESC198073"
+    picture = "carta_esclavitud_ecu"
+
+    fire_only_once = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "we will assist but we wont back down."
+		prestige = 2
+		PEU = { country_event = 198075 }
+		set_global_flag = peu_ecm_conflict_escalation_2
+		ai_chance = { factor = 9 }
+    }
+	
+	option = {
+        name = "we can't risk a war against them"
+		relation = { who = PEU value = 50 }
+		relation = { who = ENG value = -100 }
+		PEU = { country_event = 199075 }
+		prestige = -5
+		ENG = {
+			diplomatic_influence = { who = THIS value = -50 }
+			country_event = 198078
+		}
+		ai_chance = { factor = 1 }
+    }
+}
+
+country_event = {
+    id = 198075
+    title = "Ecuador refuses to back down."
+    desc = "EVTDESC198075"
+    picture = "carta_esclavitud_ecu"
+
+    fire_only_once = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "Damn Ecuadorians!"
+		relation = { who = ECM value = -20 }
+		prestige = -2
+    }
+}
+
+country_event = {
+    id = 199075
+    title = "Ecuador accepts to negotiate."
+    desc = "EVTDESC199075"
+    picture = "carta_esclavitud_ecu"
+
+    fire_only_once = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "They made the right choice!"
+		prestige = 5
+    }
+}
+
+country_event = {
+    id = 197075
+    title = "EVTNAME197075"
+    desc = "EVTDESC197075"
+    picture = "carta_esclavitud_ecu"
+
+    fire_only_once = yes
+
+    trigger = {
+        tag = ECM
+		year = 1858
+		PEU = { exists = yes }
+		CLM = { exists = yes }
+		NOT = { war_with = PEU }
+		has_global_flag = peu_ecm_conflict_escalation_2
+		NOT = { has_global_flag = peru_ecuador_war }
+    }
+
+    mean_time_to_happen = {
+        days = 20
+    }
+
+    option = {
+        name = "Ban him!"
+		PEU = { country_event = { id = 198076 days = 10 } }
+		ai_chance = { factor = 9 }
+    }
+
+	option = {
+        name = "This must be a misunderstanding."
+		relation = { who = PEU value = 20 }
+		ai_chance = { factor = 1 }
+    }
+}
+
+country_event = {
+    id = 198076
+    title = "Ecuador expelled our foreign minister."
+    desc = "EVTDESC198076"
+    picture = "carta_esclavitud_ecu"
+
+    fire_only_once = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "Outragerous!"
+		relation = { who = ECM value = -50 }
+    }
+}
+
+country_event = {
+    id = 198077
+    title = "The Icaza-Pritchett Convenio."
+    desc = "EVTDESC198077"
+    picture = "carta_esclavitud_ecu"
+
+    fire_only_once = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "It's about time they pay their debt."
+		relation = { who = ECM value = 100 }
+		diplomatic_influence = { who = ECM value = 50 }
+    }
+}
+
+country_event = {
+    id = 198078
+    title = "Ecuador has suspended our deal."
+    desc = "EVTDESC198078"
+    picture = "carta_esclavitud_ecu"
+
+    fire_only_once = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "We will get our money back."
+		casus_belli = { target = ECM type = war_reparations months = 36 }
+    }
+}
+
+country_event = {
+    id = 198079
+    title = "Peru declares war."
+    desc = "EVTDESC198079"
+    picture = "carta_esclavitud_ecu"
+
+    fire_only_once = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "if they want war, they will get war!"
+		capital = 2280
+    }
+}
+
+country_event = {
+    id = 198080
+    title = "Treaty of Mapasingue."
+    desc = "EVTDESC198080"
+    picture = "carta_esclavitud_ecu"
+
+    fire_only_once = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "the Real Cedula of 1802 are the true borders of Peru."
+		set_global_flag = 1858_peru_victory
+		prestige = 5
+		2283 = { remove_core = ECM }
+		2284 = { remove_core = ECM }
+		2287 = { remove_core = ECM }
+		2288 = { remove_core = ECM }
+		2289 = { remove_core = ECM }
+		2263 = { remove_core = ECM }
+		3359 = { remove_core = ECM }
+		2291 = { remove_core = ECM }
+		ECM = {
+			country_event = 199081
+			any_owned = {
+				limit = {
+					is_core = THIS
+					NOT = { province_id = 2280 }
+					ECU = { exists = no }
+				}
+				secede_province = THIS
+				remove_core = ECU
+				2287 = { remove_core = ECU }
+				2291 = { remove_core = ECU }
+				2280 = { remove_core = PEU }
+			}
+		}
+    }
+}
+
+country_event = {
+    id = 199080
+    title = "Treaty of Mapasingue."
+    desc = "EVTDESC199080"
+    picture = "carta_esclavitud_ecu"
+
+    fire_only_once = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "Tumbes, Jaen and Maynas were always Ecuadorian."
+		prestige = 5
+		2283 = { remove_core = PEU }
+		2284 = { remove_core = PEU }
+		2287 = { remove_core = PEU }
+		2288 = { remove_core = PEU }
+		2289 = { remove_core = PEU }
+		2263 = { remove_core = PEU }
+		3359 = { remove_core = PEU }
+		2291 = { remove_core = PEU }
+		2280 = { remove_core = PEU }
+		PEU = {
+			any_owned = {
+				limit = { is_core = THIS }
+				secede_province = THIS
+			}
+			country_event = 199081
+		}
+		limit = { ECU = { exists = no } }
+		capital = 2279
+    }
+}
+
+country_event = {
+    id = 199081
+    title = "The Treaty of Mapasingue." #event for the loser of the war
+    desc = "After our lost in the Peruvian-Ecuadorian war, we are forced to cede land and to give up our claims." 
+    picture = "carta_esclavitud_ecu"
+
+    fire_only_once = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "Damn..."
+		random_owned = {
+			limit = { owner = { tag = ECM exists = ECU } }
+			ECU = { country_event = { id = 199083 days = 2 } }
+		}
+		random_owned = {
+			limit = { owner = { tag = ECM 2279 = { owned_by = THIS } } }
+			owner = { capital = 2279 }
+		}
+	}
+}
+
+country_event = {
+    id = 197076
+    title = "Civil War of 1859"
+    desc = "Testing the Civil War."
+    fire_only_once = yes
+    picture = "guayaquil_1846"
+    mean_time_to_happen = { days = 1 }
+    trigger = {
+        tag = ECM
+        owns = 2279
+        year = 1859
+		month = 4
+        NOT = { year = 1861 }
+        NOT = { exists = ECU }
+		has_global_flag = icaza_pritchett_convenio
+    }
+    option = {
+        name = "Depose Robles! §BPlay as normal Ecuador§W"
+        any_owned = {
+            limit = {
+				OR = {
+                	province_id = 2279
+					province_id = 2282
+				}
+            }
+            secede_province = ECU
+			add_core = ECU
+        }
+        casus_belli = { target = ECU type = conquest_low months = 36 }
+        war = {
+            target = ECU
+            attacker_goal = { casus_belli = conquest_low }
+            defender_goal = { casus_belli = civil_war }
+        }
+		ECU = {
+			government = prov_gov_conservative
+			ruling_party_ideology = conservative
+			define_general = { name = "Gabriel García Moreno" personality = defence_1.1 background = attack_4.1 }
+			relation = { who = PEU value = 200 }
+		}
+		capital = 2280
+		change_tag_no_core_switch = ECU
+		set_global_flag = ecu_civil_war_1859
+    }
+    option = {
+        name = "Crush the rebels! §BKeep playing as Marcist Ecuador§W"
+        any_owned = {
+            limit = {
+				OR = {
+                	province_id = 2279
+					province_id = 2282
+				}
+            }
+            secede_province = ECU
+			add_core = ECU
+        }
+        casus_belli = { target = ECU type = conquest_low months = 36 }
+        war = {
+            target = ECU
+            attacker_goal = { casus_belli = conquest_low }
+            defender_goal = { casus_belli = civil_war }
+        }
+		ECU = {
+			government = prov_gov_conservative
+			ruling_party_ideology = conservative
+			define_general = { name = "Gabriel García Moreno" personality = defence_1.1 background = attack_4.1 }
+			relation = { who = PEU value = 200 }
+		}
+		capital = 2280
+		set_global_flag = ecu_civil_war_1859
+    }
+}
+
+country_event = {
+    id = 198082
+    title = "The Conservative Victory" #Marcista era ends.
+    desc = "EVTDESC198082"
+    picture = "administration"
+	
+	fire_only_once = yes
+
+    trigger = {
+        tag = ECU
+		has_global_flag = ecu_civil_war_1859
+		any_owned_province = { is_core = ECM }
+        ECM = { exists = no }
+		owns = 2280
+    }
+
+    mean_time_to_happen = {
+        days = 1
+    }
+
+    option = {
+        name = "Goodbye Marcistas."
+		capital = 2279
+		government = democracy
+		ruling_party_ideology = conservative
+		ECM = { all_core = { remove_core = ECM } }
+        
+		any_pop = {
+			militancy -2
+			consciousness = 3
+			ideology = {
+                value = conservative
+                factor = 0.4
+            }
+        }
+		limit = {
+			has_global_flag = 1858_peru_victory
+			2288 = { is_core = THIS }
+		}
+		PEU = { country_event = 198083 }
+    }
+}
+
+country_event = {
+    id = 199082
+    title = "Marcistas comes Victorious" #Marcista consolidates.
+    desc = "EVTDESC199082"
+    picture = "administration"
+	
+	fire_only_once = yes
+
+    trigger = {
+        tag = ECM
+		has_global_flag = ecu_civil_war_1859
+		any_owned_province = { is_core = ECU }
+        ECU = { exists = no }
+		owns = 2279
+    }
+
+    mean_time_to_happen = {
+        days = 1
+    }
+
+    option = {
+        name = "Marcistas are the future of Ecuador."
+		capital = 2279
+		ECU = { all_core = { remove_core = ECU } }
+		any_pop = {
+			militancy -2
+			consciousness = 3
+        }
+		limit = { has_global_flag = 1858_peru_victory }
+		any_owned = {
+			limit = { is_core = PEU NOT = { province_id = 2280 } }
+			secede_province = PEU
+			2280 = { remove_core = PEU }
+		}
+    }
+}
+
+country_event = {
+    id = 198083
+    title = "Ecuador rejects treaty of Mapasingue."
+    desc = "EVTDESC198083"
+    picture = "carta_esclavitud_ecu"
+
+    fire_only_once = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "Damn Ecuadorians!"
+		relation = { who = ECU value = -40 }
+    }
+}
+
+country_event = {
+    id = 199083
+    title = "Robles cede land to the Peruvians."
+    desc = "EVTDESC199083"
+    picture = "carta_esclavitud_ecu"
+
+    fire_only_once = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "This is a clear treason to the motherland!"
+		ECM = {
+			any_owned = {
+				limit = {
+					is_core = PEU
+					NOT = { province_id = 2280 }
+				}
+				change_controller = THIS
+			}
+		}
     }
 }
