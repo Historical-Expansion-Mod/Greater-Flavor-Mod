@@ -128,7 +128,7 @@ country_event = {
 country_event = {
     id = 198081
     title = "The Marcista were Crushed" #Marcistas loses.
-    desc = "EVTDESC198072"
+    desc = "Now that the rebel scum have been defeated, rebel sentiment is squelched."
     picture = "administration"
 	
 	fire_only_once = yes
@@ -153,10 +153,10 @@ country_event = {
 
         any_pop = {
 			limit = {
-				NOT = { ideology = liberal }
+				NOT = { ideology = reactionary }
 			}
-			militancy -2
-			consciousness = 3
+			militancy 5
+			consciousness = 6
         }
         ai_chance = {
             factor = 1
@@ -166,7 +166,7 @@ country_event = {
 
 country_event = {
     id = 197071
-    title = "EVTNAME197071" #coup of 1850
+    title = "The 1850 Coup d'État"
     desc = "EVTDESC197071"
     picture = "carta_esclavitud_ecu"
 
@@ -203,7 +203,7 @@ country_event = {
 
 country_event = {
     id = 197072
-    title = "EVTNAME197072" #Revolution of 1851
+    title = "The Liberal Revolution of 1851"
     desc = "EVTDESC197072"
     picture = "carta_esclavitud_ecu"
 
@@ -269,7 +269,7 @@ country_event = {
 
 country_event = {
     id = 197073
-    title = "EVTNAME197073"
+    title = "Ecuadorian Land Company."
     desc = "EVTDESC197073"
     picture = "carta_esclavitud_ecu"
 
@@ -310,7 +310,7 @@ country_event = {
 
 country_event = {
     id = 197074
-    title = "EVTNAME197074"
+    title = "Invite the Ecuadorians to negotiate?"
     desc = "EVTDESC197074"
     picture = "carta_esclavitud_ecu"
 
@@ -330,13 +330,13 @@ country_event = {
     }
 
     option = {
-        name = "Invite the Ecuadorians and tell them to back down."
+        name = "Invite the Ecuadorians to negotiate."
 		ECM = { country_event = { id = 198074 days = 3 } }
 		ai_chance = { factor = 1 }
     }
 
 	option = {
-        name = "No worth in negotiate with them."
+        name = "No worth negotiating with them."
 		relation = { who = ECM value = -100 }
 		badboy = 2
 		set_global_flag = peu_ecm_conflict_escalation_2
@@ -355,23 +355,20 @@ country_event = {
     is_triggered_only = yes
 
     option = {
-        name = "we will assist but we wont back down."
+        name = "Send a delegation to Lima but we wont back down."
 		prestige = 2
 		PEU = { country_event = 198075 }
 		set_global_flag = peu_ecm_conflict_escalation_2
-		ai_chance = { factor = 9 }
+		ai_chance = { factor = 99 }
     }
 	
 	option = {
-        name = "we can't risk a war against them"
+        name = "We can't risk a war against them, suspend the contract."
 		relation = { who = PEU value = 50 }
 		relation = { who = ENG value = -100 }
 		PEU = { country_event = 199075 }
 		prestige = -5
-		ENG = {
-			diplomatic_influence = { who = THIS value = -50 }
-			country_event = 198078
-		}
+		ENG = { diplomatic_influence = { who = THIS value = -50 } }
 		ai_chance = { factor = 1 }
     }
 }
@@ -394,7 +391,7 @@ country_event = {
 
 country_event = {
     id = 199075
-    title = "Ecuador accepts to negotiate."
+    title = "Ecuador accepts to suspend the Contract."
     desc = "EVTDESC199075"
     picture = "carta_esclavitud_ecu"
 
@@ -459,7 +456,7 @@ country_event = {
 
 country_event = {
     id = 198077
-    title = "The Icaza-Pritchett Convenio."
+    title = "The Icaza-Pritchett Contract."
     desc = "EVTDESC198077"
     picture = "carta_esclavitud_ecu"
 
@@ -468,23 +465,10 @@ country_event = {
 
     option = {
         name = "It's about time they pay their debt."
-		relation = { who = ECM value = 100 }
-		diplomatic_influence = { who = ECM value = 50 }
-    }
-}
-
-country_event = {
-    id = 198078
-    title = "Ecuador has suspended our deal."
-    desc = "EVTDESC198078"
-    picture = "carta_esclavitud_ecu"
-
-    fire_only_once = yes
-    is_triggered_only = yes
-
-    option = {
-        name = "We will get our money back."
-		casus_belli = { target = ECM type = war_reparations months = 36 }
+		relation = { who = ECM value = 20 }
+		money = 2000
+		diplomatic_influence = { who = ECM value = 20 }
+		NET = { diplomatic_influence = { who = ECM value = 10 } }
     }
 }
 
@@ -713,11 +697,10 @@ country_event = {
                 factor = -0.5
             }
         }
-		limit = {
-			has_global_flag = 1858_peru_victory
-			2288 = { is_core = THIS }
+		random_owned = {
+			limit = { owner = { has_global_flag = 1858_peru_victory 2288 = { is_core = ECU } } }
+			PEU = { country_event = 198083 }
 		}
-		PEU = { country_event = 198083 }
     }
 }
 
@@ -750,11 +733,15 @@ country_event = {
 			militancy -2
 			consciousness = 3
         }
-		limit = { has_global_flag = 1858_peru_victory }
-		any_owned = {
-			limit = { is_core = PEU NOT = { province_id = 2280 } }
-			secede_province = PEU
-			2280 = { remove_core = PEU }
+		random_owned = {
+			limit = { owner = { has_global_flag = 1858_peru_victory } }
+			THIS = {
+				any_owned = {
+					limit = { is_core = PEU NOT = { province_id = 2280 } }
+					secede_province = PEU
+					2280 = { remove_core = PEU }
+				}
+			}
 		}
     }
 }
@@ -771,6 +758,11 @@ country_event = {
     option = {
         name = "Damn Ecuadorians!"
 		relation = { who = ECU value = -40 }
+		random_owned = {
+			limit = { owner = { NOT = { 3359 = { owned_by = THIS } 2404 = { is_core = THIS } } } }
+			3359 = { remove_core = THIS }
+			set_country_flag = i_no_longer_have_cores_in_tonantins
+		}
     }
 }
 
@@ -867,6 +859,11 @@ country_event = {
                 factor = 0.2
 				relation = { who = FROM value = 190 }
 			}
+			modifier = {
+                factor = 0.4
+				2313 = { owned_by = PEU is_core = PEU }
+				2283 = { is_core = PEU }
+			}
 		}
     }
 	
@@ -883,7 +880,6 @@ country_event = {
 				OR = {
 					2280 = { owned_by = PEU } 
 					2283 = { owned_by = PEU } 
-					2313 = { owned_by = PEU }
 					exists = PBC
 				}
 				2283 = { OR = { is_core = PEU is_core = PBC } }
@@ -891,6 +887,11 @@ country_event = {
 			modifier = {
                 factor = 80
 				relation = { who = FROM value = 190 }
+			}
+			modifier = {
+                factor = 60
+				2313 = { owned_by = PEU is_core = PEU }
+				2283 = { is_core = PEU }
 			}
 		}
     }
@@ -1290,7 +1291,14 @@ country_event = {
 
     option = {
         name = "Leticia belongs to Peru."
-		add_country_modifier = { name = relutanct_figher duration = 250 }
+		random_owned = {
+			limit = { owner = { war_with = CLM CLM = { has_country_modifier = relutanct_figher duration } } }
+			add_country_modifier = { name = relutanct_figher duration = 250 }
+		}
+		random_owned = {
+			limit = { owner = { war_with = GCO GCO = { has_country_modifier = relutanct_figher duration } } }
+			add_country_modifier = { name = relutanct_figher duration = 250 }
+		}
     }
 }
 
@@ -1305,7 +1313,10 @@ country_event = {
 
     option = {
         name = "Leticia belongs to Colombia."
-		add_country_modifier = { name = relutanct_figher duration = 250 }
+		random_owned = {
+			limit = { owner = { PEU = { has_country_modifier = relutanct_figher duration } } }
+			add_country_modifier = { name = relutanct_figher duration = 250 }
+		}
 		random_owned = {
 			limit = { owner = { tag = CLM } }
 			PEU = { country_event = { id = 198091 days 241 } }
@@ -1475,7 +1486,7 @@ country_event = {
 country_event = {
     id = 198094
     title = "Rio de Janeiro Protocol signed."
-    desc = "EVTDESC198093"
+    desc = "EVTDESC198094"
     picture = "carta_esclavitud_ecu"
 
     fire_only_once = yes
@@ -1544,6 +1555,10 @@ country_event = {
 				OR = { alliance_with = THIS alliance_with = VNZ }
 			}
 			leave_alliance = THIS leave_alliance = VNZ
+		}
+		any_country = {
+			limit = { is_sphere_leader_of = VNZ }
+			diplomatic_influence = { who = VNZ value = -70 }
 		}
         war = {
             target = VNZ
@@ -1628,6 +1643,9 @@ country_event = {
     option = {
         name = "Bolivar's legacy shall live on."
 		prestige = 10
+		political_reform = open_borders
+		social_reform = incarceration
+		political_reform = federalism
 		CLM = { all_core = { add_core = GCO } }
 		VNZ = { all_core = { add_core = GCO } }
 		ECU = { all_core = { add_core = GCO } }
@@ -1668,6 +1686,258 @@ country_event = {
 				remove_core = CLM
 			}
 			capital = 2279
+		}
+    }
+}
+
+country_event = {
+    id = 197079
+    title = "The Chaco War"
+    desc = "Testing the Chaco War."
+    fire_only_once = yes
+    picture = "guayaquil_1846"
+    mean_time_to_happen = { days = 1 }
+    trigger = {
+        OR = { tag = PRG tag = LPL }
+        year = 1932
+		month = 8
+		owns = 2338
+		3570 = {
+			OR = {
+				AND = { owned_by = BOL is_core = BOL }
+				AND = { owned_by = PEU is_core = PEU }
+				AND = { owned_by = PBC is_core = PBC }
+			}
+		}
+    }
+    option = {
+        name = "We must seize the Chaco by any means necessary!"
+		set_global_flag = the_chaco_war
+		set_country_flag = the_chaco_war
+		3569 = { add_core = PRG add_core = BOL add_core = THIS }
+		3570 = { add_core = PRG add_core = BOL add_core = THIS }
+		2318 = { add_core = PRG add_core = BOL add_core = THIS }
+		2338 = { add_core = PRG add_core = BOL add_core = THIS }
+		2337 = { add_core = PRG add_core = BOL add_core = THIS }
+        random_owned = {
+            limit = { owner = { 3570 = { owned_by = BOL } } }
+            any_country = {
+				limit = {
+					OR = { alliance_with = THIS alliance_with = BOL }
+				}
+				leave_alliance = THIS leave_alliance = BOL
+			}
+			owner = {
+				random_owned = {
+					limit = { owner = { tag = PRG } }
+					owner = {
+						war = {
+							target = BOL
+							attacker_goal = { casus_belli = acquire_all_cores country = PRG }
+							defender_goal = { casus_belli = acquire_all_cores country = BOL }
+							call_ally = no
+						}
+					}
+				}
+				random_owned = {
+					limit = { owner = { tag = LPL } }
+					owner = {
+						war = {
+							target = BOL
+							attacker_goal = { casus_belli = acquire_all_cores country = LPL }
+							defender_goal = { casus_belli = acquire_all_cores country = BOL }
+							call_ally = no
+						}
+					}
+				}
+			}
+			BOL = { country_event = 198095 }
+        }
+        random_owned = {
+            limit = { owner = { 3570 = { owned_by = PEU } } }
+			3569 = { add_core = PEU }
+			3570 = { add_core = PEU }
+			2318 = { add_core = PEU }
+			2338 = { add_core = PEU }
+			2337 = { add_core = PEU }
+			any_country = {
+				limit = {
+					OR = { alliance_with = THIS alliance_with = PEU }
+				}
+				leave_alliance = THIS leave_alliance = PEU
+			}
+			owner = {
+				random_owned = {
+					limit = { owner = { tag = PRG } }
+					owner = {
+						war = {
+							target = PEU
+							attacker_goal = { casus_belli = acquire_all_cores country = PRG }
+							defender_goal = { casus_belli = acquire_all_cores country = PEU }
+							call_ally = no
+						}
+					}
+				}
+				random_owned = {
+					limit = { owner = { tag = LPL } }
+					owner = {
+						war = {
+							target = PEU
+							attacker_goal = { casus_belli = acquire_all_cores country = LPL }
+							defender_goal = { casus_belli = acquire_all_cores country = PEU }
+							call_ally = no
+						}
+					}
+				}
+			}
+			PEU = { country_event = 198095 }
+        }
+		random_owned = {
+            limit = { owner = { 3570 = { owned_by = PBC } } }
+            3569 = { add_core = PBC }
+			3570 = { add_core = PBC }
+			2318 = { add_core = PBC }
+			2338 = { add_core = PBC }
+			2337 = { add_core = PBC }
+			any_country = {
+				limit = {
+					OR = { alliance_with = THIS alliance_with = PBC }
+				}
+				leave_alliance = THIS leave_alliance = PBC
+			}
+			owner = {
+				random_owned = {
+					limit = { owner = { tag = PRG } }
+					owner = {
+						war = {
+							target = PBC
+							attacker_goal = { casus_belli = acquire_all_cores country = PBC }
+							defender_goal = { casus_belli = acquire_all_cores country = PBC }
+							call_ally = no
+						}
+					}
+				}
+				random_owned = {
+					limit = { owner = { tag = LPL } }
+					owner = {
+						war = {
+							target = PBC
+							attacker_goal = { casus_belli = acquire_all_cores country = LPL }
+							defender_goal = { casus_belli = acquire_all_cores country = PBC }
+							call_ally = no
+						}
+					}
+				}
+			}
+			PBC = { country_event = 198095 }
+        }
+		ai_chance = {
+            factor = 99
+            modifier = {
+                factor = 0
+                3570 = { owner = { brigades_compare = 5 } }
+            }
+		}
+    }
+	
+    option = {
+        name = "We have no choice but to give up the Chaco"
+		prestige = -10
+		3569 = { add_core = BOL remove_core = PRG remove_core = THIS }
+		3570 = { add_core = BOL remove_core = PRG remove_core = THIS }
+		2318 = { add_core = BOL remove_core = PRG remove_core = THIS }
+		2338 = { add_core = BOL remove_core = PRG remove_core = THIS }
+		2337 = { add_core = BOL remove_core = PRG remove_core = THIS }
+        3570 = { owner = { country_event = 199095 } }
+		ai_chance = { factor = 1 }
+    }
+}
+
+country_event = {
+    id = 198095
+    title = "The Chaco War."
+    desc = "EVTDESC198095"
+    picture = "carta_esclavitud_ecu"
+
+    fire_only_once = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "This is a declaration of War!"
+		set_country_flag = the_chaco_war
+    }
+}
+
+country_event = {
+    id = 199095
+    title = "The Chaco region is ours."
+    desc = "EVTDESC199095"
+    picture = "carta_esclavitud_ecu"
+
+    fire_only_once = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "they made a wise choice"
+		3569 = { add_core = THIS }
+		3570 = { add_core = THIS }
+		2318 = { add_core = THIS }
+		2338 = { add_core = THIS }
+		2337 = { add_core = THIS }
+		FROM = {
+			any_owned = {
+				limit = {
+					OR = {
+					 	province_id = 3569
+						province_id = 3570
+						province_id = 2318
+						province_id = 2337
+						province_id = 2338
+					}
+				}
+				secede_province = THIS
+			}
+			relation = { who = THIS value = 100 }
+		}
+    }
+}
+
+country_event = {
+    id = 198096
+    title = "Treaty of Buenos Aires."
+    desc = "EVTDESC198096"
+    picture = "carta_esclavitud_ecu"
+
+    fire_only_once = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "At least we got something..."
+		prestige = -2
+		FROM = {
+			any_owned = {
+				limit = { is_core = THIS }
+				secede_province = THIS
+			}
+		}
+    }
+}
+
+country_event = {
+    id = 199096
+    title = "Treaty of Buenos Aires Hosted." #Event for Neutral Buenos Aires
+    desc = "EVTDESC199096"
+    picture = "carta_esclavitud_ecu"
+
+    fire_only_once = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "Finally, peace on the region."
+		prestige = 5
+		any_country = {
+			limit = { has_country_flag = the_chaco_war }
+			relation = { who = THIS value = 50 }
 		}
     }
 }
