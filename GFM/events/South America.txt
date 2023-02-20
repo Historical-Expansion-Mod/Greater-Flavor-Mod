@@ -224,6 +224,53 @@ country_event = {
     }
 }
 
+#GCO Union long time united
+country_event = {
+    id = 4874211
+    title = "Nationalism in the Union"
+    desc = "EVTDESC42342"
+    picture = "celebration"
+
+    trigger = {
+        tag = GCO
+		OR = {
+			government = prussian_constitutionalism
+			government = hms_government
+			government = democracy
+			government = theocracy
+			government = semi_constitutional_empire
+			government = constitutional_empire
+		}
+		owns = 2264 #Caracas
+        owns = 2247 #Bogota
+		owns = 2279 #Quito
+		CLM = { exists = no }
+        ECU = { exists = no }
+		VNZ = { exists = no }
+		NOT = { has_country_flag = permanent_union }
+		has_country_flag = gco_survived
+		NOT = { has_country_modifier = gco_survived_modifier }
+		OR = {
+			centralization = federalism
+			centralization = unitary
+		}
+    }
+
+    mean_time_to_happen = {
+	    months = 1
+	}
+
+    option = {
+        name = "Three Hurrays for La Gran Colombia."
+		set_country_flag = permanent_union
+		prestige = 10
+		CLM = { all_core = { remove_core = CLM } }
+		VNZ = { all_core = { remove_core = VNZ } }
+		ECU = { all_core = { remove_core = ECU } }
+        any_pop = { militancy = -2 }
+    }
+}
+
 country_event = {
     id = 46303
     title = "EVTNAME46303" #War of the Farrapos
@@ -637,10 +684,7 @@ country_event = {
 
     trigger = {
         tag = ECU
-		OR = {
-			government = democracy
-			has_country_flag = Government_Democracy	
-		}
+		government = democracy
         year = 1842
         election = yes
         NOT = { year = 1860 }
@@ -707,10 +751,7 @@ country_event = {
 
     trigger = {
         tag = ECU
-		OR = {
-			government = democracy
-			has_country_flag = Government_Democracy	
-		}
+		government = democracy
         year = 1860
         NOT = { year = 1885 }
         OR = {
@@ -814,6 +855,11 @@ country_event = {
                 owns = 2315            #Tarija
             }
             ARG = {
+                war = no
+                owns = 2370        #Cochinoca
+                owns = 2315            #Tarija
+            }
+			LPL = {
                 war = no
                 owns = 2370        #Cochinoca
                 owns = 2315            #Tarija
@@ -967,7 +1013,7 @@ country_event = {
     }
 }
 
-#Garc?a Ortiz-Mangabeira Treaty
+#García Ortiz-Mangabeira Treaty
 country_event = {
     id = 46610100
     title = "EVTNAME46610100"
@@ -982,34 +1028,48 @@ country_event = {
 		2401 = { remove_core = THIS }
 		3567 = { remove_core = THIS }
 		3359 = { remove_core = THIS }
-		random_owned = {
-			limit = {
-				owner = {
-					has_global_flag = amz_created
-				}
-			}
-			owner = { 3359 = { add_core = AMZ } 2401 = { add_core = AMZ } }
-		}
-		random_owned = {
-			limit = {
-				owner = {
-					NOT = { has_global_flag = amz_created }
-				}
-			}
-			owner = { 3359 = { add_core = PAA } 2401 = { add_core = PAA } }
-		}
-		any_owned = {
-			limit = {
-				OR = {
-					province_id = 2401
-					province_id = 3359
-					province_id = 3567
-				}
-			}
-			add_core = BRZ
-			secede_province = BRZ
-		}
-        relation = { who = BRZ value = 300 }
+		3359 = { add_core = PAA } 
+        2401 = { add_core = PAA }
+        random_owned = {
+            limit = {
+                2403 = { owned_by = UPB }
+                3652 = { owned_by = UPB }
+            }
+            owner = {
+        		any_owned = {
+			        limit = {
+				        OR = {
+					        province_id = 2401
+					        province_id = 3359
+					        province_id = 3567
+				        }
+			        }
+			        add_core = BRZ
+                    add_core = UPB
+			        secede_province = UPB
+		        }
+            }
+        }
+        random_owned = {
+            limit = {
+                2403 = { owned_by = BRZ }
+                3652 = { owned_by = BRZ }
+            }
+            owner = {
+        		any_owned = {
+			        limit = {
+				        OR = {
+					        province_id = 2401
+					        province_id = 3359
+					        province_id = 3567
+				        }
+			        }
+			        add_core = BRZ
+			        secede_province = BRZ
+		        }
+            }
+        }
+        relation = { who = FROM value = 300 }
         ai_chance = { factor = 90 }
     }
 
@@ -1028,6 +1088,19 @@ country_event = {
 			}
 			add_core = BRZ
 		}
+        any_owned = {
+			limit = {
+				OR = {
+					province_id = 2401
+					province_id = 3567
+					province_id = 3359
+                    province_id = 2261
+                    province_id = 2260
+				}
+                owner = { exists = UPB }
+			}
+			add_core = UPB
+		}
 		random_owned = {
 			limit = {
 				owner = {
@@ -1038,11 +1111,11 @@ country_event = {
 				3567 = { add_core = THIS }
 			}
 		}
-        relation = { who = BRZ value = -400 }
+        relation = { who = FROM value = -400 }
         ai_chance = {
             factor = 10
             modifier = { factor = 1.5 is_greater_power = yes }
-            modifier = { factor = 0 OR = { in_sphere = BRZ vassal_of = BRZ } }
+            modifier = { factor = 0 OR = { in_sphere = FROM vassal_of = FROM } }
             modifier = { factor = 0 badboy = 0.95 }
         }
     }
@@ -1071,19 +1144,43 @@ country_event = {
 				owner = {
 					owns = 2321
 					owns = 2319
-					BRZ = { owns = 3382 }
+					OR = {
+                        BRZ = { owns = 3382 }
+                        UPB = { owns = 3382 }
+                    }
 					tag = PEU
 				}
 			}
 			owner = {
-				3382 = { secede_province = THIS add_core = THIS add_core = BOL remove_core = BRZ remove_core = AMZ remove_core = PAA }
+				3382 = { 
+					owner = { 
+						3382 = { 
+							secede_province = THIS 
+							add_core = THIS 
+							add_core = BOL 
+							remove_core = BRZ 
+							remove_core = PAA 
+							remove_core = UPB 
+						} 
+					} 
+				}
+				2321 = {
+					add_core = THIS
+					add_core = BOL
+					remove_core = BRZ 
+					remove_core = PAA 
+					remove_core = UPB 
+				}
 			}
 		}
 		random_owned = {
 			limit = {
 				owner = {
 					owns = 2321
-					BRZ = { owns = 3382 }
+					OR = {
+                        BRZ = { owns = 3382 }
+                        UPB = { owns = 3382 }
+                    }
 					OR = {
 						tag = LPL
 						tag = BOL
@@ -1093,14 +1190,17 @@ country_event = {
 				}
 			}
 			owner = {
-				BRZ = { 3382 = { secede_province = THIS add_core = THIS add_core = PEU remove_core = BRZ remove_core = AMZ remove_core = PAA } }
+				3382 = { owner = { 3382 = { secede_province = THIS add_core = THIS add_core = PEU remove_core = BRZ remove_core = PAA remove_core = UPB } } }
 			}
 		}
 		random_owned = {
 			limit = {
 				owner = {
 					owns = 2321
-					BRZ = { owns = 3382 }
+					OR = {
+                        BRZ = { owns = 3382 }
+                        UPB = { owns = 3382 }
+                    }
 					OR = {
 						tag = LPL
 						tag = BOL
@@ -1110,7 +1210,7 @@ country_event = {
 				}
 			}
 			owner = {
-				BRZ = { 3382 = { secede_province = THIS add_core = THIS remove_core = BRZ remove_core = AMZ remove_core = PAA } }
+				3382 = { owner = { 3382 = { secede_province = THIS add_core = THIS remove_core = BRZ remove_core = PAA remove_core = UPB } } }
 			}
 		}
 		any_country = {
@@ -1161,23 +1261,12 @@ country_event = {
 			}
 		}
         relation = { who = BRZ value = -200 }
-		random_owned = {
-			limit = {
-				owner = {
-					has_global_flag = amz_created
-				}
-			}
-			owner = { 2321 = { add_core = AMZ add_core = BRZ } }
-		}
-		random_owned = {
-			limit = {
-				owner = {
-					NOT = { has_global_flag = amz_created }
-				}
-			}
-			owner = { 2321 = { add_core = PAA add_core = BRZ } }
-		}
+		2321 = { add_core = PAA add_core = BRZ }
 		3382 = { add_core = BRZ add_core = MGO }
+        random_owned = {
+            limit = { owner = { exists = UPB } }
+            3382 = { add_core = UPB }
+        }
         ai_chance = {
             factor = 20
             modifier = { factor = 1.5 is_greater_power = yes }
@@ -1413,5 +1502,56 @@ country_event = {
         name = "Glory to the Argentine Confederation!"
 		prestige = 3
 		FRA = { prestige = -3 }
-		}
 	}
+}
+
+country_event = {
+    id = 4874202
+    title = "The Union has been compromised"
+    desc = "EVTDESC48742"
+    picture = "celebration"
+
+    trigger = {
+        tag = GCO
+		OR = {
+			AND = {
+				CLM = { 
+					exists = yes 
+					owns = 2247 #Bogota
+					NOT = { vassal_of = GCO }
+					NOT = { war_with = GCO }
+				}
+			}
+            AND = {
+				VNZ = { 
+					exists = yes 
+					owns = 2264 #Caracas
+					NOT = { vassal_of = GCO }
+					NOT = { war_with = GCO }
+				}
+			}
+			AND = {
+				ECU = { 
+					exists = yes 
+					owns = 2279 #Quito
+					NOT = { vassal_of = GCO }
+					NOT = { war_with = GCO }
+				}
+			}
+		}
+		NOT = { has_country_flag = permanent_union }
+		has_country_flag = gco_survived
+		has_country_modifier = gco_survived_modifier
+    }
+
+    mean_time_to_happen = {
+	    days = 1
+	}
+
+    option = {
+        name = "This is an insult to Bolivar's dream"
+		prestige = -5
+		remove_country_modifier = gco_survived_modifier
+        clr_country_flag = gco_survived
+    }
+}

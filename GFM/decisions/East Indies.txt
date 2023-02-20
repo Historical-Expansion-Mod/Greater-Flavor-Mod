@@ -91,6 +91,16 @@ political_decisions = {
             diplomatic_influence = { who = BRU value = 400 }
             create_vassal = BRU
             set_country_flag = brunei_protectorate
+			random_owned = {
+				limit = {
+					owner = {
+						BRU = { owns = 1396 }
+					}
+				}
+				owner = {
+					1396 = { secede_province = THIS }
+				}
+			}
         }
 
         ai_will_do = { factor = 1 }
@@ -141,7 +151,7 @@ political_decisions = {
             set_country_flag = integrated_johore
             JOH = { civilized = no tech_school = developing_tech_school }
             create_vassal = JOH
-            any_owned = { limit = { NOT = { OR = { province_id = 1386 province_id = 1384 province_id = 1385 } } } remove_core = JOH }
+            any_owned = { limit = { NOT = { province_id = 1386 province_id = 1384 province_id = 1385 } } remove_core = JOH }
             1388 = { remove_core = JOH add_core = PRK }
             1389 = { remove_core = JOH add_core = PRK }
             1391 = { remove_core = JOH add_core = PHG }
@@ -945,7 +955,6 @@ political_decisions = {
         effect = {
             prestige = 5
             set_global_flag = sarawak_protectorate
-            SWK = { civilized = no government = colonial_company }
             SWK = { annex_to = THIS }
             SWK = { tech_school = developing_tech_school }
         }
@@ -1214,7 +1223,7 @@ political_decisions = {
             CAM = { tech_school = developing_tech_school }
         }
     }
-
+	
     create_laos_protectorate = {
         picture = unequal_treaty
         potential = {
@@ -1226,53 +1235,21 @@ political_decisions = {
             }
             NOT = { tag = TUR }
             owns = 1369
-            OR = {
-                LUA = {
-                    NOT = { has_country_flag = annexed_to_FRA }
-                    neighbour = THIS
-                    civilized = no
-                    ai = yes
-                    war = no
-                    OR = {
-                        part_of_sphere = no
-                        in_sphere = THIS
-                    }
-                    OR = {
-                        is_vassal = no
-                        vassal_of = THIS
-                    }
+			any_neighbor_country = {
+                NOT = { has_country_flag = annexed_to_FRA }
+                civilized = no
+                ai = yes
+                war = no
+                OR = {
+                    part_of_sphere = no
+                    in_sphere = THIS
                 }
-                WIA = {
-                    NOT = { has_country_flag = annexed_to_FRA }
-                    neighbour = THIS
-                    civilized = no
-                    ai = yes
-                    war = no
-                    OR = {
-                        part_of_sphere = no
-                        in_sphere = THIS
-                    }
-                    OR = {
-                        is_vassal = no
-                        vassal_of = THIS
-                    }
+                OR = {
+                    is_vassal = no
+                    vassal_of = THIS
                 }
-                CHK = {
-                    NOT = { has_country_flag = annexed_to_FRA }
-                    neighbour = THIS
-                    civilized = no
-                    ai = yes
-                    war = no
-                    OR = {
-                        part_of_sphere = no
-                        in_sphere = THIS
-                    }
-                    OR = {
-                        is_vassal = no
-                        vassal_of = THIS
-                    }
-                }
-            }
+				primary_culture = lao
+			}
             has_global_flag = berlin_conference
         }
 
@@ -1324,7 +1301,7 @@ political_decisions = {
                         is_core = DAI
                         is_core = CAM
                         is_core = LUA
-                        is_core = WIA
+                        is_core = XAN
                     }
                 }
             }
@@ -1438,8 +1415,7 @@ political_decisions = {
             civilized = yes
             NOT = {
                 exists = LUA
-                exists = WIA
-                exists = LXA
+                exists = XAN
                 exists = CHK
                 has_global_flag = laos_organized
                 primary_culture = lao
@@ -1463,30 +1439,24 @@ political_decisions = {
             prestige = 5
             LUA = {
                 all_core = {
-                    add_core = LXA
+                    add_core = XAN
                     remove_core = LUA
-                }
-            }
-            WIA = {
-                all_core = {
-                    add_core = LXA
-                    remove_core = WIA
                 }
             }
             CHK = {
                 all_core = {
-                    add_core = LXA
+                    add_core = XAN
                     remove_core = CHK
                 }
             }
             any_owned = {
-                limit = { is_core = LXA }
+                limit = { is_core = XAN }
                 add_province_modifier = {
                     name = colonial_exploitation
                     duration = 1095
                 }
             }
-            LXA = {
+            XAN = {
                 set_country_flag = Luangprabang
 				government = democracy
                 political_reform = landed_voting
@@ -1546,7 +1516,6 @@ political_decisions = {
                 }
                 relation = { who = THIS value = -100 }
             }
-            DAI = { government = colonial_company }
         }
 
         ai_will_do = { factor = 1 }
@@ -1555,13 +1524,16 @@ political_decisions = {
     form_laos = {
         picture = form_laos
         potential = {
-            primary_culture = lao
             OR = {
-                owns = 1356
-                owns = 1357
-            }
-            NOT = { exists = LXA }
-            NOT = { has_country_flag = laos_formed }
+				tag = XAN
+				tag = LUA
+				tag = CHK
+			}
+			OR = {
+				owns = 1356
+				owns = 1357
+			}
+            NOT = { has_global_flag = laos_formed }
             NOT = { has_country_flag = post_colonial_country }
         }
 
@@ -1589,17 +1561,29 @@ political_decisions = {
         }
 
         effect = {
-            set_country_flag = laos_formed
-            any_owned = {
-                limit = { OR = { is_core = LUA is_core = CHK is_core = WIA } }
-                remove_core = LUA
-                remove_core = CHK
-                remove_core = WIA
-            }
-            LUA_1356 = { add_core = LXA }
-            random_owned = { limit = { owner = { ai = no } } owner = { 1358 = { add_core = LXA } 1359 = { add_core = LXA } } }
+            set_global_flag = laos_formed
+			LUA = { all_core = { remove_core = LUA } }
+			CHK = { all_core = { remove_core = CHK } }
+            LUA_1356 = { 
+				add_core = XAN 
+			}
+			1358 = {
+				add_core = XAN
+			}
+			1359 = {
+				add_core = XAN
+			}
+            random_owned = {
+				limit = {
+					owner = {
+						NOT = { tag = XAN }
+					}
+				}
+				owner = {
+					change_tag = XAN
+				}
+			}
             prestige = 10
-            change_tag = LXA
             any_country = {
                 limit = {
                     is_greater_power = no
@@ -1609,13 +1593,44 @@ political_decisions = {
                         value = 5
                     }
                     NOT = {
-                        tag = THIS
                         truce_with = THIS
+						tag = XAN
                     }
                     primary_culture = lao
+					exists = yes
                 }
                 country_event = 97120
             }
+			random_owned = {
+				limit = {
+					owner = { 
+						government = absolute_monarchy
+					}
+				}
+				owner = {
+					XAN = { government = absolute_empire }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = { 
+						government = prussian_constitutionalism
+					}
+				}
+				owner = {
+					XAN = { government = semi_constitutional_empire }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = { 
+						government = hms_government
+					}
+				}
+				owner = {
+					XAN = { government = constitutional_empire }
+				}
+			}
         }
         ai_will_do = {
             factor = 1

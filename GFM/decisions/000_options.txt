@@ -44,6 +44,7 @@ political_decisions = {
 	
 	disable_microstates = {
         picture = starting_options
+		alert = no
         potential = {
             ai = no
 			NOT = { has_global_flag = sw_set }
@@ -56,8 +57,31 @@ political_decisions = {
             set_global_flag = disable_microstates
             3251 = { remove_core = MNC add_core = SAR add_core = ITA }
             SAR = { inherit = MNC }
-            3252 = { remove_core = ADO remove_core = CAT add_core = SPA }
-            SPA = { inherit = ADO }
+            3252 = { remove_core = ADO remove_core = CAT }
+			random_owned = {
+				limit = {
+					owner = {
+						SPA = { exists = yes }
+						SPC = { exists = no }
+					}
+				}
+				owner = {
+					SPA = { inherit = ADO }
+					3252 = { add_core = SPA }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						SPC = { exists = yes }
+						SPA = { exists = no }
+					}
+				}
+				owner = {
+					SPC = { inherit = ADO }
+					3252 = { add_core = SPC }
+				}
+			}
             3253 = { remove_core = LIE add_core = AUS }
             AUS = { inherit = LIE }
             3266 = { remove_core = SMR add_core = PAP add_core = ITA }
@@ -187,14 +211,15 @@ political_decisions = {
 	
 	option_early_israel = { 
 		picture = israeli_flag 
-		
+		alert = no
 		potential = { 
 			ai = no
-            has_country_flag = country_looking_through_options
+			has_country_flag = country_looking_through_options
 			has_global_flag = fantasy_countries_enabled
-            NOT = { year = 1837 }
+			NOT = { year = 1837 } 
 			NOT = { has_global_flag = early_israel } 
 		}
+		
 		allow = {} 
 		
 		effect = { 
@@ -209,7 +234,12 @@ political_decisions = {
 			908 = { add_core = TUR } 
 			909 = { add_core = TUR } 
 			908 = { add_core = EGY } 
-			909 = { add_core = EGY } 
+			909 = { add_core = EGY }
+			TUR = { 
+				release = ISR 
+				release_vassal = ISR 
+				any_owned = { limit = { is_core = ISR } secede_province = ISR }
+			}
 			EGY = { 
 				release = ISR 
 				release_vassal = ISR 
@@ -218,12 +248,22 @@ political_decisions = {
 			ISR = { 
 				civilized = yes 
 				government = democracy 
-				set_country_flag = Government_Democracy
-			} 
+				country_event = { id = 98400 days = 2 } 
+			}
+			any_owned = {
+				limit = {
+					is_core = ISR
+				}
+				add_province_modifier = { 
+					name = jewish_farms 
+					duration = -1
+				}
+			}
 			change_tag_no_core_switch = ISR
 		}
 		ai_will_do = { factor = 0 } 
 	}
+	
     option_disable_colonial_railroading = {
         alert = no
         picture = starting_options
@@ -528,7 +568,7 @@ political_decisions = {
                 is_secondary_power = yes
             }
             OR = {
-                NOT = { tag = USA tag = US2 }
+                NOT = { tag = USA }
                 year = 1860
             }
             slavery = yes_slavery
@@ -569,7 +609,6 @@ political_decisions = {
                 OR = {
                     war = yes
                     tag = USA
-					tag = US2
                     capital_scope = {
                         continent = europe
                     }
@@ -783,7 +822,7 @@ political_decisions = {
             OR = {
                 government = fascist_dictatorship
                 government = proletarian_dictatorship
-                government = parliamentary_republic
+                government = radical_republic
                 invention = mass_advertising
                 associationism = 1
             }
@@ -921,7 +960,7 @@ political_decisions = {
         picture = royal_gift
         alert = no
         potential = {
-            NOT = { is_greater_power = yes }
+            is_greater_power = no
             ai = no
             has_country_flag = government_decisions_on
         }
@@ -1012,6 +1051,7 @@ political_decisions = {
 	
 	incorp = {
         picture = diplo_annex
+		alert = no
         potential = {
             is_greater_power = yes
             has_country_flag = government_decisions_on
@@ -1559,7 +1599,7 @@ political_decisions = {
         alert = no
         potential = {
             civilized = yes
-            war = yes
+            #war = yes
             OR = {
                 AND = {
                     conscription = no_draft
@@ -1587,7 +1627,10 @@ political_decisions = {
 
         allow = {
             NOT = { has_country_modifier = law_changed_by_force }
-            any_neighbor_country = { war_with = THIS civilized = yes }
+            OR = {
+				AND = { ai = yes any_neighbor_country = { war_with = THIS civilized = yes } }
+				AND = { ai = no any_neighbor_country = { civilized = yes } }
+			}
             OR = {
                 has_country_flag = in_great_war
                 AND = {
@@ -1595,7 +1638,7 @@ political_decisions = {
                     conscription = no_draft
                 }
                 AND = {
-                    NOT = { OR = { war_policy = pacifism war_policy = anti_military } }
+                    NOT = { war_policy = pacifism war_policy = anti_military }
                     OR = {
                         conscription = one_year_draft
                         conscription = two_year_draft
@@ -1607,7 +1650,7 @@ political_decisions = {
                         war_policy = jingoism
                         government = fascist_dictatorship
                         government = proletarian_dictatorship
-                        government = parliamentary_republic
+                        government = radical_republic
                         has_country_flag = in_great_war
                     }
                 }
@@ -1623,7 +1666,7 @@ political_decisions = {
                         OR = {
                             government = fascist_dictatorship
                             government = proletarian_dictatorship
-                            government = parliamentary_republic
+                            government = radical_republic
                             has_country_flag = in_great_war
                         }
                     }
