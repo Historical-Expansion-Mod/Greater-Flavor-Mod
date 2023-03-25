@@ -725,12 +725,15 @@ political_decisions = {
 				OR = {
 					owned_by = ECU
 					owned_by = ECM
-					AND = { owned_by = GCO NOT = { centralization = unitary } }
-					AND = { owned_by = CLM NOT = { centralization = unitary } }
-					AND = { owned_by = PEU NOT = { centralization = unitary } }
+					AND = { owned_by = GCO GCO = { NOT = { centralization = unitary } } }
+					AND = { owned_by = CLM CLM = { NOT = { centralization = unitary } } }
+					AND = { owned_by = PEU PEU = { NOT = { centralization = unitary } } }
 				}
 				owner = { NOT = { centralization = totalitarianism } }
-				NOT = { has_province_modifier = guayaquil_grown }
+			}
+			OR = {
+				2280 = { NOT = { has_province_modifier = guayaquil_city_grown } }
+				AND = { 3680 = { owner = { owns = 2280 } NOT = { has_province_modifier = guayaquil_countryside_grown } } }
 			}
         }
 		
@@ -738,32 +741,53 @@ political_decisions = {
 		}
 
         effect = {
-			2280 = { add_province_modifier = { name = guayaquil_city_grown duration = -1 } }
-			3680 = {
-				owner = {
-					limit = { owns = 2280 }
-					add_province_modifier = { name = guayaquil_countryside_grown duration = -1 } }
-				}
+			random_owned = {
+				limit = { owner = { 2280 = { NOT = { has_province_modifier = guayaquil_city_grown } } } }
+				2280 = { add_province_modifier = { name = guayaquil_city_grown duration = -1 } }
+			}
+			random_owned = {
+				limit = { owner = { 3680 = { owner = { owns = 2280 } NOT = { has_province_modifier = guayaquil_countryside_grown } } } }
+				3680 = { add_province_modifier = { name = guayaquil_countryside_grown duration = -1 } }
 			}
         }
         ai_will_do = { factor = 1 }
     }
-}
 
 	guayaquil_grown_remove = {
         potential = {
 			tag = CLN
 			has_global_flag = global_setup_complete
-			year = 1900
-			2280 = { has_province_modifier = guayaquil_grown }
+			OR = {
+				year = 1900
+				2280 = {
+					OR = {
+						AND = {
+							NOT = { owned_by = ECU }
+							NOT = { owned_by = ECM }
+							OR = {
+								AND = { owned_by = GCO GCO = { centralization = unitary } }
+								AND = { owned_by = CLM CLM = { centralization = unitary } }
+								AND = { owned_by = PEU PEU = { centralization = unitary } }
+								AND = {
+									NOT = { owned_by = GCO }
+									NOT = { owned_by = CLM }
+									NOT = { owned_by = PEU }
+								}
+							}
+						}
+						owner = { centralization = totalitarianism }
+					}
+				}
+			}
+			OR = { 2280 = { has_province_modifier = guayaquil_city_grown } 3680 = { has_province_modifier = guayaquil_countryside_grown } }
         }
 		
 		allow = {
 		}
 
         effect = {
-		    2280 = { remove_province_modifier = guayaquil_city_grown duration = -1 }
-			3680 = { remove_province_modifier = guayaquil_countryside_grown duration = -1 }
+		    2280 = { remove_province_modifier = guayaquil_city_grown }
+			3680 = { remove_province_modifier = guayaquil_countryside_grown }
         }
         ai_will_do = { factor = 1 }
     }
