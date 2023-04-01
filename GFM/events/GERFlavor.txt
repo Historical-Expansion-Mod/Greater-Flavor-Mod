@@ -355,8 +355,70 @@ country_event = {
 
     option = {
         name = "EVT33006OPTA"
+        #If Zanzibar exists and is a German vassal, Germany will release it
         random_owned = {
-            limit = { owner = { owns = 2029 } }
+            limit = {
+				owner = {
+					ZAN = { 
+						vassal_of = THIS
+						exists = yes
+					}
+				}
+            }
+            owner = {
+                release_vassal = ZAN
+                diplomatic_influence = {
+                    who = ZAN
+                    value = -400
+                }
+				set_global_flag = give_uk_zanzibar
+            }
+        }
+
+        #If Zanzibar was annexed by Germany, release it
+        random_owned = {
+            limit = {
+				owner = {
+					owns = 2048 #Zanzibar
+					NOT = { exists = ZAN }
+				}
+            }
+			owner = {
+				2048 = { secede_province = ZAN }
+				set_global_flag = give_uk_zanzibar
+			}
+        }
+
+        #UK Receives Zanzibar as a vassal if it was German beforehand
+        random_country = {
+            limit = {
+                tag = ZAN
+                is_vassal = no
+                exists = yes
+                has_global_flag = give_uk_zanzibar
+            }
+			set_country_flag = colony_exemption
+            ENG = {
+                create_vassal = ZAN
+                diplomatic_influence = {
+                    who = ZAN
+                    value = 400
+                }
+            }
+			THIS = { set_country_flag = germany_gave_colonies }
+        }
+		
+		#If Germany owns part of Kenya, it gives it to the UK
+        random_owned = {
+            limit = { 
+				owner = { 
+					OR = {
+						owns = 2029 
+						owns = 2027
+						owns = 2045
+					}
+				} 
+			}
             owner = {
                 any_owned = {
                     limit = {
@@ -372,49 +434,31 @@ country_event = {
                 set_country_flag = germany_gave_colonies
             }
         }
-
-        #If Zanzibar exists, Germany will release it
-        random_country = {
-            limit = {
-                tag = ZAN
-                vassal_of = THIS
-                exists = yes
-                has_country_flag = german_east_africa_zan
-            }
-            THIS = {
-                release_vassal = ZAN
-                diplomatic_influence = {
-                    who = ZAN
-                    value = -400
-                }
-            }
-        }
-
-        #If Zanzibar was annexed by Germany, release it
+		
+		#If Germany neither owned part of Kenya nor Zanzibar but do own Cameroon, they give a strip to the UK
         random_owned = {
-            limit = {
-                province_id = 2048 #Zanzibar
-                owned_by = THIS
-                NOT = { exists = ZAN }
-            }
-            secede_province = ZAN
-        }
-
-        #UK Receives Zanzibar as a vassal
-        random_country = {
-            limit = {
-                tag = ZAN
-                is_vassal = no
-                exists = yes
-                has_country_flag = german_east_africa_zan
-            }
-			set_country_flag = colony_exemption
-            ENG = {
-                create_vassal = ZAN
-                diplomatic_influence = {
-                    who = ZAN
-                    value = 400
+            limit = { 
+				owner = { 
+					NOT = { has_country_flag = germany_gave_colonies } 
+					owns = 1953 
+					owns = 1961 
+					ENG = {
+						owns = 1950
+						owns = 1951
+					}
+				} 
+			}
+            owner = {
+                any_owned = {
+                    limit = {
+                        OR = {
+                            province_id = 1953 
+							province_id = 1961
+                        }
+                    }
+                    secede_province = ENG
                 }
+                set_country_flag = germany_gave_colonies
             }
         }
 
