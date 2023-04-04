@@ -355,57 +355,47 @@ country_event = {
 
     option = {
         name = "EVT33006OPTA"
+        #If Zanzibar exists and is a German vassal, Germany will release it
         random_owned = {
-            limit = { owner = { owns = 2029 } }
-            owner = {
-                any_owned = {
-                    limit = {
-                        OR = {
-                            region = ENG_2024
-                            region = ENG_2026
-                            province_id = 1870
-                        }
-                    }
-                    secede_province = ENG
-                }
-                set_country_flag = germany_gave_colonies
-            }
-        }
-
-        #If Zanzibar exists, Germany will release it
-        random_country = {
             limit = {
-                tag = ZAN
-                vassal_of = THIS
-                exists = yes
-                has_country_flag = german_east_africa_zan
+				owner = {
+					ZAN = {
+						vassal_of = THIS
+						exists = yes
+					}
+				}
             }
-            THIS = {
+            owner = {
                 release_vassal = ZAN
                 diplomatic_influence = {
                     who = ZAN
                     value = -400
                 }
+				set_global_flag = give_uk_zanzibar
             }
         }
 
         #If Zanzibar was annexed by Germany, release it
         random_owned = {
             limit = {
-                province_id = 2048 #Zanzibar
-                owned_by = THIS
-                NOT = { exists = ZAN }
+				owner = {
+					owns = 2048 #Zanzibar
+					NOT = { exists = ZAN }
+				}
             }
-            secede_province = ZAN
+			owner = {
+				2048 = { secede_province = ZAN }
+				set_global_flag = give_uk_zanzibar
+			}
         }
 
-        #UK Receives Zanzibar as a vassal
+        #UK Receives Zanzibar as a vassal if it was German beforehand
         random_country = {
             limit = {
                 tag = ZAN
                 is_vassal = no
                 exists = yes
-                has_country_flag = german_east_africa_zan
+                has_global_flag = give_uk_zanzibar
             }
 			set_country_flag = colony_exemption
             ENG = {
@@ -414,6 +404,61 @@ country_event = {
                     who = ZAN
                     value = 400
                 }
+            }
+			THIS = { set_country_flag = germany_gave_colonies }
+        }
+
+		#If Germany owns part of Kenya, it gives it to the UK
+        random_owned = {
+            limit = {
+				owner = {
+					OR = {
+						owns = 2029
+						owns = 2027
+						owns = 2045
+					}
+				}
+			}
+            owner = {
+                any_owned = {
+                    limit = {
+                        OR = {
+                            region = ENG_2024
+                            region = ENG_2026
+                            province_id = 1870
+							province_id = 2045
+                        }
+                    }
+                    secede_province = ENG
+                }
+                set_country_flag = germany_gave_colonies
+            }
+        }
+
+		#If Germany neither owned part of Kenya nor Zanzibar but do own Cameroon, they give a strip to the UK
+        random_owned = {
+            limit = {
+				owner = {
+					NOT = { has_country_flag = germany_gave_colonies }
+					owns = 1953
+					owns = 1961
+					ENG = {
+						owns = 1950
+						owns = 1951
+					}
+				}
+			}
+            owner = {
+                any_owned = {
+                    limit = {
+                        OR = {
+                            province_id = 1953
+							province_id = 1961
+                        }
+                    }
+                    secede_province = ENG
+                }
+                set_country_flag = germany_gave_colonies
             }
         }
 
@@ -1465,7 +1510,7 @@ country_event = {
             relation = { who = SGF value = 400 }
             diplomatic_influence = { who = SGF value = 100 }
             create_alliance = SGF
-            random_country = { limit = { exists = yes OR = { tag = AUS tag = KUK tag = AUB } } relation = { who = SGF value = 100 }  diplomatic_influence = { who = SGF value = 50 } }
+            random_country = { limit = { exists = yes OR = { tag = AUS tag = KUK tag = AUB } } relation = { who = SGF value = 100 } diplomatic_influence = { who = SGF value = 50 } }
         FRA_412 = { add_core = GER }
         any_pop = {
                 limit = { is_culture_group = germanic }
@@ -1526,7 +1571,7 @@ country_event = {
         }
         year = 1865
     }
-	
+
 	immediate = {
         GER = { all_core = { limit = { life_rating = 45 } life_rating = -10 } }
         GER = { all_core = { limit = { life_rating = 40 } life_rating = -5 } }
@@ -1535,7 +1580,7 @@ country_event = {
         GCF = { all_core = { limit = { life_rating = 45 } life_rating = -10 } }
         GCF = { all_core = { limit = { life_rating = 40 } life_rating = -5 } }
         GCF = { all_core = { limit = { life_rating = 36 } life_rating = -1 } }
-        619 = { limit = { owned_by = THIS has_country_flag = grunderzeit_we_have_done } life_rating = 5 }	
+        619 = { limit = { owned_by = THIS has_country_flag = grunderzeit_we_have_done } life_rating = 5 }
 	}
 
     fire_only_once = yes
