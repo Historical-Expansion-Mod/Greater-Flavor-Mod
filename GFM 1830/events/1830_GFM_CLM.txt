@@ -350,7 +350,7 @@ country_event = {
 		3491 = { secede_province = UCA } # San Juan - Goes to United Central America
 		2203 = { secede_province = UCA } # Cartago - Goes to United Central America
 		ENG = { diplomatic_influence = { who = MSK value = 400 } }
-		PNM = { define_general = { name = "Juan Eligio Alzuru" personality = defence_1.1 background = attack_1.1 } capital = 2204 }
+		PNM = { define_general = { name = "Juan Eligio Alzuru" personality = defence_1.1 background = attack_1.1 } country_event = { id = 127837 days = 65 } capital = 2204 }
 	}
 
     # Declare war on Panama with the civil_war Casus Belli = Change TAG to Panama [PNM]
@@ -369,7 +369,7 @@ country_event = {
 		3491 = { secede_province = UCA } # San Juan - Goes to United Central America
 		2203 = { secede_province = UCA } # Cartago - Goes to United Central America
 		ENG = { diplomatic_influence = { who = MSK value = 400 } }
-		PNM = { define_general = { name = "Juan Eligio Alzuru" personality = defence_1.1 background = attack_1.1 } capital = 2204 }
+		PNM = { define_general = { name = "Juan Eligio Alzuru" personality = defence_1.1 background = attack_1.1 } country_event = { id = 127837 days = 65 } capital = 2204 }
 		change_tag_no_core_switch = PNM
 	}
 }
@@ -386,18 +386,30 @@ country_event = {
 	option = { #Stays independent
 		name = "Panama shall remain independent!"
 		prestige = 5
-		ai_chance = { factor = 15 }
+		ai_chance = {
+			factor = 15
+			modifier = { factor = 0 exists = GCO }
+		}
 	}
 
 	option = { #Rejoins Colombia
 		name = "Colombia is our homeland. §BPlay as Colombia§W"
-		change_tag_no_core_switch = CLM
 		random_owned = {
-			limit = { owner = { CLM = { ai = no } } }
-			owner = { CLM = { country_event = 127838 } }
+			limit = { owner = { exists = GCO CLM = { exists = no } } }
+			owner = {
+				change_tag_no_core_switch = GCO
+				GCO = { inherit = PNM country_event = 127838 }
+				PNM = { all_core = { add_core = GCO } }
+			}
 		}
-		CLM = { inherit = PNM }
-		PNM = { all_core = { add_core = CLM } }
+		random_owned = {
+			limit = { owner = { exists = CLM } }
+			owner = {
+				change_tag_no_core_switch = CLM
+				CLM = { inherit = PNM country_event = 127838 }
+				PNM = { all_core = { add_core = CLM } }
+			}
+		}
 		ai_chance = { factor = 85 }
 	}
 }
@@ -413,7 +425,14 @@ country_event = {
 
 	option = {
 		name = "Viva Colombia!"
-		prestige = 5
+		random_owned = {
+			limit = { owner = { tag = CLM CLM = { ai = no } } }
+			prestige = 5
+		}
+		random_owned = {
+			limit = { owner = { tag = GCO } }
+			prestige = 5
+		}
 		ai_chance = { factor = 15 }
 	}
 }
@@ -881,6 +900,7 @@ country_event = {
 	
 	option = {
 		name = "Viva Colombia!"
+		PNM = { all_core = { add_core = THIS } }
 		prestige = 5
 	}
 }
