@@ -1033,3 +1033,189 @@ country_event = { #
 		
     }
 }
+
+country_event = { #
+    id = 71052
+    title = "Cleanup Lag Event for East Asia Sphere"
+    desc = "This is so countries don't instantly accend"
+    picture = "treaty"
+    is_triggered_only = yes
+
+    option = {
+        name = "EVTOPTA71050"
+		set_global_flag = EAS_Exists
+		
+    }
+}
+
+country_event = { # To be trigged by either date/tech
+    id = 71070
+	major = yes
+    title = "EVTNAME71070"
+    desc = "EVTDESC71070"
+    picture = "treaty"
+
+    trigger = {
+		OR = {
+			is_culture_group = south_asian
+			is_culture_group = southeast_asian
+			is_culture_group = east_asian
+			is_culture_group = far_east_asian
+			primary_culture = mongol
+			primary_culture = siberian
+		}
+		OR = {
+			government = fascist_dictatorship
+			ruling_party_ideology = fascist
+		}
+		is_greater_power = yes
+		year = 1927
+    }
+
+    option = {
+        name = "EVTOPTA71070"
+		set_country_flag = prosperity_sphere_head_flag
+		prestige = 20
+		badboy = 3
+		any_country = {
+			limit = {
+				OR = {
+					AND = {
+						OR = {
+							is_culture_group = south_asian
+							is_culture_group = southeast_asian
+							is_culture_group = east_asian
+							is_culture_group = far_east_asian
+							primary_culture = mongol
+							primary_culture = siberian
+						}
+						exists = yes
+						is_vassal = no
+					}
+					AND = {
+						OR = {
+							is_culture_group = south_asian
+							is_culture_group = southeast_asian
+							is_culture_group = east_asian
+							is_culture_group = far_east_asian
+							primary_culture = mongol
+							primary_culture = siberian
+						}
+						exists = yes
+						is_vassal = yes
+						overlord = {
+							OR = {
+								has_country_flag = prosperity_sphere_flag
+								has_country_flag = prosperity_sphere_head_flag
+							}
+						}
+					}
+				}
+			}
+			prestige = 1
+			country_event = 71071
+		}
+		CLN = { country_event = { id = 71052 days = 5 } }
+    }
+    option = {
+        name = "EVTOPTB71070"
+		prestige = -5
+    }
+}
+
+country_event = { #
+    id = 71071
+    title = "EVTNAME71071"
+    desc = "EVTDESC71071"
+    picture = "treaty"
+    is_triggered_only = yes
+
+    option = {
+        name = "EVTOPTA71071"
+		set_country_flag = prosperity_sphere_flag
+		prestige = 5
+		any_country = {
+			limit = {
+				OR = {
+					has_country_flag = prosperity_sphere_flag
+					has_country_flag = prosperity_sphere_head_flag
+				}
+				relation = { who = THIS value = 50 }
+			}
+		}
+		FROM = { country_event = { id = 71072 days = 1 } }
+		ai_chance = {
+			factor = 30
+			modifier = {
+                factor = 10
+				relation = { who = FROM value = 0 }
+			}
+		}
+    }
+    option = {
+        name = "EVTOPTB71071"
+		prestige = -10
+		FROM = { country_event = { id = 71073 days = 1 } }
+		ai_chance = {
+            factor = 70
+            modifier = {
+                factor = 100
+				government = proletarian_dictatorship
+            }
+			modifier = {
+                factor = 100
+				government = radical_republic
+            }
+			modifier = {
+                factor = 10
+				NOT = { relation = { who = FROM value = -100 } }
+			}
+        }
+    }
+}
+
+country_event = { # To be triggered in cleanup
+    id = 71072
+    title = "EVTNAME71072"
+    desc = "EVTDESC71072"
+    picture = "treaty"
+	allow_multiple_instances = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "EVTOPTA71072"
+		prestige = 5
+		FROM = { relation = { who = THIS value = 25 } }
+		set_country_flag = prosperity_sphere_flag
+		add_country_modifier = { name = prosperity_sphere duration = -1 }
+		capital_scope = { add_province_modifier = { name = capital_modifier_prosperity_sphere duration = -1 } }
+		any_country = {
+			limit = {			
+				OR = {
+					has_country_flag = prosperity_sphere_flag
+					has_country_flag = prosperity_sphere_head_flag
+				}
+			}
+			relation = { who = THIS value = 50 }
+		}
+		clr_global_flag = EAS_new_country_in_process
+		add_country_modifier = { name = prosperity_sphere_cooldown duration = 31 } # do it once every month
+    }
+}
+
+country_event = { # To be triggered in cleanup
+    id = 71073
+    title = "EVTNAME71073"
+    desc = "EVTDESC71073"
+    picture = "treaty"
+	allow_multiple_instances = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "EVTOPTA71073"
+		prestige = -3
+		FROM = { relation = { who = THIS value = -100 } }
+		clr_global_flag = EAS_new_country_in_process
+		add_country_modifier = { name = prosperity_sphere_cooldown duration = 93 } # do it once every month
+    }
+}
