@@ -23,6 +23,7 @@ country_event = { # To be trigged by the first dismantlement
 			country_event = { id = 71000 days = 1 }
 		}
 		set_country_flag = league_of_nations_founder_flag
+		CLN = { country_event = { id = 71051 days = 5 } }
     }
     option = {
         name = "EVTOPTB70999"
@@ -113,6 +114,7 @@ country_event = { # To be trigged by either date/tech
 			prestige = 1
 			country_event = 71003
 		}
+		CLN = { country_event = { id = 71050 days = 5 } }
     }
     option = {
         name = "EVTOPTB71001"
@@ -166,6 +168,7 @@ country_event = { # To be trigged dismantlement of UK
 			prestige = 1
 			country_event = { id = 71003 days = 1 }
 		}
+		CLN = { country_event = { id = 71050 days = 5 } }
     }
     option = {
         name = "EVTOPTB71002"
@@ -837,7 +840,7 @@ country_event = { # If you lose vote
 			}
 			relation = { who = THIS value = -200 }
 		}
-		
+		add_country_modifier = { name = lon_cooldown duration = 180 } # do it once every 6 monts
     }
 }
 
@@ -846,13 +849,13 @@ country_event = { # If you lose vote
 country_event = { # League of Nations Cont.
     id = 71035
     title = "EVTNAME71035"
-    desc = "EVTDESC71035
+    desc = "EVTDESC71035"
     picture = "treaty"
     is_triggered_only = yes
 
     option = {
-        name = "EVTOPTA71035
-		set_country_flag = LON_Vote_For
+        name = "EVTOPTA71035"
+		set_country_flag = LON_Vote_Acc_For
 		relation = { who = FROM value = 100 }
 		ai_chance = {
 			factor = 50
@@ -880,7 +883,7 @@ country_event = { # League of Nations Cont.
 	
     option = {
         name = "EVTOPTB71035"
-		set_country_flag = LON_Vote_Against
+		set_country_flag = LON_Vote_Acc_Against
 		relation = { who = FROM value = -100 }
 		ai_chance = {
 			factor = 50
@@ -918,74 +921,62 @@ country_event = { # League of Nations Cont.
 
 country_event = { # League of Nations Cont.
     id = 71036
-    title = "LON Vote Check"
+    title = "LON  Accedence Vote Check"
     desc = "Ai Checks if the variable is Positive. The Dyanamic Loc version would check the ratio."
     picture = "treaty"
     is_triggered_only = yes
 
     option = {
         name = "Cleanup Vote Check (Dumb Version)"
-		UTI = { set_variable = { which = LON_Vote value = -1 } }
+		UTI = { set_variable = { which = Acc_LON_Vote value = -1 } }
 		any_country = {
 			limit = {
-				has_country_flag = LON_Vote_For
+				has_country_flag = LON_Vote_Acc_For
 			}
-			UTI = { change_variable = { which = LON_Vote value = 1 } }
+			UTI = { change_variable = { which = LON_Acc_Vote value = 1 } }
 		}
 		any_country = {
 			limit = {
-				has_country_flag = LON_Vote_Against
+				has_country_flag = LON_Vote_Acc_Against
 			}
-			UTI = { change_variable = { which = LON_Vote value = -1 } }
+			UTI = { change_variable = { which = LON_Acc_Vote value = -1 } }
 		}
 		any_country = {
 			limit = {
-				has_country_flag = LON_eject
-				UTI = { check_variable = { which = LON_Vote value = 0 } }
+				has_country_flag = LON_accept
+				UTI = { check_variable = { which = LON_Acc_Vote value = 0 } }
 			}
-			country_event = 71033
+			country_event = 71037
 		}
 		any_country = {
 			limit = {
-				has_country_flag = LON_eject
-				NOT = { UTI = { check_variable = { which = LON_Vote value = 0 } } }
+				has_country_flag = LON_accept
+				NOT = { UTI = { check_variable = { which = LON_Acc_Vote value = 0 } } }
 			}
-			country_event = 71034
+			country_event = 71038
 		}
 		any_country = {
-			clr_country_flag = LON_Vote_For
-			clr_country_flag = LON_Vote_Against
+			clr_country_flag = LON_Vote_Acc_For
+			clr_country_flag = LON_Vote_Acc_Against
 		}	
     }
 }
 
 country_event = { # If you survive vote
     id = 71037
-    title = "EVTNAME71033"
-    desc = "EVTDESC71033"
+    title = "EVTNAME71037"
+    desc = "EVTDESC71037"
     picture = "treaty"
     is_triggered_only = yes
 
     option = {
-        name = "EVTOPTA71033"
-		clr_country_flag = LON_eject
-    }
-}
-
-country_event = { # If you lose vote
-    id = 71038
-    title = "EVTNAME71034"
-    desc = "EVTDESC71034"
-    picture = "treaty"
-    is_triggered_only = yes
-
-    option = {
-        name = "EVTOPTA71034"
-		clr_country_flag = leauge_of_nations_flag
-		clr_country_flag = league_of_nations_founder_flag
-		remove_country_modifier = leauge_of_nations
-		remove_country_modifier = league_of_nations_founding_memeber
-		clr_country_flag = LON_eject
+        name = "EVTOPTA71037"
+		clr_global_flag = LON_new_country_in_process
+		clr_country_flag = LON_accept
+		prestige = 10
+		set_country_flag = league_of_nations_flag
+		add_country_modifier = { name = league_of_nations duration = -1 }
+		capital_scope = { add_province_modifier = { name = capital_modifier_league_of_nations duration = -1 } }
 		any_country = {
 			limit = {			
 				OR = {
@@ -993,9 +984,52 @@ country_event = { # If you lose vote
 					has_country_flag = league_of_nations_founder_flag
 				}
 			}
-			relation = { who = THIS value = -200 }
+			relation = { who = THIS value = 50 }
 		}
+		add_country_modifier = { name = lon_cooldown duration = 31 } # do it once every monts
+    }
+}
+
+country_event = { # If you lose vote
+    id = 71038
+    title = "EVTNAME71038"
+    desc = "EVTDESC71038"
+    picture = "treaty"
+    is_triggered_only = yes
+
+    option = {
+        name = "EVTOPTA71038"
+		clr_global_flag = LON_new_country_in_process
+		clr_country_flag = LON_accept
+		prestige = -10
+		add_country_modifier = { name = lon_cooldown duration = 93 } # do it once every three monts
+    }
+}
+
+country_event = { # 
+    id = 71050
+    title = "Cleanup Lag Event for Commonwealth"
+    desc = "This is so countries don't instantly accend"
+    picture = "treaty"
+    is_triggered_only = yes
+
+    option = {
+        name = "EVTOPTA71050"
+		set_global_flag = Commonwealth_Exists
 		
     }
 }
 
+country_event = { #
+    id = 71051
+    title = "Cleanup Lag Event for LON"
+    desc = "This is so countries don't instantly accend"
+    picture = "treaty"
+    is_triggered_only = yes
+
+    option = {
+        name = "EVTOPTA71050"
+		set_global_flag = LON_Exists
+		
+    }
+}
