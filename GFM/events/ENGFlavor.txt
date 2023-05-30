@@ -1573,7 +1573,10 @@ country_event = {
     id = 36936 #parallel to AST43801, ENG more often than not will own AST directly at this point, so needs own event.
 
     trigger = {
-        tag = AST
+		OR = {
+			tag = AST
+			has_country_flag = i_am_ahu
+		}
         year = 1859
         owns = 2468 #Sydney
         owns = 2476 #Melbourne
@@ -1678,54 +1681,6 @@ country_event = {
             consciousness = 1
         }
     }
-}
-
-province_event = {
-
-    id = 36938
-
-    trigger = {
-        province_id = 1251 #Calcutta
-        year = 1864
-        NOT = {
-            year = 1867
-            }
-
-    }
-
-    fire_only_once = yes
-
-    mean_time_to_happen = {
-        months = 5
-
-        modifier = {
-            factor = 0.75 #increase likelihood to happen
-            year = 1865
-        }
-
-
-        modifier = {
-            factor = 0.95 #increase likelihood to happen
-            year = 1866
-        }
-    }
-
-    title = "EVTNAME36938"
-    desc = "EVTDESC36938"
-    picture = "BengaliNovel"
-
-    option = {
-        name = "EVTOPTA36938"
-        any_pop = {
-            limit = {
-                has_pop_religion = hindu
-            }
-            militancy = 3
-            consciousness = 2
-        }
-
-    }
-
 }
 
 country_event = {
@@ -2991,21 +2946,22 @@ country_event = {
 
     fire_only_once = yes
 
-    mean_time_to_happen = { months = 36 }
+    mean_time_to_happen = { months = 1 }
 
     option = {
-        name = "EVT3697011OPTA"
-            relation = { who = SIK value = -400 }
-            diplomatic_influence = { who = SIK value = -400 }
-            leave_alliance = THIS
-            casus_belli = { target = SIK type = make_puppet_no_add_wargoal months = 30 }
-            war = {
-                target = SIK
-                attacker_goal = { casus_belli = make_puppet_no_add_wargoal }
-                defender_goal = { casus_belli = humiliate_no_infamy }
-            }
-            SIK = { tech_school = developing_tech_school }
-        ai_chance = { factor = 100 }
+		name = "EVT3697011OPTA"
+		relation = { who = SIK value = -400 }
+		diplomatic_influence = { who = SIK value = -400 }
+		leave_alliance = THIS
+		casus_belli = { target = SIK type = make_puppet_no_add_wargoal months = 30 }
+		war = {
+			target = SIK
+			attacker_goal = { casus_belli = make_puppet_no_add_wargoal }
+			defender_goal = { casus_belli = humiliate_no_infamy }
+			call_ally = yes
+		}
+		SIK = { tech_school = developing_tech_school }
+		ai_chance = { factor = 1 }
     }
 
     option = {
@@ -3022,7 +2978,6 @@ country_event = {
             }
             add_casus_belli = { target = THIS type = make_puppet_no_infamy months = 40 }
         }
-
         ai_chance = { factor = 0 }
     }
 }
@@ -3186,10 +3141,10 @@ country_event = {
         name = "EVTOPTA113901"
         prestige = 2
         2478 = { trade_goods = gold add_province_modifier = { name = gold_rush duration = 730 } }
-        2601 = { life_rating = -5 change_province_name = "Sandy Desert" }
-        2605 = { life_rating = -5 change_province_name = "Gibson's Desert" }
-        2507 = { life_rating = -5 change_province_name = "Alice Springs" }
-        2603 = { life_rating = -5 change_province_name = "Tanami" }
+        2601 = { change_province_name = "Sandy Desert" }
+        2605 = { change_province_name = "Gibson's Desert" }
+        2507 = { change_province_name = "Alice Springs" }
+        2603 = { change_province_name = "Tanami" }
         2495 = { change_province_name = "Angle Pole" }
         2476 = { trade_goods = gold add_province_modifier = { name = gold_rush duration = 730 } life_rating = 5 }
         2468 = {
@@ -3198,8 +3153,17 @@ country_event = {
             life_rating = 10
             add_province_modifier = { name = gateway_to_harbor duration = 1825 }
         }
-
         AST = { capital = 2468 }
+		random_owned = {
+			limit = {
+				owner = {
+					has_country_flag = i_am_ahu
+				}
+			}
+			owner = {
+				capital = 2468
+			}
+		}
     }
 }
 
@@ -3960,7 +3924,13 @@ country_event = {
                 NOT = { exists = GER }
                 year = 1885
             }
-            exists = RHI
+            AND = {
+				exists = RHI
+				OR = {
+					RHI = { vassal_of = FRA }
+					RHI = { vassal_of = BOR }
+				}
+			}
             PRU_575 = {
                 OR = {
                     owned_by = FRA

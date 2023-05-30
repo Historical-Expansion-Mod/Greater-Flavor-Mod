@@ -605,7 +605,6 @@ political_decisions = {
 			add_accepted_culture = lurish
 			add_accepted_culture = talysh
 			add_accepted_culture = mazanderani
-			#1198 = { add_province_modifier = rebuilding_city duration = 1800 }
 			capital = 1198
 			1198 = { life_rating = 5 }
 			BUK = { all_core = { remove_core = BUK } }
@@ -885,7 +884,7 @@ political_decisions = {
 		picture = form_macedon
         potential = {
             OR = { tag = MCD has_country_flag = i_am_mcd }
-            NOT = { has_country_flag = Alex_claimed }
+            NOT = { has_country_flag = i_am_emc }
             has_global_flag = fantasy_countries_enabled
 			OR = {
 				AND = {
@@ -911,7 +910,7 @@ political_decisions = {
             change_tag = EMC
             badboy = 20
             prestige = 100
-            set_country_flag = Alex_claimed
+            set_country_flag = i_am_emc
             GRE = {
                 all_core = {
                     add_core = EMC
@@ -1263,24 +1262,79 @@ political_decisions = {
             factor = 1
         }
     }
-
+	
+	become_ahu = {
+        potential = {
+			NOT = { has_global_flag = ahu_formed }
+            OR = {
+				tag = HUN
+				tag = AST
+			}
+            has_global_flag = fantasy_countries_enabled
+        }
+        allow = {
+            HUN = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            ai = yes
+                            in_sphere = THIS
+                            OR = {
+                                is_vassal = no
+                                vassal_of = THIS
+                            }
+                            war = no
+                            is_greater_power = no
+                        }
+                    }
+                }
+            }
+            AST = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            ai = yes
+                            in_sphere = THIS
+                            OR = {
+                                is_vassal = no
+                                vassal_of = THIS
+                            }
+                            war = no
+                            is_greater_power = no
+                        }
+                    }
+                }
+            }
+        }
+        effect = {
+            change_tag = AHU
+			AHU = { set_country_flag = i_am_ahu }
+            AST = {
+                all_core = { add_core = AHU }
+            }
+            HUN = {
+                all_core = { add_core = AHU }
+            }
+			set_global_flag = ahu_formed
+			add_accepted_culture = hungarian
+			add_accepted_culture = australian
+        }
+    }
 
     louis_hungarian = {
         potential = {
 			NOT = { has_global_flag = phc_formed }
-			OR = {
-				NOT = { tag = HUR }
-				has_global_flag = fantasy_countries_enabled
-			}
             OR = {
 				primary_culture = hungarian
 				primary_culture = polish
 				tag = HUR
+				tag = PLC
+				tag = PLR
 			}
             has_global_flag = fantasy_countries_enabled
-            NOT = {
-                tag = PHC
-            }
+            NOT = { tag = PHC }
         }
         allow = {
             HUN = {
@@ -1330,13 +1384,35 @@ political_decisions = {
 			set_global_flag = phc_formed
 			add_accepted_culture = hungarian
 			add_accepted_culture = polish
+			country_event = 8374593
+			any_country = {
+				limit = {
+					war = no
+					OR = {
+						primary_culture = hungarian
+						primary_culture = polish
+					}
+					OR = {
+						in_sphere = THIS
+						vassal_of = THIS
+						AND = {
+							war = no
+							civilized = yes
+							relation = { who = THIS value = 150 }
+							is_vassal = no
+						}
+					}
+				}
+				country_event = 98650
+			}
         }
     }
+	
     danelaw = {
 		picture = danelaw_flag
         potential = {
             tag = DNN
-            NOT = { has_country_flag = danelaw }
+            NOT = { has_country_flag = i_am_dne }
             has_global_flag = fantasy_countries_enabled
         }
         allow = {
@@ -1352,7 +1428,7 @@ political_decisions = {
         }
         effect = {
             badboy = 25
-            set_country_flag = danelaw
+            set_country_flag = i_am_dne
 			change_tag = DNE
             ENG = {
 				all_core = {

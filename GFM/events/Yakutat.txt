@@ -1093,48 +1093,6 @@ country_event = {
 }
 
 country_event = {
-    id = 31730
-    title = "The $YEAR$ Federalist Insurrections"
-    desc = "EVTDESC31730"
-    picture = "1869_spain_madrid"
-
-    fire_only_once = yes
-	is_triggered_only = yes
-
-	option = {
-        name = "Give them a battle they will remember."
-		country_event = { id = 31732 days = 7 }
-        soldiers = {
-            militancy = 3
-            consciousness = 1
-        }
-		any_pop = {
-			limit = { has_pop_culture = catalan }
-			scaled_militancy = {
-				factor = 6
-				ideology = liberal
-            }
-			scaled_militancy = {
-				factor = 8
-				ideology = radical
-            }
-		}
-				CLN = { add_country_modifier = { name = spain_revolt duration = 365 } }
-		ai_chance = {
-            factor = 99
-        }
-    }
-
-    option = {
-        name = "Accept their demands."
-        prestige = -15
-		country_event = { id = 31737 days = 3 }
-		ai_chance = {
-            factor = 1
-        }
-    }
-}
-country_event = {
     id = 31732
     title = "Insurrection Engulfs Valencia"
     desc = "EVTDESC31732"
@@ -1464,6 +1422,7 @@ country_event = {
 
     option = {
         name = "Great!"
+		set_country_flag = no_1869_constitution
 		prestige = 5
    		500 = {
 			add_province_modifier = { name = war_torn duration = 400 }
@@ -3138,29 +3097,6 @@ country_event = {
 	}
 }
 
-country_event = {
-	id = 16121914
-	picture = "amazonexpedit_engl"
-	title = "The Naturalist on the River Amazons"
-    desc = "EVTDESC16121914"
-
-	fire_only_once = yes
-
-	trigger = {
-		tag = ENG
-		exists = ENG
-		year = 1863
-	}
-
-	mean_time_to_happen = { months = 5 }
-
-	option = {
-		name = "What a great book."
-		prestige = 2
-		any_pop = { limit = { location = { is_core = THIS } } consciousness = -0.1 }
-	}
-}
-
 #Founding of the Félibritge Movement
 country_event = {
     id = 18481983
@@ -3810,6 +3746,10 @@ country_event = {
         tag = AUS
         has_global_flag = hungarian_revolution_occurred
 		owns = 3483
+		NOT = {
+			government = democracy
+			government = radical_republic
+		}
     }
 
     fire_only_once = yes
@@ -3831,6 +3771,7 @@ country_event = {
 			militancy = 3
 			consciousness = 5
 		}
+		BOH = { government = radical_republic ruling_party_ideology = radical }
         ai_chance = { factor = 100 }
     }
 
@@ -3869,6 +3810,7 @@ country_event = {
 			militancy = 3
 			consciousness = 5
 		}
+		BOH = { government = radical_republic ruling_party_ideology = radical }
 		change_tag_no_core_switch = BOH
         ai_chance = { factor = 0 }
     }
@@ -4117,31 +4059,6 @@ country_event = {
 	option = {
 		name = "How tragic."
 		any_pop = { limit = { location = { province_id = 223 } } consciousness = 1 }
-		ai_chance = { factor = 1 }
-	}
-
-}
-country_event = {
-	id = 600351
-	title = "The Great Gatsby"
-	desc = "THEGREATGATSBY"
-	picture = "Great_Gatsby"
-	fire_only_once = yes
-
-	trigger = {
-		tag = USA
-		year = 1925
-		month = 3
-		owns = 233
-	}
-	mean_time_to_happen = {
-        days = 10
-    }
-
-	option = {
-		name = "Return, Daisy Buchanan!"
-		any_pop = { consciousness = 0.1 }
-		prestige = 5
 		ai_chance = { factor = 1 }
 	}
 
@@ -4539,6 +4456,7 @@ country_event = {
                 factor = -3
             }
         }
+		ai_chance = { factor = 1 }
     }
 
     option = {
@@ -4562,6 +4480,7 @@ country_event = {
                 factor = -3
             }
         }
+		ai_chance = { factor = 0 }
     }
 }
 
@@ -4577,7 +4496,10 @@ country_event = {
         tag = SPA
 		government = prov_gov_liberal
 		year = 1870
-		has_country_flag = spa_1869_constitution
+		OR = {
+			has_country_flag = spa_1869_constitution
+			has_country_flag = no_1869_constitution
+		}
     }
 
     immediate = { set_country_flag = spanish_monarch_chosen }
@@ -6870,6 +6792,8 @@ country_event = {
 		year = 1863
 		month = 3
 		NOT = { exists = TAI }
+		tag = QNG
+		government = absolute_empire
     }
     option = {
         name = "Crush them!"
@@ -7120,28 +7044,47 @@ country_event = {
 		}
 		year = 1871
 		month = 11
+		OR = {
+			tag = TKG
+			tag = JAP
+		}
+		OR = {
+			QNG = { owns = 2681 }
+			TPG = { owns = 2681 }
+		}
 	}
 
-	mean_time_to_happen = { days = 3 }
+	mean_time_to_happen = { days = 1 }
 
     option = {
         name = "Demand compensation."
-		prestige = 2
-		QNG = { relation = { who = THIS value = -20 } country_event = 18482081 }
-        ai_chance = { factor = 1 }
+		random_owned = {
+			limit = {
+				owner = {
+					QNG = { owns = 2681 }
+				}
+			}
+			owner = {
+				QNG = { relation = { who = THIS value = -50 } country_event = 18482081 }
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					TPG = { owns = 2681 }
+				}
+			}
+			owner = {
+				TPG = { relation = { who = THIS value = -50 } country_event = 18482081 }
+			}
+		}
+        ai_chance = { factor = 0 } #they didn't care historically
     }
 
 	option = {
-        name = "54 sailors? Not a big deal."
-		prestige = -5
-		QNG = { relation = { who = THIS value = 20 } }
-		1678 = {
-			soldiers = {
-				consciousness = 3
-			}
-		}
-        ai_chance = { factor = 0 }
+        name = "54 sailors? From Ryukyu? Not a big deal."
 		set_country_flag = mudan_incident_no_action
+        ai_chance = { factor = 1 }
     }
 }
 country_event = {
@@ -7153,32 +7096,30 @@ country_event = {
 	is_triggered_only = yes
 
     option = {
-        name = "We will gladly pay."
+        name = "We will begrudgingly pay."
 		prestige = -5
 		treasury = -20000
-		relation = { who = FROM value = 20 }
-		FROM = { country_event = { id = 18482082 days = 2 } }
+		relation = { who = FROM value = 100 }
+		FROM = { country_event = 18482082 }
 		any_pop = {
             limit = {
                 location = { region = CHI_1485 }
             }
-            consciousness = 0.8
+            consciousness = 1
 		}
-        ai_chance = { factor = 1 }
+        ai_chance = { factor = 0.2 }
     }
 
 	option = {
         name = "The natives are outside our realm. We take no responsibility."
-		prestige = 4
-		relation = { who = FROM value = -30 }
-		FROM = { country_event = { id = 18482083 days = 2 } }
-        ai_chance = { factor = 0 }
+		FROM = { country_event = 18482083 }
+        ai_chance = { factor = 0.8 }
     }
 }
 
 country_event = {
     id = 18482082
-    title = "The Qing Pay Compensation"
+    title = "$FROMCOUNTRY$ pays Compensation"
     desc = "MUDANINCIDENTONE"
 	picture = "mudan_incident"
     fire_only_once = yes
@@ -7186,7 +7127,7 @@ country_event = {
 
 	option = {
         name = "Perfect."
-		prestige = 2
+		prestige = 5
 		treasury = 20000
 		set_country_flag = mudan_incident_compensated
     }
@@ -7194,7 +7135,7 @@ country_event = {
 
 country_event = {
     id = 18482083
-    title = "The Qing refuse!"
+    title = "$FROMCOUNTRY$ refuses"
     desc = "MUDANINCIDENTTWO"
 	picture = "mudan_incident"
     fire_only_once = yes
@@ -7203,43 +7144,29 @@ country_event = {
 	option = {
         name = "54 sailors? Stop this nonsense."
 		prestige = -5
-		relation = { who = FROM value = 10 }
-		badboy = -1
-		soldiers = { consciousness = -0.5 }
-		FROM = { country_event = { id = 18482084 days = 2 } }
-        ai_chance = { factor = 0 }
+		FROM = { country_event = 18482084 }
 		set_country_flag = mudan_incident_no_action
     }
 
 	option = {
         name = "Then we'll take it by force!"
-		prestige = 3
-		treasury = 20000
 		casus_belli = {
-                target = FROM
-                type = war_reparations
-                months = 12
+			target = FROM
+			type = war_reparations
+			months = 12
         }
-		FROM = {
-			casus_belli = {
-                target = THIS
-                type = humiliate_no_infamy
-                months = 120
-			}
-		}
 		war = {
             target = FROM
             attacker_goal = { casus_belli = war_reparations }
             defender_goal = { casus_belli = humiliate_no_infamy }
         }
-		FROM = { country_event = { id = 18482085 days = 2 } }
-        ai_chance = { factor = 1 }
+		FROM = { country_event = 18482085 }
     }
 }
 
 country_event = {
     id = 18482084
-    title = "The Mudan Incident"
+    title = "Japan backs down"
     desc = "MUDANINCIDENTNOWAR"
 	picture = "mudan_incident"
     fire_only_once = yes
@@ -7247,12 +7174,13 @@ country_event = {
 
 	option = {
         name = "Perfect!"
+		prestige = 5
     }
 }
 
 country_event = {
     id = 18482085
-    title = "The Mudan Incident"
+    title = "War with Japan"
     desc = "MUDANINCIDENTWAR"
 	picture = "mudan_incident"
     fire_only_once = yes
@@ -7411,27 +7339,6 @@ country_event = {
     option = {
         name = "Federalization isn't a good idea, really."
 		any_pop = { limit = { has_pop_culture = croat } consciousness = 3 }
-	}
-}
-
-country_event = {
-    id = 18482091
-    title = "The Great Vermont Flood of 1927"
-    desc = "GREATVERMONTFLOOD"
-    picture = "vermont_flooded"
-	fire_only_once = yes
-
-	trigger = {
-		owns = 246
-		year = 1927
-		month = 10
-	}
-
-	mean_time_to_happen = { days = 1 }
-
-    option = {
-        name = "Pray for the victims!"
-		246 = { any_pop = { consciousness = 5 } add_province_modifier = { name = chinese_floods duration = 365 } }
 	}
 }
 
@@ -7636,11 +7543,7 @@ country_event = {
 		treasury = -70000
 		set_global_flag = austrian_north_borneo_colony
 		ai_chance = {
-			factor = 0.10
-			modifier = {
-				is_sphere_leader_of = SUL
-				factor = 1.70
-			}
+			factor = 0
 		}
     }
 
@@ -7771,7 +7674,7 @@ country_event = {
 			}
         }
 		ai_chance = {
-			factor = 0.90
+			factor = 1
 		}
     }
 }
@@ -7827,11 +7730,7 @@ country_event = {
 		treasury = -70000
 		set_global_flag = italian_north_borneo_colony
 		ai_chance = {
-			factor = 0.05
-			modifier = {
-				is_sphere_leader_of = SUL
-				factor = 0.85
-			}
+			factor = 0
 		}
     }
 
@@ -7909,7 +7808,7 @@ country_event = {
 			}
         }
 		ai_chance = {
-			factor = 0.95
+			factor = 1
 		}
     }
 }
@@ -7985,14 +7884,6 @@ country_event = {
 		set_global_flag = german_north_borneo_colony
 		ai_chance = {
 			factor = 0
-			modifier = {
-				is_sphere_leader_of = SUL
-				factor = 2
-			}
-			modifier = {
-				ruling_party_ideology = liberal
-				factor = 0.20
-			}
 		}
     }
 
@@ -8193,14 +8084,14 @@ country_event = {
             defender_goal = { casus_belli = humiliate_no_infamy }
         }
 		ai_chance = {
-			factor = 0.10
+			factor = 0.1
 			modifier = {
 				rank = 8
-				factor = 0.10
+				factor = 0.1
 			}
 			modifier = {
 				war_policy = jingoism
-				factor = 0.50
+				factor = 0.5
 			}
 		}
     }
@@ -8209,7 +8100,7 @@ country_event = {
         name = "We shall back down for now..."
 		prestige = -20
 		ai_chance = {
-			factor = 0.90
+			factor = 0.9
 		}
     }
 }
@@ -8248,7 +8139,7 @@ country_event = {
         name = "Approve the expedition."
 		HAW = { country_event = { id = 18482107 days = 2 } }
 		ai_chance = {
-			factor = 0.90
+			factor = 0.9
 		}
 	}
 
@@ -8256,7 +8147,7 @@ country_event = {
         name = "Who cares about a bunch of savage islands?"
 		prestige = -3
 		ai_chance = {
-			factor = 0.10
+			factor = 0.1
 		}
 	}
 }
@@ -8374,27 +8265,6 @@ country_event = {
 }
 
 country_event = {
-    id = 18482111
-    title = "The 1840 Eruption of Kilauea"
-    desc = "KILAUEAGOESBOOM"
-	picture = "1840_kilauea"
-    fire_only_once = yes
-
-	trigger = {
-		tag = HAW
-		year = 1839
-		month = 4
-	}
-
-	mean_time_to_happen = { days = 30 }
-
-	option = {
-        name = "Protect the Big Island."
-		any_pop = { consciousness = 1.2 }
-    }
-}
-
-country_event = {
     id = 18482112
     title = "The Hawaiian Dollar"
     desc = "HAWAIIANDOLAR"
@@ -8412,34 +8282,6 @@ country_event = {
 	option = {
         name = "Perfect!"
 		monetary_reform = monetary_reform_two
-    }
-}
-
-country_event = {
-    id = 18482113
-    title = "The Great Measles Outbreak"
-    desc = "MEASLESNOO"
-	picture = "Cholera"
-    fire_only_once = yes
-
-	trigger = {
-		tag = HAW
-		year = 1848
-	}
-
-	mean_time_to_happen = { days = 1 }
-
-	option = {
-        name = "God save Hawai'i."
-		any_pop = { limit = { has_pop_culture = polynesian } reduce_pop = 0.7 }
-		658 = {
-			remove_province_modifier = measles_epidemic_a
-			remove_province_modifier = measles_epidemic_b
-			add_province_modifier = {
-				name = measles_epidemic_c
-				duration = -1
-			}
-		}
     }
 }
 
@@ -9575,82 +9417,82 @@ country_event = {
 	fire_only_once = yes
 
     trigger = {
-			tag = USA
-			year = 1898
-			NOT = { year = 1900 }
-			exists = HAW
-			is_sphere_leader_of = HAW
-			HAW = { government = democracy }
-            any_owned_province = { has_building = naval_base }
-            OR = {
-                any_owned_province = { continent = polynesia }
-				owns = 1082
-                owns = 78
-                owns = 3598
-                owns = 79
-                owns = 3600
-                owns = 81
-                owns = 83
-                owns = 85
-				owns = 3340
-                owns = 84
-                owns = 104
-                owns = 87
-                owns = 89
-				owns = 3566
-                owns = 90
-                owns = 2139
-                owns = 2140
-                owns = 2138
-                owns = 2141
-                owns = 2157
-                owns = 2156
-                owns = 2161
-                owns = 2168
-                owns = 2169
-                owns = 2179
-                owns = 2171
-                owns = 2178
-                owns = 2181
-                owns = 2182
-                owns = 2186
-                owns = 2191
-                owns = 2192
-                owns = 2193
-                owns = 2199
-                owns = 2197
-                owns = 2198
-                owns = 2202
-                owns = 3659
-                owns = 2201
-                owns = 2206
-                owns = 2205
-                owns = 1723
-                owns = 2204
-                owns = 2208
-                owns = 2253
-                owns = 2258
-                owns = 2281
-                owns = 2280
-                owns = 3680
-                owns = 2291
-                owns = 2292
-                owns = 2298
-                owns = 2295
-                owns = 2297
-                owns = 2285
-                owns = 2336
-                owns = 2304
-                owns = 2578
-                owns = 2308
-                owns = 2307
-                owns = 2305
-                owns = 2309
-                any_owned_province = {
-                    is_core = CHL
-                    is_coastal = yes
-                }
-            }
+		tag = USA
+		year = 1898
+		NOT = { year = 1900 }
+		exists = HAW
+		is_sphere_leader_of = HAW
+		HAW = { government = democracy }
+		any_owned_province = { has_building = naval_base }
+		OR = {
+			any_owned_province = { continent = polynesia }
+			owns = 1082
+			owns = 78
+			owns = 3598
+			owns = 79
+			owns = 3600
+			owns = 81
+			owns = 83
+			owns = 85
+			owns = 3340
+			owns = 84
+			owns = 104
+			owns = 87
+			owns = 89
+			owns = 3566
+			owns = 90
+			owns = 2139
+			owns = 2140
+			owns = 2138
+			owns = 2141
+			owns = 2157
+			owns = 2156
+			owns = 2161
+			owns = 2168
+			owns = 2169
+			owns = 2179
+			owns = 2171
+			owns = 2178
+			owns = 2181
+			owns = 2182
+			owns = 2186
+			owns = 2191
+			owns = 2192
+			owns = 2193
+			owns = 2199
+			owns = 2197
+			owns = 2198
+			owns = 2202
+			owns = 3659
+			owns = 2201
+			owns = 2206
+			owns = 2205
+			owns = 1723
+			owns = 2204
+			owns = 2208
+			owns = 2253
+			owns = 2258
+			owns = 2281
+			owns = 2280
+			owns = 3680
+			owns = 2291
+			owns = 2292
+			owns = 2298
+			owns = 2295
+			owns = 2297
+			owns = 2285
+			owns = 2336
+			owns = 2304
+			owns = 2578
+			owns = 2308
+			owns = 2307
+			owns = 2305
+			owns = 2309
+			any_owned_province = {
+				is_core = CHL
+				is_coastal = yes
+			}
+		}
 	}
 
     mean_time_to_happen = { days = 1 }
@@ -9659,10 +9501,12 @@ country_event = {
         name = "Proceed with the annexation. §RGain 3 infamy§W"
 		badboy = 3
 		HAW = { country_event = { id = 18482154 days = 1 } }
+		ai_chance = { factor = 1 }
     }
 
     option = {
         name = "Hawaii does not interest us."
+		ai_chance = { factor = 0 }
     }
 
 }
@@ -9911,20 +9755,6 @@ country_event = {
     }
 }
 
-country_event = {
-	id = 18482163
-	title = "British Support"
-	desc = "BRIISHSUPPORTREBELLION"
-	picture = "sarawakrebellion2"
-
-    is_triggered_only = yes
-    fire_only_once = yes
-
-	option = {
-        name = "Hurray for Britain!"
-		treasury = 5000
-    }
-}
 country_event = {
 
     id = 18482164
@@ -10418,70 +10248,6 @@ country_event = {
 }
 
 country_event = {
-
-    id = 18492167
-    title = "The Sarawak Demand Limbang"
-    desc = "SARAWAKWSIMANGGANGSWK"
-    picture = "sarawakpointgun1"
-
-    fire_only_once = yes
-    is_triggered_only = yes
-
-	option = {
-        name = "We can't go to war right now..."
-		3587 = { add_core = SWK secede_province = SWK }
-		SWK = { country_event = 18482168 }
-		ai_chance = {
-			factor = 1
-		}
-    }
-
-	option = {
-        name = "What about no?"
-		prestige = 5
-		SWK = { country_event = 18482169 }
-		ai_chance = {
-			factor = 0
-		}
-    }
-}
-
-country_event = {
-	id = 18492168
-	title = "Brunei gives us Limbang!"
-	desc = "SARAWAKWSIMANGGANGYESSWK"
-	picture = "sarawakpointgun1"
-
-    is_triggered_only = yes
-    fire_only_once = yes
-
-	option = {
-        name = "Perfect!"
-    }
-}
-
-country_event = {
-	id = 18492169
-	title = "Brunei refuses giving us Limbang!"
-	desc = "SARAWAKWSIMANGGANGNOSWK"
-	picture = "sarawakpointgun1"
-
-    is_triggered_only = yes
-    fire_only_once = yes
-
-	option = {
-        name = "I will enjoy this..."
-		3587 = { add_core = SWK }
-		casus_belli = { target = BRU type = acquire_core_state months = 60 }
-		war = {
-            target = BRU
-            attacker_goal = { casus_belli = acquire_core_state state_province_id = 3587 }
-            defender_goal = { casus_belli = conquest_any }
-        }
-    }
-}
-
-country_event = {
 	id = 18482187
 	title = "Claims to Limbang"
 	desc = "LIMBANGJESARAWAK"
@@ -10663,7 +10429,7 @@ country_event = {
 		treasury = 40000
 		HAW = { country_event = 18482194 }
 		ai_chance = {
-			factor = 0.50
+			factor = 0.5
 		}
     }
 
@@ -10672,7 +10438,7 @@ country_event = {
 		relation = { who = FROM value = -50 }
 		HAW = { country_event = 18482195 }
 		ai_chance = {
-			factor = 0.50
+			factor = 0.5
 		}
     }
 }
@@ -10727,6 +10493,14 @@ country_event = {
 	option = {
         name = "Huzzah!"
 		3613 = { secede_province = THIS }
+		3613 = {
+			any_pop = {
+				limit = {
+					has_pop_culture = misri
+				}
+				move_pop = 1745
+			}
+		}
 	}
 }
 
@@ -11759,39 +11533,6 @@ country_event = {
 }
 
 country_event = {
-    id = 18482229
-    title = "The Maui Hurricane of $YEAR$"
-    desc = "MAUIHURRICANEHAWAII"
-    picture = "maui_hurricane"
-	fire_only_once = yes
-
-	trigger = {
-		tag = HAW
-		year = 1871
-	}
-
-	mean_time_to_happen = { days = 19 }
-
-    option = {
-		name = "Send aid to rebuild."
-        treasury = -15000
-		any_pop = { consciousness = -1 }
-		ai_chance = {
-            factor = 100
-		}
-	}
-
-	option = {
-		name = "We cannot spare the resources."
-        prestige = -5
-		any_pop = { consciousness = 2 }
-		ai_chance = {
-            factor = 0
-		}
-	}
-}
-
-country_event = {
     id = 18482230
     title = "The Death of Father Damien"
     desc = "FATHERDAMIENDIES"
@@ -11811,54 +11552,6 @@ country_event = {
         prestige = 5
 		plurality = 5
 		any_pop = { consciousness = 1 }
-	}
-}
-
-country_event = {
-    id = 18482231
-    title = "The Eruption of Mauna Loa"
-    desc = "MAUNALOADECEMBER"
-    picture = "maunaloa"
-	fire_only_once = yes
-
-	trigger = {
-		tag = USA
-		owns = 658
-		year = 1935
-		month = 11
-	}
-
-	mean_time_to_happen = { days = 1 }
-
-    option = {
-		name = "Bomb a volcano!? There's no way to save Hilo."
-        ai_chance = {
-            factor = 40
-        }
-	}
-
-	option = {
-		name = "Authorize the strikes - bombs away, boys."
-		any_pop = { limit = { location = { province_id = 658 } } consciousness = 1 }
-		country_event = 18482232
-        ai_chance = {
-            factor = 60
-        }
-	}
-}
-
-country_event = {
-	id = 18482232
-	title = "The Bombing of Mauna Loa"
-	desc = "BOMBEDMAUNALOA"
-	picture = "maunaloa_2"
-
-    fire_only_once = yes
-    is_triggered_only = yes
-
-	option = {
-        name = "Sometimes truth is stranger than fiction..."
-		prestige = 10
 	}
 }
 
@@ -12562,50 +12255,6 @@ country_event = {
 		relation = { who = KUK value = -50 }
 		relation = { who = DNB value = -50 }
 		ai_chance = { factor = 100 }
-	}
-}
-country_event = {
-    id = 18482259
-    title = "The Winter of 1886–1887"
-    desc = "1886WINTER"
-    picture = "winter_of_1887"
-	fire_only_once = yes
-
-	trigger = {
-		tag = USA
-		year = 1887
-	}
-
-	mean_time_to_happen = { days = 6 }
-
-    option = {
-		name = "Poor cows..."
-		any_pop = { limit = { location = { OR = {
-			province_id = 151
-			province_id = 154
-			province_id = 126
-			province_id = 127
-			province_id = 128
-			province_id = 131
-			province_id = 134
-			province_id = 135
-			province_id = 129
-			province_id = 123
-			province_id = 124
-			province_id = 125
-			province_id = 121
-			province_id = 122
-			province_id = 117
-			province_id = 118
-			province_id = 119
-			province_id = 112
-			province_id = 115
-			province_id = 116
-		} }
-			pop_type = farmers
-		}
-			consciousness = 4.8
-		}
 	}
 }
 country_event = {
@@ -15650,7 +15299,7 @@ country_event = {
             country_event = 184823021
         }
         ai_chance = {
-            factor = 0.80
+            factor = 0.8
         }
     }
     option = {
@@ -15661,7 +15310,7 @@ country_event = {
             country_event = 184823023
         }
         ai_chance = {
-            factor = 0.20
+            factor = 0.2
         }
 
     }
@@ -16305,7 +15954,6 @@ country_event = {
             }
             owner = {
 				2102 = { secede_province = ORA }
-				ORA = { government = colonial_company }
 			}
         }
         random_owned = {
@@ -16320,22 +15968,6 @@ country_event = {
             owner = {
 				2101 = { secede_province = ORA }
 				2103 = { secede_province = ORA }
-				ORA = { government = colonial_company }
-			}
-        }
-        random_owned = {
-            limit = {
-                owner = {
-					NOT = { ORA = { government = colonial_company } }
-				}
-            }
-            owner = {
-				ENG = { create_vassal = ORA }
-				ORA = {
-					government = colonial_company
-					add_accepted_culture = british
-					set_country_flag = british_accepted
-				}
 			}
         }
         random_owned = {
@@ -16350,6 +15982,16 @@ country_event = {
             }
             owner = {
 				ENG = { country_event = 184823072 }
+			}
+        }
+        random_owned = {
+            limit = {
+                owner = {
+					tag = TRN
+				}
+            }
+            owner = {
+				government = prov_gov_liberal
 			}
         }
         ai_chance = {
@@ -16378,7 +16020,6 @@ country_event = {
             }
             owner = {
 				2102 = { secede_province = ORA }
-				ORA = { government = colonial_company }
 			}
         }
         random_owned = {
@@ -16393,22 +16034,6 @@ country_event = {
             owner = {
 				2101 = { secede_province = ORA }
 				2103 = { secede_province = ORA }
-				ORA = {
-					government = colonial_company
-					add_accepted_culture = british
-					set_country_flag = british_accepted
-				}
-			}
-        }
-        random_owned = {
-            limit = {
-                owner = {
-					NOT = { ORA = { government = colonial_company } }
-				}
-            }
-            owner = {
-				ENG = { create_vassal = ORA }
-				ORA = { government = colonial_company }
 			}
         }
         random_owned = {
@@ -16558,12 +16183,26 @@ country_event = {
 
     option = {
         name = "A great success!"
+		create_vassal = ORA
+		ORA = {
+			civilized = yes
+			government = colonial_company
+			add_accepted_culture = british
+			set_country_flag = british_accepted
+		}
         ai_chance = {
             factor = 1
 		}
 	}
     option = {
         name = "For Transorangia! §BPlay as Transorangia§W"
+		create_vassal = ORA
+		ORA = {
+			civilized = yes
+			government = colonial_company
+			add_accepted_culture = british
+			set_country_flag = british_accepted
+		}
 		change_tag_no_core_switch = ORA
         ai_chance = {
             factor = 0
@@ -16825,69 +16464,6 @@ country_event = {
 		}
 		ai_chance = {
 			factor = 0
-		}
-	}
-}
-country_event = {
-	id = 18482316
-	title = "The Great St. John's City Fire of 1892"
-	desc = "STJOHNSCITYFIRE"
-	picture = "fire_stjohns_1892"
-
-	fire_only_once = yes
-	mean_time_to_happen = { days = 9 }
-
-	trigger = {
-		year = 1892
-		owns = 74 # New York City
-	}
-
-	immediate = { 74 = { infrastructure = -1 any_pop = { consciousness = 1.5 } } } # New York City
-
-	option = {
-	    name = "EVTOPTA18482312"
-	    treasury = -35000
-        74 = { infrastructure = 1 } # New York City
-        random_list = {
-            33 = { 74 = { add_province_modifier = { name = rebuilding_city duration = 60 } } }
-            33 = { 74 = { add_province_modifier = { name = rebuilding_city duration = 45 } } }
-            33 = { 74 = { add_province_modifier = { name = rebuilding_city duration = 30 } } }
-        }
-        ai_chance = {
-            factor = 100
-            modifier = {
-                factor = 0
-                NOT = { money = 50100 }
-            }
-        }
-	}
-
-	option = {
-	    name = "EVTOPTB18482312"
-	    treasury = -20000
-		random_list = {
-            50 = { 74 = { add_province_modifier = { name = rebuilding_city duration = 90 } } }
-            50 = { 74 = { add_province_modifier = { name = rebuilding_city duration = 60 } } }
-        }
-		ai_chance = {
-			factor = 10
-			modifier = {
-				factor = 0
-				NOT = { money = 20100 }
-            }
-        }
-    }
-
-	option = {
-	    name = "EVTOPTC18482312"
-	    prestige = -15
-        74 = { any_pop = { consciousness = 2.5 } } # New York City
-        ai_chance = {
-            factor = 0
-            modifier = {
-                factor = 100
-                NOT = { money = 10000 }
-            }
 		}
 	}
 }
@@ -17200,26 +16776,6 @@ country_event = {
 		name = "ZEPPELINLZONEOPT"
 		any_pop = { limit = { location = { province_id = 588 } } consciousness = -1 }
 		prestige = 5
-	}
-}
-country_event = {
-    id = 18482327
-    title = "The Bazar de la Charité Fire of 1897"
-    desc = "BAZARCHARITEFIRE1897"
-    picture = "fire_la_charite"
-	fire_only_once = yes
-
-	trigger = {
-		owns = 425
-		year = 1897
-		month = 4
-	}
-
-	mean_time_to_happen = { days = 1 }
-
-    option = {
-		name = "BAZARCHARITEFIRE1897OPT"
-		any_pop = { limit = { location = { province_id = 425 } } consciousness = 1 }
 	}
 }
 country_event = {
@@ -17553,30 +17109,6 @@ country_event = {
 			factor = 5
 			ideology = communist
 		}
-	}
-}
-country_event = {
-    id = 18482333
-    title = "The SS Norge Sinks near Rockall"
-    desc = "ROCKALLSHIPDEATH"
-    picture = "ss_norge"
-	fire_only_once = yes
-
-	trigger = {
-		OR = {
-			tag = DEN
-			tag = DNN
-			tag = SCA
-			has_country_flag = danelaw
-		}
-		year = 1904
-	}
-
-	mean_time_to_happen = { days = 1 }
-
-    option = {
-		name = "ROCKALLSHIPDEATHOPT"
-		any_pop = { consciousness = 1 }
 	}
 }
 country_event = {
@@ -19062,7 +18594,7 @@ country_event = {
 		owns = 273
 		year = 1839
 		month = 10
-		NOT = { political_reform = universal_voting }
+		NOT = { vote_franschise = universal_voting }
     }
 
     mean_time_to_happen = { days = 1 }
@@ -19241,42 +18773,6 @@ country_event = {
                 factor = 0
                 NOT = { money = 10100 }
             }
-		}
-    }
-
-}
-country_event = {
-    id = 18482373
-    title = "The 1872 Zanzibar Hurricane"
-    desc = "1872HURRICANEZANZIBAR"
-    picture = "1872_zanzibar_hurricane"
-
-    fire_only_once = yes
-
-    trigger = {
-		owns = 2048
-		year = 1872
-		month = 3
-		OR = {
-			tag = OMA
-			tag = ZAN
-		}
-    }
-
-    mean_time_to_happen = { days = 1 }
-
-
-    option = {
-        name = "Damn..."
-		prestige = -3
-        random_owned = {
-            limit = { province_id = 513 has_building = naval_base }
-            naval_base = -1
-        }
-		clipper_convoy = -7
-		any_pop = { consciousness = 1 }
-		ai_chance = {
-			factor = 1
 		}
     }
 
@@ -19519,32 +19015,64 @@ country_event = {
 			}
         }
     }
-
 }
 
 country_event = {
-    id = 18482380
-    title = "The Coringa Cyclone"
-    desc = "CORINGACYCLONE"
-    picture = "coringa_cyclone"
+    id = 18482381
+    title = "The First Ascent of Mount Whitney"
+    desc = "MOUNTWHITNEY"
+    picture = "mount_whitney"
 
     fire_only_once = yes
 
     trigger = {
-		year = 1839
-		month = 10
-		owns = 1305
+		year = 1873
+		month = 4
+		owns = 3449
     }
 
     mean_time_to_happen = { days = 1 }
 
     option = {
-        name = "CORINGACYCLONEOPT"
-        1305 = {
-			any_pop = {
-				reduce_pop = 0.71
+        name = "MOUNTWHITNEYOPT"
+		prestige = 5
+    }
+
+}
+
+country_event = {
+    id = 18482382
+    title = "The Transylvanian Massacres"
+    desc = "TRANSYLVANIANMASSACRES"
+    picture = "transylvanian_massacres"
+
+    fire_only_once = yes
+
+    trigger = {
+		year = 1848
+		owns = 655
+		owns = 654
+		tag = HUN
+		has_global_flag = hungarian_revolution_occurred
+    }
+
+    mean_time_to_happen = { months = 1 }
+
+    option = {
+        name = "TRANSYLVANIANMASSACRESOPT"
+        655 = {
+			any_pop = { limit = { has_pop_culture = romanian }
+				reduce_pop = 0.95
 			}
         }
+        654 = {
+			any_pop = { limit = { has_pop_culture = hungarian }
+				reduce_pop = 0.85
+			}
+        }
+		any_pop = { limit = { has_pop_culture = romanian }
+			militancy = 6
+		}
     }
 
 }
