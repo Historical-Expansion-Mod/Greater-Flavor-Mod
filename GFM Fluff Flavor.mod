@@ -1,3 +1,3 @@
-name = "GFM Fluff Flavor Submod"
-path = "mod/GFM Fluff Flavor"
+name = "GFM Fluff Decisions Submod"
+path = "mod/GFM Fluff Decisions"
 dependencies = { "Greater Flavor Mod" }
