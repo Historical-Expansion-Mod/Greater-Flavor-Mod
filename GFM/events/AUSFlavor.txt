@@ -1222,6 +1222,9 @@ country_event = {
 country_event = {
 
     id = 618 #Formation of the Czechoslovak National Council
+	title = "EVTNAME618"
+    desc = "EVTDESC618"
+    picture = "czechoslovak_council"
 
     trigger = {
 		owns = 3483
@@ -1233,12 +1236,6 @@ country_event = {
     }
 
     fire_only_once = yes
-
-    mean_time_to_happen = { months = 1 }
-
-    title = "EVTNAME618"
-    desc = "EVTDESC618"
-    picture = "czechoslovak_council"
 
     option = {
         name = "Traitors!"
@@ -1261,6 +1258,9 @@ country_event = {
 country_event = {
 
     id = 619 #Czechoslovak National Council into Provisional Government (white-red flag)
+	title = "EVTNAME619"
+    desc = "EVTDESC619"
+    picture = "czechoslovak_council"
 
     trigger = {
 		tag = CZH
@@ -1269,10 +1269,6 @@ country_event = {
     }
 
     mean_time_to_happen = { months = 1 }
-
-    title = "EVTNAME619"
-    desc = "EVTDESC619"
-    picture = "czechoslovak_council"
 
     option = {
         name = "Nazdar!"
@@ -1297,6 +1293,9 @@ country_event = {
 country_event = {
 
     id = 620 #Czechoslovakia but Czechs remember Slovaks exist
+	title = "EVTNAME620"
+    desc = "EVTDESC620"
+    picture = "czechoslovak_council"
 
     trigger = {
 		tag = CZH
@@ -1305,10 +1304,6 @@ country_event = {
     }
 
     mean_time_to_happen = { months = 12 }
-
-    title = "EVTNAME620"
-    desc = "EVTDESC620"
-    picture = "czechoslovak_council"
 
     option = {
         name = "A satisfactory wedge!"
@@ -1323,4 +1318,123 @@ country_event = {
         }
     }
 }
-####!!!! 622 IS TAKEN !!!!!
+
+####!!!! 621 AND 622 ARE TAKEN !!!!!
+
+country_event = {
+
+    id = 623 #Bratislava secedes to Hungary - inform Hungary
+	title = "The Pozsony Uprising"
+    desc = "EVTDESC623"
+    picture = "czechoslovak_council"
+
+    trigger = {
+		tag = HUN
+		exists = yes
+		633 = { has_province_modifier = resistance_to_new_regime }
+		633 = { average_militancy = 6 }
+		OR = { owns = 635 owns = 624 }
+		NOT = { has_country_flag = HUN_refused_pozsony }
+    }
+
+    mean_time_to_happen = { months = 2 }
+
+    option = {
+        name = "Welcome home!"
+		633 = { owner = { country_event = { id = 624 } } }
+		633 = { owner = { relation = { who = HUN value = -100 } } }
+        633 = { secede_province = HUN }
+		633 = { add_core = HUN }
+		any_pop = { limit = { location = { province_id = 633 } has_pop_culture = hungarian } militancy = -7  consciousness = -3 }
+		any_pop = { limit = { location = { province_id = 633 } is_culture_group = germanic } militancy = 2  consciousness = 2 }
+		any_pop = { limit = { location = { province_id = 633 } has_pop_culture = slovak } militancy = 7  consciousness = 3 }
+		ai_chance = { factor = 1 }
+    }
+	option = {
+       name = "In this economy?"
+	   any_pop = {
+            limit = {
+                location = { owner = HUN }
+                has_pop_culture = hungarian
+            }
+            militancy = 1
+            consciousness = 1
+        }
+       prestige = -3
+	   633 = { owner = { country_event = { id = 625 } } }
+	   set_country_flag = HUN_refused_pozsony
+	   ai_chance = { factor = 0 }
+    }
+}
+
+country_event = {
+
+    id = 624 #Bratislava secedes to German Vienna owner - inform owner
+    title = "The Pressburg Uprising"
+    desc = "EVTDESC624"
+    picture = "czechoslovak_council"
+
+    trigger = {
+		owns = 619
+		is_culture_group = germanic
+		exists = yes
+		633 = { has_province_modifier = resistance_to_new_regime }
+		633 = { average_militancy = 6 }
+		OR = { NOT = { HUN = { owns = 635 owns = 624 } } HUN = { has_country_flag = HUN_refused_pozsony } }
+		NOT = { has_country_flag = GER_refused_pozsony }
+    }
+
+    mean_time_to_happen = { months = 2 }
+
+    option = {
+        name = "Welcome home!"
+		633 = { owner = { country_event = { id = 626 } } }
+		633 = { owner = { relation = { who = THIS value = -100 } } }
+        633 = { secede_province = THIS }
+        633 = { add_core = THIS }
+		any_pop = { limit = { location = { province_id = 633 } is_culture_group = germanic } militancy = -5  consciousness = -3 }
+		any_pop = { limit = { location = { province_id = 633 } has_pop_culture = hungarian } militancy = 2  consciousness = 2 }
+		any_pop = { limit = { location = { province_id = 633 } has_pop_culture = slovak } militancy = 7  consciousness = 3 }
+		ai_chance = { 
+			factor = 1
+			modifier = {
+               factor = 0
+               OR = { 633 = { owner = { in_sphere = THIS } } 633 = { owner = { alliance_with = THIS } }  }
+            }
+		}
+    }
+	option = {
+       name = "In this economy?"
+	   any_pop = {
+            limit = {
+                location = 619
+                is_culture_group = germanic
+            }
+            militancy = 1
+            consciousness = 1
+        }
+       prestige = -1
+	   633 = { owner = { country_event = { id = 625 } } }
+	   set_country_flag = GER_refused_pressburg
+	   ai_chance = { factor = 0 }
+    }
+}
+
+country_event = {
+
+    id = 625 #Bratislava uprising failed
+
+    is_triggered_only = yes
+
+    title = "The Bratislava Uprising"
+    desc = "EVTDESC625"
+    picture = "czechoslovak_council"
+
+    option = {
+        name = "Retake the city!"
+		633 = { change_controller = REB }
+		633 = { remove_province_modifier = resistance_to_new_regime }
+		any_pop = { limit = { location = { province_id = 633 } is_culture_group = germanic } militancy = -5 consciousness = -3 }
+		any_pop = { limit = { location = { province_id = 633 } has_pop_culture = hungarian } militancy = -5 consciousness = -3 }
+    }
+}
