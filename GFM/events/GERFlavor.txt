@@ -336,10 +336,10 @@ country_event = {
         relation = { who = RUS value = 75 }
         officers = {
             consciousness = 2
-            }
+		}
         capitalists = {
             consciousness = 2
-            }
+		}
     }
 
 }
@@ -355,57 +355,47 @@ country_event = {
 
     option = {
         name = "EVT33006OPTA"
+        #If Zanzibar exists and is a German vassal, Germany will release it
         random_owned = {
-            limit = { owner = { owns = 2029 } }
-            owner = {
-                any_owned = {
-                    limit = {
-                        OR = {
-                            region = ENG_2024
-                            region = ENG_2026
-                            province_id = 1870
-                        }
-                    }
-                    secede_province = ENG
-                }
-                set_country_flag = germany_gave_colonies
-            }
-        }
-
-        #If Zanzibar exists, Germany will release it
-        random_country = {
             limit = {
-                tag = ZAN
-                vassal_of = THIS
-                exists = yes
-                has_country_flag = german_east_africa_zan
+				owner = {
+					ZAN = {
+						vassal_of = THIS
+						exists = yes
+					}
+				}
             }
-            THIS = {
+            owner = {
                 release_vassal = ZAN
                 diplomatic_influence = {
                     who = ZAN
                     value = -400
                 }
+				set_global_flag = give_uk_zanzibar
             }
         }
 
         #If Zanzibar was annexed by Germany, release it
         random_owned = {
             limit = {
-                province_id = 2048 #Zanzibar
-                owned_by = THIS
-                NOT = { exists = ZAN }
+				owner = {
+					owns = 2048 #Zanzibar
+					NOT = { exists = ZAN }
+				}
             }
-            secede_province = ZAN
+			owner = {
+				2048 = { secede_province = ZAN }
+				set_global_flag = give_uk_zanzibar
+			}
         }
 
-        #UK Receives Zanzibar as a vassal
+        #UK Receives Zanzibar as a vassal if it was German beforehand
         random_country = {
             limit = {
                 tag = ZAN
                 is_vassal = no
                 exists = yes
-                has_country_flag = german_east_africa_zan
+                has_global_flag = give_uk_zanzibar
             }
 			set_country_flag = colony_exemption
             ENG = {
@@ -414,6 +404,61 @@ country_event = {
                     who = ZAN
                     value = 400
                 }
+            }
+			THIS = { set_country_flag = germany_gave_colonies }
+        }
+
+		#If Germany owns part of Kenya, it gives it to the UK
+        random_owned = {
+            limit = {
+				owner = {
+					OR = {
+						owns = 2029
+						owns = 2027
+						owns = 2045
+					}
+				}
+			}
+            owner = {
+                any_owned = {
+                    limit = {
+                        OR = {
+                            region = ENG_2024
+                            region = ENG_2026
+                            province_id = 1870
+							province_id = 2045
+                        }
+                    }
+                    secede_province = ENG
+                }
+                set_country_flag = germany_gave_colonies
+            }
+        }
+
+		#If Germany neither owned part of Kenya nor Zanzibar but do own Cameroon, they give a strip to the UK
+        random_owned = {
+            limit = {
+				owner = {
+					NOT = { has_country_flag = germany_gave_colonies }
+					owns = 1953
+					owns = 1961
+					ENG = {
+						owns = 1950
+						owns = 1951
+					}
+				}
+			}
+            owner = {
+                any_owned = {
+                    limit = {
+                        OR = {
+                            province_id = 1953
+							province_id = 1961
+                        }
+                    }
+                    secede_province = ENG
+                }
+                set_country_flag = germany_gave_colonies
             }
         }
 
@@ -667,7 +712,7 @@ country_event = {
             limit = { is_primary_culture = yes }
             militancy = -3
             dominant_issue = {
-                factor = 0.10
+                factor = 0.1
                 value = jingoism
             }
         }
@@ -1314,7 +1359,6 @@ country_event = {
         NOT = { exists = GCF }
         NOT = { year = 1890 }
         has_country_flag = french_claimed_the_rhine
-        has_global_flag = watching_the_rhine
         NOT = { has_global_flag = 3hurrahs }
         OR = {
             575 = { owner = { NOT = { is_culture_group = germanic } } }
@@ -1406,7 +1450,7 @@ country_event = {
                     value = jingoism
                 }
             }
-        ai_chance = { factor = 0.70 }
+        ai_chance = { factor = 0.7 }
         }
 
 
@@ -1465,7 +1509,7 @@ country_event = {
             relation = { who = SGF value = 400 }
             diplomatic_influence = { who = SGF value = 100 }
             create_alliance = SGF
-            random_country = { limit = { exists = yes OR = { tag = AUS tag = KUK tag = AUB } } relation = { who = SGF value = 100 }  diplomatic_influence = { who = SGF value = 50 } }
+            random_country = { limit = { exists = yes OR = { tag = AUS tag = KUK tag = AUB } } relation = { who = SGF value = 100 } diplomatic_influence = { who = SGF value = 50 } }
         FRA_412 = { add_core = GER }
         any_pop = {
                 limit = { is_culture_group = germanic }
@@ -1483,7 +1527,7 @@ country_event = {
                 }
             }
         }
-        ai_chance = { factor = 0.80 }
+        ai_chance = { factor = 0.8 }
     }
 }
 
@@ -1526,7 +1570,7 @@ country_event = {
         }
         year = 1865
     }
-	
+
 	immediate = {
         GER = { all_core = { limit = { life_rating = 45 } life_rating = -10 } }
         GER = { all_core = { limit = { life_rating = 40 } life_rating = -5 } }
@@ -1535,7 +1579,7 @@ country_event = {
         GCF = { all_core = { limit = { life_rating = 45 } life_rating = -10 } }
         GCF = { all_core = { limit = { life_rating = 40 } life_rating = -5 } }
         GCF = { all_core = { limit = { life_rating = 36 } life_rating = -1 } }
-        619 = { limit = { owned_by = THIS has_country_flag = grunderzeit_we_have_done } life_rating = 5 }	
+        619 = { limit = { owned_by = THIS has_country_flag = grunderzeit_we_have_done } life_rating = 5 }
 	}
 
     fire_only_once = yes
@@ -1843,7 +1887,7 @@ country_event = {
         }
 
         ai_chance = {
-            factor = 0.30
+            factor = 0.3
             modifier = {
                 factor = 0
                 FROM = { ai = no }
@@ -1990,7 +2034,7 @@ country_event = {
             }
             ideology = { factor = 0.2 value = conservative }
             ideology = { factor = 0.1 value = reactionary }
-            dominant_issue = { factor = 0.20 value = jingoism }
+            dominant_issue = { factor = 0.2 value = jingoism }
         }
         any_pop = {
             limit = {
@@ -2000,7 +2044,7 @@ country_event = {
             }
             ideology = { factor = 0.1 value = conservative }
             ideology = { factor = 0.05 value = liberal }
-            dominant_issue = { factor = 0.20 value = jingoism }
+            dominant_issue = { factor = 0.2 value = jingoism }
         }
         FROM = {
             treasury = 100000
@@ -2079,7 +2123,7 @@ country_event = {
             }
             ideology = { factor = 0.2 value = conservative }
             ideology = { factor = 0.1 value = reactionary }
-            dominant_issue = { factor = 0.20 value = jingoism }
+            dominant_issue = { factor = 0.2 value = jingoism }
         }
         any_pop = {
             limit = {
@@ -2089,7 +2133,7 @@ country_event = {
             }
             ideology = { factor = 0.1 value = conservative }
             ideology = { factor = 0.05 value = liberal }
-            dominant_issue = { factor = 0.20 value = jingoism }
+            dominant_issue = { factor = 0.2 value = jingoism }
         }
         FROM = {
             treasury = 100000
@@ -2144,8 +2188,8 @@ country_event = {
         badboy = -2
         prestige = 5
         381 = { remove_core = BEL }
-        397 = { remove_core = BEL remove_core = NET }
-        398 = { remove_core = NET add_core = LUX }
+        397 = { remove_core = BEL remove_core = NET add_core = GER }
+        398 = { remove_core = NET add_core = LUX add_core = GER }
         # Any Luxembourg lands given to Luxembourg, it is freed if vassaled
         any_owned = {
             limit = { is_core = LUX }

@@ -62,6 +62,8 @@ war_reparations
 become_independent
 dismantle_cb
 egyptian_ottoman_war
+war_for_canada
+anglo_persian_cb
 colonial_competition
 acquire_all_cores
 acquire_core_state
@@ -166,7 +168,7 @@ dismantle_cb = {
     is_triggered_only = yes
     months = 12
     crisis = no
-	
+
 	constructing_cb = no
 	always = yes
     #construction_speed = 0.25
@@ -382,7 +384,7 @@ acquire_core_state = {
 
     on_po_accepted = {
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
-        country_event =    2650    # Territorial Loss event
+        country_event = 2650    # Territorial Loss event
     }
 }
 
@@ -475,7 +477,7 @@ acquire_all_cores = {
 
     on_po_accepted = {
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
-        country_event =    2650    # Territorial Loss event
+        country_event = 2650    # Territorial Loss event
     }
 }
 
@@ -546,6 +548,7 @@ restore_austrian_empire = {
                 region = AUS_657
             }
 				NOT = { province_id = 3669 } #Neum
+				NOT = { province_id = 3277 } #Hultschin/Hlucin/Hlucín
         }
         OR = {
             NOT = { tag = ITA }
@@ -893,7 +896,7 @@ restore_america = {
             value = 0.25
         }
     }
-	
+
 	on_po_accepted = {
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
 	}
@@ -1167,7 +1170,7 @@ claim_holy_land = {
                 tag = ENG
                 tag = AUS
                 tag = KUK
-                has_country_flag = byzantine_revival
+                has_country_flag = i_am_byz
                 is_culture_group = east_slavic
                 is_culture_group = south_slavic
                 is_culture_group = italian
@@ -2006,7 +2009,7 @@ take_from_sphere = {
 					capital_scope = { continent = west_africa }
 					capital_scope = { continent = central_africa }
 					capital_scope = { continent = east_africa }
-					capital_scope = { continent = south_west_africa }
+					capital_scope = { continent = south_africa }
 				}
                 civilized = no
             }
@@ -2132,6 +2135,9 @@ free_peoples = {
             FROM = { tag = UKR }
             FROM = { tag = HND }
             FROM = { tag = PLC }
+			FROM = { tag = PLR }
+			FROM = { has_country_flag = i_am_phc }
+			FROM = { has_country_flag = i_am_wsf }
             FROM = { tag = TPG }
             FROM = { tag = POL }
             FROM = { tag = CPL }
@@ -2424,7 +2430,7 @@ free_peoples = {
 
     on_po_accepted = {
         THIS = { remove_country_modifier = disable_conquest_cb }
-        country_event =    2651    # Territorial Loss event
+        country_event = 2651    # Territorial Loss event
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
     }
 }
@@ -2757,7 +2763,7 @@ liberate_country = {
 
     on_po_accepted = {
         THIS = { remove_country_modifier = disable_conquest_cb }
-        country_event =    2651    # Territorial Loss event
+        country_event = 2651    # Territorial Loss event
         random_owned = {
             limit = { owner = { tag = TUR has_global_flag = italy_fights_turk war_with = ITA } }
             ITA = { country_event = 900009 }
@@ -2876,7 +2882,7 @@ free_allied_cores = {
     }
 
     on_po_accepted = {
-        country_event =    2651    # Territorial Loss event
+        country_event = 2651    # Territorial Loss event
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
     }
 }
@@ -3116,7 +3122,7 @@ monroe_doctrine = {
             capital_scope = { continent = west_africa }
             capital_scope = { continent = central_africa }
             capital_scope = { continent = east_africa }
-            capital_scope = { continent = south_west_africa }
+            capital_scope = { continent = south_africa }
             capital_scope = { continent = asia }
             capital_scope = { continent = oceania }
             capital_scope = { continent = australia_new_zealand }
@@ -3796,24 +3802,12 @@ great_game_cb = {
                     1208 = { OR = { owned_by = THIS owner = { vassal_of = THIS war = no } } }
                 }
             }
-            AND = {
-                tag = AFG
-                THIS = { tag = ENG }
-                has_global_flag = afghan_1
-                OR = {
-                    NOT = { has_global_flag = graveyard_of_empires  }
-                    AND = {
-                        has_global_flag = graveyard_of_empires
-                        has_global_flag = afgan_2
-                    }
-                }
-            }
         }
 		OR = {
 			NOT = { tag = AFG }
 			AND = {
 				tag = AFG
-				THIS = { NOT = { has_country_flag = afghanistan_is_neutral } }
+				THIS = { NOT = { has_global_flag = afghanistan_is_neutral } }
 			}
 		}
         THIS = {
@@ -3845,7 +3839,7 @@ great_game_cb = {
 
     on_add = {
         badboy = 3.5
-		
+
 		random_country = {
 			limit = {
 				FROM = {
@@ -3858,7 +3852,7 @@ great_game_cb = {
 			}
 			THIS = { badboy = -2.5 }
 		}
-		
+
         random_country = {
             limit = {
                 OR = {
@@ -4358,7 +4352,7 @@ place_in_the_sun = {
             value = 0.25
         }
     }
-	
+
 	on_po_accepted = {
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
 	}
@@ -4511,30 +4505,30 @@ acquire_state = {
                     any_owned_province = { port = yes }
                 }
             }
-			
+
 			#Player can take any state neighboring their substate
 			AND = {
-				any_owned_province = { 
-					any_neighbor_province = { 
-						owner = { 
-							substate_of = THIS 
+				any_owned_province = {
+					any_neighbor_province = {
+						owner = {
+							substate_of = THIS
 						}
 					}
 				}
-				THIS = { ai = no } 
+				THIS = { ai = no }
 			}
-			
+
 			#Player can take any state neighboring their satellite
 			AND = {
-				any_owned_province = { 
-					any_neighbor_province = { 
-						owner = { 
-							vassal_of = THIS 
+				any_owned_province = {
+					any_neighbor_province = {
+						owner = {
+							vassal_of = THIS
 						}
 					}
 				}
-				THIS = { ai = no } 
-			} 
+				THIS = { ai = no }
+			}
         }
 
         #AI will not grab cores of allies/spherelings
@@ -4780,30 +4774,30 @@ acquire_state_mid = {
                     any_owned_province = { port = yes }
                 }
             }
-			
+
 			#Player can take any state neighboring their substate
 			AND = {
-				any_owned_province = { 
-					any_neighbor_province = { 
-						owner = { 
-							substate_of = THIS 
+				any_owned_province = {
+					any_neighbor_province = {
+						owner = {
+							substate_of = THIS
 						}
 					}
 				}
-				THIS = { ai = no } 
+				THIS = { ai = no }
 			}
-			
+
 			#Player can take any state neighboring their satellite
 			AND = {
-				any_owned_province = { 
-					any_neighbor_province = { 
-						owner = { 
-							vassal_of = THIS 
+				any_owned_province = {
+					any_neighbor_province = {
+						owner = {
+							vassal_of = THIS
 						}
 					}
 				}
-				THIS = { ai = no } 
-			} 
+				THIS = { ai = no }
+			}
         }
 
         #AI will not grab cores of allies/spherelings
@@ -5049,30 +5043,30 @@ acquire_state_late = {
                     any_owned_province = { port = yes }
                 }
             }
-			
+
 			#Player can take any state neighboring their substate
 			AND = {
-				any_owned_province = { 
-					any_neighbor_province = { 
-						owner = { 
-							substate_of = THIS 
+				any_owned_province = {
+					any_neighbor_province = {
+						owner = {
+							substate_of = THIS
 						}
 					}
 				}
-				THIS = { ai = no } 
+				THIS = { ai = no }
 			}
-			
+
 			#Player can take any state neighboring their satellite
 			AND = {
-				any_owned_province = { 
-					any_neighbor_province = { 
-						owner = { 
-							vassal_of = THIS 
+				any_owned_province = {
+					any_neighbor_province = {
+						owner = {
+							vassal_of = THIS
 						}
 					}
 				}
-				THIS = { ai = no } 
-			} 
+				THIS = { ai = no }
+			}
         }
 
         #AI will not grab cores of allies/spherelings
@@ -5294,7 +5288,7 @@ china_acquire_state = {
         OR = {
             AND = {
                 any_owned_province = {
-                    NOT = {    is_core = THIS }
+                    NOT = { is_core = THIS }
                     is_core = CHI
                     owner = { civilized = yes }
                 }
@@ -5302,13 +5296,13 @@ china_acquire_state = {
             }
             AND = {
                 any_owned_province = {
-                    NOT = {    is_core = THIS }
+                    NOT = { is_core = THIS }
                     is_core = CHI
                 }
                 THIS = { ai = no }
             }
             any_owned_province = {
-                NOT = {    is_core = THIS }
+                NOT = { is_core = THIS }
                 is_core = CHI
                 owner = { civilized = no }
             }
@@ -5508,31 +5502,31 @@ demand_concession_casus_belli = {
         NOT = { any_owned_province = { is_capital = yes } }
         OR = {
             any_owned_province = { any_neighbor_province = { owned_by = THIS } }
-			
+
 			#Player can take any state neighboring their substate
 			AND = {
-				any_owned_province = { 
-					any_neighbor_province = { 
-						owner = { 
-							substate_of = THIS 
+				any_owned_province = {
+					any_neighbor_province = {
+						owner = {
+							substate_of = THIS
 						}
 					}
 				}
-				THIS = { ai = no } 
+				THIS = { ai = no }
 			}
-			
+
 			#Player can take any state neighboring their satellite
 			AND = {
-				any_owned_province = { 
-					any_neighbor_province = { 
-						owner = { 
-							vassal_of = THIS 
+				any_owned_province = {
+					any_neighbor_province = {
+						owner = {
+							vassal_of = THIS
 						}
 					}
 				}
-				THIS = { ai = no } 
-			} 
-			
+				THIS = { ai = no }
+			}
+
             AND = {
                 THIS = { ai = no }
                 owner = { war_with = THIS }
@@ -5561,7 +5555,7 @@ demand_concession_casus_belli = {
             continent = central_africa
             continent = west_africa
             continent = east_africa
-            continent = south_west_africa
+            continent = south_africa
 
             NOT = { total_pops = 500000 }
 
@@ -5745,31 +5739,31 @@ demand_concession_NI_casus_belli = {
         NOT = { any_owned_province = { is_capital = yes } }
         OR = {
             any_owned_province = { any_neighbor_province = { owned_by = THIS } }
-			
+
 			#Player can take any state neighboring their substate
 			AND = {
-				any_owned_province = { 
-					any_neighbor_province = { 
-						owner = { 
-							substate_of = THIS 
+				any_owned_province = {
+					any_neighbor_province = {
+						owner = {
+							substate_of = THIS
 						}
 					}
 				}
-				THIS = { ai = no } 
+				THIS = { ai = no }
 			}
-			
+
 			#Player can take any state neighboring their satellite
 			AND = {
-				any_owned_province = { 
-					any_neighbor_province = { 
-						owner = { 
-							vassal_of = THIS 
+				any_owned_province = {
+					any_neighbor_province = {
+						owner = {
+							vassal_of = THIS
 						}
 					}
 				}
-				THIS = { ai = no } 
-			} 
-			
+				THIS = { ai = no }
+			}
+
             AND = {
                 THIS = { ai = no }
                 owner = { war_with = THIS }
@@ -5798,7 +5792,7 @@ demand_concession_NI_casus_belli = {
             continent = central_africa
             continent = west_africa
             continent = east_africa
-            continent = south_west_africa
+            continent = south_africa
 
             NOT = { total_pops = 500000 }
 
@@ -5874,7 +5868,7 @@ demand_concession_NI_casus_belli = {
         }
     }
 
-    
+
 	on_po_accepted = {
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
 	}
@@ -5969,30 +5963,30 @@ demand_concession_BC_casus_belli = {
         NOT = { any_owned_province = { is_capital = yes } }
         OR = {
             any_owned_province = { any_neighbor_province = { owned_by = THIS } }
-			
+
 			#Player can take any state neighboring their substate
 			AND = {
-				any_owned_province = { 
-					any_neighbor_province = { 
-						owner = { 
-							substate_of = THIS 
+				any_owned_province = {
+					any_neighbor_province = {
+						owner = {
+							substate_of = THIS
 						}
 					}
 				}
-				THIS = { ai = no } 
+				THIS = { ai = no }
 			}
-			
+
 			#Player can take any state neighboring their satellite
 			AND = {
-				any_owned_province = { 
-					any_neighbor_province = { 
-						owner = { 
-							vassal_of = THIS 
+				any_owned_province = {
+					any_neighbor_province = {
+						owner = {
+							vassal_of = THIS
 						}
 					}
 				}
-				THIS = { ai = no } 
-			} 
+				THIS = { ai = no }
+			}
             AND = {
                 THIS = { ai = no }
                 owner = { war_with = THIS }
@@ -6021,7 +6015,7 @@ demand_concession_BC_casus_belli = {
             continent = central_africa
             continent = west_africa
             continent = east_africa
-            continent = south_west_africa
+            continent = south_africa
 
             NOT = { total_pops = 500000 }
 
@@ -6097,7 +6091,7 @@ demand_concession_BC_casus_belli = {
         }
     }
 
-    
+
 	on_po_accepted = {
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
 	}
@@ -6128,6 +6122,26 @@ rude_boy = {
     always = yes
 
     can_use = {
+		NOT = {
+			AND = {
+				government = proletarian_dictatorship
+				THIS = { government = proletarian_dictatorship }
+				relation = { who = THIS value = 1 }
+				THIS = { ai = yes }
+			}
+			AND = {
+				government = fascist_dictatorship
+				THIS = { government = fascist_dictatorship }
+				relation = { who = THIS value = 1 }
+				THIS = { ai = yes }
+			}
+			AND = {
+				government = radical_republic
+				THIS = { government = radical_republic }
+				relation = { who = THIS value = 1 }
+				THIS = { ai = yes }
+			}
+		}
         NOT = { is_our_vassal = THIS }
         badboy = 1
         is_disarmed = no
@@ -6447,7 +6461,7 @@ annex_africa = {
             capital_scope = { continent = central_africa }
             capital_scope = { continent = west_africa }
             capital_scope = { continent = east_africa }
-            capital_scope = { continent = south_west_africa }
+            capital_scope = { continent = south_africa }
         }
         ai = yes
         OR = {
@@ -6480,22 +6494,13 @@ annex_africa = {
 									region = FRA_1907
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = ASH_1909
-											region = FRA_1907
-										}
-									}
-								}
-								any_greater_power  = {
-									any_owned_province = {
-										OR = {
-											region = ASH_1909
-											region = FRA_1907
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = ASH_1909
+										region = FRA_1907
 									}
 								}
 							}
@@ -6508,29 +6513,19 @@ annex_africa = {
 									region = FRA_1893
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = FRA_1892
-											region = FRA_1893
-										}
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										OR = {
-											region = FRA_1892
-											region = FRA_1893
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = FRA_1892
+										region = FRA_1893
 									}
 								}
 							}
 						}
 						#Nigeria
 						AND = {
-							ENG = { has_country_flag = niger_coast_protectorate }
 							any_owned_province = {
 								OR = {
 									region = FRA_1923
@@ -6541,30 +6536,17 @@ annex_africa = {
 									region = SOK_1937
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = FRA_1923
-											region = FRA_1927
-											region = FRA_1930
-											region = SOK_1934
-											region = SOK_1945
-											region = SOK_1937
-										}
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										OR = {
-											region = FRA_1923
-											region = FRA_1927
-											region = FRA_1930
-											region = SOK_1934
-											region = SOK_1945
-											region = SOK_1937
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = FRA_1923
+										region = FRA_1927
+										region = FRA_1930
+										region = SOK_1934
+										region = SOK_1945
+										region = SOK_1937
 									}
 								}
 							}
@@ -6572,40 +6554,28 @@ annex_africa = {
 						#Guinea
 						AND = {
 							any_owned_province = { region = FRA_1883 }
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = { region = FRA_1883 }
-								}
-								any_greater_power = {
-									any_owned_province = { region = FRA_1883 }
-								}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = { region = FRA_1883 }
 							}
 						}
 						#Guinea-Bissau
 						AND = {
 							any_owned_province = { region = FRA_1878 }
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = { region = FRA_1878 }
-								}
-								any_greater_power = {
-									any_owned_province = { region = FRA_1878 }
-								}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = { region = FRA_1878 }
 							}
 						}
 						#Angola
 						AND = {
 							any_owned_province = { region = POR_1999 }
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = { region = POR_1999 }
-								}
-								any_greater_power = {
-									any_owned_province = { region = POR_1999 }
-								}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = { region = POR_1999 }
 							}
 						}
 						#Senegal and Mauritania
@@ -6617,24 +6587,14 @@ annex_africa = {
 									region = FRA_1775
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = FRA_1783
-											region = FRA_1788
-											region = FRA_1775
-										}
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										OR = {
-											region = FRA_1783
-											region = FRA_1788
-											region = FRA_1775
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = FRA_1783
+										region = FRA_1788
+										region = FRA_1775
 									}
 								}
 							}
@@ -6648,24 +6608,14 @@ annex_africa = {
 									region = FRA_1803
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = FRA_1798
-											region = FRA_1801
-											region = FRA_1803
-										}
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										OR = {
-											region = FRA_1798
-											region = FRA_1801
-											region = FRA_1803
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = FRA_1798
+										region = FRA_1801
+										region = FRA_1803
 									}
 								}
 							}
@@ -6675,17 +6625,11 @@ annex_africa = {
 							any_owned_province = {
 								region = FRA_1808
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										region = FRA_1808
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										region = FRA_1808
-									}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									region = FRA_1808
 								}
 							}
 						}
@@ -6699,26 +6643,15 @@ annex_africa = {
 									region = POR_2060
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = POR_2049
-											region = POR_2054
-											region = POR_2053
-											region = POR_2060
-										}
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										OR = {
-											region = POR_2049
-											region = POR_2054
-											region = POR_2053
-											region = POR_2060
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = POR_2049
+										region = POR_2054
+										region = POR_2053
+										region = POR_2060
 									}
 								}
 							}
@@ -6735,30 +6668,17 @@ annex_africa = {
 									region = ENG_2071
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = ENG_2087
-											region = ENG_2096
-											region = ORA_2103
-											region = TRN_2108
-											region = ZUL_2113
-											region = ENG_2071
-										}
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										OR = {
-											region = ENG_2087
-											region = ENG_2096
-											region = ORA_2103
-											region = TRN_2108
-											region = ZUL_2113
-											region = ENG_2071
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = ENG_2087
+										region = ENG_2096
+										region = ORA_2103
+										region = TRN_2108
+										region = ZUL_2113
+										region = ENG_2071
 									}
 								}
 							}
@@ -6773,28 +6693,16 @@ annex_africa = {
 									region = EGY_1771
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = EGY_1745
-											region = EGY_1758
-											region = EGY_1762
-											region = EGY_1771
-											region = EGY_1755
-										}
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										OR = {
-											region = EGY_1745
-											region = EGY_1758
-											region = EGY_1762
-											region = EGY_1771
-											region = EGY_1755
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = EGY_1745
+										region = EGY_1758
+										region = EGY_1762
+										region = EGY_1771
+										region = EGY_1755
 									}
 								}
 							}
@@ -6810,28 +6718,16 @@ annex_africa = {
 									#region = EGY_1842
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = EGY_1834
-											region = EGY_1827
-											region = EGY_1838
-											region = ENG_1844
-											#region = EGY_1842
-										}
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										OR = {
-											region = EGY_1834
-											region = EGY_1827
-											region = EGY_1838
-											region = ENG_1844
-											#region = EGY_1842
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = EGY_1834
+										region = EGY_1827
+										region = EGY_1838
+										region = ENG_1844
+										#region = EGY_1842
 									}
 								}
 							}
@@ -6849,32 +6745,18 @@ annex_africa = {
 									region = ETH_3591
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = ETH_1853
-											region = ETH_1852
-											region = ETH_1865
-											region = ETH_1859
-											region = ETH_1867
-											region = ETH_1855
-											region = ETH_3591
-										}
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										OR = {
-											region = ETH_1853
-											region = ETH_1852
-											region = ETH_1865
-											region = ETH_1859
-											region = ETH_1867
-											region = ETH_1855
-											region = ETH_3591
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = ETH_1853
+										region = ETH_1852
+										region = ETH_1865
+										region = ETH_1859
+										region = ETH_1867
+										region = ETH_1855
+										region = ETH_3591
 									}
 								}
 							}
@@ -6891,22 +6773,13 @@ annex_africa = {
 									region = SOM_1872
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = SOM_1868
-											region = SOM_1872
-										}
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										OR = {
-											region = SOM_1868
-											region = SOM_1872
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = SOM_1868
+										region = SOM_1872
 									}
 								}
 							}
@@ -7019,7 +6892,7 @@ annex_africa_full = {
             capital_scope = { continent = central_africa }
             capital_scope = { continent = west_africa }
             capital_scope = { continent = east_africa }
-            capital_scope = { continent = south_west_africa }
+            capital_scope = { continent = south_africa }
         }
         ai = yes
         OR = {
@@ -7058,22 +6931,13 @@ annex_africa_full = {
 									region = FRA_1907
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = ASH_1909
-											region = FRA_1907
-										}
-									}
-								}
-								any_greater_power  = {
-									any_owned_province = {
-										OR = {
-											region = ASH_1909
-											region = FRA_1907
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = ASH_1909
+										region = FRA_1907
 									}
 								}
 							}
@@ -7086,22 +6950,13 @@ annex_africa_full = {
 									region = FRA_1893
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = FRA_1892
-											region = FRA_1893
-										}
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										OR = {
-											region = FRA_1892
-											region = FRA_1893
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = FRA_1892
+										region = FRA_1893
 									}
 								}
 							}
@@ -7118,30 +6973,17 @@ annex_africa_full = {
 									region = SOK_1937
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = FRA_1923
-											region = FRA_1927
-											region = FRA_1930
-											region = SOK_1934
-											region = SOK_1945
-											region = SOK_1937
-										}
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										OR = {
-											region = FRA_1923
-											region = FRA_1927
-											region = FRA_1930
-											region = SOK_1934
-											region = SOK_1945
-											region = SOK_1937
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = FRA_1923
+										region = FRA_1927
+										region = FRA_1930
+										region = SOK_1934
+										region = SOK_1945
+										region = SOK_1937
 									}
 								}
 							}
@@ -7149,40 +6991,28 @@ annex_africa_full = {
 						#Guinea
 						AND = {
 							any_owned_province = { region = FRA_1883 }
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = { region = FRA_1883 }
-								}
-								any_greater_power = {
-									any_owned_province = { region = FRA_1883 }
-								}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = { region = FRA_1883 }
 							}
 						}
 						#Guinea-Bissau
 						AND = {
 							any_owned_province = { region = FRA_1878 }
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = { region = FRA_1878 }
-								}
-								any_greater_power = {
-									any_owned_province = { region = FRA_1878 }
-								}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = { region = FRA_1878 }
 							}
 						}
 						#Angola
 						AND = {
 							any_owned_province = { region = POR_1999 }
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = { region = POR_1999 }
-								}
-								any_greater_power = {
-									any_owned_province = { region = POR_1999 }
-								}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = { region = POR_1999 }
 							}
 						}
 						#Senegal and Mauritania
@@ -7194,24 +7024,14 @@ annex_africa_full = {
 									region = FRA_1775
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = FRA_1783
-											region = FRA_1788
-											region = FRA_1775
-										}
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										OR = {
-											region = FRA_1783
-											region = FRA_1788
-											region = FRA_1775
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = FRA_1783
+										region = FRA_1788
+										region = FRA_1775
 									}
 								}
 							}
@@ -7225,24 +7045,14 @@ annex_africa_full = {
 									region = FRA_1803
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = FRA_1798
-											region = FRA_1801
-											region = FRA_1803
-										}
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										OR = {
-											region = FRA_1798
-											region = FRA_1801
-											region = FRA_1803
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = FRA_1798
+										region = FRA_1801
+										region = FRA_1803
 									}
 								}
 							}
@@ -7252,17 +7062,11 @@ annex_africa_full = {
 							any_owned_province = {
 								region = FRA_1808
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										region = FRA_1808
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										region = FRA_1808
-									}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									region = FRA_1808
 								}
 							}
 						}
@@ -7276,26 +7080,15 @@ annex_africa_full = {
 									region = POR_2060
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = POR_2049
-											region = POR_2054
-											region = POR_2053
-											region = POR_2060
-										}
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										OR = {
-											region = POR_2049
-											region = POR_2054
-											region = POR_2053
-											region = POR_2060
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = POR_2049
+										region = POR_2054
+										region = POR_2053
+										region = POR_2060
 									}
 								}
 							}
@@ -7312,30 +7105,17 @@ annex_africa_full = {
 									region = ENG_2071
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = ENG_2087
-											region = ENG_2096
-											region = ORA_2103
-											region = TRN_2108
-											region = ZUL_2113
-											region = ENG_2071
-										}
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										OR = {
-											region = ENG_2087
-											region = ENG_2096
-											region = ORA_2103
-											region = TRN_2108
-											region = ZUL_2113
-											region = ENG_2071
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = ENG_2087
+										region = ENG_2096
+										region = ORA_2103
+										region = TRN_2108
+										region = ZUL_2113
+										region = ENG_2071
 									}
 								}
 							}
@@ -7350,28 +7130,16 @@ annex_africa_full = {
 									region = EGY_1771
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = EGY_1745
-											region = EGY_1758
-											region = EGY_1762
-											region = EGY_1771
-											region = EGY_1755
-										}
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										OR = {
-											region = EGY_1745
-											region = EGY_1758
-											region = EGY_1762
-											region = EGY_1771
-											region = EGY_1755
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = EGY_1745
+										region = EGY_1758
+										region = EGY_1762
+										region = EGY_1771
+										region = EGY_1755
 									}
 								}
 							}
@@ -7387,28 +7155,16 @@ annex_africa_full = {
 									#region = EGY_1842
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = EGY_1834
-											region = EGY_1827
-											region = EGY_1838
-											region = ENG_1844
-											#region = EGY_1842
-										}
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										OR = {
-											region = EGY_1834
-											region = EGY_1827
-											region = EGY_1838
-											region = ENG_1844
-											#region = EGY_1842
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = EGY_1834
+										region = EGY_1827
+										region = EGY_1838
+										region = ENG_1844
+										#region = EGY_1842
 									}
 								}
 							}
@@ -7426,32 +7182,18 @@ annex_africa_full = {
 									region = ETH_3591
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = ETH_1853
-											region = ETH_1852
-											region = ETH_1865
-											region = ETH_1859
-											region = ETH_1867
-											region = ETH_1855
-											region = ETH_3591
-										}
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										OR = {
-											region = ETH_1853
-											region = ETH_1852
-											region = ETH_1865
-											region = ETH_1859
-											region = ETH_1867
-											region = ETH_1855
-											region = ETH_3591
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = ETH_1853
+										region = ETH_1852
+										region = ETH_1865
+										region = ETH_1859
+										region = ETH_1867
+										region = ETH_1855
+										region = ETH_3591
 									}
 								}
 							}
@@ -7468,22 +7210,13 @@ annex_africa_full = {
 									region = SOM_1872
 								}
 							}
-							OR = {
-								any_neighbor_country = {
-									civilized = yes
-									any_owned_province = {
-										OR = {
-											region = SOM_1868
-											region = SOM_1872
-										}
-									}
-								}
-								any_greater_power = {
-									any_owned_province = {
-										OR = {
-											region = SOM_1868
-											region = SOM_1872
-										}
+							any_neighbor_country = {
+								NOT = { tag = THIS }
+								civilized = yes
+								any_owned_province = {
+									OR = {
+										region = SOM_1868
+										region = SOM_1872
 									}
 								}
 							}
@@ -7539,7 +7272,7 @@ establish_protectorate_casus_belli = {
     always = no
 
     can_use = {
-	
+
 		OR = {
             any_owned_province = { any_neighbor_province = { owned_by = THIS } }
             AND = {
@@ -7601,7 +7334,7 @@ establish_protectorate_casus_belli = {
             capital_scope = { continent = west_africa }
             capital_scope = { continent = central_africa }
             capital_scope = { continent = east_africa }
-            capital_scope = { continent = south_west_africa }
+            capital_scope = { continent = south_africa }
 
             NOT = { total_pops = 500000 }
 
@@ -7774,7 +7507,7 @@ establish_protectorate_NI_casus_belli = {
             capital_scope = { continent = west_africa }
             capital_scope = { continent = central_africa }
             capital_scope = { continent = east_africa }
-            capital_scope = { continent = south_west_africa }
+            capital_scope = { continent = south_africa }
 
             NOT = { total_pops = 500000 }
 
@@ -7915,7 +7648,7 @@ establish_protectorate_BC_casus_belli = {
             capital_scope = { continent = west_africa }
             capital_scope = { continent = central_africa }
             capital_scope = { continent = east_africa }
-            capital_scope = { continent = south_west_africa }
+            capital_scope = { continent = south_africa }
         }
         civilized = no
         #OR = {
@@ -7944,7 +7677,7 @@ establish_protectorate_BC_casus_belli = {
             capital_scope = { continent = west_africa }
             capital_scope = { continent = central_africa }
             capital_scope = { continent = east_africa }
-            capital_scope = { continent = south_west_africa }
+            capital_scope = { continent = south_africa }
 
             NOT = { total_pops = 500000 }
 
@@ -8090,7 +7823,7 @@ egyptian_ottoman_war = {
     good_relation_prestige_factor = 0
     good_relation_infamy_factor = 0
     good_relation_militancy_factor = 0
-	
+
 	po_status_quo = yes
 
     war_name = WAR_EGYPT_OTTOMAN_NAME
@@ -8103,6 +7836,194 @@ egyptian_ottoman_war = {
 
     on_po_accepted = {
 		THIS = { country_event = 18482273 }
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+    }
+}
+
+anglo_persian_cb = {
+    sprite_index = 39
+    is_triggered_only = yes
+    months = 12
+
+    badboy_factor = 0
+    prestige_factor = 1
+    peace_cost_factor = 40
+    penalty_factor = 0
+    constructing_cb = no
+    crisis = no
+
+    break_truce_prestige_factor = 0
+    break_truce_infamy_factor = 0
+    break_truce_militancy_factor = 0
+    truce_months = 48
+
+    good_relation_prestige_factor = 0
+    good_relation_infamy_factor = 0
+    good_relation_militancy_factor = 0
+
+	po_status_quo = yes
+
+    war_name = WAR_BRITAIN_PERSIA_NAME
+
+    can_use = {
+    }
+
+    on_add = {
+    }
+
+    on_po_accepted = {
+		THIS = {
+			random_owned = {
+				limit = {
+					owner = {
+						has_global_flag = herat_expedition
+						NOT = { has_global_flag = second_herat_expedition }
+						NOT = { has_global_flag = british_intervention_in_kandahar }
+					}
+				}
+				owner = {
+					prestige = 15
+					badboy = -2
+					PER = { country_event = 99204 }
+					relation = {
+						who = AFG
+						value = 100
+					}
+					#Secede Qeshm to Oman
+					random_owned = {
+						limit = {
+							province_id = 1071
+							OMA = { exists = yes in_sphere = THIS }
+						}
+						secede_province = OMA
+					}
+					set_global_flag = iran_lost_1
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						has_global_flag = herat_expedition
+						has_global_flag = second_herat_expedition
+						NOT = { has_global_flag = british_intervention_in_kandahar }
+					}
+				}
+				owner = {
+					prestige = 15
+					badboy = -2
+					PER = { country_event = 99205 }
+					relation = {
+						who = AFG
+						value = 100
+					}
+					#Secede Qeshm to Oman
+					random_owned = {
+						limit = {
+							province_id = 1071
+							OMA = { exists = yes in_sphere = THIS }
+						}
+						secede_province = OMA
+					}
+					set_global_flag = iran_lost_2
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						has_global_flag = british_intervention_in_kandahar
+					}
+				}
+				owner = {
+					set_global_flag = iran_lost_3
+					prestige = 15
+					badboy = -2
+					PER = { country_event = 99206 set_country_flag = goldsmid_done }
+					relation = {
+						who = AFG
+						value = 100
+					}
+					#Secede Qeshm to Oman
+					random_owned = {
+						limit = {
+							province_id = 1071
+							OMA = { exists = yes in_sphere = THIS }
+						}
+						secede_province = OMA
+					}
+					KND = {
+						end_war = AFG
+						annex_to = AFG
+						all_core = {
+							remove_core = KND
+							remove_core = PER
+						}
+					}
+					2638 = { add_core = AFG remove_core = PER remove_core = KHT }
+					1144 = { add_core = MAK remove_core = PER }
+					1146 = { add_core = MAK remove_core = PER }
+					1145 = { add_core = MAK remove_core = PER }
+					3258 = { add_core = MAK remove_core = PER }
+					3508 = { add_core = MAK remove_core = PER }
+					2640 = { add_core = MAK remove_core = PER }
+					3507 = { remove_core = PER }
+					any_country = {
+						limit = {
+							OR = {
+								capital_scope = { continent = oceania }
+								capital_scope = { continent = asia }
+							}
+							NOT = {
+								tag = OMA
+								tag = THIS
+								has_country_flag = goldsmid_done
+							}
+							OR = {
+								owns = 2640
+								owns = 3258
+								owns = 3508
+								owns = 3506
+								owns = 3507
+								owns = 3509
+								owns = 1220
+								owns = 2638
+								owns = 3511
+								owns = 3513
+								owns = 3526
+								owns = 1221
+								owns = 1215
+								owns = 1146
+								owns = 1144
+								owns = 1145
+								owns = 3512
+								owns = 3510
+								owns = 1222
+								owns = 1221
+							}
+						}
+						country_event = 99206
+						set_country_flag = goldsmid_done
+					}
+					any_country = { limit = { OR = { tag = OMA tag = PER } owns = 3508 } country_event = 123738 }
+					create_vassal = MAK
+					create_vassal = KHN
+					create_vassal = LAS
+					create_vassal = KAL
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						ai = yes
+					}
+				}
+				owner = {
+					any_owned = {
+						limit = { OR = { is_core = PER province_id = 1144 province_id = 3512 } }
+						secede_province = PER
+					}
+				}
+			}
+		}
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
     }
 }
@@ -8127,7 +8048,7 @@ war_for_canada = {
     good_relation_prestige_factor = 0
     good_relation_infamy_factor = 0
     good_relation_militancy_factor = 0
-	
+
 	po_status_quo = yes
 
     war_name = QUEBEC_WAR
@@ -8139,7 +8060,7 @@ war_for_canada = {
     }
 
     on_po_accepted = {
-		THIS = { 
+		THIS = {
 			country_event = 191335
 		}
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
@@ -8180,8 +8101,8 @@ cut_down_to_size_no_add_wargoal = {
     }
 
     on_po_accepted = {
-		THIS = { 
-			set_country_flag = won_MEX_USA_war 
+		THIS = {
+			set_country_flag = won_MEX_USA_war
 			random_owned = {
 				limit = {
 					owner = {
@@ -8263,7 +8184,7 @@ cut_down_to_size_no_add_wargoal_2 = {
     on_po_accepted = {
 		set_global_flag = rjw_over
 		clr_global_flag = russo_japanese_war
-		THIS = { 
+		THIS = {
 			set_country_flag = rj_war_victor
 			random_owned = {
 				limit = {
@@ -8328,7 +8249,7 @@ cut_down_to_size_no_infamy = {
     on_add = {
     }
 
-    
+
 	on_po_accepted = {
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
 	}
@@ -8370,7 +8291,7 @@ make_puppet_no_add_wargoal = {
             value = 0.25
         }
 	}
-    
+
 	on_po_accepted = {
         prestige_factor = -0.2
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
@@ -8616,7 +8537,7 @@ make_puppet_no_infamy = {
     break_truce_infamy_factor = 1
     break_truce_militancy_factor = 1
     truce_months = 48
-	
+
     can_use = {
     }
 
@@ -9586,7 +9507,7 @@ acquire_substate_region = {
         is_colonial = no
         #owner = { NOT = { in_sphere = THIS } }
         any_owned_province = {
-            NOT = {    is_core = THIS }
+            NOT = { is_core = THIS }
             is_colonial = no
         }
         OR = {
@@ -9814,7 +9735,7 @@ dismantle_forts = {
         }
     }
 
-    
+
 	on_po_accepted = {
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
 	}
@@ -9876,7 +9797,7 @@ acquire_any_state = {
     good_relation_prestige_factor = 0
     good_relation_infamy_factor = 0
     good_relation_militancy_factor = 0
-	
+
 	always = no
 
     can_use = {
@@ -10168,7 +10089,7 @@ conquest_any = {
     months = 12
     constructing_cb = no
     crisis = no
-	
+
 	always = no
 
     can_use = {
@@ -10293,6 +10214,7 @@ treaty_port_casus_belli = {
             owns = 2640 #Gwadar
             owns = 1177 #Socotra
             owns = 2048 #Zanzibar
+			owns = 1868 #Mogadishu
             owns = 1637 #Cheju
             owns = 2589 #Tsushima
             owns = 3260 #Sado
@@ -10342,6 +10264,7 @@ treaty_port_casus_belli = {
                         owns = 2640 #Gwadar
                         owns = 1177 #Socotra
                         owns = 2048 #Zanzibar
+						owns = 1868 #Mogadishu
                         owns = 1637 #Cheju
                         owns = 2589 #Tsushima
                         owns = 3260 #Sado
@@ -10413,6 +10336,7 @@ treaty_port_casus_belli_no_infamy = {
             owns = 2640 #Gwadar
             owns = 1177 #Socotra
             owns = 2048 #Zanzibar
+			owns = 1868 #Mogadishu
             owns = 1637 #Cheju
             owns = 2589 #Tsushima
             owns = 3260 #Sado
@@ -10462,6 +10386,7 @@ treaty_port_casus_belli_no_infamy = {
                         owns = 2640 #Gwadar
                         owns = 1177 #Socotra
                         owns = 2048 #Zanzibar
+						owns = 1868 #Mogadishu
                         owns = 1637 #Cheju
                         owns = 2589 #Tsushima
                         owns = 3260 #Sado
@@ -10533,8 +10458,8 @@ install_fascism_make_puppet = {
     }
 
     on_po_accepted = {
-		THIS = { set_country_flag = friendly_fascist_puppet } 
-		country_event = 96086 
+		THIS = { set_country_flag = friendly_fascist_puppet }
+		country_event = 96086
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
 	}
 }
@@ -10578,9 +10503,9 @@ install_communism_make_puppet = {
         }
     }
 
-    on_po_accepted = { 
-		THIS = { set_country_flag = friendly_communist_puppet } 
-		country_event = 96087 
+    on_po_accepted = {
+		THIS = { set_country_flag = friendly_communist_puppet }
+		country_event = 96087
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
 	}
 }
@@ -10609,10 +10534,11 @@ end_radicals = {
 
     can_use = {
         NOT = { is_our_vassal = THIS }
-		THIS = { 
+		THIS = {
 			NOT = {
 				government = democracy
 				government = radical_republic
+				ruling_party_ideology = radical
 			}
 		}
 		government = radical_republic
@@ -10620,6 +10546,10 @@ end_radicals = {
         NOT = {
             is_our_vassal = THIS
             has_country_modifier = neutrality_modifier
+			AND = {
+				has_country_modifier = francia_utopia
+				THIS = { ai = yes }
+			}
         }
         civilized = yes
         OR = {
@@ -10636,7 +10566,8 @@ end_radicals = {
             war_with = THIS
         }
     }
-	
+
+	po_add_to_sphere = yes
 	po_remove_prestige = yes
 
     war_name = WAR_END_RADICALS_NAME
@@ -10649,9 +10580,99 @@ end_radicals = {
         }
     }
 
-    on_po_accepted = { 
+    on_po_accepted = {
 		set_country_flag = i_am_being_unradicaled
 		THIS = {
+			random_owned = {
+				limit = {
+					owner = {
+						ruling_party_ideology = conservative
+					}
+				}
+				owner = {
+					any_country = {
+						limit = {
+							has_country_flag = i_am_being_unradicaled
+						}
+						ruling_party_ideology = conservative
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						ruling_party_ideology = liberal
+					}
+				}
+				owner = {
+					any_country = {
+						limit = {
+							has_country_flag = i_am_being_unradicaled
+						}
+						ruling_party_ideology = liberal
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						ruling_party_ideology = reactionary
+					}
+				}
+				owner = {
+					any_country = {
+						limit = {
+							has_country_flag = i_am_being_unradicaled
+						}
+						ruling_party_ideology = reactionary
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						ruling_party_ideology = socialist
+					}
+				}
+				owner = {
+					any_country = {
+						limit = {
+							has_country_flag = i_am_being_unradicaled
+						}
+						ruling_party_ideology = socialist
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						ruling_party_ideology = communist
+					}
+				}
+				owner = {
+					any_country = {
+						limit = {
+							has_country_flag = i_am_being_unradicaled
+						}
+						ruling_party_ideology = communist
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						ruling_party_ideology = fascist
+					}
+				}
+				owner = {
+					any_country = {
+						limit = {
+							has_country_flag = i_am_being_unradicaled
+						}
+						ruling_party_ideology = fascist
+					}
+				}
+			}
 			random_owned = {
 				limit = {
 					owner = {
@@ -10736,7 +10757,7 @@ end_radicals = {
 						government = proletarian_dictatorship
 					}
 				}
-			}				
+			}
 			random_owned = {
 				limit = {
 					owner = {
@@ -10806,7 +10827,7 @@ guillotine_cb = {
             war_with = THIS
         }
     }
-	
+
 	po_remove_prestige = yes
 
     war_name = WAR_GUILLOTINE_NAME
@@ -10819,7 +10840,7 @@ guillotine_cb = {
         }
     }
 
-    on_po_accepted = { 
+    on_po_accepted = {
 		THIS = { set_country_flag = sister_republic_boss }
 		country_event = 191337
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
@@ -10865,9 +10886,9 @@ install_democracy_make_puppet = {
         }
     }
 
-    on_po_accepted = { 
-		THIS = { set_country_flag = friendly_democracy_puppet } 
-		country_event = 96085 
+    on_po_accepted = {
+		THIS = { set_country_flag = friendly_democracy_puppet }
+		country_event = 96085
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
 	}
 }
@@ -12740,7 +12761,7 @@ steal_puppet = {
     sprite_index = 10
     is_triggered_only = yes
     months = 12
-	
+
     construction_speed = 0.4
 
     badboy_factor = 1.8
@@ -12804,7 +12825,7 @@ steal_puppet = {
         is_our_vassal = FROM
         FROM = { is_substate = no }
     }
-	
+
 	po_release_puppet = yes
     po_add_to_sphere = yes
 
@@ -12962,7 +12983,7 @@ monroe2 = {
             capital_scope = { continent = africa }
             capital_scope = { continent = west_africa }
             capital_scope = { continent = east_africa }
-            capital_scope = { continent = south_west_africa }
+            capital_scope = { continent = south_africa }
             capital_scope = { continent = central_africa }
             capital_scope = { continent = asia }
             capital_scope = { continent = oceania }
@@ -13036,7 +13057,7 @@ USS_monroe = {
             capital_scope = { continent = africa }
             capital_scope = { continent = west_africa }
             capital_scope = { continent = east_africa }
-            capital_scope = { continent = south_west_africa }
+            capital_scope = { continent = south_africa }
             capital_scope = { continent = asia }
             capital_scope = { continent = oceania }
             capital_scope = { continent = australia_new_zealand }
@@ -13115,7 +13136,7 @@ USS_monroe = {
         }
     }
     on_po_accepted = {
-        country_event =    2651    # Territorial Loss event
+        country_event = 2651    # Territorial Loss event
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
     }
     all_allowed_states = yes
@@ -13328,7 +13349,7 @@ demand_concession_capital_late = {
             continent = central_africa
             continent = west_africa
             continent = east_africa
-            continent = south_west_africa
+            continent = south_africa
 
             NOT = { total_pops = 500000 }
 
@@ -13519,7 +13540,7 @@ demand_concession_capital = {
             continent = central_africa
             continent = west_africa
             continent = east_africa
-            continent = south_west_africa
+            continent = south_africa
 
             NOT = { total_pops = 500000 }
 
@@ -13698,7 +13719,7 @@ demand_concession_capital_early = {
             continent = central_africa
             continent = west_africa
             continent = east_africa
-            continent = south_west_africa
+            continent = south_africa
 
             NOT = { total_pops = 500000 }
 
@@ -14072,7 +14093,7 @@ liberate_puppet = {
     }
 
     on_po_accepted = {
-        country_event =    2651    # Territorial Loss event
+        country_event = 2651    # Territorial Loss event
         THIS = { country_event = 19369 } # Starts puppeting event chain
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
     }
@@ -14100,8 +14121,8 @@ liberate_puppet_no_infamy = {
 
 	all_allowed_states = yes
     po_transfer_provinces = yes
-	
-    can_use = { 
+
+    can_use = {
 		ai = yes
         NOT = {
             is_our_vassal = THIS
@@ -14138,8 +14159,8 @@ liberate_puppet_no_infamy = {
             THIS = { ai = no }
         }
 	}
-	
-    allowed_countries = { 
+
+    allowed_countries = {
         FROM = { exists = no }
         OR = {
             is_releasable_vassal = FROM
@@ -14263,13 +14284,13 @@ liberate_puppet_no_infamy = {
             THIS = { ai = no }
         }
 	}
-	
+
     allowed_states = {
         any_owned_province = {
             is_core = FROM
         }
     }
-	
+
     war_name = LIBERATE_PUPPET_NO_INFAMY_WAR_NAME
 
     on_add = {
@@ -14316,7 +14337,7 @@ humiliate_no_infamy = {
     break_truce_infamy_factor = 0
     break_truce_militancy_factor = 0
     truce_months = 48
-	
+
     can_use = {
     }
 
@@ -14341,7 +14362,7 @@ establish_protectorate_casus_belli_no_infamy = {
 	constructing_cb = no
     months = 0
     crisis = no
-	
+
     badboy_factor = 0
     prestige_factor = 1
     peace_cost_factor = 1
@@ -14448,30 +14469,30 @@ demand_concession_casus_belli_no_infamy = {
         NOT = { any_owned_province = { is_capital = yes } }
         OR = {
             any_owned_province = { any_neighbor_province = { owned_by = THIS } }
-			
+
 			#Player can take any state neighboring their substate
 			AND = {
-				any_owned_province = { 
-					any_neighbor_province = { 
-						owner = { 
-							substate_of = THIS 
+				any_owned_province = {
+					any_neighbor_province = {
+						owner = {
+							substate_of = THIS
 						}
 					}
 				}
-				THIS = { ai = no } 
+				THIS = { ai = no }
 			}
-			
+
 			#Player can take any state neighboring their satellite
 			AND = {
-				any_owned_province = { 
-					any_neighbor_province = { 
-						owner = { 
-							vassal_of = THIS 
+				any_owned_province = {
+					any_neighbor_province = {
+						owner = {
+							vassal_of = THIS
 						}
 					}
 				}
-				THIS = { ai = no } 
-			} 
+				THIS = { ai = no }
+			}
             AND = {
                 THIS = { ai = no }
                 owner = { war_with = THIS }
@@ -14480,7 +14501,7 @@ demand_concession_casus_belli_no_infamy = {
                 any_owned_province = { port = yes }
                 THIS = { any_owned_province = { port = yes } }
             }
-        }        
+        }
 
     }
 
@@ -14496,7 +14517,7 @@ demand_concession_casus_belli_no_infamy = {
         }
     }
 
-    
+
 	on_po_accepted = {
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
 	}
