@@ -547,6 +547,157 @@ political_decisions = {
         ai_will_do = { factor = 1 }
     }
 
+    reclaim_poland_RUS = {
+        picture = become_poland
+        potential = {
+            tag = RUS
+            OR = {
+                year = 1890
+                AND = {
+                    has_global_flag = january_uprising_happened
+                    war = no
+                    year = 1870
+                }
+            }
+            OR = {
+                706 = { NOT = { is_core = RUS } }
+                713 = { NOT = { is_core = RUS } }
+                707 = { NOT = { is_core = RUS } }
+                719 = { NOT = { is_core = RUS } }
+            }
+            NOT = { has_country_flag = poland_is_russian }
+            NOT = { has_global_flag = create_zapadoslavia }
+            OR = {
+                NOT = {
+                    POL = { exists = yes has_country_flag = poland_is_free }
+                }
+                government = fascist_dictatorship
+                government = proletarian_dictatorship
+            }
+        }
+
+        allow = {
+            war = no
+            is_disarmed = no
+            NOT = { has_country_modifier = no_more_war }
+            OR = {
+                any_owned_province = {
+                    region = RUS_706
+                    NOT = { is_core = RUS }
+                }
+                any_owned_province = {
+                    region = RUS_715
+                    NOT = { province_id = 703 }
+                    NOT = { is_core = RUS }
+                }
+                any_owned_province = {
+                    province_id = 707
+                    NOT = { is_core = RUS }
+                }
+                any_owned_province = {
+                    province_id = 719
+                    NOT = { is_core = RUS }
+                }
+                war_policy = jingoism
+                government = fascist_dictatorship
+                government = proletarian_dictatorship
+            }
+        }
+
+        effect = {
+            set_country_flag = poland_is_russian
+            badboy = 8
+            random_owned = {
+                limit = {
+                    OR = {
+                        owner = { government = fascist_dictatorship }
+                        owner = { government = proletarian_dictatorship }
+                    }
+                }
+                RUS_706 = { add_core = RUS }
+                RUS_715 = { add_core = RUS }
+                707 = { add_core = RUS }
+                719 = { add_core = RUS }
+            }
+            any_owned = {
+                limit = {
+                    OR = {
+                        region = RUS_706
+                        region = RUS_715
+                        province_id = 707
+                        province_id = 719
+                    }
+                    NOT = { province_id = 703 }
+                }
+                add_core = RUS
+            }
+            any_country = {
+                limit = {
+                    any_owned_province = {
+                        OR = {
+                            region = RUS_706
+                            region = RUS_715
+                            province_id = 707
+                            province_id = 719
+                        }
+                        NOT = { province_id = 703 }
+                    }
+                    NOT = { tag = THIS }
+                }
+                relation = { who = THIS value = -100 }
+                leave_alliance = THIS
+            }
+        }
+
+        ai_will_do = {
+            factor = 1
+            modifier = {
+                factor = 0
+                badboy = 0.8
+            }
+        }
+    }
+
+    establish_panslavism = {
+    picture = pan_slavism
+        potential = {
+            tag = SER
+            OR = {
+                government = absolute_monarchy
+                government = absolute_empire
+            }
+            exists = TUR
+            NOT = { has_global_flag = panslavism }
+        }
+
+        allow = {
+            year = 1845
+            NOT = {
+                relation = {
+                    who = TUR
+                    value = 0
+                }
+            }
+        }
+
+        effect = {
+            set_global_flag = panslavism
+            TUR = {
+                any_pop = {
+                    limit = { has_pop_religion = orthodox }
+                    militancy = 8
+                }
+                casus_belli = {
+                    target = THIS
+                    type = humiliate
+                    months = 12
+                }
+            }
+        }
+
+        ai_will_do = { factor = 1 }
+    }
+
     the_great_game_bukhara = {
         picture = gtfo
         potential = {
@@ -659,7 +810,7 @@ political_decisions = {
         }
 
         effect = {
-            KHI = { annex_to = THIS }
+            KHI = { annex_to = THIS government = democracy }
             badboy = 1.5
             set_country_flag = the_great_game_khiva
         }
