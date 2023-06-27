@@ -1,34 +1,104 @@
 political_decisions = {
-	inherit_two_sicilies = {
+	end_cession_tuscan = {
 	potential = {
 		tag = BOR
 		has_country_flag = monarchy_secure
-		SIC = { vassal_of = THIS }
+		NOT = { has_country_flag = tuscan_cession_end }
+		ITA = { exists = no }
+		LUC = { exists = no }
+		TUS = { owns = 746 }
 		}
-	allow = {
+	allow = { 
+		TUS = { in_sphere = THIS }
 		nationalism_n_imperialism = 1
 		}
 	effect = {
-		inherit = SIC
-		SIC = { all_core = { add_core = BOR } }
-		set_country_flag = bourbon_southern_italy
-		prestige = 15
-		badboy = 4
-		}
-	}	
-	claim_northern_italy = {
-	potential = {
-		tag = BOR
-		has_country_flag = bourbon_southern_italy
-		ITA = { exists = no }
-		}
-	allow = { 
-		prestige = 75
-		}
-	effect = {
-		SAR = { all_core = { add_core = BOR } }
-		badboy = 10
-		set_country_flag = bourbon_northern_italy
+		set_country_flag = tuscan_cession_end
+		badboy = 5
+		casus_belli = { target = TUS type = conquest months = 2 }
+		war = {
+			target = TUS
+			attacker_goal = { casus_belli = conquest }
+			defender_goal = { casus_belli = status_quo }
+			}
 		}
 	}
-}	
+	intervention_italy_1848 = {
+	potential = {
+		tag = BOR
+		SAR = { war = yes }
+		HUN = { exists = yes }
+		VEN = { exists = yes }
+		AUS = { war = yes }
+		year = 1848
+		NOT = { year = 1850 }
+		NOT = { has_country_flag = sardinia_intervention }
+		}
+	allow = {
+		war = no
+		}
+	effect = {
+		set_country_flag = sardinia_intervention
+		casus_belli = { target = SAR type = cut_down_to_size months = 2 }
+		war = {
+			target = SAR
+			attacker_goal = { casus_belli = cut_down_to_size }
+			defender_goal = { casus_belli = status_quo }
+			}
+		}	
+	}
+	rebuild_palace_versailles = {
+	potential = {
+		tag = BOR
+		has_global_flag = french_decline
+		NOT = { has_country_flag = versailles_building }
+		}
+	allow = {
+		money = 2000000
+		}
+	effect = {
+		treasury = -1000000
+		add_country_modifier = { name = versailles_reconstruction duration = 1640 }
+		set_country_flag = versailles_building
+		}
+	}
+	create_sgf_france = {
+	potential = {
+		tag = BOR
+		has_country_flag = franco_bavarian_alliance
+		NOT = { has_country_flag = sgf_create }
+		}
+	allow = {
+		BAV = { in_sphere = THIS }
+		WUR = { in_sphere = THIS }
+		BAD = { in_sphere = THIS }
+		}
+	effect = {
+		set_country_flag = sgf_create
+		BAV = {
+			inherit = WUR
+			inherit = BAD
+			any_owned = { limit = { OR = { is_core = BAV is_core = WUR is_core = BAD } } add_core = SGF }
+			change_tag = SGF
+			}
+		}
+	}
+	trigger_england_war_bor = {
+	potential = {
+		tag = BOR
+		has_country_flag = versailles_court_culture
+		NOT = { has_country_flag = india_war_start }
+		}
+	allow = {
+		money = 1000000
+		war = no
+		raider_group_doctrine = 1
+		naval_statistics = 1
+		naval_decision_making = 1
+		}
+	effect = {
+		set_country_flag = england_war_start
+		event = 00072
+		}
+	}
+}
