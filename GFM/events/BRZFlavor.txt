@@ -116,34 +116,14 @@ country_event = {
         2461 = { change_province_name = "Florianópolis" }
         government = democracy
         add_country_modifier = { name = small_immigration_boom duration = 1095 }
-        random_owned = {
-            limit = { NOT = { owner = { upper_house_composition = population_equal_weight } } }
-            owner = { political_reform = population_equal_weight }
-        }
-        random_owned = {
-            limit = { NOT = { owner = { press_rights = free_press } } }
-            owner = { political_reform = free_press }
-        }
-        random_owned = {
-            limit = { NOT = { owner = { public_meetings = yes_meeting } } }
-            owner = { political_reform = yes_meeting }
-        }
-        random_owned = {
-            limit = { NOT = { owner = { citizens_rights = all_voting_pops } } }
-            owner = { political_reform = all_voting_pops }
-        }
-        random_owned = {
-            limit = { NOT = { owner = { voting_system = first_past_the_post } } }
-            owner = { political_reform = first_past_the_post }
-        }
-        random_owned = {
-            limit = { owner = { OR = { vote_franschise = landed_voting vote_franschise = none_voting } } }
-            owner = { political_reform = wealth_weighted_voting }
-        }
-        random_owned = {
-            limit = { owner = { OR = { political_parties = underground_parties political_parties = harassment } } }
-            owner = { political_reform = gerrymandering }
-        }
+        political_reform = population_equal_weight
+        political_reform = wealth_weighted_voting
+        political_reform = yes_meeting
+        political_reform = free_press
+        political_reform = no_trade_unions
+        political_reform = gerrymandering
+        political_reform = first_past_the_post
+        political_reform = all_voting_pops
         ruling_party_ideology = liberal
         election = yes
         any_pop = { ideology = { factor = 0.02 value = liberal } }
@@ -220,6 +200,9 @@ country_event = {
         political_reform = first_past_the_post
         political_reform = all_voting_pops
         ruling_party_ideology = liberal
+        election = yes
+        any_pop = { ideology = { factor = 0.02 value = liberal } }
+        rich_strata = { militancy = -1 consciousness = -3 }
         ai_chance = { factor = 60 }
     }
 }
@@ -1486,5 +1469,622 @@ country_event = { #original VIP event by Pimparel
         officers = { consciousness = 2 }
         soldiers = { consciousness = 1 }
         officers = { militancy = 1 }
+    }
+}
+
+#Event that fires when Brazil and CSA have decent relations after the ACW, forms an alliance between the two
+country_event = {
+    id = 187850
+    title = "National Ties"
+    desc = "EVTDESC187850"
+    picture = "confederate_dollar"
+	fire_only_once = yes
+
+    trigger = {
+        tag = BRZ
+        war = no
+		OR = {
+			slavery = yes_slavery
+			slavery = freedom_of_womb
+		}
+		CSA = {
+			war = no
+			OR = {
+				slavery = yes_slavery
+				slavery = freedom_of_womb
+			}
+			exists = yes
+		}
+        relation = {
+            who = CSA
+            value = 50
+        }
+    }
+
+    mean_time_to_happen = {
+        months = 3
+    }
+
+    option = {
+        name = "May our friendship prosper!"
+        create_alliance = CSA
+        diplomatic_influence = {
+            who = CSA
+            value = 200
+        }
+        CSA = { country_event = 187860 } #in CSAEvents file, just informs them
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Events following US deposing Mexican monarchy formerly stored in USA_shield_e
+
+#This fires for Brazil if it is a monarchy and the US has forcibly deposed the Mexican monarchy in option B of event 8981518 in USA_Shield_e
+country_event = {
+    id = 7391609
+    title = "The American Threat"
+    desc = EVTDESC7391609
+    picture = brazil_court
+    fire_only_once = yes
+
+    trigger = {
+        USA = { has_country_flag = USA_demcoup exists = yes }
+        tag = BRZ
+        is_vassal = no
+        is_greater_power = no
+        OR = {
+            government = absolute_monarchy
+            government = prussian_constitutionalism
+            government = hms_government
+            government = absolute_empire
+            government = semi_constitutional_empire
+            government = constitutional_empire
+        }
+    }
+
+    mean_time_to_happen = { days = 10 }
+
+    option = {
+        name = "The Monarchy will not flee."
+        any_pop = {
+            limit = {
+                OR = {
+                    pop_majority_ideology = socialist
+                    pop_majority_ideology = liberal
+                }
+            }
+            militancy = 3
+            consciousness = 4
+        }
+		any_pop = {
+            limit = {
+                OR = {
+                    pop_majority_ideology = radical
+                    pop_majority_ideology = communist
+                }
+            }
+            militancy = 8
+            consciousness = 9
+        }
+        ai_chance = { factor = 40 }
+    }
+
+    option = {
+        name = "Brazil is no longer safe."
+        remove_country_modifier = dom_pedro_ii
+        clr_country_flag = reign_of_pedro
+        prestige = -10
+        2461 = { change_province_name = "Florianópolis" }
+        government = democracy
+        add_country_modifier = { name = small_immigration_boom duration = 1095 }
+        political_reform = population_equal_weight
+        political_reform = wealth_weighted_voting
+        political_reform = yes_meeting
+        political_reform = free_press
+        political_reform = no_trade_unions
+        political_reform = gerrymandering
+        political_reform = first_past_the_post
+        political_reform = all_voting_pops
+        ruling_party_ideology = liberal
+        election = yes
+        any_pop = { ideology = { factor = 0.02 value = liberal } }
+        rich_strata = { militancy = -1 consciousness = -3 }
+		USA = { country_event = 9452276 } #US is happy about democracy in Brazil
+        country_event = {
+            id = 3886062 #Event whether to start a dictatorship or not, ai 50-50
+            days = 180
+        }
+        ai_chance = { factor = 60 }
+    }
+}
+
+#Fires for US after option B in event 7391609
+country_event = {
+    id = 9452276
+    title = "The Brazilian Revolution"
+    desc = EVTDESC9452276
+    picture = brazil_court
+    is_triggered_only = yes
+
+    option = {
+        name = "God Bless the Brazilians."
+        diplomatic_influence = {
+            who = BRZ
+            value = 400
+        }
+        relation = {
+            who = BRZ
+            value = 200
+        }
+    }
+}
+
+#Fires 180 days after option B in event 7391609, Brazil decides whether to keep democracy or go dictatorship
+country_event = {
+    id = 3886062
+    title = "The State of the Republic"
+    desc = EVTDESC3886062
+    picture = dominican_revolution2
+    is_triggered_only = yes
+
+    option = {
+        name = "The Republic will endure."
+        any_pop = {
+            limit = { pop_majority_ideology = reactionary }
+            militancy = 8
+            consciousness = 8
+        }
+        ai_chance = { factor = 50 }
+    }
+
+    option = {
+        name = "Strength guarantees stability."
+        government = presidential_dictatorship
+        ruling_party_ideology = reactionary
+        political_reform = none_voting
+        political_reform = party_appointed
+        political_reform = no_meeting
+        political_reform = state_press
+        political_reform = underground_parties
+        political_reform = no_trade_unions
+        any_pop = {
+            limit = {
+                OR = {
+                    pop_majority_ideology = liberal
+                    pop_majority_ideology = radical
+                }
+			}
+            militancy = 8
+            consciousness = 8
+        }
+        any_pop = {
+            limit = {
+                OR = {
+                    pop_majority_ideology = reactionary
+                    pop_majority_ideology = conservative
+                }
+            }
+            militancy = -8
+            consciousness = -8
+        }
+		random_owned = {
+			limit = { owner = { USA = { exists = yes } } }
+			owner = {
+				USA = { country_event = 2791898 }
+			}
+		}
+        ai_chance = { factor = 50 }
+    }
+}
+
+#Fires after option B in event 3886062, US decides whether to pressure the Brazilian dictatorship into democracy
+country_event = {
+    id = 2791898
+    title = "Strongman takes hold in Rio"
+    desc = EVTDESC2791898
+    picture = dominican_revolution2
+    is_triggered_only = yes
+
+    option = {
+        name = "Recognize the new government."
+        relation = {
+            who = BRZ
+            value = 100
+        }
+        any_pop = {
+            limit = { pop_majority_ideology = liberal }
+            consciousness = 3
+        }
+        any_pop = {
+            limit = { pop_majority_ideology = radical }
+            consciousness = 6
+        }
+        ai_chance = { factor = 50 }
+    }
+
+    option = {
+        name = "Pressure him to step down!"
+        any_pop = {
+            limit = { pop_majority_ideology = liberal }
+            consciousness = -3
+        }
+        any_pop = {
+            limit = { pop_majority_ideology = radical }
+            consciousness = -6
+        }
+        BRZ = {
+            country_event = {
+                id = 1595471
+                days = 30
+            }
+        }
+        ai_chance = { factor = 50 }
+    }
+}
+
+#Fires after option B in event 2791898, Brazil decides whether or not to give up the dictatorship
+country_event = {
+    id = 1595471
+    title = "Pressure from the United States"
+    desc = EVTDESC1595471
+    picture = dominican_revolution2
+    is_triggered_only = yes
+
+    option = {
+        name = "They have no right to interfere."
+		random_owned = {
+			limit = { owner = { USA = { exists = yes } } }
+			owner = {
+				relation = {
+					who = USA
+					value = -80
+				}
+				USA = {
+					country_event = {
+						id = 2931608
+						days = 5
+					}
+				}
+			}
+		}
+        ai_chance = { factor = 75 }
+    }
+
+    option = {
+        name = "We must bow to the Americans."
+		prestige = -20
+        government = democracy
+        political_reform = no_slavery
+        political_reform = universal_voting
+        political_reform = state_equal_weight
+        political_reform = first_past_the_post
+        political_reform = yes_meeting
+        political_reform = free_press
+        political_reform = secret_ballots
+        any_pop = {
+            limit = {
+				OR = {
+					pop_majority_ideology = liberal
+					pop_majority_ideology = radical
+				}
+			}
+            consciousness = -9
+            militancy = -9
+        }
+        any_pop = {
+            limit = { pop_majority_ideology = reactionary }
+            militancy = 8
+            consciousness = 8
+        }
+		random_owned = {
+			limit = { owner = { USA = { exists = yes } } }
+			owner = {
+				USA = {
+					country_event = 4949670
+				}
+			}
+		}
+        ai_chance = { factor = 25 }
+    }
+}
+
+#Fires after option A in event 1595471, US informed of Brazilian refusal of demands
+country_event = {
+    id = 2931608
+    title = "Brazil refuses"
+    desc = EVTDESC2931608
+    picture = dominican_revolution2
+    is_triggered_only = yes
+
+    option = {
+        name = "Another war for Liberty! §RGain 4 infamy§W"
+        badboy = 4
+        any_pop = {
+            limit = {
+                OR = {
+                    pop_majority_ideology = reactionary
+                    pop_majority_ideology = conservative
+                }
+            }
+            consciousness = 5
+            militancy = 3
+        }
+        any_pop = {
+            limit = { pop_majority_ideology = liberal }
+            consciousness = -4
+            militancy = -4
+        }
+        diplomatic_influence = {
+            who = BRZ
+            value = -400
+        }
+        relation = {
+            who = BRZ
+            value = -200
+        }
+        casus_belli = {
+            target = BRZ
+            type = install_democracy_make_puppet
+            months = 12
+        }
+		war = {
+			target = BRZ
+			attacker_goal = {
+				casus_belli = install_democracy_make_puppet
+				country = USA
+			}
+			defender_goal = {
+				casus_belli = humiliate_no_infamy
+			}
+		}
+        ai_chance = { factor = 40 }
+    }
+
+    option = {
+        name = "The New World cannot be fighting itself."
+        relation = {
+            who = BRZ
+            value = 100
+        }
+        any_pop = {
+            limit = {
+                OR = {
+                    pop_majority_ideology = reactionary
+                    pop_majority_ideology = conservative
+                }
+            }
+            consciousness = -5
+            militancy = -3
+        }
+        any_pop = {
+            limit = { pop_majority_ideology = liberal }
+            consciousness = 4
+            militancy = 4
+        }
+        ai_chance = { factor = 60 }
+    }
+
+}
+
+#Fires after option B in event 1595471, US informed of Brazilian submission to demands
+country_event = {
+    id = 4949670
+    title = "Brazil agrees"
+    desc = "The Brazilian government has agreed to reforms and elections are on course to take place. Another victory for American diplomacy."
+    picture = dominican_revolution2
+    is_triggered_only = yes
+
+    option = {
+        name = "Democracy prevails once more."
+        diplomatic_influence = {
+            who = BRZ
+            value = 400
+        }
+        relation = {
+            who = BRZ
+            value = 200
+        }
+    }
+}
+
+#This fires for Brazil after US chooses option B in event 8133696, Brazil chooses to refuse or agree
+country_event = {
+    id = 5984582
+    title = "The Monarchy of Brazil"
+    desc = EVTDESC5984582
+    picture = autocracy
+    is_triggered_only = yes
+
+    option = {
+        name = "Agree to reforms."
+        relation = {
+            who = USA
+            value = 100
+        }
+		random_owned = {
+			limit = {
+				owner = {
+					OR = {
+						government = absolute_monarchy
+						government = prussian_constitutionalism
+					}
+				}
+			}
+			owner = {
+				government = hms_government
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					OR = {
+						government = absolute_empire
+						government = semi_constitutional_empire
+					}
+				}
+			}
+			owner = {
+				government = constitutional_empire
+			}
+		}
+        political_reform = no_slavery
+        political_reform = universal_voting
+        political_reform = state_equal_weight
+        political_reform = first_past_the_post
+        political_reform = yes_meeting
+        political_reform = free_press
+        political_reform = secret_ballots
+        ai_chance = {
+            factor = 60
+            modifier = {
+                factor = 2
+                OR = {
+                    government = hms_government
+                    government = constitutional_empire
+                }
+            }
+        }
+    }
+
+    option = {
+        name = "The emperor answers only to God!"
+		USA = {
+			relation = {
+				who = BRZ
+				value = -100
+			}
+			country_event = 7078003
+		}
+        ai_chance = {
+            factor = 40
+            modifier = {
+                factor = 2
+				OR = {
+					government = absolute_monarchy
+					government = absolute_empire
+				}
+            }
+        }
+    }
+}
+
+#This fires for Brazil after US chooses option A in event 8133696, Brazil chooses to refuse or agree
+country_event = {
+    id = 4640050
+    title = "The Monarchy of Brazil"
+    desc = EVTDESC4640050
+    picture = autocracy
+    is_triggered_only = yes
+
+    option = {
+        name = "The emperor answers only to God!"
+		USA = {
+			relation = {
+				who = BRZ
+				value = -100
+			}
+			country_event = 7078003
+		}
+        ai_chance = {
+            factor = 60
+            modifier = {
+                factor = 2
+				OR = {
+					government = absolute_monarchy
+					government = absolute_empire
+				}
+            }
+        }
+    }
+
+    option = {
+        name = "Replace the emperor with a president."
+        remove_country_modifier = dom_pedro_ii
+        clr_country_flag = reign_of_pedro
+        prestige = -10
+        2461 = { change_province_name = "Florianópolis" }
+        government = democracy
+        add_country_modifier = { name = small_immigration_boom duration = 1095 }
+        political_reform = population_equal_weight
+        political_reform = wealth_weighted_voting
+        political_reform = yes_meeting
+        political_reform = free_press
+        political_reform = no_trade_unions
+        political_reform = gerrymandering
+        political_reform = first_past_the_post
+        political_reform = all_voting_pops
+        ruling_party_ideology = liberal
+        election = yes
+        any_pop = { ideology = { factor = 0.02 value = liberal } }
+        rich_strata = { militancy = -1 consciousness = -3 }
+		USA = { country_event = 9452276 } #US is happy about democracy in Brazil
+        country_event = {
+            id = 3886062 #Event whether to start a dictatorship or not, ai 50-50
+            days = 180
+        }
+        ai_chance = { factor = 40 }
+    }
+}
+
+#Fires for US after Brazil refuses demands in event 4640050 option A or 5984582 option B, US can go to war or not
+country_event = {
+    id = 7078003
+    title = "The Monarchy of Brazil"
+    desc = EVTDESC7078003
+    picture = autocracy
+    is_triggered_only = yes
+
+    option = {
+        name = "Nevermind."
+        prestige = -10
+        ai_chance = { factor = 20 }
+    }
+
+    option = {
+        name = "Bring Brazil Democracy! §RGain 2 infamy§W"
+        badboy = 2
+        release_vassal = BRZ
+        relation = {
+            who = BRZ
+            value = -200
+        }
+        diplomatic_influence = {
+            who = BRZ
+            value = -400
+        }
+        casus_belli = {
+            target = BRZ
+            type = install_democracy_make_puppet
+            months = 12
+        }
+        random_owned = {
+			limit = { owner = { USA = { exists = yes } } }
+			owner = {
+				war = {
+					target = BRZ
+					attacker_goal = {
+						casus_belli = install_democracy_make_puppet
+						country = USA
+					}
+					defender_goal = {
+						casus_belli = humiliate_no_infamy
+					}
+				}
+			}
+		}
+        ai_chance = { factor = 80 }
     }
 }
