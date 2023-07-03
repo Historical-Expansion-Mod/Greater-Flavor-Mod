@@ -139,4 +139,148 @@ political_decisions = {
             factor = 1
         }
     }
+	LIE_update_palace = {
+		picture = palais_garnier
+        potential = {
+            tag = LIE
+			OR = { government = absolute_monarchy government = prussian_constitutionalism government = hms_government government = absolute_empire government = semi_constitutional_empire government = constitutional_empire }
+        }
+        allow = {
+            war = no
+			NOT = { has_country_modifier = liechtenstein_updating_palace }
+        }
+        effect = {
+			random_list = {
+				20 = { add_country_modifier = { name = liechtenstein_updating_palace duration = 1095 } }
+				20 = { add_country_modifier = { name = liechtenstein_updating_palace duration = 1460 } }
+				20 = { add_country_modifier = { name = liechtenstein_updating_palace duration = 1825 } }
+				20 = { add_country_modifier = { name = liechtenstein_updating_palace duration = 2920 } }
+				20 = { add_country_modifier = { name = liechtenstein_updating_palace duration = 3650 } }
+			}
+			set_country_flag = LIE_updating_palace_flag
+        }
+        ai_will_do = {
+            factor = 0
+        }
+    }
+	LIE_sell_artwork = {
+		picture = royal_gift
+        potential = {
+            tag = LIE
+			OR = { government = absolute_monarchy government = prussian_constitutionalism government = hms_government government = absolute_empire government = semi_constitutional_empire government = constitutional_empire }
+        }
+        allow = {
+            prestige = 5
+			NOT = { has_country_modifier = liechtenstein_recently_sold_art }
+			check_variable = { which = liechtenstein_art_collection value = 1 }
+        }
+        effect = {
+			prestige = -5
+			any_pop = { limit = { type = aristocrats } militancy = 0.5 consciousness = 1 }
+			random_list = {
+				20 = { money = 6000 }
+				20 = { money = 9000 }
+				20 = { money = 14000 }
+				20 = { money = 18000 }
+				20 = { money = 28000 }
+			}
+			add_country_modifier = { name = liechtenstein_recently_sold_art duration = 1825 }
+			change_variable = { which = liechtenstein_art_collection value = -1 }
+        }
+        ai_will_do = {
+            factor = 0
+        }
+    }
+	LIE_buy_artwork = {
+		picture = form_antillean_confederation
+        potential = {
+            tag = LIE
+			OR = { government = absolute_monarchy government = prussian_constitutionalism government = hms_government government = absolute_empire government = semi_constitutional_empire government = constitutional_empire }
+        }
+        allow = {
+			NOT = { has_country_modifier = liechtenstein_recently_bought_art }
+			#NOT =  { check_variable = { which = liechtenstein_art_collection value = 10 } } #maybe a cap, maybe not?
+        }
+        effect = {
+			prestige = 1
+			any_pop = { limit = { type = aristocrats } militancy = -0.5 consciousness = -1 }
+			random_list = {
+				20 = { money = -6000 }
+				20 = { money = -9000 }
+				20 = { money = -14000 }
+				20 = { money = -18000 }
+				20 = { money = -28000 }
+			}
+			add_country_modifier = { name = liechtenstein_recently_bought_art duration = 1825 }
+			change_variable = { which = liechtenstein_art_collection value = 1 }
+        }
+        ai_will_do = {
+            factor = 0
+        }
+    }
+	LIE_customs_treaty_AUS = {
+		picture = enact_dual_monarchy
+        potential = {
+            tag = LIE
+			OR = { AUS = { exists = yes is_greater_power = no } KUK = { exists = yes is_greater_power = no } AUB = { exists = yes is_greater_power = no } DNB = { exists = yes is_greater_power = no } }
+			OR = { neighbour = AUS neighbour = KUK neighbour = AUB neighbour = DNB }
+			NOT = { has_country_flag = LIE_AUS_customs }
+        }
+        allow = {
+			any_country = { limit = { OR = { AND = { tag = AUS exists = yes } AND = { tag = KUK exists = yes } AND = { tag = AUB exists = yes } AND = { tag = DNB exists = yes } } } }
+			central_bank_money_bill_printing = 1
+			trade_policy = free_trade
+        }
+        effect = {
+			add_country_modifier = { name = LIE_customs_union duration = -1 }
+			set_country_flag = LIE_AUS_customs
+			any_country = { limit = { SWI = { is_our_vassal = LIE } } release_vassal = LIE }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+    }
+	LIE_customs_treaty_SWI = {
+		picture = declare_neutrality
+        potential = {
+            tag = LIE
+			SWI = { exists = yes }
+			neighbour = SWI
+			NOT = { has_country_flag = LIE_SWI_customs }
+        }
+        allow = {
+			OR = { AUS = { exists = yes is_greater_power = no } KUK = { exists = yes is_greater_power = no } AUB = { exists = yes is_greater_power = no } DNB = { exists = yes is_greater_power = no } }
+			relation = { who = SWI value = 100 }
+			NOT = { relation = { who = AUS value = 0 } }
+			central_bank_money_bill_printing = 1
+			trade_policy = free_trade
+        }
+        effect = {
+			add_country_modifier = { name = LIE_customs_union duration = -1 }
+			any_country = { limit = { OR = { AND = { tag = AUS exists = yes AUS = { is_our_vassal = LIE } } AND = { tag = KUK exists = yes KUK = { is_our_vassal = LIE } } AND = { tag = AUB exists = yes AUB = { is_our_vassal = LIE } } AND = { tag = DNB exists = yes DNB = { is_our_vassal = LIE } } } } release_vassal = LIE }
+			set_country_flag = LIE_SWI_customs
+		}
+        ai_will_do = {
+            factor = 1
+        }
+    }
+	LIE_request_swiss_protection = {
+		picture = declare_neutrality
+        potential = {
+            tag = LIE
+			SWI = { exists = yes }
+			neighbour = SWI
+			has_country_flag = LIE_SWI_customs
+			NOT = { vassal_of = SWI }
+        }
+        allow = {
+			NOT = { ruling_party_ideology = fascist }
+        }
+        effect = {
+			SWI = { country_event = 669 }
+		}
+        ai_will_do = {
+            factor = 1
+        }
+    }
 }
