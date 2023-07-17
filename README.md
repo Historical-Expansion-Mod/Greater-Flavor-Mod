@@ -14,11 +14,12 @@ Failure to extract the mod may be due to a common GitHub issue, so try downloadi
   * GFM Shattered World releases every single nation and adds a bunch more along with all the fantasy formables.
   * GFM Performance Increase changes files to a lower resolution, thus reducing lag.
   * GFM More Cultures adds a lot more cultures to the game.
-  * GFM Fantasy Formables Submod adds several unrealistic formable countries.
+  * GFM Fantasy Formables is a submod that adds several unrealistic formable countries.
   * GFM Fluff Decisions adds inconsequential flavor decisions
   * GFM No Swastikas removes every swastika in the game.
   * GFM Belle Dark is a map submod that applies the Belle Dark map mod to GFM.
-  * GFM 1830 is a submod that allows people to start the game in 1830 and has content for the added years.
+  * GFM 1830 Startdate is a submod that allows people to start the game in 1830 and has content for the added years.
+  * GFM Terrain Pictures Submod adds over a thousand unique terrain pictures to GFM.
   * Music Sub Mod adds more music to the game. This is located in a separate repository which can be found [here]( https://github.com/Elijah-maker/GFM-Music-Submod)
   * Absolute gigachad Jay de Brabant has [made a submod]( https://github.com/LePetitJayJay/Victoria-2-Anime-Flags-Mod) for GFM adding anime girl flags (the repo also includes regular HFM flags).
 
