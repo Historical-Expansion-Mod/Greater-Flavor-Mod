@@ -1,0 +1,525 @@
+######### CHILEAN EVENTS ABOUT PATAGONIA #########
+
+# Initial event for CHL, fires in the 1860
+country_event = {
+	id = 18043710
+	title = "Troubles in the Araucania"
+	desc = "araucania_ptg_desc"
+	picture = "araucania_ptg"
+
+	fire_only_once = yes
+	mean_time_to_happen = { months = 1 }
+
+	trigger = {
+		tag = CHL
+		2328 = { owned_by = THIS }
+		2329 = { owned_by = THIS }
+		NOT = { exists = PTG }
+		year = 1860
+	}
+
+	option = { # Trigger early revolt - AI will never do this
+        name = "Leave them be."
+		CHL = { set_variable = { which = ptg_chain value = 1 } }
+		ai_chance = { factor = 1 }
+	}
+
+	option = { # Historical option, trigger an event to France
+		name = "Supress them!"
+		CHL = { set_variable = { which = ptg_chain value = 2 } }
+		ai_chance = { factor = 99 }
+	}
+}
+
+# Ahistorical revolt event for CHL if Option [1] is taken in [event 18043710]
+country_event = {
+	id = 18043711
+	title = "The Kingdom of Araucania revolts"
+	desc = "ptg_revolt_early_desc"
+	picture = "araucania_antonnie"
+
+	fire_only_once = yes
+	trigger = {
+		NOT = { exists = PTG }
+		tag = CHL
+		CHL = { check_variable = { which = ptg_chain value = 0.99 } }
+		NOT = { CHL = { check_variable = { which = ptg_chain value = 1.01 } } }
+	}
+	mean_time_to_happen = { months = 5 }
+
+	option = { # Stay as CHL and declare war on PTG
+       name = "We must crush these malefectors now!"
+		2328 = { secede_province = PTG add_core = PTG }
+		2329 = { secede_province = PTG add_core = PTG }
+		PTG = {
+			primary_culture = french
+			add_accepted_culture = patagonian
+			government = prussian_constitutionalism
+			tech_school = culture_tech_school
+			political_reform = wealth_weighted_voting
+			set_country_flag = ptg_revolt_early
+			set_country_flag = new_world_nation
+			CHL = { change_variable = { which = ptg_chain value = 1 } }
+			2328 = { sub_unit = { type = infantry value = current } }
+			2328 = { sub_unit = { type = infantry value = current } }
+		}
+		add_casus_belli = { target = PTG type = conquest months = 1 }
+		war = {
+			target = PTG
+			attacker_goal = { casus_belli = conquest }
+			defender_goal = { casus_belli = status_quo }
+		}
+		ai_chance = { factor = 1 }
+	}
+
+	option = { # Change tag to PTG
+		name = "Glory to Antoine! §BSwitch to the Kingdom of Araucania§W"
+		2328 = { secede_province = PTG add_core = PTG }
+		2329 = { secede_province = PTG add_core = PTG }
+		PTG = {
+			primary_culture = french
+			add_accepted_culture = patagonian
+			government = prussian_constitutionalism
+			tech_school = culture_tech_school
+			political_reform = wealth_weighted_voting
+			set_country_flag = ptg_revolt_early
+			set_country_flag = new_world_nation
+			CHL = { change_variable = { which = ptg_chain value = 1 } }
+			2328 = { sub_unit = { type = infantry value = current } }
+			2328 = { sub_unit = { type = infantry value = current } }
+		}
+		add_casus_belli = { target = PTG type = conquest months = 1 }
+		war = {
+			target = PTG
+			attacker_goal = { casus_belli = conquest }
+			defender_goal = { casus_belli = status_quo }
+		}
+		change_tag_no_core_switch = PTG
+		ai_chance = { factor = 0 }
+	}
+}
+
+# Scripted PTG win event if its either captures Santiago or peaces CHL out
+country_event = {
+	id = 18043712
+	title = "Araucanian Victory"
+	desc = "araucanie_win_desc"
+	picture = "araucanie_blazon"
+
+
+	fire_only_once = yes
+    mean_time_to_happen = { days = 1 }
+
+	trigger = {
+		tag = PTG
+		has_country_flag = ptg_revolt_early
+		OR = {
+			2324 = { controlled_by = PTG }
+			truce_with = CHL
+		}
+	}
+
+	option = { # Obtain any land CHL owns that's in the Araucanie region - Cores the two Patagonian states from Argentina (excluding the Falklands - Refer to decision "fra_falkland_ptg")
+		name = "Huzzah!"
+		CHL_2332 = { secede_province = PTG add_core = PTG }
+		ARG_2391 = { add_core = PTG }
+		2131 = { remove_core = PTG }
+		2400 = { secede_province = PTG }
+		3558 = { secede_province = PTG }
+		2399 = { secede_province = PTG }
+		religion = catholic
+		government = hms_government
+		primary_culture = french
+		add_accepted_culture = patagonian
+        tech_school = culture_tech_school
+		set_country_flag = new_world_nation
+		set_country_flag = catholic_country
+        clr_country_flag = animist_country
+        political_reform = universal_voting
+		political_reform = gerrymandering
+		end_war = CHL
+	}
+}
+
+# Scripted CHL event to annex PTG if they occupy both provinces but don't peace out for whatever reason (Never trust a computer)
+country_event = {
+	id = 18043713
+	title = "Chilean Victory"
+	desc = "chl_araucanie_win_desc"
+	picture = "araucanie_blazon"
+
+	fire_only_once = yes
+	mean_time_to_happen = { days = 1 }
+
+   trigger = {
+		tag = CHL
+		PTG = { has_country_flag = ptg_revolt_early }
+		2329 = { controlled_by = CHL }
+		2328 = { controlled_by = CHL }
+	}
+
+	option = {
+		name = "Huzzah!"
+		PTG = { annex_to = CHL }
+		2329 = { remove_core = PTG }
+		2328 = { remove_core = PTG }
+		CHL = { change_variable = { which = ptg_chain value = 1 } }
+	}
+}
+
+# FRA event where Antoine asks for help caused by option [2] in the [event 18043710]
+country_event = {
+	id = 18043714
+	title = "Antoine asks for our help"
+	desc = "antoine_begs_FRA_desc"
+	picture = "antoine"
+
+	fire_only_once = yes
+	trigger = {
+		year = 1862
+		primary_culture = french
+		capital = 425
+		has_country_flag = 2nd_empire
+		OR = {
+			government = absolute_empire
+			government = semi_constitutional_empire
+			government = constitutional_empire
+		}
+        NOT = { CHL = { check_variable = { which = ptg_chain value = 2.01 } } exists = PTG }
+		CHL = { check_variable = { which = ptg_chain value = 1.99 } }
+	}
+
+	option = { # The chains ends and nothing else happens (good job French "fun police" Empire)
+       name = "Who is this madman? Get him out of here!"
+	   CHL = { change_variable = { which = ptg_chain value = -10 } }
+	   set_country_flag = fra_refuse_ptg
+	   relation = { who = CHL value = 1 }
+	   ai_chance = { factor = 1 }
+	}
+
+	option = { # France continues the chain - AI will never take this
+		name = "But of course! We must help the Mapuche against Chilean oppresion! §RGain 5 Infamy§W"
+		CHL = { country_event = 18043715 }
+		set_country_flag = fra_accepts_ptg
+		prestige = -5
+		relation = { who = CHL value = -10 }
+		badboy = 5
+		ai_chance = { factor = 0 }
+	}
+}
+
+# CHL event caused by [event 18043714]
+country_event = {
+	id = 18043715
+	title = "France demands the liberation of Araucania"
+	desc = "fra_prg_free_desc"
+	picture = "araucanie_blazon"
+
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = { # Goes to war with France - Sends [event 18043716] to Argentina - Same PTG cores as [event 18043711]
+        name = "These Frenchies will pay for this!"
+		FRA = {
+			war = {
+				target = CHL
+				attacker_goal = { casus_belli = cut_down_to_size_no_infamy }
+				defender_goal = { casus_belli = cut_down_to_size_no_infamy }
+			}
+		}
+		set_country_flag = ptg_revolt
+		any_country = { limit = { OR = { tag = ARC tag = ARG } } country_event = 18043716 }
+		2328 = { add_core = PTG }
+		2329 = { add_core = PTG }
+		CHL_2332 = { add_core = PTG }
+		CHL = { change_variable = { which = ptg_chain value = 2 } }
+		ai_chance = { factor = 99 }
+	}
+
+	option = {
+		name = "There's nothing we can do" # CHL gives up PTG and its Araucanian provinces - Sends FRA [event 18043717]
+		2328 = { secede_province = PTG add_core = PTG }
+		2329 = { secede_province = PTG add_core = PTG }
+		CHL_2332 = { secede_province = PTG add_core = PTG }
+	    any_country = { limit = { primary_culture = french capital = 425 } country_event = 18043717 }
+		CHL = { change_variable = { which = ptg_chain value = -10 } }
+		PTG = {
+			primary_culture = french
+			add_accepted_culture = patagonian
+            tech_school = culture_tech_school
+			set_country_flag = new_world_nation
+			religion = catholic
+		    set_country_flag = catholic_country
+            clr_country_flag = animist_country
+			government = prussian_constitutionalism
+            political_reform = wealth_weighted_voting
+		}
+		set_country_flag = ptg_chain_end
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = { # ARG event caused by option [1] in [event 18043715]
+	id = 18043716
+	title = "France attacks Chile for Araucania"
+	desc = "arg_ptg_fra_desc"
+	picture = "araucanie_blazon"
+
+	fire_only_once = yes
+    is_triggered_only = yes
+
+	option = { # Allies CHL and goes to war with FRA - send [event 180437194] to CHL
+		name = "Get these pesky Europeans out of my yard! §RGo to war with France§W"
+		relation = { who = FRA value = -50 }
+		# Audax Validator "." Ignore_NEXT
+		CHL = { country_event = 180437194 }
+		ARG_2391 = { add_core = PTG }
+		2131 = { remove_core = PTG }
+		ai_chance = { factor = 70 }
+	}
+
+	option = { # Ignores CHL like a true sigma
+		name = "We can't do anything about it."
+		relation = { who = CHL value = -50 }
+		ai_chance = { factor = 30 }
+	}
+}
+
+country_event = { # Caused by option [1] in the event above
+	id = 180437194
+	title = "Argentina joins us"
+	desc = "arg_ptg_chl_desc"
+	picture = "araucanie_blazon"
+
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "Huzzah!"
+		change_variable = { which = ptg_chain value = 1 }
+		ARG = { limit = { exists = ARG } create_alliance = CHL relation = { who = CHL value = 200 } }
+		ARC = { limit = { exists = ARC } create_alliance = CHL relation = { who = CHL value = 200 } }
+		# Audax Validator "!" Ignore_NEXT
+		war = { attacker_goal = { casus_belli = call_allies_cb } call_ally = yes }
+	}
+}
+
+# FRA event if CHL accepts caused by option [2] in [event 18043715]
+country_event = {
+	id = 18043717
+	title = "Chileans Accepts"
+	desc = "fra_win_no_war_desc"
+	picture = "araucanie_blazon"
+
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = { # Just frees PTG and allies them
+		name = "Huzzah!"
+		CHL = { any_owned = { limit = { is_core = PTG } secede_province = PTG } prestige = -30 }
+		# Audax Validator "." Ignore_NEXT
+		any_land_province = { limit = { is_core = PTG empty = yes } secede_province = PTG }
+        create_alliance = PTG
+		ai_chance = { factor = 1 }
+	}
+
+	option = { # Sends [event 18043718] to PTG
+		name = "We need to be more involved in Patagonia §BPuppet Araucanie§W"
+		CHL = { any_owned = { limit = { is_core = PTG } secede_province = PTG } prestige = -30 }
+		PTG = { country_event = 18043718 }
+		ai_chance = { factor = 99 }
+	}
+}
+
+#PTG event caused by option [2] in [event 18043717]
+country_event = {
+	id = 18043718
+	title = "The French Demands"
+	desc = "fra_puppet_ptg_desc"
+	picture = "araucanie_blazon"
+
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = { # Become a puppet of FRA and a colonial_company_2 aka autonomous dependency
+		name = "Vive Nouvelle France! §BBecome a protectorate of France§W"
+		FRA = { create_vassal = PTG }
+		religion = catholic
+		government = colonial_company_2
+		primary_culture = french
+		add_accepted_culture = patagonian
+        tech_school = culture_tech_school
+		set_country_flag = new_world_nation
+		set_country_flag = catholic_country
+        clr_country_flag = animist_country
+        political_reform = wealth_weighted_voting
+		set_country_flag = ptg_end
+		# Audax Validator "." Ignore_NEXT
+		any_land_province = { limit = { is_core = PTG empty = yes } secede_province = PTG }
+		ARG_2391 = { add_core = PTG }
+		2131 = { remove_core = PTG }
+		ai_chance = { factor = 80 }
+	}
+
+	option = { # Goes to war with FRA and become a Constitutional Monarchy
+		name = "Maintain our Freedom! §BGo to war with France§W"
+		add_casus_belli = { target = FRA type = conquest months = 1 }
+		FRA = { release_vassal = PTG }
+		FRA = {
+			war = {
+			    target = PTG
+			    attacker_goal = { casus_belli = conquest }
+			    defender_goal = { casus_belli = status_quo }
+			}
+			set_country_flag = ptg_refused
+		}
+		religion = catholic
+		government = hms_government
+		primary_culture = french
+		add_accepted_culture = patagonian
+        tech_school = culture_tech_school
+		set_country_flag = new_world_nation
+		set_country_flag = catholic_country
+        clr_country_flag = animist_country
+        political_reform = universal_voting
+		political_reform = gerrymandering
+		# Audax Validator "." Ignore_NEXT
+		any_land_province = { limit = { is_core = PTG empty = yes } secede_province = PTG }
+		ARG_2391 = { add_core = PTG }
+		2131 = { remove_core = PTG }
+		ai_chance = { factor = 20 }
+	}
+}
+
+# FRA win event if they annex PTG due to option [2] in [event 18043718]
+country_event = {
+	id = 180437189
+	title = "Patagonia secured"
+	desc = "ptg_fra_refuse_desc"
+	picture = "araucanie_blazon"
+
+	fire_only_once = yes
+	mean_time_to_happen = { days = 3 }
+
+	trigger = {
+        primary_culture = french
+		capital = 425
+		has_country_flag = ptg_refused
+		NOT = { exists = PTG }
+	}
+
+	option = { # idk larp
+		name = "Serves them right."
+		any_owned = { limit = { is_core = PTG } secede_province = PTG }
+		prestige = 10
+		create_vassal = PTG
+		PTG = {
+			religion = catholic
+			government = colonial_company_2
+			primary_culture = french
+			add_accepted_culture = patagonian
+			tech_school = culture_tech_school
+			set_country_flag = new_world_nation
+			set_country_flag = catholic_country
+			clr_country_flag = animist_country
+			political_reform = wealth_weighted_voting
+		}
+		clr_country_flag = ptg_refused
+		set_country_flag = ptg_end
+	}
+}
+
+# FRA wins against CHL if they have disarmed them
+country_event = {
+	id = 180437190
+	title = "French Victory"
+	desc = "fra_win_ptg_desc"
+	picture = "araucania_ptg"
+
+	fire_only_once = yes
+	mean_time_to_happen = { days = 1 }
+
+	trigger = {
+		tag = CHL
+		truce_with = FRA
+		has_country_flag = ptg_revolt
+	}
+
+	option = { #Releases PTG
+		name = "Damn!"
+        any_country = { # If ARG has joined the war they also get [event 180437191]
+			limit = { CHL = { check_variable = { which = ptg_chain value = 4.99 } } OR = { tag = ARG tag = ARC } }
+			country_event = 180437191
+		}
+		CHL = { any_owned = { limit = { is_core = PTG } secede_province = PTG } prestige = -30 clr_country_flag = ptg_revolt }
+		any_country = { limit = { NOT = { CHL = { check_variable = { which = ptg_chain value = 4.99 } } } tag = PTG } country_event = 18043718 } #If ARG hasn't joined the war PTG gets event 18043718
+		# Audax Validator "." Ignore_NEXT
+		any_land_province = { limit = { is_core = PTG empty = yes } secede_province = PTG }
+		PTG = {
+			primary_culture = french
+			add_accepted_culture = patagonian
+            tech_school = culture_tech_school
+			set_country_flag = new_world_nation
+			religion = catholic
+		    set_country_flag = catholic_country
+            clr_country_flag = animist_country
+			government = prussian_constitutionalism
+            political_reform = wealth_weighted_voting
+		}
+	}
+}
+
+# FRA wins against ARG - refer to the notes in [event 180437190]
+country_event = {
+	id = 180437191
+	title = "French Victory"
+	desc = "fra_win_ptg_desc"
+	picture = "araucania_ptg"
+
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "Damn!"
+		any_country = { limit = { OR = { tag = ARC tag = ARG } } any_owned = { limit = { is_core = PTG } secede_province = PTG } prestige = -30 }
+		PTG = { country_event = 18043718 }
+		CHL = { clr_country_flag = ptg_revolt change_variable = { which = ptg_chain value = -10 } }
+	}
+}
+
+# FRA takes an L
+country_event = {
+	id = 180437192
+	title = "Chilean Victory"
+	desc = "fra_lose_ptg_desc"
+	picture = "araucania_ptg"
+
+	fire_only_once = yes
+	mean_time_to_happen = { days = 3 }
+
+	trigger = {
+		primary_culture = french
+		capital = 425
+		CHL = { has_country_flag = ptg_revolt check_variable = { which = ptg_chain value = 3.99 } }
+		OR = {
+			AND = {
+				is_disarmed = yes
+				truce_with = CHL
+			}
+			425 = { OR = { controlled_by = CHL controlled_by = ARG controlled_by = ARC } }
+		}
+	}
+
+	option = {
+		name = "Damn!"
+		CHL = { prestige = 30 treasury = 100000 }
+		any_country = { limit = { OR = { tag = ARC tag = ARG } } treasury = 100000 prestige = 30 }
+		# Audax Validator "." Ignore_NEXT
+		any_land_province = { limit = { is_core = PTG } remove_core = PTG }
+		treasury = -200000
+		prestige = -50
+		diplomatic_influence = { who = BOL value = -200 }
+		diplomatic_influence = { who = URU value = -200 }
+		end_war = CHL
+	}
+}

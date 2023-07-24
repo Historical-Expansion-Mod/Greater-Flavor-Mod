@@ -1,0 +1,893 @@
+#################################################################################
+#                                                                                #
+#                             War of the Triple Alliance                            #
+#                                                                                #
+#################################################################################
+
+#Paraguayan War events
+country_event = {
+    id = 46620
+    title = "EVTNAME46620"
+    desc = "EVTDESC46620"
+    picture = "solano_lopez"
+
+    trigger = {
+        year = 1860
+        NOT = {
+            tag = PRG
+            tag = PBC
+            tag = BOL
+            exists = ENT
+            exists = SBA
+            has_country_flag = will_support_uruguay
+            has_country_flag = will_not_support_uruguay
+            has_global_flag = paraguayan_war
+        }
+		URU = { exists = yes }
+        neighbour = PRG
+        capital_scope = { continent = south_america }
+        NOT = { relation = { who = PRG value = 200 } }
+        OR = {
+            government = democracy
+            government = hms_government
+            government = constitutional_empire
+        }
+        PRG = { government = presidential_dictatorship }
+    }
+
+    mean_time_to_happen = {
+        months = 1
+    }
+
+    option = {
+        name = "We will support Uruguay."
+        set_country_flag = will_support_uruguay
+        any_pop = {
+            scaled_militancy = {
+                factor = -3
+                ideology = liberal
+            }
+        }
+        relation = {
+            who = PRG
+            value = -25
+        }
+        leave_alliance = PRG
+        ai_chance = {
+            factor = 85
+            modifier = {
+                factor = 0.75
+                alliance_with = PRG
+            }
+            modifier = {
+                factor = 0.5
+                num_of_revolts = 1
+            }
+        }
+    }
+    option = {
+        name = "We cannot offer aid."
+        set_country_flag = will_not_support_uruguay
+        any_pop = {
+            scaled_militancy = {
+                factor = 3
+                ideology = liberal
+            }
+        }
+        ai_chance = {
+            factor = 15
+            modifier = {
+                factor = 0.5
+                truce_with = PRG
+            }
+            modifier = {
+                factor = 0
+                NOT = { relation = { who = PRG value = 0 } }
+            }
+        }
+    }
+}
+
+country_event = {
+    id = 46304
+    title = "EVTNAME46304" #Solano's Ambition
+    desc = "EVTDESC46304"
+    picture = "paraguayan_war"
+
+    fire_only_once = yes
+
+    trigger = {
+        tag = PRG
+        has_country_flag = carlos_lopez_dictator
+        war = no
+        year = 1860
+        URU = {
+            ruling_party_ideology = liberal
+            is_vassal = no
+			exists = yes
+        }
+        ENT = { exists = no }
+        SBA = { exists = no }
+        NOT = {
+            num_of_revolts = 1
+            any_neighbor_country = {
+                has_country_flag = will_support_uruguay
+                truce_with = THIS
+            }
+            truce_with = URU
+            in_sphere = URU
+            government = democracy
+            government = hms_government
+            government = constitutional_empire
+            ruling_party_ideology = liberal
+            badboy = 0.64
+            has_global_flag = paraguayan_war
+            has_global_flag = berlin_conference
+        }
+    }
+
+    mean_time_to_happen = {
+        months = 36
+        modifier = {
+            factor = 0.1
+            BRZ = { war = yes }
+        }
+        modifier = {
+            factor = 0.5
+            any_neighbor_country = {
+                has_country_flag = will_support_uruguay
+            }
+        }
+    }
+
+    option = {
+        name = "Begin the war!"
+        2554 = { add_core = PRG } #Posadas
+        2416 = { add_core = PRG }
+		2420 = { add_core = PRG }
+        2420 = { add_core = BRZ }
+        2366 = { add_core = ARG }
+        2367 = { add_core = ARG }
+        set_global_flag = paraguayan_war
+        add_country_modifier = {
+            name = small_country_draft
+            duration = 730
+        }
+        any_pop = {
+            militancy = -6
+            dominant_issue = {
+                factor = 0.2
+                value = jingoism
+            }
+        }
+        any_country = {
+            limit = { has_country_flag = will_support_uruguay }
+            create_alliance = URU
+            military_access = URU
+            leave_alliance = PRG
+            relation = {
+                who = URU
+                value = 400
+            }
+            relation = {
+                who = PRG
+                value = -400
+            }
+            casus_belli = {
+                target = PRG
+                type = cut_down_to_size
+                months = 12
+            }
+        }
+        war = {
+            target = URU
+            attacker_goal = {
+                casus_belli = make_puppet_no_add_wargoal
+            }
+            defender_goal = {
+                casus_belli = status_quo
+            }
+        }
+        ai_chance = {
+            factor = 80
+        }
+    }
+
+    option = {
+        name = "This would be terrible for Paraguay."
+        prestige = -5
+        any_pop = {
+            militancy = 3
+            dominant_issue = {
+                factor = 0.1
+                value = pacifism
+            }
+        }
+        ai_chance = {
+            factor = 20
+        }
+    }
+}
+
+country_event = {
+    id = 46621
+    title = "EVTNAME46621" #Triple Alliance Defeated
+    desc = "EVTDESC46621"
+    picture = "paraguayan_war"
+
+    trigger = {
+        tag = PRG
+        has_global_flag = paraguayan_war
+        war = no
+        URU = { vassal_of = THIS }
+        any_neighbor_country = {
+            has_country_flag = will_support_uruguay
+            truce_with = THIS
+        }
+    }
+
+    fire_only_once = yes
+
+    mean_time_to_happen = {
+        days = 10
+    }
+
+    option = {
+        name = "Secure our sea access - impose mild conditions. §RGain 10 infamy§W"
+        set_global_flag = paraguayan_war_won
+        prestige = 20
+        badboy = 10
+        any_pop = { militancy = -4 }
+        random_country = {
+            limit = {
+                tag = BRZ
+                has_country_flag = will_support_uruguay
+                truce_with = THIS
+            }
+            any_owned = {
+                limit = { is_core = THIS }
+                secede_province = THIS
+            }
+            relation = { who = PRG value = 100 }
+        }
+        random_country = {
+            limit = {
+                tag = ARG
+                has_country_flag = will_support_uruguay
+                truce_with = THIS
+            }
+            any_owned = {
+                limit = { is_core = THIS }
+                secede_province = THIS
+            }
+            ARG_2360 = {
+                add_core = PRG
+                add_core = ENT
+                secede_province = PRG
+            }
+            relation = { who = PRG value = 100 }
+        }
+        ai_chance = {
+            factor = 85
+        }
+    }
+
+    option = {
+        name = "Become a regional power - impose harsh conditions. §RGain 20 infamy§W"
+        set_global_flag = paraguayan_war_won
+        prestige = 20
+        badboy = 20
+        any_pop = { militancy = -4 }
+        random_country = {
+            limit = {
+                tag = BRZ
+                has_country_flag = will_support_uruguay
+                truce_with = THIS
+            }
+            any_owned = {
+                limit = { is_core = THIS }
+                secede_province = THIS
+            }
+            2416 = {
+                add_core = PRG
+                secede_province = PRG
+            }
+            2420 = {
+                add_core = PRG
+                secede_province = PRG
+            }
+            2419 = {
+                add_core = PRG
+                secede_province = PRG
+            }
+            2467 = {
+                add_core = PRG
+                secede_province = PRG
+            }
+            2466 = {
+                add_core = PRG
+                secede_province = PRG
+            }
+            relation = { who = PRG value = 100 }
+        }
+        random_country = {
+            limit = {
+                tag = ARG
+                has_country_flag = will_support_uruguay
+                truce_with = THIS
+            }
+            any_owned = {
+                limit = { is_core = THIS }
+                secede_province = THIS
+            }
+            ARG_2360 = {
+                add_core = PRG
+                add_core = ENT
+                secede_province = PRG
+            }
+            ARG_2377 = {
+                add_core = PRG
+                secede_province = PRG
+            }
+            2361 = {
+                add_core = PRG
+                secede_province = PRG
+            }
+            2362 = {
+                add_core = PRG
+                secede_province = PRG
+            }
+            2372 = {
+                add_core = PRG
+                secede_province = PRG
+            }
+            2377 = {
+                add_core = PRG
+                secede_province = PRG
+            }
+            2462 = {
+                add_core = PRG
+                secede_province = PRG
+            }
+            relation = { who = PRG value = 100 }
+        }
+        ai_chance = {
+            factor = 15
+        }
+    }
+}
+
+country_event = {
+    id = 46622
+    title = "EVTNAME46622" #Triple Alliance Victorious
+    desc = "EVTDESC46622"
+    picture = "avay"
+
+    trigger = {
+        has_global_flag = paraguayan_war
+        war = no
+        URU = { is_vassal = no }
+        has_country_flag = will_support_uruguay
+        truce_with = PRG
+    }
+
+    fire_only_once = yes
+
+    mean_time_to_happen = {
+        days = 10
+        modifier = {
+            factor = 0.1
+            ai = no
+        }
+    }
+
+    option = {
+        name = "Take our claims and keep Paraguay a buffer state. §RGain 5 infamy§W"
+        set_global_flag = paraguayan_war_lost
+        random_country = {
+            limit = {
+                tag = BRZ
+                has_country_flag = will_support_uruguay
+            }
+            prestige = 10
+            badboy = 5
+            relation = { who = PRG value = 100 }
+            any_pop = { militancy = -4 }
+        }
+        random_country = {
+            limit = {
+                tag = ARG
+                has_country_flag = will_support_uruguay
+            }
+            prestige = 10
+            badboy = 5
+            relation = { who = PRG value = 100 }
+            any_pop = { militancy = -4 }
+        }
+        PRG = { country_event = 46623 }
+        ai_chance = {
+            factor = 85
+        }
+    }
+
+    option = {
+        name = "Paraguay has no right to exist - partition the country. §RGain 15 infamy§W"
+        any_country = {
+            limit = {
+                has_country_flag = will_support_uruguay
+            }
+            prestige = 20
+            badboy = 15
+            relation = { who = PRG value = 100 }
+            any_pop = { militancy = -4 }
+        }
+        PRG = { country_event = 46624 }
+        ai_chance = {
+            factor = 15
+        }
+    }
+}
+
+country_event = {
+    id = 46623
+    title = "EVTNAME46622" #Triple Alliance Victorious
+    desc = "EVTDESC46623"
+    picture = "avay"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "We have no choice but to accept."
+        prestige = -10
+        random_list = {
+            25 = {
+                any_pop = { reduce_pop = 0.80 }
+            }
+            25 = {
+                any_pop = { reduce_pop = 0.70 }
+            }
+            25 = {
+                any_pop = { reduce_pop = 0.60 }
+            }
+            25 = {
+                any_pop = { reduce_pop = 0.50 }
+            }
+        }
+        ARG = {
+            all_core = {
+                remove_core = THIS
+            }
+        }
+        BRZ = {
+            all_core = {
+                remove_core = THIS
+            }
+        }
+        any_owned = {
+            limit = {
+                is_core = ARG
+            }
+            secede_province = ARG
+        }
+        any_owned = {
+            limit = {
+                is_core = BRZ
+            }
+            secede_province = BRZ
+        }
+    }
+}
+
+country_event = {
+    id = 46624
+    title = "EVTNAME46622" #Triple Alliance Victorious
+    desc = "EVTDESC46624"
+    picture = "avay"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "It's over, Solano."
+        prestige = -20
+        random_list = {
+            25 = {
+                any_pop = { reduce_pop = 0.80 }
+            }
+            25 = {
+                any_pop = { reduce_pop = 0.70 }
+            }
+            25 = {
+                any_pop = { reduce_pop = 0.60 }
+            }
+            25 = {
+                any_pop = { reduce_pop = 0.50 }
+            }
+        }
+        ARG = {
+            all_core = {
+                remove_core = THIS
+            }
+        }
+        BRZ = {
+            all_core = {
+                remove_core = THIS
+            }
+        }
+        any_owned = {
+            limit = {
+                is_core = ARG
+            }
+            secede_province = ARG
+        }
+        any_owned = {
+            limit = {
+                is_core = BRZ
+            }
+            secede_province = BRZ
+        }
+        PRG_2338 = {
+            add_core = ARG
+        }
+        PRG_2343 = {
+            add_core = BRZ
+        }
+        any_owned = {
+            limit = {
+                region = PRG_2338
+            }
+            secede_province = ARG
+        }
+        BRZ = { inherit = THIS }
+    }
+}
+
+country_event = {
+
+    id = 50005
+    title = "EVTNAME50005"
+    desc = "EVTDESC50005"
+    picture = "paraguayan_war"
+
+    trigger = {
+        tag = PRG
+        government = presidential_dictatorship
+        war = no
+        has_global_flag = paraguayan_war_lost
+    }
+
+    fire_only_once = yes
+
+    mean_time_to_happen = {
+        days = 10
+    }
+
+    option = {
+        name = "...installed a democracy in a war-torn Paraguay."
+        government = democracy
+        political_reform = wealth_weighted_voting
+        political_reform = population_equal_weight
+        political_reform = gerrymandering
+        political_reform = first_past_the_post
+		political_reform = federalism
+        ruling_party_ideology = liberal
+        clr_country_flag = tory_election_win
+        clr_country_flag = socialist_election_win
+        set_country_flag = liberal_election_win
+        clr_country_flag = communist_election_win
+        clr_country_flag = fascist_election_win
+        clr_country_flag = reactionary_election_win
+        clr_country_flag = anarcho_liberal_election_win
+        remove_country_modifier = expert_diplomat
+        remove_country_modifier = successful_industrialist
+        remove_country_modifier = ivory_tower_intellectual
+        remove_country_modifier = man_of_the_people
+        remove_country_modifier = landed_gentleman
+        remove_country_modifier = military_man
+        remove_country_modifier = lord_admiral
+        remove_country_modifier = raving_loon
+        remove_country_modifier = luddite
+        remove_country_modifier = great_statesman
+        remove_country_modifier = backroom_boy
+        remove_country_modifier = great_reformer
+        remove_country_modifier = gauche_buffoon
+        remove_country_modifier = administrative_genius
+        remove_country_modifier = visionary_thinker
+        remove_country_modifier = competent_placeholder
+        remove_country_modifier = imperious_autocrat
+        remove_country_modifier = prince_of_terror
+        remove_country_modifier = efficient_sociopath
+        remove_country_modifier = pig_headed_isolationist
+        remove_country_modifier = ambitious_union_boss
+        remove_country_modifier = dour_economist
+        add_country_modifier = {
+            name = national_confusion
+            duration = 3650
+        }
+        upper_house = {
+            ideology = liberal
+            value = 0.5
+        }
+        upper_house = {
+            ideology = conservative
+            value = 0.25
+        }
+        any_owned = {
+            limit = {
+                is_colonial = no
+            }
+            any_pop = {
+                scaled_militancy = {
+                    factor = 2
+                    ideology = reactionary
+                }
+                scaled_consciousness = {
+                    factor = 4
+                    ideology = reactionary
+                }
+            }
+            any_pop = {
+                scaled_militancy = {
+                    factor = -3
+                    ideology = liberal
+                }
+                scaled_consciousness = {
+                    factor = -5
+                    ideology = liberal
+                }
+            }
+        }
+        ai_chance = {
+            factor = 90
+        }
+    }
+
+    option = {
+        name = "...was dissolved, Paraguay remains a Dictatorship!"
+        prestige = -5
+        any_owned = {
+            limit = {
+                is_colonial = no
+            }
+            any_pop = {
+                scaled_militancy = {
+                    factor = 6
+                    ideology = liberal
+                }
+                scaled_consciousness = {
+                    factor = 8
+                    ideology = liberal
+                }
+                scaled_militancy = {
+                    factor = 3
+                    ideology = conservative
+                }
+                scaled_consciousness = {
+                    factor = 4
+                    ideology = conservative
+                }
+            }
+        }
+        ai_chance = {
+            factor = 10
+        }
+    }
+}
+
+country_event = {
+
+    id = 46625
+    title = "EVTNAME46625"
+    desc = "EVTDESC46625"
+    picture = "solano_lopez"
+
+    trigger = {
+        tag = PRG
+        government = presidential_dictatorship
+        war = no
+        has_global_flag = paraguayan_war_won
+    }
+
+    fire_only_once = yes
+
+    mean_time_to_happen = {
+        days = 10
+    }
+
+    option = {
+        name = "EVTOPTA46625"
+        government = absolute_monarchy
+        ruling_party_ideology = reactionary
+        political_reform = none_voting
+        political_reform = party_appointed
+        political_reform = no_meeting
+        political_reform = state_press
+        political_reform = no_trade_unions
+        political_reform = underground_parties
+        clr_country_flag = tory_election_win
+        clr_country_flag = socialist_election_win
+        clr_country_flag = liberal_election_win
+        clr_country_flag = communist_election_win
+        clr_country_flag = fascist_election_win
+        clr_country_flag = reactionary_election_win
+        clr_country_flag = anarcho_liberal_election_win
+        remove_country_modifier = expert_diplomat
+        remove_country_modifier = successful_industrialist
+        remove_country_modifier = ivory_tower_intellectual
+        remove_country_modifier = man_of_the_people
+        remove_country_modifier = landed_gentleman
+        remove_country_modifier = military_man
+        remove_country_modifier = lord_admiral
+        remove_country_modifier = raving_loon
+        remove_country_modifier = luddite
+        remove_country_modifier = great_statesman
+        remove_country_modifier = backroom_boy
+        remove_country_modifier = great_reformer
+        remove_country_modifier = gauche_buffoon
+        remove_country_modifier = administrative_genius
+        remove_country_modifier = visionary_thinker
+        remove_country_modifier = competent_placeholder
+        remove_country_modifier = imperious_autocrat
+        remove_country_modifier = prince_of_terror
+        remove_country_modifier = efficient_sociopath
+        remove_country_modifier = pig_headed_isolationist
+        remove_country_modifier = ambitious_union_boss
+        remove_country_modifier = dour_economist
+        add_country_modifier = {
+            name = national_confusion
+            duration = 3650
+        }
+        upper_house = {
+            ideology = conservative
+            value = 0.25
+        }
+        upper_house = {
+            ideology = reactionary
+            value = 0.50
+        }
+        any_pop = {
+            limit = {
+                location = { is_core = THIS }
+            }
+            scaled_militancy = {
+                ideology = reactionary
+                factor = -4
+            }
+            scaled_consciousness = {
+                ideology = reactionary
+                factor = -4
+            }
+            scaled_militancy = {
+                ideology = conservative
+                factor = -2
+            }
+            scaled_consciousness = {
+                ideology = conservative
+                factor = -2
+            }
+            scaled_militancy = {
+                ideology = liberal
+                factor = 4
+            }
+            scaled_consciousness = {
+                ideology = liberal
+                factor = 4
+            }
+            scaled_militancy = {
+                ideology = radical
+                factor = 6
+            }
+        }
+        ai_chance = {
+            factor = 60
+        }
+    }
+
+    option = {
+        name = "EVTOPTB46625"
+        any_owned = {
+            limit = {
+                is_colonial = no
+            }
+            any_pop = {
+                scaled_militancy = {
+                    factor = 6
+                    ideology = liberal
+                }
+                scaled_consciousness = {
+                    factor = 8
+                    ideology = liberal
+                }
+                scaled_militancy = {
+                    factor = 3
+                    ideology = conservative
+                }
+                scaled_consciousness = {
+                    factor = 4
+                    ideology = conservative
+                }
+            }
+        }
+        ai_chance = {
+            factor = 35
+        }
+    }
+
+    option = {
+        name = "EVTOPTC46625"
+        government = democracy
+        political_reform = wealth_weighted_voting
+        political_reform = population_equal_weight
+        political_reform = gerrymandering
+        political_reform = first_past_the_post
+        ruling_party_ideology = liberal
+        clr_country_flag = tory_election_win
+        clr_country_flag = socialist_election_win
+        set_country_flag = liberal_election_win
+        clr_country_flag = communist_election_win
+        clr_country_flag = fascist_election_win
+        clr_country_flag = reactionary_election_win
+        clr_country_flag = anarcho_liberal_election_win
+        remove_country_modifier = expert_diplomat
+        remove_country_modifier = successful_industrialist
+        remove_country_modifier = ivory_tower_intellectual
+        remove_country_modifier = man_of_the_people
+        remove_country_modifier = landed_gentleman
+        remove_country_modifier = military_man
+        remove_country_modifier = lord_admiral
+        remove_country_modifier = raving_loon
+        remove_country_modifier = luddite
+        remove_country_modifier = great_statesman
+        remove_country_modifier = backroom_boy
+        remove_country_modifier = great_reformer
+        remove_country_modifier = gauche_buffoon
+        remove_country_modifier = administrative_genius
+        remove_country_modifier = visionary_thinker
+        remove_country_modifier = competent_placeholder
+        remove_country_modifier = imperious_autocrat
+        remove_country_modifier = prince_of_terror
+        remove_country_modifier = efficient_sociopath
+        remove_country_modifier = pig_headed_isolationist
+        remove_country_modifier = ambitious_union_boss
+        remove_country_modifier = dour_economist
+        add_country_modifier = {
+            name = national_confusion
+            duration = 3650
+        }
+        upper_house = {
+            ideology = liberal
+            value = 0.5
+        }
+        upper_house = {
+            ideology = conservative
+            value = 0.25
+        }
+        any_owned = {
+            limit = {
+                is_colonial = no
+            }
+            any_pop = {
+                scaled_militancy = {
+                    factor = 2
+                    ideology = reactionary
+                }
+                scaled_consciousness = {
+                    factor = 4
+                    ideology = reactionary
+                }
+            }
+            any_pop = {
+                scaled_militancy = {
+                    factor = -3
+                    ideology = liberal
+                }
+                scaled_consciousness = {
+                    factor = -5
+                    ideology = liberal
+                }
+            }
+        }
+        ai_chance = {
+            factor = 5
+        }
+    }
+}

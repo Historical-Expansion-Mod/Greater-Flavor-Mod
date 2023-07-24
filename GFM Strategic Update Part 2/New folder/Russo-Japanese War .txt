@@ -1,0 +1,1409 @@
+country_event = {
+	id = 784518 #Japan kicks off Russo-Japanese War
+	title = "EVTNAME784518"
+	desc = "EVTDESC784518"
+	picture = "japanese_fleet_attacks_russian_fleet"
+	major = yes
+
+	is_triggered_only = yes
+
+	option = {
+		name = "What the...?! To arms!"
+		FROM = {
+			war = {
+				target = RUS
+				attacker_goal = { casus_belli = cut_down_to_size_no_add_wargoal_2 }
+				defender_goal = { casus_belli = cut_down_to_size_no_add_wargoal_2 }
+				call_ally = yes
+			}
+		}
+		any_country = {
+			limit = {
+				ai = yes
+				OR = {
+					tag = QNG
+					tag = TPG
+					tag = CHI
+					tag = MCK
+					tag = KOR
+					tag = RCH
+					tag = HUI
+					tag = KMT
+				}
+				NOT = { military_access = THIS }
+				NOT = { military_access = JAP }
+				NOT = { military_access = TKG }
+			}
+			country_event = 666608
+		}
+		any_country = {
+			limit = {
+				OR = {
+					alliance_with = TKG
+					alliance_with = JAP
+				}
+				war_with = THIS
+			}
+			set_country_flag = participating_in_rj_war
+		}
+		any_country = {
+			limit = {
+				alliance_with = THIS
+				OR = {
+					war_with = JAP
+					war_with = TKG
+				}
+			}
+			set_country_flag = participating_in_rj_war
+		}
+	}
+}
+
+country_event = {
+	id = 784519
+	title = "EVTNAME784519" #Japanese victory over Russia: Peace or no?
+	desc = "EVTDESC784519"
+	picture = "battle_of_delisi"
+
+	fire_only_once = yes
+
+	trigger = {
+		OR = {
+			tag = TKG
+			tag = JAP
+		}
+		war_with = RUS
+		1481 = {
+			owned_by = RUS
+			controlled_by = THIS
+		}
+		has_global_flag = russo_japanese_war
+		NOT = { has_country_modifier = aggression_against_russia }
+	}
+
+	option = {
+		name = "The time has come for peace."
+		RUS = { country_event = 784520 }
+
+		ai_chance = {
+			factor = 0.75
+			modifier = {
+				factor = 2
+				war_exhaustion = 20
+			}
+		}
+	}
+
+	option = {
+		name = "We are not finished here!"
+		war_exhaustion = 40
+
+		ai_chance = {
+			factor = 0.2
+			modifier = {
+                factor = 2
+                war_policy = jingoism
+            }
+			modifier = {
+				factor = 3
+				RUS = { brigades_compare = 0.75 }
+            }
+			modifier = {
+				factor = 4
+				RUS = { brigades_compare = 0.5 }
+            }
+			modifier = {
+				factor = 5
+				RUS = { brigades_compare = 0.1 }
+            }
+		}
+	}
+	mean_time_to_happen = { days = 1 }
+}
+
+country_event = {
+	id = 784520
+	title = "EVTNAME784520" #Japan's first peace offer to Russia
+	desc = "EVTDESC784520"
+	picture = "battle_of_delisi"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "This is reasonable."
+		any_owned = {
+			limit = {
+				owner = {
+					tag = RUS
+					war_with = TKG
+				}
+				OR = {
+					province_id = 1089
+					province_id = 1088
+				}
+			}
+			secede_province = TKG
+			add_core = TKG
+			remove_core = RUS
+		}
+		any_owned = {
+			limit = {
+				owner = {
+					tag = RUS
+					war_with = TKG
+				}
+				is_core = CHI
+				NOT = {
+					province_id = 1190
+					province_id = 1188
+					province_id = 1186
+					is_core = SZC
+					is_core = KML
+				}
+			}
+			secede_province = TKG
+		}
+		any_owned = {
+			limit = {
+				owner = {
+					tag = RUS
+					war_with = JAP
+				}
+				OR = {
+					province_id = 1089
+					province_id = 1088
+				}
+			}
+			secede_province = JAP
+			add_core = JAP
+			remove_core = RUS
+		}
+		any_owned = {
+			limit = {
+				owner = {
+					tag = RUS
+					war_with = JAP
+				}
+				is_core = CHI
+				NOT = {
+					province_id = 1190
+					province_id = 1188
+					province_id = 1186
+					is_core = SZC
+					is_core = KML
+				}
+			}
+			secede_province = JAP
+		}
+		end_war = TKG
+		end_war = JAP
+		prestige = -30
+		any_pop = {
+			militancy = 3
+		}
+		FROM = { country_event = 784521 }
+		any_country = {
+			limit = {
+				tag = KOR
+				vassal_of = THIS
+				exists = yes
+			}
+			THIS = { release_vassal = KOR }
+		}
+
+		ai_chance = {
+			factor = 0.5
+			modifier = {
+				factor = 1.5
+				war_exhaustion = 20
+			}
+			modifier = {
+				factor = 1.75
+				FROM = { brigades_compare = 1.75 }
+			}
+			modifier = {
+				factor = 2
+				FROM = { brigades_compare = 2 }
+			}
+		}
+	}
+
+	option = {
+		name = "We will fight to the bitter end!"
+		any_pop = {
+			militancy = 1
+		}
+		FROM = { country_event = 784522 }
+
+		ai_chance = {
+			factor = 0.4
+			modifier = {
+				factor = 1.5
+				NOT = { war_exhaustion = 5 }
+			}
+			modifier = {
+				factor = 1.75
+				FROM = { brigades_compare = 0.5 }
+			}
+			modifier = {
+				factor = 2
+				FROM = { brigades_compare = 0.25 }
+			}
+			modifier = {
+				factor = 1.5
+				1481 = {
+					controlled_by = FROM
+					NOT = { province_control_days = 30 }
+				}
+			}
+		}
+	}
+	mean_time_to_happen = { days = 1 }
+}
+
+country_event = {
+	id = 784521
+	title = "EVTNAME784521" #Russia accepts Japan's first peace deal
+	desc = "EVTDESC784521"
+	picture = "russian_surrender"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "We have done the impossible!"
+		prestige = 30
+		clr_global_flag = russo_japanese_war
+		set_global_flag = rjw_over
+	}
+}
+
+country_event = {
+	id = 784522
+	title = "EVTNAME784522" #Russia rejects Japan's first peace deal
+	desc = "EVTDESC784522"
+	picture = "battle_of_delisi"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "They dig their graves deeper and deeper."
+	}
+}
+
+country_event = {
+	id = 784523
+	title = "EVTNAME784523" #Russian victory over Japan: Peace or no?
+	desc = "EVTDESC784523"
+	picture = "battle_of_shaho"
+
+	trigger = {
+		tag = RUS
+		has_global_flag = russo_japanese_war
+		NOT = { has_global_flag = russia_won_rjw }
+		OR = {
+			war_with = TKG
+			war_with = JAP
+		}
+		NOT = { 1481 = { controlled_by = TKG } }
+		NOT = { 1481 = { controlled_by = JAP } }
+		NOT = {
+			TKG = {
+				has_country_modifier = aggression_against_russia
+			}
+		}
+		NOT = {
+			JAP = {
+				has_country_modifier = aggression_against_russia
+			}
+		}
+	}
+
+	option = {
+		name = "They are defeated. We should seek peace."
+		any_country = {
+			limit = {
+				OR = {
+					tag = TKG
+					tag = JAP
+				}
+				war_with = THIS
+			}
+			country_event = {
+				id = 784524
+				days = 7
+			}
+		}
+		ai_chance = {
+			factor = 0.75
+			modifier = {
+				factor = 2
+				war_exhaustion = 20
+			}
+		}
+	}
+
+	option = {
+		name = "We will only accept total victory!"
+		war_exhaustion = 40
+
+		ai_chance = {
+			factor = 0.2
+			modifier = {
+                factor = 2
+                war_policy = jingoism
+            }
+			modifier = {
+				factor = 3
+				OR = {
+					JAP = { brigades_compare = 0.75 }
+					TKG = { brigades_compare = 0.75 }
+				}
+			}
+			modifier = {
+				factor = 4
+				OR = {
+					JAP = { brigades_compare = 0.5 }
+					TKG = { brigades_compare = 0.5 }
+				}
+            }
+			modifier = {
+				factor = 5
+				OR = {
+					JAP = { brigades_compare = 0.1 }
+					TKG = { brigades_compare = 0.1 }
+				}
+            }
+		}
+	}
+	mean_time_to_happen = { days = 1 }
+}
+
+
+country_event = {
+	id = 784524 #Russia's first peace offer to Japan
+	title = "EVTNAME784524"
+	desc = "EVTDESC784524"
+	picture = "battle_of_shaho"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Unfortunately, this is our best option."
+		end_war = RUS
+		set_global_flag = russia_won_rjw
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 1089
+					province_id = 1088
+					province_id = 1087
+					province_id = 1086
+				}
+			}
+			secede_province = RUS
+			add_core = RUS
+			remove_core = THIS
+		}
+		diplomatic_influence = { who = KOR value = -400 }
+		any_country = {
+			limit = {
+				tag = KOR
+				vassal_of = THIS
+				exists = yes
+			}
+			THIS = { release_vassal = KOR }
+		}
+		RUS = { diplomatic_influence = { who = KOR value = 400 } }
+		prestige = -30
+		any_pop = {
+			militancy = 3
+		}
+		FROM = { country_event = 784525 }
+
+		ai_chance = {
+		factor = 70
+			modifier = {
+				factor = 1.5
+				war_exhaustion = 20
+			}
+			modifier = {
+				factor = 4
+				war_exhaustion = 40
+			}
+			modifier = {
+				factor = 10
+				war_exhaustion = 80
+			}
+			modifier = {
+				factor = 1.75
+				FROM = { brigades_compare = 1.75 }
+			}
+			modifier = {
+				factor = 2
+				FROM = { brigades_compare = 2 }
+			}
+		}
+	}
+
+	option = {
+		name = "We are battered, but not defeated!"
+		war_exhaustion = 40
+		FROM = { country_event = 784526 }
+
+		ai_chance = {
+			factor = 30
+			modifier = {
+				factor = 1.5
+				NOT = { war_exhaustion = 5 }
+			}
+			modifier = {
+				factor = 0.1
+				war_exhaustion = 40
+			}
+			modifier = {
+				factor = 0.01
+				war_exhaustion = 80
+			}
+			modifier = {
+				factor = 2
+				FROM = { brigades_compare = 0.25 }
+			}
+			modifier = {
+				factor = 1.5
+				any_owned_province = {
+					OR = {
+						region = JAP_1088
+						region = JAP_1086
+					}
+					controlled_by = FROM
+					NOT = { province_control_days = 30 }
+				}
+			}
+		}
+
+	}
+}
+
+country_event = {
+	id = 784525 #Japan accepts Russia's first peace offer
+	title = "EVTNAME784525"
+	desc = "EVTDESC784525"
+	picture = "battle_of_shaho"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Smart choice."
+		prestige = 30
+		clr_global_flag = russo_japanese_war
+		set_global_flag = rjw_over
+	}
+}
+
+country_event = {
+	id = 784526 #Japan rejects Russia's first peace offer
+	title = "EVTNAME784526"
+	desc = "EVTDESC784526"
+	picture = "battle_of_shaho"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "They fight on futilely."
+	}
+}
+
+country_event = {
+	id = 784527 #What more to demand from Russia?
+	title = "EVTNAME784527"
+	desc = "EVTDESC784527"
+	picture = "japan_peace_negotiations"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Sakhalin, the Kurils, Vladivostok, Kamchatka and Chinese or Korean lands. §RGain 5 infamy§W"
+		badboy = 5
+		prestige = 20
+		RUS = { country_event = 784528 }
+
+		ai_chance = {
+			factor = 0.5
+			modifier = {
+				factor = 0
+				badboy = 0.8
+			}
+		}
+	}
+
+	option = {
+		name = "We shall take Russia's Pacific coastline. §RGain 10 infamy§W"
+		badboy = 10
+		prestige = 30
+		RUS = { country_event = 784529 }
+
+		ai_chance = {
+			factor = 0.4
+			modifier = {
+				factor = 0
+				badboy = 0.6
+			}
+		}
+	}
+
+	option = {
+		name = "Russia shall no longer have a presence in East Asia nor the Pacific. §RGain 15 infamy§W"
+		prestige = 40
+		badboy = 15
+		RUS = { country_event = 784530 }
+
+		ai_chance = {
+			factor = 0.4
+			modifier = {
+				factor = 0
+				badboy = 0.4
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 784528	#Japan demands Port Arthur, Outer Manchuria, Kamchatka and Sakhalin
+	title = "EVTNAME784528"
+	desc = "EVTDESC784528"
+	picture = "japan_peace_negotiations"
+
+
+	is_triggered_only = yes
+
+	option = {
+		name = "This is reasonable for our humiliating defeat."
+		random_owned = {
+			limit = {
+				owner = {
+					tag = RUS
+					TKG = { exists = yes }
+				}
+			}
+			THIS = {
+				any_owned = {
+					limit = {
+						OR = {
+							is_core = CHI
+							is_core = KOR
+							is_core = JAP
+							is_core = TKG
+							province_id = 1087
+							province_id = 1088
+							province_id = 1089
+							province_id = 1086
+							province_id = 1074
+							province_id = 3676
+							province_id = 2633
+							province_id = 1083
+							province_id = 1082
+						}
+						NOT = {
+							province_id = 1190
+							province_id = 1188
+							province_id = 1186
+							is_core = SZC
+							is_core = KML
+						}
+					}
+					secede_province = TKG
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					tag = RUS
+					JAP = { exists = yes }
+				}
+			}
+			THIS = {
+				any_owned = {
+					limit = {
+						OR = {
+							is_core = CHI
+							is_core = KOR
+							is_core = JAP
+							is_core = TKG
+							province_id = 1087
+							province_id = 1088
+							province_id = 1089
+							province_id = 1086
+							province_id = 3676
+							province_id = 1074
+							province_id = 2633
+							province_id = 1083
+							province_id = 1082
+						}
+						NOT = {
+							province_id = 1190
+							province_id = 1188
+							province_id = 1186
+							is_core = SZC
+							is_core = KML
+						}
+					}
+					secede_province = JAP
+				}
+			}
+		}
+		prestige = -20
+		any_pop = {
+			militancy = 2
+		}
+		any_country = {
+			limit = {
+				tag = KOR
+				vassal_of = THIS
+				exists = yes
+			}
+			THIS = { release_vassal = KOR }
+		}
+	}
+}
+
+country_event = {
+	id = 784529 #Japan demands Port Arthur, Sakhalin, Outer Manchuria, Kamchatka and the Pacific Coast
+	title = "EVTNAME784529"
+	desc = "EVTDESC784529"
+	picture = "japan_peace_negotiations"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Fair enough."
+		prestige = -30
+
+		random_owned = {
+			limit = {
+				owner = {
+					tag = RUS
+					TKG = { exists = yes }
+				}
+			}
+			THIS = {
+				any_owned = {
+					limit = {
+						OR = {
+							is_core = CHI
+							is_core = KOR
+							is_core = JAP
+							is_core = TKG
+							is_core = KAM
+							province_id = 1087
+							province_id = 1088
+							province_id = 1089
+							province_id = 1086
+							province_id = 1083
+							province_id = 1082
+							province_id = 2617
+							province_id = 1085
+							province_id = 1084
+						}
+						NOT = { is_core = BRY }
+						NOT = {
+							province_id = 1190
+							province_id = 1188
+							province_id = 1186
+							is_core = SZC
+							is_core = KML
+						}
+					}
+					secede_province = TKG
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					tag = RUS
+					JAP = { exists = yes }
+				}
+			}
+			THIS = {
+				any_owned = {
+					limit = {
+						OR = {
+							is_core = CHI
+							is_core = KOR
+							is_core = JAP
+							is_core = TKG
+							is_core = KAM
+							province_id = 1087
+							province_id = 1088
+							province_id = 1089
+							province_id = 1086
+							province_id = 1083
+							province_id = 1082
+							province_id = 2617
+							province_id = 1085
+							province_id = 1084
+						}
+						NOT = { is_core = BRY }
+						NOT = {
+							province_id = 1190
+							province_id = 1188
+							province_id = 1186
+							is_core = SZC
+							is_core = KML
+						}
+					}
+					secede_province = JAP
+				}
+			}
+		}
+		any_pop = {
+			militancy = 3
+		}
+		any_country = {
+			limit = {
+				tag = KOR
+				vassal_of = THIS
+				exists = yes
+			}
+			THIS = { release_vassal = KOR }
+		}
+	}
+
+}
+
+country_event = {
+	id = 784530
+	title = "EVTNAME784530" #Japan demands all of the Far East
+	desc = "EVTDESC784530"
+	picture = "japan_peace_negotiations"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "This is humiliating beyond belief."
+		prestige = -40
+		any_pop = {
+			militancy = 4
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					tag = RUS
+					TKG = { exists = yes }
+				}
+			}
+			THIS = {
+				any_owned = {
+					limit = {
+						OR = {
+							is_core = CHI
+							is_core = KOR
+							is_core = JAP
+							is_core = TKG
+							is_core = KAM
+							is_core = BRY
+							is_core = LSK
+							province_id = 2645
+							province_id = 2696
+							province_id = 2644
+							province_id = 1087
+							province_id = 1088
+							province_id = 1089
+							province_id = 1086
+							province_id = 1083
+							province_id = 1082
+							province_id = 2617
+							province_id = 1085
+							province_id = 1084
+						}
+						NOT = {
+							province_id = 1190
+							province_id = 1188
+							province_id = 1186
+							is_core = SZC
+							is_core = KML
+						}
+					}
+					secede_province = TKG
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					tag = RUS
+					JAP = { exists = yes }
+				}
+			}
+			THIS = {
+				any_owned = {
+					limit = {
+						OR = {
+							is_core = CHI
+							is_core = KOR
+							is_core = JAP
+							is_core = TKG
+							is_core = KAM
+							is_core = BRY
+							is_core = LSK
+							province_id = 2645
+							province_id = 2696
+							province_id = 2644
+							province_id = 1087
+							province_id = 1088
+							province_id = 1089
+							province_id = 1086
+							province_id = 1083
+							province_id = 1082
+							province_id = 2617
+							province_id = 1085
+							province_id = 1084
+						}
+						NOT = {
+							province_id = 1190
+							province_id = 1188
+							province_id = 1186
+							is_core = SZC
+							is_core = KML
+						}
+					}
+					secede_province = JAP
+				}
+			}
+		}
+		any_country = {
+			limit = {
+				tag = KOR
+				vassal_of = THIS
+				exists = yes
+			}
+			THIS = { release_vassal = KOR }
+		}
+	}
+}
+
+country_event = {
+	id = 784531 #What more to demand from Japan?
+	title = "EVTNAME784531"
+	desc = "EVTDESC784531"
+	picture = "japan_peace_negotiations"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Sakhalin, Tsushima, and Hokkaido will be ours. §RGain 5 infamy§W"
+		prestige = 20
+		any_country = {
+			limit = {
+				OR = {
+					tag = JAP
+					tag = TKG
+				}
+				exists = yes
+			}
+			country_event = 784532
+		}
+		badboy = 5
+		ai_chance = {
+			factor = 0.5
+			modifier = {
+				factor = 0
+				badboy = 0.8
+			}
+		}
+	}
+
+	option = {
+		name = "Sakhalin, Tsushima, Hokkaido, and Taiwan. §RGain 10 infamy§W"
+		prestige = 25
+		badboy = 10
+		any_country = {
+			limit = {
+				OR = {
+					tag = JAP
+					tag = TKG
+				}
+				exists = yes
+			}
+			country_event = 784533
+		}
+
+		ai_chance = {
+			factor = 0.4
+			modifier = {
+				factor = 0
+				badboy = 0.6
+			}
+		}
+	}
+
+	option = {
+		name = "All of the above and any Chinese and Korean territory. §RGain 15 infamy§W"
+		prestige = 30
+		badboy = 15
+		any_country = {
+			limit = {
+				OR = {
+					tag = JAP
+					tag = TKG
+				}
+				exists = yes
+			}
+			country_event = 784534
+		}
+
+		ai_chance = {
+			factor = 0.4
+			modifier = {
+				factor = 0
+				badboy = 0.4
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 784532 #Russia demands Sakhalin, Hokkaido, and Tsushima
+	title = "EVTNAME784532"
+	desc = "EVTDESC784532"
+	picture = "japan_peace_negotiations"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "This is humiliating but fair."
+		prestige = -20
+		any_pop = {
+			militancy = 2
+		}
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 1642
+					province_id = 1643
+					province_id = 1644
+					province_id = 1086
+					province_id = 1087
+					province_id = 1089
+					province_id = 1088
+					province_id = 2589
+					is_core = RUS
+				}
+			}
+			secede_province = RUS
+		}
+		diplomatic_influence = { who = KOR value = -400 }
+		RUS = { diplomatic_influence = { who = KOR value = -400 } }
+		any_country = {
+			limit = {
+				tag = KOR
+				vassal_of = THIS
+				exists = yes
+			}
+			THIS = { release_vassal = KOR }
+		}
+	}
+}
+
+country_event = {
+	id = 784533 #Russia demands Sakhalin, Hokkaido, Tsushima, and Taiwan
+	title = "EVTNAME784533"
+	desc = "EVTDESC784533"
+	picture = "japan_peace_negotiations"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Curses."
+		prestige = -30
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 1642
+					province_id = 1643
+					province_id = 1644
+					province_id = 1086
+					province_id = 1087
+					province_id = 1089
+					province_id = 1088
+					province_id = 2589
+					province_id = 2406
+					province_id = 2681
+					province_id = 1485
+					province_id = 2562
+					is_core = RUS
+				}
+			}
+			secede_province = RUS
+		}
+		diplomatic_influence = { who = KOR value = -400 }
+		RUS = { diplomatic_influence = { who = KOR value = -400 } }
+		any_pop = {
+			militancy = 3
+		}
+		any_country = {
+			limit = {
+				tag = KOR
+				vassal_of = THIS
+				exists = yes
+			}
+			THIS = { release_vassal = KOR }
+		}
+	}
+}
+
+country_event = {
+	id = 784534 #Russia demands Sakhalin, Tsushima, Hokkaido, and all Chinese and Korean territories
+	title = "EVTNAME784534"
+	desc = "EVTDESC784534"
+	picture = "japan_peace_negotiations"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "We have brought utter shame to our nation."
+		prestige = -40
+		any_pop = {
+			militancy = 4
+		}
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 1642
+					province_id = 1643
+					province_id = 1644
+					province_id = 1086
+					province_id = 1087
+					province_id = 1089
+					province_id = 1088
+					province_id = 2589
+					is_core = RUS
+					is_core = KOR
+					is_core = CHI
+				}
+			}
+			secede_province = RUS
+		}
+		diplomatic_influence = { who = KOR value = -400 }
+		RUS = { diplomatic_influence = { who = KOR value = -400 } }
+		any_country = {
+			limit = {
+				tag = KOR
+				vassal_of = THIS
+				exists = yes
+			}
+			THIS = { release_vassal = KOR }
+		}
+	}
+}
+
+country_event = {
+	id = 666605 #China receives word of Manchurian invasion
+	title = "EVTNAME666605"
+	desc = "EVTDESC666605"
+	picture = "japanese_invasion_of_manchuria"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "We shall defend Manchuria, no matter the cost."
+		set_country_flag = being_invaded_for_manchuria
+		FROM = {
+			war = {
+				target = THIS
+				attacker_goal = { casus_belli = cut_down_to_size_no_infamy }
+				defender_goal = { casus_belli = status_quo }
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 666606 #Japanese expel Russians from Far East
+	title = "EVTNAME666606"
+	desc = "EVTDESC666606"
+	picture = "far_east"
+
+	trigger = {
+		primary_culture = japanese
+		has_global_flag = japan_trying_to_expel_the_russians
+		any_owned_province = {
+			OR = {
+				is_core = KAM
+				is_core = BRY
+				is_core = LSK
+				province_id = 2645
+				province_id = 2696
+				province_id = 2644
+				province_id = 1087
+				province_id = 1088
+				province_id = 1089
+				province_id = 1086
+				province_id = 1083
+				province_id = 1082
+				province_id = 2617
+				province_id = 1085
+				province_id = 1084
+			}
+		}
+		NOT = { has_global_flag = russians_expelled_far_east }
+	}
+
+	mean_time_to_happen = {
+        months = 10
+		modifier = {
+			factor = 0.8
+			any_owned_province = {
+				OR = {
+					region = RUS_1074
+					region = CHI_1082
+					region = RUS_1079
+					region = USA_1
+					province_id = 2644
+					province_id = 2696
+					province_id = 2645
+				}
+				country_units_in_province = THIS
+			}
+		}
+    }
+
+	option = {
+		name = "Long live $COUNTRY$!"
+		clr_global_flag = japan_trying_to_expel_the_russians
+		set_global_flag = russians_expelled_far_east
+		any_owned = {
+			limit = {
+				OR = {
+					is_core = KAM
+					is_core = BRY
+					is_core = LSK
+					province_id = 2645
+					province_id = 2696
+					province_id = 2644
+					province_id = 1087
+					province_id = 1088
+					province_id = 1089
+					province_id = 1086
+					province_id = 1083
+					province_id = 1082
+					province_id = 2617
+					province_id = 1085
+					province_id = 1084
+				}
+			}
+			poor_strata = {
+				limit = {
+					OR = {
+						has_pop_culture = russian
+						has_pop_culture = byelorussian
+						has_pop_culture = ukrainian
+						has_pop_culture = ugrian
+						has_pop_culture = volga_german
+						has_pop_culture = cossack
+					}
+				}
+				militancy = 7
+				consciousness = 9
+				random_list = {
+					34 = { reduce_pop = 0.9 }
+					33 = { reduce_pop = 0.8 }
+					33 = { reduce_pop = 0.7 }
+				}
+				move_pop = 1044
+			}
+			add_province_modifier = { name = population_resettlement duration = 2190 }
+			remove_province_modifier = nationalist_agitation
+		}
+	}
+}
+country_event = {
+	id = 666607 #Japan fails to expel Russians from Far East
+	title = "EVTNAME666607"
+	desc = "EVTDESC666607"
+	picture = "ambush_army"
+
+	trigger = {
+		has_global_flag = japan_trying_to_expel_the_russians
+		any_owned_province = {
+			OR = {
+				is_core = KAM
+				is_core = BRY
+				is_core = LSK
+				province_id = 2645
+				province_id = 2696
+				province_id = 2644
+				province_id = 1087
+				province_id = 1088
+				province_id = 1089
+				province_id = 1086
+				province_id = 1083
+				province_id = 1082
+				province_id = 2617
+				province_id = 1085
+				province_id = 1084
+			}
+		}
+		NOT = { has_global_flag = russians_expelled_far_east }
+	}
+
+	mean_time_to_happen = {
+		months = 50
+		modifier = {
+			factor = 0.8
+			NOT = { bolt_action_rifles = 1 }
+			RUS = { bolt_action_rifles = 1 }
+		}
+	}
+
+	option = {
+		name = "This will be a horrid mess to clean up."
+		clr_global_flag = japan_trying_to_expel_the_russians
+		prestige = -2
+		any_owned = {
+			limit = {
+				OR = {
+					is_core = KAM
+					is_core = BRY
+					is_core = LSK
+					province_id = 2645
+					province_id = 2696
+					province_id = 2644
+					province_id = 1087
+					province_id = 1088
+					province_id = 1089
+					province_id = 1086
+					province_id = 1083
+					province_id = 1082
+					province_id = 2617
+					province_id = 1085
+					province_id = 1084
+				}
+			}
+			poor_strata = {
+				limit = {
+					OR = {
+						has_pop_culture = russian
+						has_pop_culture = byelorussian
+						has_pop_culture = ukrainian
+						has_pop_culture = ugrian
+						has_pop_culture = volga_german
+						has_pop_culture = cossack
+					}
+				}
+				militancy = 9
+				consciousness = 9
+				random_list = {
+					34 = { reduce_pop = 0.4 }
+					33 = { reduce_pop = 0.3 }
+					33 = { reduce_pop = 0.2 }
+				}
+			}
+			any_pop = {
+				limit = { is_primary_culture = yes }
+				reduce_pop = 0.99
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 666608 #China and Korea give military access to RJ War participants
+	title = "EVTNAME666608"
+	desc = "EVTDESC666608"
+	picture = "japanese_fleet_attacks_russian_fleet"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Enjoy it while you can."
+		any_country = {
+			limit = {
+				OR = {
+					tag = TKG
+					tag = JAP
+					tag = RUS
+					has_country_flag = participating_in_rj_war
+				}
+			}
+			military_access = THIS
+			country_event = 666610
+		}
+		set_country_flag = humble_access_giver
+	}
+}
+
+country_event = {
+	id = 666609 #Don't cancel our military access
+	title = "EVTNAME666609"
+	desc = "EVTDESC666609"
+	picture = "walter"
+
+	trigger = {
+		ai = yes
+		has_country_flag = humble_access_giver
+		has_global_flag = russo_japanese_war
+		NOT = { has_global_flag = rjw_over }
+		OR = {
+			TKG = { has_country_modifier = aggression_against_russia }
+			JAP = { has_country_modifier = aggression_against_russia }
+		}
+		OR = {
+			NOT = { TKG = { military_access = THIS } }
+			NOT = { JAP = { military_access = THIS } }
+			NOT = { RUS = { military_access = THIS } }
+		}
+	}
+	option = {
+		name = "Fine. Just this once."
+		random_country = {
+			limit = {
+				OR = {
+					AND = {
+						tag = TKG
+						JAP = { exists = no }
+					}
+					AND = {
+						tag = JAP
+						TKG = { exists = no }
+					}
+				}
+			}
+			military_access = THIS
+		}
+		RUS = { military_access = THIS }
+		any_country = {
+			limit = { has_country_flag = participating_in_rj_war }
+			military_access = THIS
+		}
+	}
+
+	mean_time_to_happen = { days = 1 }
+}
+
+country_event = {
+	id = 666610
+	title = "EVTNAME666610" #Popup for military access in China and Korea
+	desc = "EVTDESC666610"
+	picture = "japanese_fleet_attacks_russian_fleet"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Splendid!"
+	}
+}
+
+country_event = {
+	id = 666611 #Popup for cancelled military access
+	title = "EVTNAME666611"
+	desc = "EVTDESC666611"
+	picture = "japanese_invasion_of_manchuria"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Very well."
+	}
+}

@@ -1,0 +1,7 @@
+name = "Greater Flavor Mod Strategic Update Part 2"
+path = "mod/GFM Strategic Update Part 2"
+user_dir = "GFM Strategic Update Part 2"
+replace_path = "history/provinces"
+replace_path = "events"
+replace_path = "decisions"
+replace_path = "gfx"
