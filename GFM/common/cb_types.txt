@@ -326,14 +326,7 @@ acquire_core_state = {
     good_relation_militancy_factor = 1
 
     can_use = {
-		is_substate = no
-        NOT = {
-            AND = {
-                #THIS = { ai = yes }
-                has_global_flag = sw_set
-                NOT = { year = 1840 }
-            }
-        }
+        any_owned_province = { is_core = THIS }
         OR = {
             AND = {
                 THIS = { total_amount_of_ships = 5 }
@@ -343,9 +336,15 @@ acquire_core_state = {
             war_with = THIS
             any_neighbor_country = { substate_of = THIS }
         }
+        NOT = {
+            AND = {
+                #THIS = { ai = yes }
+                has_global_flag = sw_set
+                NOT = { year = 1840 }
+            }
+        }
         NOT = { is_our_vassal = THIS }
         number_of_states = 1 # annex if you want their last state
-        any_owned_province = { is_core = THIS }
         NOT = { has_country_modifier = neutrality_modifier }
         THIS = { NOT = { has_country_modifier = neutrality_modifier } }
         OR = {
@@ -357,6 +356,7 @@ acquire_core_state = {
             THIS = { NOT = { has_country_flag = in_great_war } }
             THIS = { ai = no }
         }
+		is_substate = no
     }
 
     allowed_states = {
@@ -414,6 +414,9 @@ acquire_all_cores = {
     good_relation_militancy_factor = 1
 
     can_use = {
+        any_owned_province = { is_core = THIS }
+        number_of_states = 2 # annex if you want their last state
+        civilized = yes
         NOT = {
             AND = {
                 #THIS = { ai = yes }
@@ -421,10 +424,7 @@ acquire_all_cores = {
                 NOT = { year = 1840 }
             }
         }
-        civilized = yes
         NOT = { is_our_vassal = THIS }
-        number_of_states = 2 # annex if you want their last state
-        any_owned_province = { is_core = THIS }
         any_owned_province = { NOT = { is_core = THIS } }
         NOT = { has_country_modifier = neutrality_modifier }
         THIS = {
@@ -445,6 +445,7 @@ acquire_all_cores = {
             THIS = { NOT = { has_country_flag = in_great_war } }
             THIS = { ai = no }
         }
+        any_owned_province = { NOT = { is_core = THIS } }
     }
 
     allowed_countries = {
@@ -506,22 +507,13 @@ restore_austrian_empire = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        NOT = {
-            AND = {
-                #THIS = { ai = yes }
-                has_global_flag = sw_set
-                NOT = { year = 1840 }
-            }
-			has_global_flag = outside_cores_removed
-        }
-        NOT = { is_our_vassal = THIS }
         THIS = {
+            tag = AUS
             OR = {
                 war_policy = jingoism
                 war_policy = pro_military
                 war_with = THIS
             }
-            tag = AUS
             OR = {
                 government = absolute_empire
                 government = semi_constitutional_empire
@@ -549,9 +541,18 @@ restore_austrian_empire = {
                 region = AUS_652
                 region = AUS_657
             }
-				NOT = { province_id = 3669 } #Neum
-				NOT = { province_id = 3277 } #Hultschin/Hlucin/Hlucin
+			NOT = { province_id = 3669 } #Neum
+			NOT = { province_id = 3277 } #Hultschin/Hlucin/Hlucin
         }
+        NOT = {
+            AND = {
+                #THIS = { ai = yes }
+                has_global_flag = sw_set
+                NOT = { year = 1840 }
+            }
+			has_global_flag = outside_cores_removed
+        }
+        NOT = { is_our_vassal = THIS }
         OR = {
             NOT = { tag = ITA }
             THIS = { NOT = { has_country_flag = accepts_italy } }
@@ -642,13 +643,6 @@ zemene_mesafint = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        NOT = {
-            AND = {
-                has_global_flag = sw_set
-                NOT = { year = 1840 }
-            }
-        }
-        NOT = { is_our_vassal = THIS }
 		OR = {
 			tag = GJM
 			tag = GON
@@ -666,6 +660,13 @@ zemene_mesafint = {
 				tag = WLO
 			}
         }
+        NOT = {
+            AND = {
+                has_global_flag = sw_set
+                NOT = { year = 1840 }
+            }
+        }
+        NOT = { is_our_vassal = THIS }
         neighbour = THIS
         NOT = { has_country_modifier = neutrality_modifier }
         NOT = { in_sphere = THIS }
@@ -729,6 +730,21 @@ colonial_reconquest_cb = {
     always = yes
 
     can_use = {
+        THIS = {
+            OR = {
+                is_secondary_power = yes
+                is_greater_power = yes
+            }
+            OR = {
+                government = absolute_monarchy
+                government = prussian_constitutionalism
+                government = hms_government
+                government = absolute_empire
+                government = semi_constitutional_empire
+                government = constitutional_empire
+            }
+            NOT = { revolution_n_counterrevolution = 1 }
+        }
         OR = {
             AND = {
                 THIS = {
@@ -775,21 +791,6 @@ colonial_reconquest_cb = {
             }
             war_with = THIS
         }
-        THIS = {
-            OR = {
-                is_secondary_power = yes
-                is_greater_power = yes
-            }
-            OR = {
-                government = absolute_monarchy
-                government = prussian_constitutionalism
-                government = hms_government
-                government = absolute_empire
-                government = semi_constitutional_empire
-                government = constitutional_empire
-            }
-            NOT = { revolution_n_counterrevolution = 1 }
-        }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = punitive_effects } }
@@ -832,7 +833,15 @@ restore_america = {
     good_relation_militancy_factor = 1
 
     can_use = {
+        any_owned_province = {
+            OR = {
+                is_core = USA
+                is_core = CSA
+                is_core = FSA
+            }
+        }
         war_policy = jingoism
+        neighbour = THIS
         NOT = { is_our_vassal = THIS }
         THIS = {
             OR = {
@@ -854,14 +863,6 @@ restore_america = {
                 }
             }
             war_with = THIS
-        }
-        neighbour = THIS
-        any_owned_province = {
-            OR = {
-                is_core = USA
-                is_core = CSA
-                is_core = FSA
-            }
         }
         NOT = { in_sphere = THIS }
         OR = {
@@ -3127,12 +3128,10 @@ monroe_doctrine = {
             }
             any_core = {
                 OR = {
-                    primary_culture = mexican
-                    primary_culture = central_american
-                    primary_culture = north_andean
-                    primary_culture = south_andean
-                    primary_culture = platinean
-                    primary_culture = brazilian
+					AND = {
+						is_culture_group = latin_american_cultures
+						NOT = { primary_culture = caribeno }
+					}
                     primary_culture = mayan
                     AND = {
                         tag = CUB
@@ -3178,12 +3177,10 @@ monroe_doctrine = {
         }
         FROM = {
             OR = {
-                primary_culture = mexican
-                primary_culture = central_american
-                primary_culture = north_andean
-                primary_culture = south_andean
-                primary_culture = platinean
-                primary_culture = brazilian
+				AND = {
+					is_culture_group = latin_american_cultures
+					NOT = { primary_culture = caribeno }
+				}
                 primary_culture = mayan
                 AND = {
                     tag = CUB
@@ -13387,13 +13384,7 @@ USS_monroe = {
             }
             any_core = {
                 OR = {
-                    primary_culture = mexican
-                    primary_culture = central_american
-                    primary_culture = north_andean
-                    primary_culture = south_andean
-                    primary_culture = platinean
-                    primary_culture = brazilian
-                    primary_culture = caribeno
+                    is_culture_group = latin_american_cultures
                     primary_culture = afro_latino
                     primary_culture = afro_brazilian
                 }
@@ -13424,13 +13415,7 @@ USS_monroe = {
         }
         FROM = {
             OR = {
-                primary_culture = mexican
-                primary_culture = central_american
-                primary_culture = north_andean
-                primary_culture = south_andean
-                primary_culture = platinean
-                primary_culture = brazilian
-                primary_culture = caribeno
+                is_culture_group = latin_american_cultures
                 primary_culture = afro_latino
                 primary_culture = afro_brazilian
             }
