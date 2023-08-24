@@ -214,7 +214,7 @@ promotion_chance = {
                 continent = west_africa
                 continent = central_africa
                 continent = east_africa
-                continent = south_west_africa
+                continent = south_africa
             }
             culture = russian
         }
@@ -461,13 +461,13 @@ migration_chance = {
             NOT = { consciousness = 6 }
         }
     }
-	
+
 	#modifier = { #to facilitate some level of constant internal movement - removed for now, high performance impact
 	#	factor = 0.1
 	#	state_scope = { is_colonial = no }
 	#	location = { total_pops = 10000 }
 	#}
-	
+
 	#modifier = { #workaround to closed borders causing no internal migration
 	#	factor = 0.25
 	#	state_scope = { is_colonial = no }
@@ -488,30 +488,10 @@ migration_chance = {
         }
     }
 
-    modifier = { #+0.2 if settlement
-        factor = 0.2
-        country = { colonial_policy = settlement }
-    }
-
-    modifier = { #+0.25 pop is germanic, loc cntrld, NOT states listed, country: has flag
-        factor = 0.25
-		is_culture_group = germanic
-        location = {
-            controlled_by = owner
-            NOT = {
-                state_id = 701 #Posen
-                state_id = 682 #Lower Silesia
-                state_id = 690 #Westpreussen
-                state_id = 695 #Ostpreussen
-                state_id = 354 #Latvia
-                state_id = 349 #Estonia
-                state_id = 706 #Masovia
-            }
-        }
-        country = {
-			has_country_flag = prussian_settlement_commission
-		}
-    }
+    #modifier = { #+0.2 if settlement #Abe edit: This is dumb af, why would all migration increase if you have settlement policy???
+    #    factor = 0.2
+    #    country = { colonial_policy = settlement }
+    #}
 
     group = { #higher migration if needs < num, max +0.3
         modifier = {
@@ -578,7 +558,7 @@ migration_chance = {
 
 #general colonial migration mtth, same for all pops
 colonialmigration_chance = {
-    factor = 0.25
+    factor = 0.2
 
     modifier = {
         factor = -10.0
@@ -600,13 +580,13 @@ colonialmigration_chance = {
         country = { penal_system = colonial_transportation }
 		militancy = 3
     }
-	
+
     modifier = {
-        factor = 0.05
+        factor = 0.15 #Abe edit: Used to be 0.05, increased to 0.15 to compensate for removing the -0.1 factor on general emigration
         country = { colonial_policy = settlement }
 		consciousness = 3
     }
-	
+
 	#If pop group doesn't obtain 10%/20%/30%/40%/50%/60%/70%/80%/90%/99% of their life needs, then 0.05% chance to migrate to a colony for each threshold. (0.5% total)
 	group = {
 		modifier = {
@@ -650,7 +630,7 @@ colonialmigration_chance = {
 			NOT = { life_needs = 0.99 }
 		}
 	}
-	
+
 	#If pop group doesn't obtain 10%/20%/30%/40%/50%/60%/70%/80%/90%/99% of their everyday needs, then 0.025% chance to migrate to a colony for each threshold. (0.125% total)
 	group = {
 		modifier = {
@@ -696,10 +676,10 @@ colonialmigration_chance = {
 		modifier = {
 			factor = 10
 			unemployment = 0.99
-			NOT = { war = yes }
+			NOT = { country = { war = yes } }
 		}
 	}
-	
+
 	#If pop group meets at least 10%/20%/30%/40%/50%/60%/70%/80%/90%/99% of its luxury needs, then -0.05% chance to migrate to a colony per threshold.	(-0.5% total)
 	group = {
 		modifier = {
@@ -743,7 +723,7 @@ colonialmigration_chance = {
 			luxury_needs = 0.99
 		}
 	}
-	
+
 }
 
 #general emigration chance
@@ -756,19 +736,20 @@ emigration_chance = {
             location = { continent = north_america }
             location = { continent = south_america }
             location = { continent = australia_new_zealand }
+            location = { continent = south_africa }
         }
         country = {
             has_country_flag = new_world_nation
             OR = {
                 government = democracy
-                government = parliamentary_republic
+                government = radical_republic
                 government = constitutional_empire
                 government = hms_government
-                government = dominion
                 government = colonial_company
+                government = colonial_company_2
+                government = colonial_company_3
+                government = colonial_company_4
 				government = presidential_dictatorship
-				has_country_flag = Government_Democracy
-				has_country_flag = Government_Dominion
             }
         }
     }
@@ -792,12 +773,12 @@ emigration_chance = {
         }
     }
 
-    modifier = {
-        factor = -0.1
-        country = {
-            colonial_policy = settlement
-        }
-    }
+    #modifier = { #Abe edit: This is unnecessary, settlement shouldn't decrease emigration, I just added +0.1 to colonial migration chance to compensate
+    #    factor = -0.1
+    #    country = {
+    #        colonial_policy = settlement
+    #    }
+    #}
 
     group = {
 		modifier = {
@@ -813,19 +794,19 @@ emigration_chance = {
 			militancy = 4
 		}
         modifier = {
-            factor = 0.10
+            factor = 0.1
             militancy = 5
         }
         modifier = {
-            factor = 0.10
+            factor = 0.1
             militancy = 6
         }
         modifier = {
-            factor = 0.10
+            factor = 0.1
             militancy = 7
         }
         modifier = {
-            factor = 0.10
+            factor = 0.1
             militancy = 8
         }
         #modifier = {
@@ -952,7 +933,7 @@ emigration_chance = {
         factor = 0.05
         country = { debt_law = peonage }
     }
-	
+
 	modifier = {
 		factor = 0.1
 		country = { war = yes }
@@ -988,6 +969,7 @@ assimilation_chance = {
             location = { continent = north_america }
             location = { continent = south_america }
             location = { continent = australia_new_zealand }
+            location = { continent = south_africa }
         }
     }
 
@@ -1005,23 +987,6 @@ assimilation_chance = {
             literacy = 0.8
         }
     }
-
-    modifier = {
-        factor = -20
-        has_culture_core = yes
-		NOT = {
-		    AND = {
-		        country = { has_country_flag = can_ignore_cultural_core }
-			    OR = {
-			        has_pop_culture = finnish
-			        has_pop_culture = estonian
-			        has_pop_culture = norwegian
-			        has_pop_culture = latvian
-					has_pop_culture = sami
-		        }
-            }
-		}
-	}
 
     modifier = {
         factor = -0.2
@@ -1042,6 +1007,7 @@ assimilation_chance = {
             has_pop_culture = asian_minor
 			has_pop_religion = coptic
 			has_pop_culture = pamiri
+			has_pop_culture = mayan
         }
     }
 
@@ -1127,7 +1093,7 @@ assimilation_chance = {
         factor = -80
         country = {
             has_country_flag = new_world_nation
-            NOT = { has_country_flag = native_assimilation_enacted }
+			NOT = { has_country_flag = native_assimilation_enacted }
         }
         OR = {
             is_culture_group = native_american
@@ -1155,7 +1121,7 @@ assimilation_chance = {
         country = { NOT = { has_country_flag = african_integration_policy } }
         OR = {
             location = { continent = africa }
-            location = { continent = south_west_africa }
+            location = { continent = south_africa }
             location = { continent = west_africa }
             location = { continent = east_africa }
             location = { continent = central_africa }
@@ -1275,7 +1241,7 @@ conversion_chance = {
         has_pop_religion = animist
         OR = {
             location = { continent = africa }
-            location = { continent = south_west_africa }
+            location = { continent = south_africa }
             location = { continent = west_africa }
             location = { continent = east_africa }
             location = { continent = central_africa }
@@ -1314,7 +1280,7 @@ conversion_chance = {
         has_pop_religion = fetishist
         OR = {
             location = { continent = africa }
-            location = { continent = south_west_africa }
+            location = { continent = south_africa }
             location = { continent = west_africa }
             location = { continent = east_africa }
             location = { continent = central_africa }

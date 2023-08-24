@@ -7,12 +7,15 @@ political_decisions = {
             exists = PBC
             vassal_of = PBC
             SPU = { vassal_of = PBC }
-            NOT = { has_global_flag = first_pbc_fell }
+            NOT = {
+				has_global_flag = first_pbc_fell
+				CLN = { has_country_modifier = gov_legit_in_question }
+			}
         }
 
         allow = {
             OR = {
-                PBC = { has_recently_lost_war = yes }
+                PBC = { has_country_modifier = recently_lost_war }
                 national_provinces_occupied = 0.01
                 is_disarmed = yes
             }
@@ -58,180 +61,88 @@ political_decisions = {
         }
     }
 
-    end_of_confederation_PEU = {
-        picture = peru_bolivia
-        potential = {
+	end_of_confederation = {
+		picture = peru_bolivia
+		potential = {
             tag = PBC
-            owns = 2295
-            OR = {
-                AND = {
-                    NOT = { owns = 2313 }
-                    NOT = { owns = 2310 }
-                }
-                exists = BOL
+			OR = {
+				AND = {
+					owns = 2295
+					NOT = { exists = PEU }
+					exists = BOL
+					2310 = { owned_by = BOL }
+					2313 = { owned_by = BOL }
+					NOT = { BOL = { vassal_of = THIS } }
+				}
+				AND = {
+					owns = 2310
+					NOT = { exists = BOL }
+					exists = PEU
+					2295 = { owned_by = PEU }
+					NOT = { PEU = { vassal_of = THIS } }
+				}
             }
         }
 
         allow = {
             war = no
-            NOT = { exists = PEU }
-            BOL = {
-                NOT = { vassal_of = PBC }
-            }
         }
 
         effect = {
-            capital = 2295
-            PBC = {
-                all_core = { remove_core = PBC }
-            }
-            random_owned = {
-                limit = { exists = PEU }
-                owner = {
-                    change_tag_no_core_switch = PEU
-                    any_owned = { secede_province = PEU }
-                }
-            }
-            random_owned = {
-                limit = { NOT = { exists = PEU } }
-                owner = {
-                    change_tag = PEU
-                }
-            }
-            any_country = {
-                limit = {
-                    OR = {
-                        tag = CHL
-                        tag = ARG
-                        tag = ARC
-                        tag = BOL
-                    }
-                }
-                relation = { who = PEU value = 300 }
-            }
-        }
-        ai_will_do = {
-            factor = 1
-        }
-    }
-
-    end_of_confederation_SPU = {
-        picture = peru_bolivia
-        potential = {
-            tag = PBC
-            owns = 2304
-            NOT = { owns = 2295 }
-            OR = {
-                AND = {
-                    NOT = { owns = 2313 }
-                    NOT = { owns = 2310 }
-                }
-                exists = BOL
-            }
-        }
-
-        allow = {
-            war = no
-            NOT = { exists = SPU }
-            BOL = {
-                NOT = { vassal_of = PBC }
-            }
-            PEU = {
-                NOT = { vassal_of = PBC }
-            }
-        }
-
-        effect = {
-            capital = 2304
-            PBC = {
-                all_core = { remove_core = PBC }
-            }
-            random_owned = {
-                limit = { exists = SPU }
-                owner = {
-                    change_tag_no_core_switch = SPU
-                    any_owned = { secede_province = SPU }
-                }
-            }
-            random_owned = {
-                limit = { NOT = { exists = SPU } }
-                owner = {
-                    change_tag = SPU
-                }
-            }
-            any_country = {
-                limit = {
-                    OR = {
-                        tag = CHL
-                        tag = ARG
-                        tag = ARC
-                        tag = BOL
-                    }
-                }
-                relation = { who = SPU value = 300 }
-            }
-        }
-        ai_will_do = {
-            factor = 1
-        }
-    }
-
-
-    end_of_confederation_BOL = {
-        picture = peru_bolivia
-        potential = {
-            tag = PBC
-            NOT = { owns = 2295 }
-            NOT = { owns = 2304 }
-            OR = {
-                owns = 2313
-                owns = 2310
-            }
-        }
-
-        allow = {
-            war = no
-            SPU = {
-                NOT = { vassal_of = PBC }
-            }
-            PEU = {
-                NOT = { vassal_of = PBC }
-            }
-        }
-
-        effect = {
-            random_owned = {
-                limit = { province_id = 2313 }
-                owner = { capital = 2313 }
-            }
-            PBC = {
-                all_core = { remove_core = PBC }
-            }
-            random_owned = {
-                limit = { exists = BOL }
-                owner = {
-                    change_tag_no_core_switch = BOL
-                    any_owned = { secede_province = BOL }
-                }
-            }
-            random_owned = {
-                limit = { NOT = { exists = BOL } }
-                owner = {
-                    change_tag = BOL
-                }
-            }
-            any_country = {
-                limit = {
-                    OR = {
-                        tag = BRZ
-                        tag = ARG
-                        tag = ARC
-                        tag = PEU
-                        tag = SPU
-                    }
-                }
-                relation = { who = BOL value = 300 }
-            }
+			random_owned = {
+				limit = {
+					owner = {
+						owns = 2295
+						NOT = { exists = PEU }
+						exists = BOL
+						NOT = { BOL = { vassal_of = THIS } }
+					}
+				}
+				owner = {
+					capital = 2295
+					PBC = {
+						all_core = { remove_core = PBC }
+					}
+					change_tag = PEU
+					any_country = {
+						limit = {
+							OR = {
+								tag = CHL
+								tag = ARG
+								tag = ARC
+							}
+						}
+						relation = { who = PEU value = 300 }
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						owns = 2310
+						NOT = { exists = BOL }
+						exists = PEU
+						NOT = { PEU = { vassal_of = THIS } }
+					}
+				}
+				owner = {
+					capital = 2310
+					PBC = {
+						all_core = { remove_core = PBC }
+					}
+					change_tag = BOL
+					any_country = {
+						limit = {
+							OR = {
+								tag = CHL
+								tag = ARG
+								tag = ARC
+							}
+						}
+						relation = { who = BOL value = 300 }
+					}
+				}
+			}
         }
         ai_will_do = {
             factor = 1
@@ -350,6 +261,13 @@ political_decisions = {
                 tag = BOL
                 tag = CHL
             }
+			OR = {
+				NOT = { has_global_flag = eighteenthirty_startdate }
+				AND = {
+					has_global_flag = eighteenthirty_startdate
+					has_global_flag	= pbc_1830
+				}
+			}
             NOT = { exists = PBC }
         }
 
@@ -397,6 +315,7 @@ political_decisions = {
                 annex_to = THIS
             }
             all_core = { add_core = PBC }
+			remove_country_modifier = recently_lost_war
             change_tag = PBC
         }
 
@@ -436,34 +355,150 @@ political_decisions = {
             set_country_flag = peru_reunited
             prestige = 5
             relation = { who = CHL value = -50 }
-            random_country = {
-                limit = {
-                    tag = SPU
-                    ai = yes
-                }
-                all_core = { remove_core = SPU }
-                PEU = { inherit = SPU }
-            }
-            random_country = {
-                limit = {
-                    tag = SPU
-                    ai = no
-                }
-                set_country_flag = peru_reunited
-                prestige = 5
-                all_core = { remove_core = SPU }
-                inherit = PEU
-                random_owned = {
-                    limit = { province_id = 2295 }
-                    owner = { capital = 2295 }
-                }
-                change_tag = PEU
-            }
+			random_owned = {
+				limit = {
+					owner = {
+						SPU = {
+							ai = yes
+						}
+						PBC = {
+							exists = yes
+						}
+					}
+				}
+				owner = {
+					SPU = { all_core = { remove_core = SPU } }
+					PEU = {
+						inherit = SPU
+						any_owned = {
+							limit = {
+								OR = {
+									province_id = 2321
+									province_id = 3382
+									province_id = 3435
+									province_id = 3381
+									province_id = 3326
+									province_id = 2549
+								}
+							}
+							secede_province = PBC
+						}
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						SPU = {
+							ai = yes
+						}
+						BOL = {
+							exists = yes
+						}
+					}
+				}
+				owner = {
+					SPU = { all_core = { remove_core = SPU } }
+					PEU = {
+						inherit = SPU
+						any_owned = {
+							limit = {
+								OR = {
+									province_id = 2321
+									province_id = 3382
+									province_id = 3435
+									province_id = 3381
+									province_id = 3326
+									province_id = 2549
+								}
+							}
+							secede_province = BOL
+						}
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						SPU = {
+							ai = no
+						}
+						BOL = {
+							exists = yes
+						}
+					}
+				}
+				owner = {
+					SPU = {
+						set_country_flag = peru_reunited
+						prestige = 5
+						all_core = { remove_core = SPU }
+						inherit = PEU
+						random_owned = {
+							limit = { province_id = 2295 }
+							owner = { capital = 2295 }
+						}
+						change_tag = PEU
+						PEU = {
+							any_owned = {
+								limit = {
+									OR = {
+										province_id = 2321
+										province_id = 3382
+										province_id = 3435
+										province_id = 3381
+										province_id = 3326
+										province_id = 2549
+									}
+								}
+								secede_province = BOL
+							}
+						}
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						SPU = {
+							ai = no
+						}
+						PBC = {
+							exists = yes
+						}
+					}
+				}
+				owner = {
+					SPU = {
+						set_country_flag = peru_reunited
+						prestige = 5
+						all_core = { remove_core = SPU }
+						inherit = PEU
+						random_owned = {
+							limit = { province_id = 2295 }
+							owner = { capital = 2295 }
+						}
+						change_tag = PEU
+						PEU = {
+							any_owned = {
+								limit = {
+									OR = {
+										province_id = 2321
+										province_id = 3382
+										province_id = 3435
+										province_id = 3381
+										province_id = 3326
+										province_id = 2549
+									}
+								}
+								secede_province = PBC
+							}
+						}
+					}
+				}
+			}
         }
-
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
 
     declare_la_paz_capital = {
@@ -485,17 +520,12 @@ political_decisions = {
         effect = {
             capital = 2310
             BOL_2321 = {
-                rich_strata = { militancy = -3}
+                rich_strata = { militancy = -3 }
                 middle_strata = { militancy = -1 }
             }
         }
-
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
-
-
 
     remove_spu_cores = {
         picture = la_paz_capital
@@ -512,11 +542,10 @@ political_decisions = {
 
         effect = {
             any_owned = { remove_core = SPU }
+            3435 = { remove_core = SPU }
+            3326 = { remove_core = SPU }
         }
-
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
 
 
@@ -526,17 +555,14 @@ political_decisions = {
 			tag = PBC
 			NOT = { has_global_flag = Chile_join_PBC }
 		}
-		
+
 		allow = {
 			war = no
 			prestige = 50
 			nationalism_n_imperialism = 1
 			is_greater_power = yes
 			#has_country_flag = pbc_freedom
-			OR = {
-				government = democracy
-				has_country_flag = democracy_gov
-			}
+			government = democracy
 			CHL = {
 				OR = {
 					AND = {
@@ -550,16 +576,13 @@ political_decisions = {
 				}
 			}
 		}
-		
+
 		effect = {
 			prestige = 25
 			CHL = { all_core = { add_core = PBC } }
 			inherit = CHL
 			set_global_flag = Chile_join_PBC
 		}
-		ai_will_do = {
-			factor = 1
-		}
+        ai_will_do = { factor = 1 }
 	}
-	
 }

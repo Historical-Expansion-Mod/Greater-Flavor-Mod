@@ -9,6 +9,66 @@
 #99920-22 Military Aid Events
 #99930 Splendid Isolation GB
 
+#GCF choose a new capital
+country_event = {
+    id = 4813525
+    title = "Choosing a new capital for Germany"
+    desc = "EVTDESC4813525"
+    picture = "gcf_map"
+
+    trigger = {
+        tag = GCF
+        owns = 619 #Vienna
+        owns = 599 #Munich
+        owns = 564 #Frankfurt
+        owns = 534 #Hannover
+        owns = 549 #Berlin
+    }
+
+    fire_only_once = yes
+
+    mean_time_to_happen = { days = 3 }
+
+    option = {
+        name = "EVT4813525OPTA" #Frankfurt
+        capital_scope = { any_pop = { consciousness = 2 } }
+        564 = { any_pop = { militancy = -1 consciousness = -2 } }
+        capital = 564
+        ai_chance = { factor = 70 }
+    }
+
+    option = {
+        name = "EVT4813525OPTB" #Munich
+        capital_scope = { any_pop = { consciousness = 2 } }
+        599 = { any_pop = { militancy = -1 consciousness = -2 } }
+        capital = 599
+        ai_chance = { factor = 15 }
+    }
+
+    option = {
+        name = "EVT4813525OPTC" #Hannover
+        capital_scope = { any_pop = { consciousness = 2 } }
+        534 = { any_pop = { militancy = -1 consciousness = -2 } }
+        capital = 534
+        ai_chance = { factor = 10 }
+    }
+
+    option = {
+        name = "EVT4813525OPTD" #Berlin
+        capital_scope = { any_pop = { consciousness = 2 } }
+        549 = { any_pop = { militancy = -1 consciousness = -2 } }
+        capital = 549
+        ai_chance = { factor = 4 }
+    }
+
+    option = {
+        name = "EVT4813525OPTE" #Vienna
+        capital_scope = { any_pop = { consciousness = 2 } }
+        619 = { any_pop = { militancy = -1 consciousness = -2 } }
+        capital = 619
+        ai_chance = { factor = 1 }
+    }
+}
 
 #The Abdication of Ferdinand I
 country_event = {
@@ -17,60 +77,14 @@ country_event = {
     desc = "EVTDESC99990"
 	picture = "ferdinand_not_so_kingly"
     major = yes
-
-    trigger = {
-        tag = AUS
-        has_global_flag = hungarian_revolution_occurred
-        war_with = HUN
-        OR = {
-            government = absolute_monarchy
-            government = prussian_constitutionalism
-            government = hms_government
-            government = absolute_empire
-            government = semi_constitutional_empire
-            government = constitutional_empire
-        }
-        NOT = { has_global_flag = franz_joseph_i }
-        NOT = { year = 1870 }
-    }
-
-    mean_time_to_happen =  {
-        months = 6
-
-        modifier = {
-            factor = 0.5
-            war_exhaustion = 15
-        }
-
-        modifier = {
-            factor = 0.1
-            war_exhaustion = 20
-        }
-
-        modifier = {
-            factor = 0.5
-            RUS = {
-                war_with = HUN
-            }
-        }
-
-        modifier = {
-            factor = 0.1
-            PRU = {
-                war_with = THIS
-            }
-        }
-    }
+	is_triggered_only = yes
 
     option = {
         name = "EVT99990OPTA"
-        prestige = -10
-        war_exhaustion = -25
         add_country_modifier = {
             name = emergency_wartime_austria
             duration = 1085
         }
-        set_global_flag = franz_joseph_i
     }
 }
 
@@ -134,6 +148,49 @@ country_event = {
 
 #Peace of Prague (Austria AI Only)
 country_event = {
+    id = 9899810
+    title = "Treaty of Prague."
+    desc = "We have won the war against Prussia, now it's time to present our demands."
+	picture = "aus_victory_against_pru"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "Take Silesia and release all of West Germany!"
+		set_global_flag = austria_wins
+		any_country = {
+			limit = {
+				tag = PRU
+				truce_with = THIS
+			}
+			country_event = 99810
+		}
+		ai_chance = { factor = 1 }
+    }
+	
+	option = {
+        name = "Kick Prussia out of the German Confederation! §RGain 20 infamy§!"
+		set_global_flag = austria_wins
+		set_global_flag = austria_wins_big
+		any_country = {
+			limit = {
+				tag = PRU
+				truce_with = THIS
+			}
+			country_event = 9899811
+		}
+		badboy = 20
+		ai_chance = {
+			factor = 1
+			modifier = {
+                factor = 0
+                badboy = 0.4
+            }
+		}
+    }
+}
+
+country_event = {
     id = 99810
     title = "EVTNAME99810"
     desc = "EVTDESC99810"
@@ -159,7 +216,8 @@ country_event = {
                     is_culture_group = THIS
                     tag = LBG
                 }
-                in_sphere = THIS
+                OR = { in_sphere = THIS in_sphere = FROM }
+                NOT = { tag = PRU }
                 is_substate = no
             }
             relation = {
@@ -169,6 +227,7 @@ country_event = {
             country_event = 99811
             leave_alliance = THIS
             end_military_access = THIS
+            military_access = FROM
             create_alliance = FROM
         }
 
@@ -185,6 +244,11 @@ country_event = {
                     who = RHI
                     value = 400
                 }
+                relation = {
+                    who = RHI
+                    value = 400
+                }
+                create_alliance = RHI
             }
             RHI = { prestige = -100 }
         }
@@ -197,6 +261,10 @@ country_event = {
             PRU = { release = RHI }
             FROM = {
                 diplomatic_influence = {
+                    who = RHI
+                    value = 400
+                }
+                relation = {
                     who = RHI
                     value = 400
                 }
@@ -218,6 +286,10 @@ country_event = {
                     who = WES
                     value = 400
                 }
+                relation = {
+                    who = WES
+                    value = 400
+                }
                 create_alliance = WES
             }
             WES = { prestige = -100 }
@@ -234,8 +306,97 @@ country_event = {
                     who = WES
                     value = 400
                 }
+                relation = {
+                    who = WES
+                    value = 400
+                }
+                create_alliance = WES
             }
             WES = { prestige = -100 }
+        }
+		
+		# Luxemburg is released, if still owned by Prussia
+        random_country = {
+            limit = {
+                tag = LUX
+                exists = yes
+                vassal_of = PRU
+            }
+            PRU = { release_vassal = LUX }
+            FROM = {
+                diplomatic_influence = {
+                    who = LUX
+                    value = 400
+                }
+                relation = {
+                    who = LUX
+                    value = 400
+                }
+                create_alliance = LUX
+            }
+            LUX = { prestige = -100 }
+        }
+        random_owned = {
+            limit = {
+                is_core = LUX
+                owned_by = PRU
+                NOT = { exists = LUX }
+            }
+            owner = { release = LUX }
+            FROM = {
+                diplomatic_influence = {
+                    who = LUX
+                    value = 400
+                }
+                relation = {
+                    who = LUX
+                    value = 400
+                }
+                create_alliance = LUX
+            }
+            LUX = { prestige = -100 }
+        }
+
+        # Alsace is released, if still owned by Prussia
+        random_country = {
+            limit = {
+                tag = ALS
+                exists = yes
+                vassal_of = PRU
+            }
+            PRU = { release_vassal = ALS }
+            FROM = {
+                diplomatic_influence = {
+                    who = ALS
+                    value = 400
+                }
+                relation = {
+                    who = ALS
+                    value = 400
+                }
+                create_alliance = ALS
+            }
+            ALS = { prestige = -100 }
+        }
+        random_owned = {
+            limit = {
+                is_core = ALS
+                owned_by = PRU
+                NOT = { exists = ALS }
+            }
+            owner = { release = ALS }
+            FROM = {
+                diplomatic_influence = {
+                    who = ALS
+                    value = 400
+                }
+                relation = {
+                    who = ALS
+                    value = 400
+                }
+                create_alliance = ALS
+            }
+            ALS = { prestige = -100 }
         }
 
         # Saxony Province is given to Saxony
@@ -302,6 +463,548 @@ country_event = {
 }
 
 country_event = {
+    id = 9899811
+    title = "EVTNAME99810"
+    desc = "EVTDESC99810"
+	picture = "aus_victory_against_pru"
+    major = yes
+
+    is_triggered_only = yes
+
+    option = {
+        name = "EVTOPT99810"
+		set_global_flag = prussia_lost_brothers_war
+		set_global_flag = prussia_outside_germany
+        war_exhaustion = 10
+        prestige = -250
+        relation = { #Normalize Relation
+            who = FROM
+            value = 200
+        }
+        any_country = {
+            limit = {
+                exists = yes
+                is_greater_power = no
+                OR = {
+                    is_culture_group = THIS
+                    tag = LBG
+                }
+                OR = { in_sphere = THIS in_sphere = FROM }
+                NOT = { tag = PRU }
+                is_substate = no
+            }
+            relation = {
+                who = THIS
+                value = -400
+            }
+            country_event = 99811
+            leave_alliance = THIS
+            end_military_access = THIS
+            military_access = FROM
+            create_alliance = FROM
+        }
+
+        # Rhineland is released, if still owned by Prussia
+        random_country = {
+            limit = {
+                tag = RHI
+                exists = yes
+                vassal_of = PRU
+            }
+            PRU = { release_vassal = RHI }
+            FROM = {
+                diplomatic_influence = {
+                    who = RHI
+                    value = 400
+                }
+                relation = {
+                    who = RHI
+                    value = 400
+                }
+                create_alliance = RHI
+            }
+            RHI = { prestige = -100 }
+        }
+        random_owned = {
+            limit = {
+                province_id = 575 #Koln
+                owned_by = PRU
+                NOT = { exists = RHI }
+            }
+            PRU = { release = RHI }
+            FROM = {
+                diplomatic_influence = {
+                    who = RHI
+                    value = 400
+                }
+                relation = {
+                    who = RHI
+                    value = 400
+                }
+                create_alliance = RHI
+            }
+            RHI = { prestige = -100 }
+        }
+
+        # Westfalen is released, if still owned by Prussia
+        random_country = {
+            limit = {
+                tag = WES
+                exists = yes
+                vassal_of = PRU
+            }
+            PRU = { release_vassal = WES }
+            FROM = {
+                diplomatic_influence = {
+                    who = WES
+                    value = 400
+                }
+                relation = {
+                    who = WES
+                    value = 400
+                }
+                create_alliance = WES
+            }
+            WES = { prestige = -100 }
+        }
+        random_owned = {
+            limit = {
+                province_id = 580 #Dortmund
+                owned_by = PRU
+                NOT = { exists = WES }
+            }
+            owner = { release = WES }
+            FROM = {
+                diplomatic_influence = {
+                    who = WES
+                    value = 400
+                }
+                relation = {
+                    who = WES
+                    value = 400
+                }
+                create_alliance = WES
+            }
+            WES = { prestige = -100 }
+        }
+
+        # Brandenburg is released, if still owned by Prussia
+        random_country = {
+            limit = {
+                tag = BRN
+                exists = yes
+                vassal_of = PRU
+            }
+            PRU = { release_vassal = BRN }
+            FROM = {
+                diplomatic_influence = {
+                    who = BRN
+                    value = 400
+                }
+                relation = {
+                    who = BRN
+                    value = 400
+                }
+                create_alliance = BRN
+            }
+            BRN = { prestige = -100 }
+        }
+        random_owned = {
+            limit = {
+                is_core = BRN
+                owned_by = PRU
+                NOT = { exists = BRN }
+            }
+            PRU = { release = BRN }
+            FROM = {
+                diplomatic_influence = {
+                    who = BRN
+                    value = 400
+                }
+                relation = {
+                    who = BRN
+                    value = 400
+                }
+                create_alliance = BRN
+            }
+            BRN = { prestige = -100 }
+        }
+        random_owned = {
+            limit = {
+                is_core = BRN
+                owned_by = PRU
+                exists = BRN
+            }
+            owner = {
+                any_owned = {
+                    limit = { is_core = BRN }
+                    secede_province = BRN
+                }
+            }
+            BRN = { capital = 549 }
+            FROM = {
+                diplomatic_influence = {
+                    who = BRN
+                    value = 400
+                }
+                relation = {
+                    who = BRN
+                    value = 400
+                }
+                create_alliance = BRN
+            }
+            BRN = { prestige = -100 }
+        }
+		
+        # Pomerania is released, if still owned by Prussia
+        random_country = {
+            limit = {
+                tag = POM
+                exists = yes
+                vassal_of = PRU
+            }
+            PRU = { release_vassal = POM }
+            FROM = {
+                diplomatic_influence = {
+                    who = POM
+                    value = 400
+                }
+                relation = {
+                    who = POM
+                    value = 400
+                }
+                create_alliance = POM
+            }
+            POM = { prestige = -100 }
+        }
+        random_owned = {
+            limit = {
+                is_core = POM
+                owned_by = PRU
+                NOT = { exists = POM }
+            }
+            PRU = { release = POM }
+            FROM = {
+                diplomatic_influence = {
+                    who = POM
+                    value = 400
+                }
+                relation = {
+                    who = POM
+                    value = 400
+                }
+                create_alliance = POM
+            }
+            POM = { prestige = -100 }
+        }
+
+        # Luxemburg is released, if still owned by Prussia
+        random_country = {
+            limit = {
+                tag = LUX
+                exists = yes
+                vassal_of = PRU
+            }
+            PRU = { release_vassal = LUX }
+            FROM = {
+                diplomatic_influence = {
+                    who = LUX
+                    value = 400
+                }
+                relation = {
+                    who = LUX
+                    value = 400
+                }
+                create_alliance = LUX
+            }
+            LUX = { prestige = -100 }
+        }
+        random_owned = {
+            limit = {
+                is_core = LUX
+                owned_by = PRU
+                NOT = { exists = LUX }
+            }
+            owner = { release = LUX }
+            FROM = {
+                diplomatic_influence = {
+                    who = LUX
+                    value = 400
+                }
+                relation = {
+                    who = LUX
+                    value = 400
+                }
+                create_alliance = LUX
+            }
+            LUX = { prestige = -100 }
+        }
+
+        # Alsace is released, if still owned by Prussia
+        random_country = {
+            limit = {
+                tag = ALS
+                exists = yes
+                vassal_of = PRU
+            }
+            PRU = { release_vassal = ALS }
+            FROM = {
+                diplomatic_influence = {
+                    who = ALS
+                    value = 400
+                }
+                relation = {
+                    who = ALS
+                    value = 400
+                }
+            }
+            ALS = { prestige = -100 }
+        }
+        random_owned = {
+            limit = {
+                is_core = ALS
+                owned_by = PRU
+                NOT = { exists = ALS }
+            }
+            owner = { release = ALS }
+            FROM = {
+                diplomatic_influence = {
+                    who = ALS
+                    value = 400
+                }
+                relation = {
+                    who = ALS
+                    value = 400
+                }
+            }
+            ALS = { prestige = -100 }
+        }
+
+        # Saxony Province is given to Saxony
+        random_owned = {
+            limit = {
+                province_id = 687 #Gorlitz
+                owned_by = PRU
+                SAX = { exists = yes }
+            }
+            owner = {
+                any_owned = {
+                    limit = { region = SAX_558 }
+                    secede_province = SAX
+                }
+            }
+        }
+        random_owned = {
+            limit = {
+                is_core = SAX
+                owned_by = PRU
+                NOT = { exists = SAX }
+            }
+            PRU = { release = SAX }
+            FROM = {
+                diplomatic_influence = {
+                    who = SAX
+                    value = 400
+                }
+                create_alliance = SAX
+            }
+        }
+
+        #Silesia is seceded to Austria
+        random_owned = {
+            limit = {
+                province_id = 682 #Breslau
+                owned_by = PRU
+                NOT = { exists = SLS }
+            }
+            owner = {
+                any_owned = {
+                    limit = { is_core = SLS }
+                    secede_province = AUS
+                }
+            }
+        }
+
+        #Sigmaringen is seceded to Austria
+        random_owned = {
+            limit = {
+                province_id = 594 #Sigmaringen
+                owned_by = PRU
+                NOT = { exists = SGM }
+            }
+            owner = {
+                any_owned = {
+                    limit = { province_id = 594 }
+                    secede_province = AUS
+                }
+            }
+        }
+		
+        #Erfurt is seceded to Saxony
+        random_owned = {
+            limit = {
+                province_id = 554 #Erfurt
+                owned_by = PRU
+            }
+            owner = {
+                any_owned = {
+                    limit = { province_id = 554 }
+					add_core = SAX
+                    secede_province = SAX
+                }
+            }
+        }
+		
+        #Jadegebiet is seceded to Austria
+        random_owned = {
+            limit = {
+                province_id = 3259 #Jadegebiet
+                owned_by = PRU
+            }
+            owner = {
+                any_owned = {
+                    limit = { province_id = 3259 }
+                    secede_province = AUS
+                }
+            }
+        }
+		
+        #Wetzlar is seceded to Austria
+        random_owned = {
+            limit = {
+                province_id = 3270 #Wetzlar
+                owned_by = PRU
+            }
+            owner = {
+                any_owned = {
+                    limit = { province_id = 3270 }
+                    secede_province = AUS
+                }
+            }
+        }
+
+        #Konigsberg becomes the capital
+        random_owned = {
+            limit = {
+                province_id = 695 #Konigsberg
+                owned_by = PRU
+			}
+			owner = { capital = 695 }
+		}
+
+        random_country = {
+            limit = {
+                exists = yes
+                tag = SGM
+            }
+            annex_to = AUS
+        }
+
+        random_owned = {
+            limit = {
+                owner = { has_country_modifier = zollervein }
+            }
+            owner = { remove_country_modifier = zollervein }
+        }
+    }
+}
+
+country_event = {
+    id = 9899812
+    title = "The Prussian Question"
+    desc = "EVTDESC9899812"
+	picture = "aus_victory_against_pru"
+    fire_only_once = yes
+
+    trigger = {
+        tag = PRU
+        war = no
+		has_global_flag = prussia_lost_brothers_war
+        has_global_flag = prussia_outside_germany
+		is_greater_power = no
+		GER = { exists = no }
+		GCF = { exists = no }
+		NOT = { owns = 549 }
+    }
+
+    mean_time_to_happen = {
+        days = 1
+    }
+
+    option = {
+        name = "Give up on Germany. §GLose 10 infamy§!"
+		prestige = -20
+		badboy = -10
+		all_core = {
+			limit = {
+				NOT = {
+					region = PRU_695
+					region = PRU_701
+					region = PRU_690
+				}
+			}
+			remove_core = PRU
+		}
+		PRU = { all_core = { remove_core = GER } }
+		AUS = { country_event = 9899813 }
+		ai_chance = {
+			factor = 1
+		}
+    }
+	
+	option = {
+        name = "Prussia is, has been and always will be German."
+		prestige = 5
+		ai_chance = {
+			factor = 0
+		}
+    }
+}
+
+country_event = {
+    id = 9899813
+    title = "Prussia leaves the Confederation"
+    desc = "EVTDESC9899813"
+	picture = "aus_victory_against_pru"
+    fire_only_once = yes
+
+    is_triggered_only = yes
+
+    option = {
+        name = "If that is their wish, then allow it. §GLose 5 infamy§!"
+		set_global_flag = prussia_no_ger
+		badboy = -5
+		ai_chance = {
+			factor = 9
+		}
+    }
+	
+	option = {
+        name = "This is unacceptable!"
+		PRU = { country_event = 9899814 }
+		PRU = { all_core = { add_core = GER } }
+		ai_chance = {
+			factor = 1
+		}
+    }
+}
+
+country_event = {
+    id = 9899814
+    title = "$FROMCOUNTRY$ denies Exit"
+    desc = "EVTDESC9899814"
+	picture = "aus_victory_against_pru"
+    fire_only_once = yes
+
+    is_triggered_only = yes
+
+    option = {
+        name = "Bah!!"
+		RUS = { diplomatic_influence = { who = PRU value = 150 } }
+    }
+}
+
+country_event = {
     id = 99811
     title = "EVTNAME99810"
     desc = "EVTDESC99810"
@@ -350,7 +1053,10 @@ country_event = {
             is_secondary_power = no
             is_disarmed = yes
         }
-        NOT = { has_global_flag = 2nd_hungarian_revoultion }
+        NOT = {
+			has_global_flag = 2nd_hungarian_revoultion
+			has_global_flag = you_are_playing_mp
+		}
     }
 
     mean_time_to_happen = {
@@ -384,15 +1090,6 @@ country_event = {
             political_reform = population_equal_weight
             political_reform = free_press
             political_reform = yes_meeting
-            clr_country_flag = communist_gov
-            clr_country_flag = absolute_monarchy_gov
-            clr_country_flag = semi_constitutional_monarchy_gov
-            set_country_flag = constitutional_monarchy_gov
-            clr_country_flag = democracy_gov
-            clr_country_flag = presidential_dictatorship_gov
-            clr_country_flag = fascist_gov
-            clr_country_flag = radical_gov
-			clr_country_flag = Government_Democracy
             small_arms = 400
             regular_clothes = 400
             leadership = 40
@@ -437,7 +1134,7 @@ country_event = {
             name = no_more_war
             duration = 20
         }
-        HUN = { country_event = { id = 998120 days = 20} }
+        HUN = { country_event = { id = 998120 days = 20 } }
         set_global_flag = 2nd_hungarian_revoultion
     }
 }

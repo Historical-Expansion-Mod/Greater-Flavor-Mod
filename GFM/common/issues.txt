@@ -79,7 +79,7 @@ party_issues = {
                 factory_priority = yes
                 can_subsidise = yes
                 pop_build_factory = yes
-                pop_expand_factory = no
+                pop_expand_factory = yes
                 pop_open_factory = yes
                 delete_factory_if_no_input = no
                 build_factory_invest = yes
@@ -89,10 +89,8 @@ party_issues = {
             }
         }
         planned_economy = {
-            import_cost = 0.95
             min_tax = 0.5
-            factory_throughput = 0.5
-            RGO_throughput = 0.5
+            factory_throughput = 0.15
             factory_owner_cost = -1    #negative costs, can't build.
 
             rules = {
@@ -170,7 +168,7 @@ party_issues = {
         }
         pacifism = {
             max_military_spending = 0.4
-            supply_consumption = -0.5
+            supply_consumption = -0.25
             war_exhaustion_effect = 1.5
             cb_generation_speed_modifier = -0.4
             mobilization_impact = 1
@@ -197,7 +195,7 @@ party_issues = {
 }
 
 ##########################################
-# Political reforms.
+#Political Reforms.
 ##########################################
 
 
@@ -208,18 +206,26 @@ political_reforms = {
         yes_slavery = {
             rules = { slavery_allowed = yes }
             allow = {
-                NOT = { has_country_flag = communist_gov }
-                NOT = { has_country_flag = fascist_gov }
-                NOT = { has_country_flag = slave_revolution }
+                OR = {
+                    NOT = { has_country_flag = slave_revolution }
+                    NOT = { ruling_party_ideology = communist }
+                    NOT = { ruling_party_ideology = socialist }
+                    NOT = { ruling_party_ideology = liberal }
+                    NOT = { ruling_party_ideology = radical }
+                }
             }
         }
 
         freedom_of_womb = {
             rules = { slavery_allowed = yes }
             allow = {
-                NOT = { has_country_flag = communist_gov }
-                NOT = { has_country_flag = fascist_gov }
-                NOT = { has_country_flag = slave_revolution }
+                OR = {
+                    NOT = { has_country_flag = slave_revolution }
+                    NOT = { ruling_party_ideology = communist }
+                    NOT = { ruling_party_ideology = socialist }
+                    NOT = { ruling_party_ideology = liberal }
+                    NOT = { ruling_party_ideology = radical }
+                }
                 OR = {
                     NOT = { has_country_flag = the_slavery_debate }
                     year = 1871
@@ -485,9 +491,9 @@ political_reforms = {
             global_immigrant_attract = -0.1
             allow = {
                 OR = {
-                    has_country_flag = clean_up_colonial_government
-                    has_country_flag = absolute_monarchy_gov
-                    has_country_flag = semi_constitutional_monarchy_gov
+					ruling_party_ideology = fascist
+					ruling_party_ideology = reactionary
+					ruling_party_ideology = conservative
                 }
             }
         }
@@ -509,7 +515,7 @@ political_reforms = {
             administrative_efficiency_modifier = 0.05
             tariff_efficiency_modifier = 0.05
             administrative_multiplier = 2
-            allow = { has_country_flag = modern_central_bank_system_invented }
+			allow = { has_country_flag = modern_central_bank_system_invented }
         }
     }
 
@@ -525,12 +531,11 @@ political_reforms = {
                 NOT = { press_rights = free_press }
                 citizenship_policy = residency
                 OR = {
-                    has_country_flag = clean_up_colonial_government
-                    has_country_flag = absolute_monarchy_gov
-                    has_country_flag = communist_gov
-                    has_country_flag = fascist_gov
-                    has_country_flag = presidential_dictatorship_gov
-                    has_country_flag = theocratic_government
+					ruling_party_ideology = fascist
+					ruling_party_ideology = communist
+					ruling_party_ideology = radical
+					ruling_party_ideology = reactionary
+					ruling_party_ideology = conservative
                 }
             }
         }
@@ -616,18 +621,12 @@ political_reforms = {
             suppression_points_modifier = 0.2
             allow = {
                 has_global_flag = revolution_n_counter_researched
+				vote_franschise = none_voting
+				political_parties = underground_parties
                 OR = {
-                    has_country_flag = communist_gov
-                    has_country_flag = fascist_gov
-                    AND = {
-                        ruling_party_ideology = reactionary
-                        OR = {
-                            has_country_flag = clean_up_colonial_government
-                            has_country_flag = absolute_monarchy_gov
-                            has_country_flag = presidential_dictatorship_gov
-                            has_country_flag = theocratic_government
-                        }
-                    }
+					ruling_party_ideology = reactionary
+					ruling_party_ideology = communist
+					ruling_party_ideology = fascist
                 }
             }
         }
@@ -647,11 +646,7 @@ political_reforms = {
                     AND = {
                         number_of_states = 2
                         can_create_vassals = yes
-                        is_disarmed = yes
                         is_cultural_union = yes
-                        is_greater_power = no
-                        num_of_revolts = 1
-                        average_militancy = 7
                     }
                     has_country_flag = is_swiss
                 }
@@ -667,12 +662,12 @@ political_reforms = {
             mobilisation_size = -0.01
             allow = {
                 number_of_states = 2
+                can_create_vassals = yes
                 OR = {
-                    has_country_flag = absolute_monarchy_gov
-                    has_country_flag = theocratic_government
+                    NOT = { ruling_party_ideology = reactionary }
+                    NOT = { ruling_party_ideology = communist }
+                    NOT = { ruling_party_ideology = fascist }
                 }
-                debt_law = serfdom
-                has_country_flag = serfdom_not_abolished
             }
         }
         federalism = {
@@ -708,7 +703,7 @@ political_reforms = {
 }
 
 ##########################################
-# Social reforms.
+#Social Reforms.
 ##########################################
 social_reforms = {
     wage_reform = {
@@ -812,6 +807,7 @@ social_reforms = {
             artisan_throughput = -0.04
             administrative_multiplier = 4
             global_immigrant_attract = 0.04
+			global_population_growth = 0.0005
         }
     }
 
@@ -854,7 +850,7 @@ social_reforms = {
         }
         good_pensions = {
             pension_level    = 1
-            global_population_growth = 0.001
+            global_population_growth = 0.0005
             global_immigrant_attract = 0.04
         }
     }
@@ -1463,7 +1459,6 @@ military_reforms = {
             technology_cost = 8500
             civilization_progress_modifier = 0.05
             allow = {
-                OR = { NOT = { has_country_flag = lacking_writing_system } ai = yes }
                 OR = { ai = yes money = 2000 }
             }
 
@@ -1545,7 +1540,6 @@ military_reforms = {
             technology_cost = 8500
             civilization_progress_modifier = 0.05
             allow = {
-                OR = { NOT = { has_country_flag = lacking_writing_system } ai = yes }
             }
 
             on_execute = {
@@ -1624,7 +1618,6 @@ military_reforms = {
             research_points_on_conquer = 0.25
 
             allow = {
-                OR = { NOT = { has_country_flag = lacking_writing_system } ai = yes }
 				OR = {
 					any_owned_province = { port = yes }
 					ai = yes

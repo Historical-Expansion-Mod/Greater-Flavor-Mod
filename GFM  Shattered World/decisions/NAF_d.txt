@@ -1,0 +1,474 @@
+political_decisions = {
+    #Afro Americans
+    NAF_revolt = {
+        picture = black_belt
+        potential = {
+            tag = HAI
+            ai = no
+            NOT = {
+                exists = NAF
+                has_country_flag = NAF_revolt
+            }
+            OR = {
+                is_greater_power = yes
+                is_secondary_power = yes
+            }
+            NOT = { has_country_modifier = recently_lost_war }
+            total_amount_of_ships = 10
+            NOT = { relation = { who = USA value = 0 } }
+			NOT = { NAF = { all_core = { owned_by = THIS } } }
+        }
+        allow = {
+            money = 75000
+            USA = { average_militancy = 4 }
+            NOT = { alliance_with = USA }
+        }
+        effect = {
+            set_country_flag = NAF_revolt
+            money = -75000
+            USA = {
+				release = NAF
+                war = {
+                    target = NAF
+                    attacker_goal = { casus_belli = civil_war }
+                    defender_goal = { casus_belli = status_quo }
+                }
+			}
+            create_alliance = NAF
+            NAF = {
+                capital_scope = {
+                    sub_unit = { type = infantry value = current }
+                    sub_unit = { type = infantry value = current }
+                    sub_unit = { type = infantry value = current }
+                    sub_unit = { type = infantry value = current }
+                    sub_unit = { type = cavalry value = current }
+                    sub_unit = { type = artillery value = current }
+                    sub_unit = { type = artillery value = current }
+                    sub_unit = { type = artillery value = current }
+                    sub_unit = { type = artillery value = current }
+                    sub_unit = { type = artillery value = current }
+                }
+            }
+            relation = { who = USA value = -200 }
+        }
+    }
+    NAF_selfdetermination = {
+        picture = black_belt
+        potential = {
+            NOT = {
+                has_global_flag = NAF_selfdetermination
+                exists = NAF
+            }
+            government = proletarian_dictatorship
+            OR = {
+                tag = USA
+                tag = CSA
+            }
+            USA_139 = { owned_by = THIS } #Louisiana
+            USA_194 = { owned_by = THIS } #Mississippi
+            USA_196 = { owned_by = THIS } #Alabama
+            USA_200 = { owned_by = THIS } #Florida
+            USA_201 = { owned_by = THIS } #Georgia
+            USA_205 = { owned_by = THIS } #South Carolina
+        }
+        allow = {
+            war = no
+        }
+        effect = {
+            set_global_flag = NAF_selfdetermination
+            country_event = 4413218
+        }
+        ai_will_do = {
+            factor = 1
+        }
+    }
+
+
+    NAF_constituion = {
+        picture = switch_to_liberty
+        potential = {
+            tag = NAF
+            NOT = { has_country_flag = NAF_constituion }
+        }
+        allow = {
+            war = no
+            is_vassal = no
+        }
+        effect = {
+            set_country_flag = NAF_constituion
+            prestige = 5
+            USA_139 = { add_core = THIS } #Louisiana
+            USA_194 = { add_core = THIS  } #Mississippi
+            USA_196 = { add_core = THIS  } #Alabama
+            USA_200 = { add_core = THIS  } #Florida
+            USA_201 = { add_core = THIS  } #Georgia
+            USA_205 = { add_core = THIS  } #South Carolina
+        }
+        ai_will_do = {
+            factor = 1
+        }
+    }
+
+    NAF_greater = {
+        picture = form_union_nation
+        potential = {
+            tag = NAF
+            has_country_flag = NAF_constituion
+            NOT = { has_country_flag = NAF_greater }
+        }
+        allow = {
+            war = no
+            revolution_n_counterrevolution = 1
+            OR = {
+                war_policy = jingoism
+                war_policy = pro_military
+            }
+            is_greater_power = yes
+            has_unclaimed_cores = no
+        }
+        effect = {
+            set_country_flag = NAF_greater
+            country_event = 4413221
+        }
+        ai_will_do = {
+            factor = 1
+        }
+    }
+
+    NAF_HAI = {
+        picture = map_caribbean
+        potential = {
+            tag = NAF
+            has_country_flag = NAF_constituion
+            NOT = { has_country_flag = NAF_HAI }
+        }
+        allow = {
+            nationalism_n_imperialism = 1
+            war = no
+            HAI = {
+                OR = {
+                    all_core = {
+                        OR = {
+                            owned_by = THIS
+                            owner = {
+                                in_sphere = THIS
+                                war = no
+                            }
+                            owner = {
+                                vassal_of = THIS
+                                war = no
+                            }
+                        }
+                    }
+                    in_sphere = THIS
+                    vassal_of = THIS
+                }
+            }
+        }
+        effect = {
+            set_country_flag = NAF_HAI
+            inherit = HAI
+            any_country = {
+                limit = {
+                    OR = {
+                        in_sphere = THIS
+                        vassal_of = THIS
+                    }
+                }
+                any_owned = {
+                    limit = {
+                        is_core = HAI
+                    }
+                    secede_province = THIS
+                }
+            }
+            HAI = { all_core = { add_core = NAF } }
+            add_accepted_culture = afro_french
+            badboy = 2
+        }
+        ai_will_do = {
+            factor = 1
+        }
+    }
+
+    NAF_Tuskgee = {
+        picture = switch_to_traditional_academic
+        potential = {
+            tag = NAF
+            NOT = { has_country_flag = NAF_Tuskgee }
+        }
+        allow = {
+            literacy = 0.50
+            social_science = 1
+            money = 50000
+            OR = {
+				school_reforms = acceptable_schools
+				school_reforms = good_schools
+			}
+        }
+        effect = {
+            set_country_flag = NAF_Tuskgee
+            money = -50000
+            any_pop = {
+                limit = {
+                    OR = {
+                        is_primary_culture = yes
+                        is_accepted_culture = yes
+                    }
+                }
+                literacy = 0.30
+            }
+            research_points = 8000
+            add_country_modifier = {
+                name = NAF_Tuskegee_Uni
+                duration = -1
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+    }
+
+    NAF_Native_American = {
+        potential = {
+            tag = NAF
+            citizens_rights = culture_voting_only
+            USA_200 = { owned_by = THIS } #Florida
+            NOT = { accepted_culture = native_american_minor }
+        }
+        allow = {
+            OR = {
+                citizenship_policy = limited_citizenship
+                citizenship_policy = full_citizenship
+            }
+        }
+        effect = {
+            add_accepted_culture = native_american_minor
+            any_pop = {
+                limit = {
+                    culture = native_american_minor
+                }
+                consciousness = -5
+                militancy = -5
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+    }
+
+    NAF_racialdebate = {
+        potential = {
+            tag = NAF
+            NOT = {
+                OR = {
+                    government = proletarian_dictatorship
+                    government = fascist_dictatorship
+                }
+                OR = {
+                    accepted_culture = dixie
+                    accepted_culture = yankee
+                }
+            }
+        }
+        allow = {
+            citizenship_policy = full_citizenship
+            citizens_rights = all_voting_pops
+            social_alienation = 1
+        }
+        effect = {
+            prestige = 10
+            country_event = 4413222
+        }
+        ai_will_do = {
+            factor = 1
+        }
+    }
+
+    NAF_start = {
+        picture = play_naf
+        potential = {
+            tag = USA
+            ai = no
+            NOT = { exists = NAF }
+            NOT = { year = 1837 }
+        }
+        allow = {
+            war = no
+        }
+        effect = {
+            USA_139 = { add_core = NAF } #Louisiana
+            USA_194 = { add_core = NAF } #Mississippi
+            USA_139 = { remove_core = USA } #Louisiana
+            USA_194 = { remove_core = USA } #Mississippi
+            NAF = { capital = 140 }
+            release = NAF
+            change_tag_no_core_switch = NAF
+        }
+    }
+
+    NAF_undo_integration = {
+        potential = {
+            tag = NAF
+            OR = {
+                government = fascist_dictatorship
+                government = proletarian_dictatorship
+            }
+            OR = {
+                accepted_culture = dixie
+                accepted_culture = yankee
+            }
+        }
+        allow = {
+            OR = {
+                government = fascist_dictatorship
+                government = proletarian_dictatorship
+            }
+        }
+        effect = {
+            remove_accepted_culture = dixie
+            remove_accepted_culture = yankee
+        }
+    }
+
+    FSA_NAF_revolt_USA = {
+        picture = military_aid
+        potential = {
+            tag = FSA
+            NOT = { exists = NAF }
+            NOT = { exists = CSA }
+            exists = USA
+            OR = {
+                USA_139 = { owned_by = USA } #Louisiana
+                USA_194 = { owned_by = USA } #Mississippi
+                USA_196 = { owned_by = USA } #Alabama
+                USA_200 = { owned_by = USA } #Florida
+                USA_201 = { owned_by = USA } #Georgia
+                USA_205 = { owned_by = USA } #South Carolina
+            }
+            is_vassal = no
+            NOT = { has_global_flag = FSA_NAF_revolt }
+			USA = { slavery = yes_slavery exists = yes }
+            slavery = no_slavery
+            NOT = { in_sphere = USA }
+            NOT = { is_sphere_leader_of = USA }
+        }
+        allow = {
+            money = 50000
+            small_arms = 1000
+            ammunition = 1000
+            OR = {
+                ruling_party_ideology = communist
+                ruling_party_ideology = liberal
+                ruling_party_ideology = radical
+                ruling_party_ideology = socialist
+            }
+            OR = {
+                war_policy = jingoism
+                war_policy = pro_military
+            }
+            OR = {
+                is_secondary_power = yes
+                is_greater_power = yes
+            }
+            OR = {
+                AND = {
+                    USA = { war = no }
+                    war = no
+                    NOT = { truce_with = USA }
+                }
+                war_with = USA
+            }
+            NOT = {
+                relation = {
+                    who = USA
+                    value = 0
+                }
+            }
+        }
+        effect = {
+            badboy = 2
+            country_event = 44132234
+            set_global_flag = FSA_NAF_revolt
+            set_country_flag = FSA_NAF_revolt_at_USA
+        }
+    }
+
+    FSA_NAF_revolt_CSA = {
+        picture = military_aid
+        potential = {
+            tag = FSA
+            NOT = { exists = NAF }
+            exists = CSA
+            OR = {
+                USA_139 = { owned_by = CSA } #Louisiana
+                USA_194 = { owned_by = CSA } #Mississippi
+                USA_196 = { owned_by = CSA } #Alabama
+                USA_200 = { owned_by = CSA } #Florida
+                USA_201 = { owned_by = CSA } #Georgia
+                USA_205 = { owned_by = CSA } #South Carolina
+            }
+            is_vassal = no
+            NOT = { has_global_flag = FSA_NAF_revolt }
+            CSA = { slavery = yes_slavery }
+            slavery = no_slavery
+            NOT = { in_sphere = CSA }
+            NOT = { is_sphere_leader_of = CSA }
+        }
+        allow = {
+            money = 50000
+            small_arms = 1000
+            ammunition = 1000
+            OR = {
+                ruling_party_ideology = communist
+                ruling_party_ideology = liberal
+                ruling_party_ideology = radical
+                ruling_party_ideology = socialist
+            }
+            OR = {
+                war_policy = jingoism
+                war_policy = pro_military
+            }
+            OR = {
+                is_secondary_power = yes
+                is_greater_power = yes
+            }
+            CSA = { war = no }
+            war = no
+            NOT = { truce_with = CSA }
+            NOT = {
+                relation = {
+                    who = CSA
+                    value = 0
+                }
+            }
+        }
+        effect = {
+            badboy = 2
+            country_event = 44132234
+            set_global_flag = FSA_NAF_revolt
+            set_country_flag = FSA_NAF_revolt_at_CSA
+        }
+    }
+
+    NAF_capital = {
+        potential = {
+            tag = NAF
+            USA_139 = { owned_by = THIS } #Louisiana
+            USA_194 = { owned_by = THIS } #Mississippi
+            USA_196 = { owned_by = THIS } #Alabama
+            USA_200 = { owned_by = THIS } #Florida
+            USA_201 = { owned_by = THIS } #Georgia
+            USA_205 = { owned_by = THIS } #South Carolina
+            NOT = { has_country_flag = NAF_capital }
+        }
+        allow = {
+            war = no
+        }
+        effect = {
+            set_country_flag = NAF_capital
+            country_event = 44132218
+        }
+    }
+
+}

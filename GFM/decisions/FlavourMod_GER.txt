@@ -29,11 +29,11 @@ political_decisions = {
             OR = {
                 AND = {
                     truce_with = FRA
-                    FRA = { has_recently_lost_war = yes }
+                    FRA = { has_country_modifier = recently_lost_war }
                 }
                 AND = {
                     truce_with = BOR
-                    BOR = { has_recently_lost_war = yes }
+                    BOR = { has_country_modifier = recently_lost_war }
                 }
             }
         }
@@ -164,7 +164,7 @@ political_decisions = {
                 }
             }
             military_score = 50
-            has_recently_lost_war = no
+            NOT = { has_country_modifier = recently_lost_war }
         }
 
         effect = {
@@ -239,6 +239,7 @@ political_decisions = {
             controls = 3483
             controls = 622
             controls = 616
+            controls = 3670
             OR = {
                 AUS = {
                     exists = yes
@@ -340,18 +341,18 @@ political_decisions = {
             release_vassal = BOH
             BOH = {
                 any_pop = {
-                    limit = { has_pop_culture = czech }
+                    limit = { is_culture_group = czecho_slovak_culture_group NOT = { has_pop_culture = slovak } }
                     militancy = -8
                 }
                 all_core = { remove_core = GER }
             }
             any_pop = {
-                limit = { has_pop_culture = czech }
+                limit = { is_culture_group = czecho_slovak_culture_group NOT = { has_pop_culture = slovak } }
                 militancy = -3
             }
             any_pop = {
                 limit = {
-                    NOT = { has_pop_culture = czech }
+                    NOT = { is_culture_group = czecho_slovak_culture_group NOT = { has_pop_culture = slovak } }
                     is_primary_culture = no
                 }
                 militancy = 1
@@ -470,6 +471,7 @@ political_decisions = {
                 country_event = 60055559
             }
             624 = { add_core = THIS }
+			623 = { add_core = THIS }
         }
         ai_will_do = { factor = 1 }
     }
@@ -522,34 +524,33 @@ political_decisions = {
         }
         allow = {
             war = no
-            has_recently_lost_war = no
+            NOT = { has_country_modifier = recently_lost_war }
         }
 
         effect = {
             badboy = 5
             create_vassal = BAN
-            792 = {    add_core = BAN    secede_province = THIS    }
-            2538 = { secede_province = THIS    }
-			3330 = { secede_province = THIS    }
-			3331 = { secede_province = THIS    }
-            791 = {    secede_province = THIS    }
+            792 = { add_core = BAN    secede_province = THIS }
+            2538 = { secede_province = THIS }
+			3330 = { secede_province = THIS }
+			3331 = { secede_province = THIS }
+            791 = { secede_province = THIS }
             any_owned = {
                 limit = { is_core = BAN }
                 secede_province = BAN
             }
-            792 = {    secede_province = BAN }
+            792 = { secede_province = BAN }
             2538 = { secede_province = BAN }
 			3330 = { secede_province = BAN }
 			3331 = { secede_province = BAN }
-            791 = {    secede_province = BAN }
+            791 = { secede_province = BAN }
             set_country_flag = ger_ai_banat
         }
-
         ai_will_do = { factor = 1 }
     }
 
     claim_liechenstein = {
-    picture = form_germany
+		picture = form_germany
         potential = {
             OR = {
                 tag = GER
@@ -586,7 +587,6 @@ political_decisions = {
                 all_core = { add_core = THIS }
             }
         }
-
         ai_will_do = { factor = 1 }
     }
 
@@ -606,7 +606,7 @@ political_decisions = {
                 government = constitutional_empire
                 government = fascist_dictatorship
             }
-            411 = { province_control_days = 365 }
+            # 411 = { province_control_days = 365 } # I don't it works this way, it needs to be controlled by someone other than the owner
             NOT = { has_country_flag = duchy_of_lorraine }
             has_global_flag = lorraine_war
         }
@@ -652,7 +652,6 @@ political_decisions = {
                 ALS = { government = absolute_monarchy }
             }
         }
-
         ai_will_do = { factor = 1 }
     }
 
@@ -706,45 +705,12 @@ political_decisions = {
             NET = { country_event = 99958 }
             set_global_flag = treaty_of_amsterdamn
         }
-
         ai_will_do = { factor = 1 }
     }
-
 
     #####################################################
     #Miscellaneous Flavour Decisions#
     #####################################################
-    build_reichstag = {
-        picture = reichstag
-        potential = {
-            OR = {
-                tag = GER
-                tag = GCF
-            }
-            NOT = { has_country_flag = built_reichstag }
-        }
-        allow = {
-            war = no
-            is_greater_power = yes
-            revolution_n_counterrevolution = 1
-            money = 15000
-        }
-        effect = {
-            treasury = -20000
-            capital_scope = { add_province_modifier = { name = the_reichstag duration = -1 } }
-            any_pop = {
-                limit = {
-                    is_primary_culture = yes
-                    is_accepted_culture = yes
-                }
-                militancy = -0.5
-            }
-            set_country_flag = built_reichstag
-        }
-
-        ai_will_do = { factor = 1 }
-    }
-
     the_jade_purchase = {
         picture = wilhelmshaven
         potential = {
@@ -777,7 +743,6 @@ political_decisions = {
             }
             OLD = { country_event = 40001 }
         }
-
         ai_will_do = { factor = 1 }
     }
 
@@ -823,181 +788,6 @@ political_decisions = {
         }
 
         effect = { country_event = 33005 }
-
-        ai_will_do = { factor = 1 }
-    }
-
-    wilhelmshaven_imperial_shipyard = {
-        picture = wilhelmshaven_imperial_shipyard
-        potential = {
-            NOT = { has_global_flag = wilhelmshaven_imperial_shipyard_built }
-            tag = GER
-            owns = 3259
-            NOT = { capital = 599 }
-            NOT = { 3259 = { state_scope = { has_building = steamer_shipyard } } }
-        }
-
-        allow = {
-            is_greater_power = yes
-            invention = steamer_automatic_construction_plants
-            money = 51000
-        }
-
-        effect = {
-            set_global_flag = wilhelmshaven_imperial_shipyard_built
-            treasury = -50000
-            3259 = { state_scope = {  any_owned = { naval_base = -6 } } }
-            3259 = { naval_base = 3 }
-            random_owned = {
-                limit = {
-                    province_id = 3259 #Wilhelmshaven
-                    state_scope = { NOT = { has_building = steamer_shipyard } }
-                }
-
-                owner = {
-                    capital = 3259
-                    build_factory_in_capital_state = steamer_shipyard
-                }
-            }
-            random_owned = {
-                limit = {
-                    owner = {
-						owns = 549 #Berlin
-						tag = PRU
-					}
-                }
-                owner = { PRU = { capital = 549 } }
-            }
-            random_owned = {
-                limit = {
-                    owner = {
-						owns = 549 #Berlin
-						tag = NGF
-					}
-                }
-                owner = { NGF = { capital = 549 } }
-            }
-            random_owned = {
-                limit = {
-					owner = {
-						tag = GER
-						owns = 549
-						primary_culture = north_german
-					}
-                }
-                owner = { GER = { capital = 549 } }
-            }
-            random_owned = {
-                limit = {
-					owner = {
-						tag = GER
-						owns = 599
-						primary_culture = south_german
-					}
-                }
-                owner = { GER = { capital = 599 } }
-            }
-            random_owned = {
-                limit = {
-					owner = {
-						tag = GCF
-						owns = 599
-						NOT = { has_global_flag = german_confederation_austrian }
-					}
-                }
-                owner = { GCF = { capital = 599 } }
-            }
-            random_owned = {
-                limit = {
-					owner = {
-						tag = GCF
-						owns = 619
-					}
-                }
-                owner = { GCF = { capital = 619 } }
-            }
-        }
-
-        ai_will_do = { factor = 1 }
-    }
-
-    danzig_imperial_shipyard = {
-        picture = danzig_imperial_shipyard
-        potential = {
-            NOT = { has_global_flag = danzig_imperial_shipyard_built }
-            OR = {
-                tag = PRU
-                tag = GER
-                tag = NGF
-            }
-            NOT = { capital = 599 }
-            owns = 690
-            battleship_column_doctrine = 1
-            NOT = { 690 = { state_scope = { has_building = steamer_shipyard } } }
-        }
-
-        allow = {
-            is_greater_power = yes
-            invention = steamer_automatic_construction_plants
-            money = 41000
-        }
-
-        effect = {
-            set_global_flag = danzig_imperial_shipyard_built
-            treasury = -50000
-            690 = { state_scope = {  any_owned = { naval_base = -6 } } }
-            690 = { naval_base = 3 }
-            random_owned = {
-                limit = {
-                    province_id = 690 #Westpreuﬂen
-                    state_scope = {
-                        NOT = { has_building = steamer_shipyard }
-                    }
-                }
-
-                owner = {
-                    capital = 690
-                    build_factory_in_capital_state = steamer_shipyard
-                }
-            }
-            random_owned = {
-                limit = {
-                    province_id = 549 #Berlin
-                    owned_by = PRU
-                }
-                owner = { capital = 549 }
-            }
-            random_owned = {
-                limit = {
-                    province_id = 549 #Berlin
-                    owned_by = NGF
-                }
-                owner = { capital = 549 }
-            }
-            random_owned = {
-                limit = {
-                    province_id = 549 #Berlin
-                    owned_by = GER
-                    owner = { primary_culture = north_german }
-                }
-                owner = { capital = 549 }
-            }
-            random_owned = {
-                limit = {
-                    province_id = 599 #Munich
-                    owned_by = GCF
-                    owner = { NOT = { has_global_flag = german_confederation_austrian } }
-                }
-                owner = { capital = 599 }
-            }
-            random_owned = {
-                limit = {
-                    province_id = 619 #Vienna
-                    owned_by = GCF
-                }
-                owner = { capital = 619 }
-            }
-        }
 
         ai_will_do = { factor = 1 }
     }
@@ -1060,7 +850,6 @@ political_decisions = {
 						province_id = 3331
 						province_id = 692
 						province_id = 3469
-						province_id = 3281
 						province_id = 682
 						province_id = 3336
 						province_id = 708
@@ -1086,6 +875,7 @@ political_decisions = {
             }
         }
     }
+
     claim_lorraine = {
         picture = duchy_of_lorraine
         potential = {
@@ -1099,13 +889,20 @@ political_decisions = {
             owns = 409
             owns = 412
             owns = 3409
-            FRA = {
-                owns = 405
-                owns = 414
-                owns = 411
-                owns = 413
-                owns = 433
-            }
+            OR = {
+                FRA = {
+					owns = 405
+					owns = 414
+					owns = 411
+					owns = 413
+				}
+				BOR = {
+					owns = 405
+					owns = 414
+					owns = 411
+					owns = 413
+				}
+			}
             OR = {
                 government = hms_government
                 government = prussian_constitutionalism
@@ -1117,6 +914,7 @@ political_decisions = {
             }
             NOT = { has_global_flag = lorraine_war }
         }
+
         allow = {
             war = no
             mass_politics = 1
@@ -1127,51 +925,89 @@ political_decisions = {
             is_greater_power = yes
             has_unclaimed_cores = no
         }
+
         effect = {
             set_global_flag = lorraine_war
             badboy = 7
             397 = { add_core = THIS }
-            any_country = {
+            any_land_province = {
                 limit = {
-                    OR = {
-                        owns = 381
-                        owns = 395
-                        owns = 398
-                        owns = 397
-                    }
-                    NOT = {
+					owner = {
+						OR = {
+							owns = 381
+							owns = 395
+							owns = 398
+							owns = 397
+						}
+						NOT = {
                             tag = GER
-                    }
-                    NOT = {
                             tag = GCF
+						}
+						FRA = { exists = yes }
+					}
+				}
+                owner = {
+					create_alliance = FRA
+					relation = {
+						who = FRA
+						value = 400
+					}
+					relation = {
+						who = THIS
+						value = -400
+					}
+                    409 = {
+                        owner = {
+                            war = {
+             					target = FRA
+             					attacker_goal = { casus_belli = cut_down_to_size_no_infamy }
+             					defender_goal = { casus_belli = cut_down_to_size_no_infamy }
+             					call_ally = yes
+             				}
+                        }
                     }
-                }
-                create_alliance = FRA
-                relation = {
-                    who = FRA
-                    value = 400
-                }
-                relation = {
-                    who = THIS
-                    value = -400
-                }
-                diplomatic_influence = {
-                    who = FRA
-                    value = 800
-                }
-                diplomatic_influence = {
-                    who = THIS
-                    value = -800
-                }
-            }
-            war = {
-                target = FRA
-                attacker_goal = { casus_belli = cut_down_to_size_no_infamy }
-                defender_goal = { casus_belli = cut_down_to_size_no_infamy }
-                call_ally = yes
-            }
-        }
+				}
+			}
 
+			any_land_province = {
+                limit = {
+					owner = {
+						OR = {
+							owns = 381
+							owns = 395
+							owns = 398
+							owns = 397
+						}
+						NOT = {
+                            tag = GER
+                            tag = GCF
+						}
+						BOR = { exists = yes }
+					}
+				}
+                owner = {
+					create_alliance = BOR
+					relation = {
+						who = BOR
+						value = 400
+					}
+					relation = {
+						who = THIS
+						value = -400
+					}
+                    409 = {
+                        owner = {
+                            war = {
+             					target = BOR
+             					attacker_goal = { casus_belli = cut_down_to_size_no_infamy }
+             					defender_goal = { casus_belli = cut_down_to_size_no_infamy }
+             					call_ally = yes
+             				}
+                        }
+                    }
+				}
+			}
+		}
         ai_will_do = {
             factor = 0
         }

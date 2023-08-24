@@ -46,11 +46,11 @@ country_event = {
             NOT = { badboy = 0.6 }
         }
         modifier = {
-            factor = 0.80
+            factor = 0.8
             NOT = { badboy = 0.8 }
         }
         modifier = {
-            factor = 0.70
+            factor = 0.7
             NOT = { badboy = 1 }
         }
         modifier = {
@@ -267,11 +267,12 @@ country_event = {
                 factor = 0.75
                 OR = {
                     government = hms_government
-                    government = dominion
                     government = democracy
                     government = constitutional_empire
-					has_country_flag = Government_Democracy
-					has_country_flag = Government_Dominion
+					government = colonial_company
+					government = colonial_company_2
+					government = colonial_company_3
+					government = colonial_company_4
                 }
             }
             modifier = {
@@ -321,11 +322,12 @@ country_event = {
                 factor = 1.25
                 OR = {
                     government = hms_government
-                    government = dominion
                     government = democracy
                     government = constitutional_empire
-					has_country_flag = Government_Democracy
-					has_country_flag = Government_Dominion
+					government = colonial_company
+					government = colonial_company_2
+					government = colonial_company_3
+					government = colonial_company_4
                 }
             }
             modifier = {
@@ -406,11 +408,11 @@ country_event = {
             NOT = { badboy = 0.6 }
         }
         modifier = {
-            factor = 0.80
+            factor = 0.8
             NOT = { badboy = 0.8 }
         }
         modifier = {
-            factor = 0.70
+            factor = 0.7
             NOT = { badboy = 1 }
         }
         modifier = {
@@ -560,7 +562,6 @@ country_event = {
                 government = democracy
                 government = proletarian_dictatorship
                 government = fascist_dictatorship
-				has_country_flag = Government_Democracy
             }
         }
         modifier = {
@@ -685,11 +686,11 @@ country_event = {
             NOT = { badboy = 0.6 }
         }
         modifier = {
-            factor = 0.80
+            factor = 0.8
             NOT = { badboy = 0.8 }
         }
         modifier = {
-            factor = 0.70
+            factor = 0.7
             NOT = { badboy = 1 }
         }
         modifier = {
@@ -770,66 +771,82 @@ country_event = {
 # Dealing with vassals
 country_event = {
     id = 2560
-    title = "EVTNAME2560"
+    title = "EVTNAME2560" #The Buffer State
     desc = "EVTDESC2560"
     picture = "administration"
 
     trigger = {
         ai = yes
-        any_neighbor_country = {
-            is_vassal = yes
-            NOT = { vassal_of = THIS }
-            overlord = { NOT = { truce_with = THIS } }
-            OR = {
-                any_owned_province = { is_core = THIS }
-                overlord = {
-                    NOT = { relation = { who = THIS value = -50 } }
-                    NOT = { neighbour = THIS }
-                }
-            }
-        }
+		OR = {
+			AND = {
+				any_neighbor_country = {
+					is_vassal = yes
+					overlord = { war_with = THIS brigades_compare = 1.5 }
+				}
+				civilized = yes
+			}
+			AND = {
+				any_neighbor_country = {
+					is_vassal = yes
+					overlord = { war_with = THIS civilized = no brigades_compare = 1.5 }
+				}
+				civilized = no
+			}
+		}
+		NOT = { has_country_modifier = buffer_state_cooldown }
     }
 
     mean_time_to_happen = {
-        months = 24
-        modifier = {
-            factor = 0.5
-            war = yes
-        }
-        modifier = {
-            factor = 0.1
-            any_neighbor_country = {
-                is_vassal = yes
-                overlord = { war_with = THIS }
-            }
-        }
+        months = 1
     }
 
     option = {
         name = "EVT2560OPTA"
-        any_neighbor_country = {
-            limit = {
-                is_vassal = yes
-                NOT = { vassal_of = THIS }
-                overlord = { NOT = { truce_with = THIS } }
-                OR = {
-                    any_owned_province = { is_core = THIS }
-                    overlord = {
-                        NOT = { relation = { who = THIS value = -50 } }
-                        NOT = { neighbour = THIS }
-                    }
-                }
-            }
-            overlord = {
-                relation = { who = THIS value = -50 }
-                leave_alliance = THIS
-                add_casus_belli = {
-                    target = THIS
-                    type = release_puppet
-                    months = 24
-                }
-            }
-        }
+		random_owned = {
+			limit = {
+				owner = {
+					civilized = yes
+				}
+			}
+			owner = {
+				any_neighbor_country = {
+					limit = {
+						is_vassal = yes
+						overlord = { war_with = THIS brigades_compare = 1.5 }
+					}
+					overlord = {
+						add_casus_belli = {
+							target = THIS
+							type = release_puppet
+							months = 24
+						}
+					}
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					civilized = no
+				}
+			}
+			owner = {
+				any_neighbor_country = {
+					limit = {
+						is_vassal = yes
+						overlord = { civilized = no war_with = THIS brigades_compare = 1.5 }
+					}
+					overlord = {
+						add_casus_belli = {
+							target = THIS
+							type = release_puppet
+							months = 24
+						}
+					}
+				}
+			}
+		}
+		add_country_modifier = { name = buffer_state_cooldown duration = 730 }
     }
 }
 
@@ -970,6 +987,10 @@ province_event = {
             has_province_modifier = core_integration
             has_province_modifier = integration_refusal
             has_province_modifier = nationalist_agitation
+			AND = {
+				THIS = { tag = UCA }
+				NOT = { year = 1840 }
+			}
         }
         controlled_by = THIS
         owned_by = THIS
@@ -2023,8 +2044,8 @@ province_event = {
         OR = {
             has_province_modifier = national_assimilation_acceptance
             AND = {
-                OR = { is_core = USA is_core = US2 }
-                owner = { NOT = { OR = { tag = USA tag = US2 } } }
+                is_core = USA
+                owner = { NOT = { tag = USA } }
             }
         }
         NOT = { has_province_modifier = nationalist_agitation }
@@ -2039,6 +2060,7 @@ province_event = {
                 colonial_policy = settlement
             }
             NOT = { badboy = 0.92 }
+			ai = no
         }
     }
 

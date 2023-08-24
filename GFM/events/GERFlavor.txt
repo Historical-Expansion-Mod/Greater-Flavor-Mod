@@ -21,7 +21,7 @@ country_event = {
         }
     }
 
-    mean_time_to_happen =  {
+    mean_time_to_happen = {
         months = 6
 
         modifier = {
@@ -70,7 +70,7 @@ province_event = {
         }
     }
 
-    mean_time_to_happen =  {
+    mean_time_to_happen = {
         months = 6
 
         modifier = {
@@ -133,7 +133,7 @@ country_event = {
 
     fire_only_once = yes
 
-    mean_time_to_happen =  {
+    mean_time_to_happen = {
         months = 5
 
         modifier = {
@@ -180,7 +180,7 @@ country_event = {
 
     fire_only_once = yes
 
-    mean_time_to_happen =  {
+    mean_time_to_happen = {
         months = 5
 
         modifier = {
@@ -229,7 +229,7 @@ country_event = {
 
     fire_only_once = yes
 
-    mean_time_to_happen =  {
+    mean_time_to_happen = {
         months = 5
 
         modifier = {
@@ -299,7 +299,7 @@ country_event = {
 
     fire_only_once = yes
 
-    mean_time_to_happen =  {
+    mean_time_to_happen = {
         months = 5
 
         modifier = {
@@ -336,10 +336,10 @@ country_event = {
         relation = { who = RUS value = 75 }
         officers = {
             consciousness = 2
-            }
+		}
         capitalists = {
             consciousness = 2
-            }
+		}
     }
 
 }
@@ -355,8 +355,70 @@ country_event = {
 
     option = {
         name = "EVT33006OPTA"
+        #If Zanzibar exists and is a German vassal, Germany will release it
         random_owned = {
-            limit = { owner = { owns = 2029 } }
+            limit = {
+				owner = {
+					ZAN = {
+						vassal_of = THIS
+						exists = yes
+					}
+				}
+            }
+            owner = {
+                release_vassal = ZAN
+                diplomatic_influence = {
+                    who = ZAN
+                    value = -400
+                }
+				set_global_flag = give_uk_zanzibar
+            }
+        }
+
+        #If Zanzibar was annexed by Germany, release it
+        random_owned = {
+            limit = {
+				owner = {
+					owns = 2048 #Zanzibar
+					NOT = { exists = ZAN }
+				}
+            }
+			owner = {
+				2048 = { secede_province = ZAN }
+				set_global_flag = give_uk_zanzibar
+			}
+        }
+
+        #UK Receives Zanzibar as a vassal if it was German beforehand
+        random_country = {
+            limit = {
+                tag = ZAN
+                is_vassal = no
+                exists = yes
+                has_global_flag = give_uk_zanzibar
+            }
+			set_country_flag = colony_exemption
+            ENG = {
+                create_vassal = ZAN
+                diplomatic_influence = {
+                    who = ZAN
+                    value = 400
+                }
+            }
+			THIS = { set_country_flag = germany_gave_colonies }
+        }
+
+		#If Germany owns part of Kenya, it gives it to the UK
+        random_owned = {
+            limit = {
+				owner = {
+					OR = {
+						owns = 2029
+						owns = 2027
+						owns = 2045
+					}
+				}
+			}
             owner = {
                 any_owned = {
                     limit = {
@@ -364,6 +426,7 @@ country_event = {
                             region = ENG_2024
                             region = ENG_2026
                             province_id = 1870
+							province_id = 2045
                         }
                     }
                     secede_province = ENG
@@ -372,47 +435,30 @@ country_event = {
             }
         }
 
-        #If Zanzibar exists, Germany will release it
-        random_country = {
-            limit = {
-                tag = ZAN
-                vassal_of = THIS
-                exists = yes
-                has_country_flag = german_east_africa_zan
-            }
-            THIS = {
-                release_vassal = ZAN
-                diplomatic_influence = {
-                    who = ZAN
-                    value = -400
-                }
-            }
-        }
-
-        #If Zanzibar was annexed by Germany, release it
+		#If Germany neither owned part of Kenya nor Zanzibar but do own Cameroon, they give a strip to the UK
         random_owned = {
             limit = {
-                province_id = 2048 #Zanzibar
-                owned_by = THIS
-                NOT = { exists = ZAN }
-            }
-            secede_province = ZAN
-        }
-
-        #UK Receives Zanzibar as a vassal
-        random_country = {
-            limit = {
-                tag = ZAN
-                is_vassal = no
-                exists = yes
-                has_country_flag = german_east_africa_zan
-            }
-            ENG = {
-                create_vassal = ZAN
-                diplomatic_influence = {
-                    who = ZAN
-                    value = 400
+				owner = {
+					NOT = { has_country_flag = germany_gave_colonies }
+					owns = 1953
+					owns = 1961
+					ENG = {
+						owns = 1950
+						owns = 1951
+					}
+				}
+			}
+            owner = {
+                any_owned = {
+                    limit = {
+                        OR = {
+                            province_id = 1953
+							province_id = 1961
+                        }
+                    }
+                    secede_province = ENG
                 }
+                set_country_flag = germany_gave_colonies
             }
         }
 
@@ -475,9 +521,8 @@ country_event = {
             secede_province = FROM
             add_core = FROM
             change_province_name = "Helgoland"
+			set_global_flag = german_remame_heligoland
         }
-
-        TNZ = { government = colonial_company }
 
         #random_owned = {
             #limit = { province_id = 2081 2082 = { owned_by = FROM } }
@@ -667,7 +712,7 @@ country_event = {
             limit = { is_primary_culture = yes }
             militancy = -3
             dominant_issue = {
-                factor = 0.10
+                factor = 0.1
                 value = jingoism
             }
         }
@@ -1033,6 +1078,7 @@ country_event = {
                 months = 30
             }
         }
+		set_country_flag = colony_exemption
         FROM = {
             create_vassal = THIS
         }
@@ -1167,7 +1213,7 @@ country_event = {
             factor = 0.15
             modifier = {
                 factor = 0
-                has_recently_lost_war = yes
+                has_country_modifier = recently_lost_war
             }
             modifier = {
                 factor = 0
@@ -1313,7 +1359,6 @@ country_event = {
         NOT = { exists = GCF }
         NOT = { year = 1890 }
         has_country_flag = french_claimed_the_rhine
-        has_global_flag = watching_the_rhine
         NOT = { has_global_flag = 3hurrahs }
         OR = {
             575 = { owner = { NOT = { is_culture_group = germanic } } }
@@ -1351,76 +1396,75 @@ country_event = {
                 }
             add_core = NGF
             remove_core = THIS
-            }
+		}
         change_tag = NGF
         all_core = {
             limit = { is_core = PRU }
-                remove_core = PRU
-                add_core = NGF
-            }
+			remove_core = PRU
+			add_core = NGF
+		}
         any_country = {
             limit = {
                 exists = yes
                 is_greater_power = no
-            OR = {
-                primary_culture = north_german
-                primary_culture = south_german
-            }
-
-            NOT = {
-                OR = {
+				OR = {
+					primary_culture = north_german
+					primary_culture = south_german
+				}
+				NOT = {
                     tag = AUS
                     tag = AUB
                     tag = KUK
                     tag = DNB
                     tag = UBD
+                    tag = LAT
+                    tag = EST
                     tag = PRU
                     tag = NGF
                     tag = LUX
                     capital_scope = { NOT = { is_core = GER } }
                     is_vassal = yes
-                    }
-                }
-            }
+				}
+			}
             country_event = 33038
         }
-        any_country = { limit = {
-            exists = yes
-            is_greater_power = no
-            OR = {
-                primary_culture = north_german
-                primary_culture = south_german
+        any_country = { 
+			limit = {
+				exists = yes
+				is_greater_power = no
+				OR = {
+					primary_culture = north_german
+					primary_culture = south_german
                 }
-            vassal_of = THIS
+				vassal_of = THIS
             }
             country_event = 33038
         }
         FRA_412 = { add_core = GER }
         any_pop = {
-                limit = { is_culture_group = germanic }
-                dominant_issue = {
-                    factor = 0.1
-                    value = jingoism
-                }
-            }
-        ai_chance = { factor = 0.70 }
-        }
+			limit = { is_culture_group = germanic }
+			dominant_issue = {
+				factor = 0.1
+				value = jingoism
+			}
+		}
+        ai_chance = { factor = 0.7 }
+	}
 
-
-        option = {
+	option = {
         name = "EVT33039OPTB"
         NGF = { set_country_flag = formed_on_rhine_crisis }
         any_owned = {
-            limit = {  is_core = GER }
+            limit = { is_core = GER }
             add_core = NGF
             remove_core = THIS
-            }
+		}
         change_tag = NGF
         all_core = {
             limit = { is_core = PRU }
-                remove_core = PRU
-                add_core = NGF
-            }
+			remove_core = PRU
+			add_core = NGF
+		}
         any_country = {
             limit = {
                 ai = yes
@@ -1442,7 +1486,7 @@ country_event = {
                 is_substate = no
                 capital_scope = { is_core = GER }
                 is_vassal = no
-                }
+			}
             change_tag = SGF
         }
         any_country = {
@@ -1450,6 +1494,7 @@ country_event = {
                 ai = yes
                 primary_culture = south_german
                 is_substate = no
+				NOT = { tag = SWI }
                 capital_scope = { is_core = GER }
                 OR = {
                     is_vassal = no
@@ -1457,19 +1502,20 @@ country_event = {
                 }
             }
             annex_to = SGF
+			all_core = { add_core = SGF }
         }
-            relation = { who = SGF value = 400 }
-            diplomatic_influence = { who = SGF value = 100 }
-            create_alliance = SGF
-            random_country = { limit = { exists = yes OR = { tag = AUS tag = KUK tag = AUB } } relation = { who = SGF value = 100 }  diplomatic_influence = { who = SGF value = 50 } }
+		relation = { who = SGF value = 400 }
+		diplomatic_influence = { who = SGF value = 100 }
+		create_alliance = SGF
+		random_country = { limit = { exists = yes OR = { tag = AUS tag = KUK tag = AUB } } relation = { who = SGF value = 100 } diplomatic_influence = { who = SGF value = 50 } }
         FRA_412 = { add_core = GER }
         any_pop = {
-                limit = { is_culture_group = germanic }
-                dominant_issue = {
-                    factor = 0.1
-                    value = jingoism
-                }
-            }
+			limit = { is_culture_group = germanic }
+			dominant_issue = {
+				factor = 0.1
+				value = jingoism
+			}
+		}
         SGF = {
             any_pop = {
                 limit = { is_culture_group = germanic }
@@ -1479,7 +1525,7 @@ country_event = {
                 }
             }
         }
-        ai_chance = { factor = 0.80 }
+        ai_chance = { factor = 0.8 }
     }
 }
 
@@ -1523,39 +1569,23 @@ country_event = {
         year = 1865
     }
 
+	immediate = {
+        GER = { all_core = { limit = { life_rating = 45 } life_rating = -10 } }
+        GER = { all_core = { limit = { life_rating = 40 } life_rating = -5 } }
+        GER = { all_core = { limit = { life_rating = 36 } life_rating = -1 } }
+
+        GCF = { all_core = { limit = { life_rating = 45 } life_rating = -10 } }
+        GCF = { all_core = { limit = { life_rating = 40 } life_rating = -5 } }
+        GCF = { all_core = { limit = { life_rating = 36 } life_rating = -1 } }
+        619 = { limit = { owned_by = THIS has_country_flag = grunderzeit_we_have_done } life_rating = 5 }
+	}
+
     fire_only_once = yes
 
     mean_time_to_happen = { days = 14 }
 
     option = {
         name = "EVT33040OPTA"
-        GER = { all_core = { limit = { life_rating = 45  } life_rating = -14 } }
-        GER = { all_core = { limit = { life_rating = 40  } life_rating = -9 } }
-        GER = { all_core = { limit = { life_rating = 36  } life_rating = -4 } }
-        GER = { all_core = { limit = { life_rating = 35  } life_rating = -4 } }
-        GER = { all_core = { limit = { life_rating = 32  } life_rating = -1 } }
-
-        GCF = { all_core = { limit = { life_rating = 45  } life_rating = -14 } }
-        GCF = { all_core = { limit = { life_rating = 40  } life_rating = -9 } }
-        GCF = { all_core = { limit = { life_rating = 36  } life_rating = -4 } }
-        GCF = { all_core = { limit = { life_rating = 35  } life_rating = -4 } }
-        GCF = { all_core = { limit = { life_rating = 32  } life_rating = -1 } }
-
-        AUS_612 = { limit = { owned_by = THIS } life_rating = 4 }
-        AUS_613 = { limit = { owned_by = THIS } life_rating = 4 }
-        AUS_619 = { limit = { owned_by = THIS } life_rating = 4 }
-        AUS_625 = { limit = { owned_by = THIS } life_rating = 4 }
-        AUS_626 = { limit = { owned_by = THIS } life_rating = 4 }
-        AUS_734 = { limit = { owned_by = THIS } life_rating = 4 }
-        AUS_736 = { limit = { owned_by = THIS } life_rating = 4 }
-        AUS_768 = { limit = { owned_by = THIS } life_rating = 4 }
-        623 = { limit = { owned_by = THIS } life_rating = 4 }
-        624 = { limit = { owned_by = THIS } life_rating = 4 }
-        688 = { limit = { owned_by = THIS } life_rating = 4 }
-        689 = { limit = { owned_by = THIS } life_rating = 4 }
-        3277 = { limit = { owned_by = THIS } life_rating = 4 }
-
-        619 = { limit = { owned_by = THIS has_country_flag = grunderzeit_we_have_done } life_rating = 5 }
     }
 }
 
@@ -1585,33 +1615,33 @@ country_event = {
 #
 #    option = {
 #        name = "EVT33040OPTA"
-#        KUK = { all_core = { limit = { life_rating = 45  } life_rating = -14 } }
-#        KUK = { all_core = { limit = { life_rating = 40  } life_rating = -9 } }
-#        KUK = { all_core = { limit = { life_rating = 36  } life_rating = -4 } }
-#        KUK = { all_core = { limit = { life_rating = 35  } life_rating = -4 } }
-#        KUK = { all_core = { limit = { life_rating = 33  } life_rating = -2 } }
-#        KUK = { all_core = { limit = { life_rating = 32  } life_rating = -1 } }
+#        KUK = { all_core = { limit = { life_rating = 45 } life_rating = -14 } }
+#        KUK = { all_core = { limit = { life_rating = 40 } life_rating = -9 } }
+#        KUK = { all_core = { limit = { life_rating = 36 } life_rating = -4 } }
+#        KUK = { all_core = { limit = { life_rating = 35 } life_rating = -4 } }
+#        KUK = { all_core = { limit = { life_rating = 33 } life_rating = -2 } }
+#        KUK = { all_core = { limit = { life_rating = 32 } life_rating = -1 } }
 #
-#        AUS = { all_core = { limit = { life_rating = 45  } life_rating = -14 } }
-#        AUS = { all_core = { limit = { life_rating = 40  } life_rating = -9 } }
-#        AUS = { all_core = { limit = { life_rating = 36  } life_rating = -4 } }
-#        AUS = { all_core = { limit = { life_rating = 35  } life_rating = -4 } }
-#        AUS = { all_core = { limit = { life_rating = 33  } life_rating = -2 } }
-#        AUS = { all_core = { limit = { life_rating = 32  } life_rating = -1 } }
+#        AUS = { all_core = { limit = { life_rating = 45 } life_rating = -14 } }
+#        AUS = { all_core = { limit = { life_rating = 40 } life_rating = -9 } }
+#        AUS = { all_core = { limit = { life_rating = 36 } life_rating = -4 } }
+#        AUS = { all_core = { limit = { life_rating = 35 } life_rating = -4 } }
+#        AUS = { all_core = { limit = { life_rating = 33 } life_rating = -2 } }
+#        AUS = { all_core = { limit = { life_rating = 32 } life_rating = -1 } }
 #
-#        AUB = { all_core = { limit = { life_rating = 45  } life_rating = -14 } }
-#        AUB = { all_core = { limit = { life_rating = 40  } life_rating = -9 } }
-#        AUB = { all_core = { limit = { life_rating = 36  } life_rating = -4 } }
-#        AUB = { all_core = { limit = { life_rating = 35  } life_rating = -4 } }
-#        AUB = { all_core = { limit = { life_rating = 33  } life_rating = -2 } }
-#        AUB = { all_core = { limit = { life_rating = 32  } life_rating = -1 } }
+#        AUB = { all_core = { limit = { life_rating = 45 } life_rating = -14 } }
+#        AUB = { all_core = { limit = { life_rating = 40 } life_rating = -9 } }
+#        AUB = { all_core = { limit = { life_rating = 36 } life_rating = -4 } }
+#        AUB = { all_core = { limit = { life_rating = 35 } life_rating = -4 } }
+#        AUB = { all_core = { limit = { life_rating = 33 } life_rating = -2 } }
+#        AUB = { all_core = { limit = { life_rating = 32 } life_rating = -1 } }
 #
-#        DNB = { all_core = { limit = { life_rating = 45  } life_rating = -14 } }
-#        DNB = { all_core = { limit = { life_rating = 40  } life_rating = -9 } }
-#        DNB = { all_core = { limit = { life_rating = 36  } life_rating = -4 } }
-#        DNB = { all_core = { limit = { life_rating = 35  } life_rating = -4 } }
-#        DNB = { all_core = { limit = { life_rating = 33  } life_rating = -2 } }
-#        DNB = { all_core = { limit = { life_rating = 32  } life_rating = -1 } }
+#        DNB = { all_core = { limit = { life_rating = 45 } life_rating = -14 } }
+#        DNB = { all_core = { limit = { life_rating = 40 } life_rating = -9 } }
+#        DNB = { all_core = { limit = { life_rating = 36 } life_rating = -4 } }
+#        DNB = { all_core = { limit = { life_rating = 35 } life_rating = -4 } }
+#        DNB = { all_core = { limit = { life_rating = 33 } life_rating = -2 } }
+#        DNB = { all_core = { limit = { life_rating = 32 } life_rating = -1 } }
 #    }
 #}
 
@@ -1680,7 +1710,6 @@ country_event = {
 #99900 Singapore Free Port
 #99901 Singapore Migration
 #99902 Australia Immigration
-#99903 Unciv Research Fix
 #99904 Australia Gold Rush
 #99905 China Research Fix
 #99906 German New Guinea
@@ -1856,7 +1885,7 @@ country_event = {
         }
 
         ai_chance = {
-            factor = 0.30
+            factor = 0.3
             modifier = {
                 factor = 0
                 FROM = { ai = no }
@@ -2003,7 +2032,7 @@ country_event = {
             }
             ideology = { factor = 0.2 value = conservative }
             ideology = { factor = 0.1 value = reactionary }
-            dominant_issue = { factor = 0.20 value = jingoism }
+            dominant_issue = { factor = 0.2 value = jingoism }
         }
         any_pop = {
             limit = {
@@ -2013,7 +2042,7 @@ country_event = {
             }
             ideology = { factor = 0.1 value = conservative }
             ideology = { factor = 0.05 value = liberal }
-            dominant_issue = { factor = 0.20 value = jingoism }
+            dominant_issue = { factor = 0.2 value = jingoism }
         }
         FROM = {
             treasury = 100000
@@ -2092,7 +2121,7 @@ country_event = {
             }
             ideology = { factor = 0.2 value = conservative }
             ideology = { factor = 0.1 value = reactionary }
-            dominant_issue = { factor = 0.20 value = jingoism }
+            dominant_issue = { factor = 0.2 value = jingoism }
         }
         any_pop = {
             limit = {
@@ -2102,7 +2131,7 @@ country_event = {
             }
             ideology = { factor = 0.1 value = conservative }
             ideology = { factor = 0.05 value = liberal }
-            dominant_issue = { factor = 0.20 value = jingoism }
+            dominant_issue = { factor = 0.2 value = jingoism }
         }
         FROM = {
             treasury = 100000
@@ -2157,8 +2186,8 @@ country_event = {
         badboy = -2
         prestige = 5
         381 = { remove_core = BEL }
-        397 = { remove_core = BEL remove_core = NET }
-        398 = { remove_core = NET add_core = LUX }
+        397 = { remove_core = BEL remove_core = NET add_core = GER }
+        398 = { remove_core = NET add_core = LUX add_core = GER }
         # Any Luxembourg lands given to Luxembourg, it is freed if vassaled
         any_owned = {
             limit = { is_core = LUX }
@@ -2242,26 +2271,26 @@ country_event = {
         prestige = 15
         end_war = BEL
         any_country = {
-                limit = {
-                    OR = {
-                        tag = PRU
-                        tag = NGF
-                        tag = GER
-                        tag = GCF
-                    }
-                    exists = yes
-                    is_greater_power = yes
-                    alliance_with = NET
-                }
-                end_war = BEL
-                casus_belli = {
-                    target = THIS
-                    type = humiliate
-                    months = 12
-                }
-                prestige = -20
-                relation = { who = NET value = -100 }
-                leave_alliance = NET
+			limit = {
+				OR = {
+					tag = PRU
+					tag = NGF
+					tag = GER
+					tag = GCF
+				}
+				exists = yes
+				is_greater_power = yes
+				alliance_with = NET
+			}
+			end_war = BEL
+			casus_belli = {
+				target = THIS
+				type = humiliate
+				months = 12
+			}
+			prestige = -20
+			relation = { who = NET value = -100 }
+			leave_alliance = NET
         }
         set_global_flag = dutch_prussian_alliance_rejected
         ai_chance = {
@@ -2538,7 +2567,7 @@ country_event = {
             }
             modifier = {
                 factor = 2
-                FROM = { has_recently_lost_war = yes }
+                FROM = { has_country_modifier = recently_lost_war }
             }
             modifier = {
                 factor = 100
@@ -2619,7 +2648,7 @@ country_event = {
         war = {
             target = FROM
             attacker_goal = { casus_belli = liberate_country country = LUX }
-            defender_goal = { casus_belli = humiliate }
+            defender_goal = { casus_belli = humiliate_no_infamy }
             call_ally = yes
         }
     }

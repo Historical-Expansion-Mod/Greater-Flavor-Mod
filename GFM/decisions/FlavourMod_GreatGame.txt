@@ -17,6 +17,8 @@ political_decisions = {
 
         allow = {
             war = no
+			is_vassal = no
+			is_disarmed = no
             HRT = {
 				vassal_of = THIS
 			}
@@ -29,6 +31,12 @@ political_decisions = {
 				owner = { military_reform = yes_foreign_officers }
 			}
 			release_vassal = HRT
+			war = {
+				target = HRT
+				attacker_goal = { casus_belli = annex_core_country }
+				defender_goal = { casus_belli = humiliate_no_infamy }
+				call_ally = yes
+			}
 			war_exhaustion = 2.5
 			random_country = {
 				limit = {
@@ -36,7 +44,7 @@ political_decisions = {
 					is_greater_power = yes
 					is_disarmed = no
 				}
-				country_event = 99200
+				country_event = { id = 99200 days = 60 }
 			}
 			random_country = {
 				limit = {
@@ -47,9 +55,9 @@ political_decisions = {
 				country_event = 992001
 			}
         }
-
         ai_will_do = { factor = 1 }
     }
+
     second_herat_expedition = {
         picture = herat
         potential = {
@@ -61,10 +69,14 @@ political_decisions = {
 				NOT = { truce_with = THIS }
 			}
             has_global_flag = herat_expedition
-            NOT = {
-                has_global_flag = anglo_persian_war
-                has_global_flag = second_herat_expedition
-            }
+            NOT = { has_global_flag = second_herat_expedition }
+			OR = {
+				ai = no
+				AND = {
+					year = 1856
+					month = 11
+				}
+			}
         }
 
         allow = {
@@ -109,189 +121,6 @@ political_decisions = {
         }
     }
 
-    treaty_of_paris_anglo_persian = {
-        picture = persia_map
-        potential = {
-            tag = ENG
-            is_greater_power = yes
-            is_disarmed = no
-            has_global_flag = anglo_persian_war
-			PER = {
-				exists = yes
-				truce_with = THIS
-				has_recently_lost_war = yes
-				is_disarmed = yes
-			}
-			NOT = {
-				war_with = PER
-				has_country_flag = treaty_of_paris_anglo_persian
-				has_global_flag = second_herat_expedition
-				has_global_flag = british_got_rekt
-			}
-        }
-
-        allow = {
-			NOT = { war_with = PER }
-        }
-
-        effect = {
-            set_country_flag = treaty_of_paris_anglo_persian
-            prestige = 15
-            badboy = -2
-            PER = { country_event = 99204 }
-            relation = {
-                who = AFG
-                value = 100
-            }
-            #Secede Qeshm to Oman
-            random_owned = {
-                limit = {
-                    province_id = 1071
-                    OMA = { exists = yes in_sphere = THIS }
-                }
-                secede_province = OMA
-            }
-            any_owned = {
-                limit = { OR = { is_core = PER province_id = 1144 province_id = 3512 } }
-                secede_province = PER
-            }
-        }
-
-        ai_will_do = { factor = 1 }
-    }
-	
-	forced_goldsmid_arbitration = {
-        picture = john_goldsmid
-        potential = {
-            tag = ENG
-            is_greater_power = yes
-            is_disarmed = no
-            has_global_flag = british_intervention_in_kandahar
-            PER = {
-				is_disarmed = yes
-				exists = yes
-				truce_with = THIS
-				has_recently_lost_war = yes
-			}
-			NOT = { war_with = PER }
-			NOT = { has_country_flag = forced_goldsmid }
-        }
-
-        allow = {
-			NOT = { war_with = PER }
-        }
-
-        effect = {
-            set_country_flag = forced_goldsmid
-            prestige = 15
-            badboy = -2
-            PER = { country_event = 99206 set_country_flag = goldsmid_done }
-            relation = {
-                who = AFG
-                value = 100
-            }
-            #Secede Qeshm to Oman
-            random_owned = {
-                limit = {
-                    province_id = 1071
-                    OMA = { exists = yes in_sphere = THIS }
-                }
-                secede_province = OMA
-            }
-            any_owned = {
-                limit = { is_core = PER }
-                secede_province = PER
-            }
-			KND = {
-				end_war = AFG
-				annex_to = AFG
-				all_core = {
-					remove_core = KND
-					remove_core = PER
-				}
-			}
-			2638 = { add_core = AFG remove_core = PER remove_core = KHT }
-			1144 = { add_core = MAK remove_core = PER }
-			1146 = { add_core = MAK remove_core = PER }
-			1145 = { add_core = MAK remove_core = PER }
-			create_vassal = MAK
-			create_vassal = KHN
-			create_vassal = LAS
-			create_vassal = KAL
-			any_country = { limit = { OR = { tag = OMA tag = PER } owns = 3508 } country_event = 123738 }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 2640 } country_event = 99206 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 3258 } country_event = 99206 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 3508 } country_event = 99206 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 3506 } country_event = 99206 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 3507 } country_event = 99206 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 3509 } country_event = 99206 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 1220 } country_event = 99206 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 2638 } country_event = 99206 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 3511 } country_event = 99206 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 3513 } country_event = 99206 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 3526 } country_event = 99206 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 1221 } country_event = 99206 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 1215 } country_event = 99206 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 1146 } country_event = 99206 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 1144 } country_event = 99206 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 1145 } country_event = 99206 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 3512 } country_event = 99206 set_country_flag = goldsmid_done }
-        }
-
-        ai_will_do = { factor = 1 }
-    }
-	
-	treaty_of_paris_anglo_persian_two = {
-        picture = persia_map
-        potential = {
-            tag = ENG
-            is_greater_power = yes
-            is_disarmed = no
-            has_global_flag = anglo_persian_war
-			has_global_flag = second_herat_expedition
-			PER = {
-				exists = yes
-				truce_with = THIS
-				has_recently_lost_war = yes
-				is_disarmed = yes
-			}
-			NOT = {
-				war_with = PER
-				has_country_flag = treaty_of_paris_anglo_persian_two
-				has_global_flag = british_got_rekt
-			}
-        }
-
-        allow = {
-			NOT = { war_with = PER }
-        }
-
-        effect = {
-            set_country_flag = treaty_of_paris_anglo_persian_two
-            prestige = 15
-            badboy = -2
-            PER = { country_event = 99205 }
-            relation = {
-                who = AFG
-                value = 100
-            }
-            #Secede Qeshm to Oman
-            random_owned = {
-                limit = {
-                    province_id = 1071
-                    OMA = { exists = yes in_sphere = THIS }
-                }
-                secede_province = OMA
-            }
-            any_owned = {
-                limit = { is_core = PER }
-                secede_province = PER
-            }
-        }
-
-        ai_will_do = { factor = 1 }
-    }
-
     gwadar_treaty = {
         picture = gwadar_pakistan
         potential = {
@@ -333,7 +162,6 @@ political_decisions = {
             prestige = 5
             2640 = { secede_province = THIS add_core = HND }
         }
-
         ai_will_do = { factor = 0 }
     }
 
@@ -372,7 +200,6 @@ political_decisions = {
             set_global_flag = persia_treaty
             RUS = { country_event = 99104 }
         }
-
         ai_will_do = { factor = 1 }
     }
 
@@ -380,10 +207,13 @@ political_decisions = {
         picture = map_arabia
         potential = {
             tag = ENG
-            NOT = {    has_country_flag = apoc    }
+            NOT = { has_country_flag = apoc }
             invention = cracking
             invention = oil_pumping_machinery
-            PER = { exists = yes }
+			3349 = { 
+				trade_goods = oil
+				owned_by = PER
+			}
         }
 
         allow = {
@@ -393,16 +223,19 @@ political_decisions = {
                     part_of_sphere = no
                     in_sphere = THIS
                 }
+				OR = {
+					vassal_of = THIS
+					is_vassal = no
+				}
             }
         }
 
         effect = {
             set_country_flag = apoc
             treasury = -150000
-            prestige = 25
+            prestige = 10
             PER = { country_event = 110011 }
         }
-
         ai_will_do = { factor = 1 }
     }
 
@@ -411,7 +244,6 @@ political_decisions = {
         potential = {
             has_country_flag = do_goldsmid_decision
 			tag = ENG
-			NOT = { has_country_flag = blc_arbitration }
         }
 
         allow = {
@@ -420,32 +252,55 @@ political_decisions = {
         }
 
         effect = {
-			set_country_flag = blc_arbitration
+			clr_country_flag = do_goldsmid_decision
 			2638 = { remove_core = AFG }
+			diplomatic_influence = { who = MAK value = 400 }
+			diplomatic_influence = { who = KHN value = 400 }
+			diplomatic_influence = { who = LAS value = 400 }
+			diplomatic_influence = { who = KAL value = 400 }
+			any_country = {
+				limit = {
+					OR = {
+						capital_scope = { continent = oceania }
+						capital_scope = { continent = asia }
+					}
+					NOT = {
+						tag = OMA
+						tag = THIS
+						has_country_flag = goldsmid_done
+					}
+					OR = {
+						owns = 2640
+						owns = 3258
+						owns = 3508
+						owns = 3506
+						owns = 3507
+						owns = 3509
+						owns = 1220
+						owns = 2638
+						owns = 3511
+						owns = 3513
+						owns = 3526
+						owns = 1221
+						owns = 1215
+						owns = 1146
+						owns = 1144
+						owns = 1145
+						owns = 3512
+						owns = 3510
+						owns = 1222
+					}
+				}
+				country_event = 123698
+				set_country_flag = goldsmid_done
+			}
+			any_country = { limit = { OR = { tag = OMA tag = PER } owns = 3508 } country_event = 123738 }
 			create_vassal = MAK
 			create_vassal = KHN
 			create_vassal = LAS
 			create_vassal = KAL
-			any_country = { limit = { OR = { tag = OMA tag = PER } owns = 3508 } country_event = 123738 }
-            any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 2640 } country_event = 123698 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 3258 } country_event = 123698 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 3508 } country_event = 123698 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 3506 } country_event = 123698 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 3507 } country_event = 123698 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 3509 } country_event = 123698 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 1220 } country_event = 123698 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 2638 } country_event = 123698 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 3511 } country_event = 123698 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 3513 } country_event = 123698 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 3526 } country_event = 123698 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 1221 } country_event = 123698 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 1215 } country_event = 123698 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 1146 } country_event = 123698 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 1144 } country_event = 123698 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 1145 } country_event = 123698 set_country_flag = goldsmid_done }
-			any_country = { limit = { OR = { capital_scope = { continent = oceania } capital_scope = { continent = asia } } NOT = { tag = OMA tag = THIS has_country_flag = goldsmid_done } owns = 3512 } country_event = 123698 set_country_flag = goldsmid_done }
+			set_global_flag = goldsmid_happened
         }
-
         ai_will_do = { factor = 1 }
     }
 
@@ -488,7 +343,6 @@ political_decisions = {
             set_global_flag = wakhan_treaty
             RUS = { country_event = 99103 }
         }
-
         ai_will_do = { factor = 1 }
     }
 
@@ -575,7 +429,6 @@ political_decisions = {
             set_country_flag = anglo_afghan_war
             ENG = { country_event = 99100 }
         }
-
         ai_will_do = { factor = 1 }
     }
 
@@ -597,7 +450,6 @@ political_decisions = {
             1202 = { add_core = BUK }
             1203 = { add_core = BUK }
         }
-
         ai_will_do = { factor = 0 }
     }
 
@@ -632,41 +484,6 @@ political_decisions = {
         }
     }
 
-    the_great_game_sindh = {
-        picture = gtfo
-        potential = {
-            OR = {
-                government = hms_government
-                government = prussian_constitutionalism
-                government = absolute_monarchy
-                government = absolute_empire
-                government = semi_constitutional_empire
-                government = constitutional_empire
-            }
-            is_greater_power = yes
-            tag = ENG
-            has_country_flag = empress_of_india
-            exists = SIN
-            SIN = {
-                civilized = no
-                vassal_of = ENG
-                ai = yes
-            }
-        }
-
-        allow = {
-            SIN = { average_militancy = 3 }
-        }
-
-        effect = {
-            SIN = { annex_to = THIS }
-            badboy = 2
-        }
-
-        ai_will_do = {
-            factor = 1
-        }
-    }
 	the_great_game_kalat = {
         picture = baloch
         potential = {
@@ -688,21 +505,18 @@ political_decisions = {
 
         effect = {
 			badboy = 1
-			casus_belli = { target = KAL type = make_puppet months = 12 }
             war = {
 				target = KAL
-				attacker_goal = { casus_belli = make_puppet }
+				attacker_goal = { casus_belli = make_puppet_no_add_wargoal }
 				defender_goal = { casus_belli = humiliate_no_infamy }
 				call_ally = yes
 			}
 			KAL = { country_event = 123691 }
 			set_global_flag = kalat_invaded
         }
-
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
+
 	afg_attack_knd = {
         picture = kht_attack
         potential = {
@@ -714,7 +528,7 @@ political_decisions = {
                 civilized = no
                 vassal_of = THIS
             }
-			
+
         }
 
         allow = {
@@ -737,11 +551,9 @@ political_decisions = {
 			}
 			set_global_flag = invasion_of_knd
         }
-
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
+
 	call_persia = {
         picture = kht_attack
         potential = {
@@ -761,11 +573,9 @@ political_decisions = {
 			PER = { country_event = 123693 }
 			set_global_flag = called_persia_help
         }
-
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
+
 	call_afg = {
         picture = kht_attack
         potential = {
@@ -783,17 +593,15 @@ political_decisions = {
 
         effect = {
 			create_alliance = AFG
-			HRT = { 
+			HRT = {
 				# Audax Validator "." Ignore_NEXT
-				war = { attacker_goal = { casus_belli = call_allies_cb } call_ally = yes } 
+				war = { attacker_goal = { casus_belli = call_allies_cb } call_ally = yes }
 			}
 			set_global_flag = called_afg_help
         }
-
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
+
 	kht_attack_knd = {
         picture = kht_attack
         potential = {
@@ -821,11 +629,9 @@ political_decisions = {
 			KND = { country_event = 123692 }
 			set_global_flag = capture_of_nad_ali
         }
-
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
+
 	integrate_myn = {
         picture = maymana
         potential = {
@@ -858,11 +664,9 @@ political_decisions = {
 				militancy = 5
 			}
         }
-
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
+
 	peshawar_treaty = {
         picture = peshawar_treaty
         potential = {
@@ -895,11 +699,9 @@ political_decisions = {
 			AFG = { country_event = 123702 }
 			set_country_flag = peshawar_treaty
         }
-
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
+
 	russian_afg_mission = {
         picture = russian_mission_afg
         potential = {
@@ -922,11 +724,9 @@ political_decisions = {
 			AFG = { country_event = 123705 }
 			set_country_flag = russian_afg_mission
         }
-
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
+
 	british_afg_mission = {
         picture = british_mission_afg
         potential = {
@@ -949,11 +749,9 @@ political_decisions = {
 			AFG = { country_event = 123709 }
 			set_country_flag = british_afg_mission
         }
-
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
+
 	second_anglo_afghan_war_peacedeal = {
         picture = gandamak_treaty
         potential = {
@@ -961,24 +759,84 @@ political_decisions = {
             has_global_flag = afghan_2
             AFG = {
                 is_disarmed = yes
-				has_recently_lost_war = yes
+				has_country_modifier = recently_lost_war
                 truce_with = THIS
             }
         }
         allow = {
         }
         effect = {
+			random_owned = {
+				limit = {
+					owner = {
+						AFG = { government = absolute_monarchy }
+					}
+				}
+				owner = {
+					set_global_flag = afghan_absolutism
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						AFG = { government = prussian_constitutionalism }
+					}
+				}
+				owner = {
+					set_global_flag = afghan_semi_absolutism
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						AFG = { government = hms_government }
+					}
+				}
+				owner = {
+					set_global_flag = afghan_constitutionalism
+				}
+			}
 			create_vassal = AFG
+			AFG = { set_country_flag = colony_exemption }
+			random_owned = {
+				limit = {
+					owner = {
+						has_global_flag = afghan_absolutism
+					}
+				}
+				owner = {
+					AFG = { government = absolute_monarchy }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						has_global_flag = afghan_semi_absolutism
+					}
+				}
+				owner = {
+					AFG = { government = prussian_constitutionalism }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						has_global_flag = afghan_constitutionalism
+					}
+				}
+				owner = {
+					AFG = { government = hms_government }
+				}
+			}
 			create_alliance = AFG
             clr_global_flag = afghan_2
 			set_global_flag = siege_of_mission
 			diplomatic_influence = { who = AFG value = 400 }
 			RUS = { diplomatic_influence = { who = AFG value = -400 } }
         }
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
+
 	second_anglo_afghan_war_peacedeal_b = {
         picture = abdur_rahman_khan
         potential = {
@@ -986,7 +844,7 @@ political_decisions = {
             has_global_flag = afghan_2_b
             AFG = {
                 is_disarmed = yes
-				has_recently_lost_war = yes
+				has_country_modifier = recently_lost_war
                 truce_with = THIS
             }
 			NOT = {
@@ -1003,10 +861,9 @@ political_decisions = {
 			diplomatic_influence = { who = AFG value = 400 }
 			RUS = { diplomatic_influence = { who = AFG value = -400 } }
         }
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
+
 	herat_kandahar_peacedeal = {
         picture = abdur_rahman_khan
         potential = {
@@ -1018,7 +875,7 @@ political_decisions = {
 			}
             AFG = {
                 is_disarmed = yes
-				has_recently_lost_war = yes
+				has_country_modifier = recently_lost_war
                 truce_with = THIS
             }
         }
@@ -1044,10 +901,9 @@ political_decisions = {
 			}
 			AFG = { country_event = 123723 }
         }
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
+
 	third_anglo_afghan_war = {
         picture = afghan3
         potential = {
@@ -1094,9 +950,9 @@ political_decisions = {
 			}
             ENG = { country_event = 123714 }
         }
-
         ai_will_do = { factor = 1 }
     }
+
 	third_anglo_afghan_war_peace = {
         picture = rawalpindi
         potential = {
@@ -1105,8 +961,9 @@ political_decisions = {
         }
 
         allow = {
-            AFG = { war_exhaustion = 5 }
-			war_with = AFG
+            truce_with = AFG
+			neighbour = AFG
+			AFG = { has_country_modifier = recently_lost_war }
         }
 
         effect = {
@@ -1124,13 +981,12 @@ political_decisions = {
 				}
 				country_event = 123803
 			}
-			end_war = AFG
 			diplomatic_influence = { who = AFG value = -400 }
-			relation = { who = AFG value = 200 }  
+			relation = { who = AFG value = 200 }
         }
-
         ai_will_do = { factor = 1 }
     }
+
 	herat_kandahar_offer = {
         picture = herat_kandahar_offer
         potential = {
@@ -1150,9 +1006,9 @@ political_decisions = {
             set_global_flag = herat_kandahar_offer_made
             PER = { country_event = 123717 }
         }
-
         ai_will_do = { factor = 1 }
     }
+
 	annex_drv = {
         picture = kht_attack
         potential = {
@@ -1178,9 +1034,9 @@ political_decisions = {
         effect = {
             inherit = DRV
         }
-
         ai_will_do = { factor = 1 }
     }
+
 	core_blc = {
         picture = baluchistan_invasion
         potential = {
@@ -1208,7 +1064,6 @@ political_decisions = {
 			3507 = { add_core = PER }
 			3509 = { add_core = PER }
         }
-
         ai_will_do = { factor = 1 }
     }
 }

@@ -590,7 +590,7 @@ country_event = {
 #### Trade Unions ####
 # Red John
 country_event = {
-    id  = 3500
+    id = 3500
     title = "EVTNAME3500"
     desc = "EVTDESC3500"
     picture = "Revolution"
@@ -1106,7 +1106,6 @@ country_event = {
         NOT = {
             government = democracy
         }
-		NOT = { has_country_flag = Government_Democracy }
         NOT = {
             is_ideology_enabled = socialist
         }
@@ -1592,7 +1591,6 @@ country_event = {
         NOT = {
             tag = USA
             tag = ENG
-			tag = US2
         }
         NOT = { has_country_flag = spectator ai = yes }
     }
@@ -1751,7 +1749,6 @@ country_event = {
                 OR = {
                     tag = ENG
                     tag = USA
-					tag = US2
                 }
             }
         }
@@ -1932,7 +1929,7 @@ country_event = {
     option = {
         name = "EVTOPTA4302"
         random_state = {
-            limit = { NOT = { is_colonial = yes } }
+            limit = { is_colonial = no }
             middle_strata = { militancy = -1 }
             rich_strata = { militancy = 3 }
         }
@@ -1941,7 +1938,7 @@ country_event = {
     option = {
         name = "EVTOPTB4302"
         random_state = {
-            limit = { NOT = { is_colonial = yes } }
+            limit = { is_colonial = no }
             middle_strata = { militancy = 3 }
             rich_strata = { militancy = -1 }
         }
@@ -2719,7 +2716,7 @@ country_event = {
     option = {
         name = "EVTOPTA4411"
         random_state = {
-            limit = { NOT = { is_colonial = yes } }
+            limit = { is_colonial = no }
             clergymen = { limit = { is_state_religion = yes } scaled_militancy = { factor = 7 issue = moralism } }
             poor_strata = { militancy = 1 }
         }
@@ -3782,6 +3779,59 @@ country_event = {
     }
 }
 
+
+#The Radicals kick out the landowners
+country_event = {
+    id = 443132
+    title = "The People's Revolution"
+    desc = "EVTDESC443132"
+    picture = "landowners_screwed"
+
+    trigger = {
+        government = radical_republic
+        ruling_party_ideology = radical
+        has_pop_type = aristocrats
+        NOT = { has_country_flag = landowner_loving_radicals }
+        NOT = { has_country_flag = spectator ai = yes }
+    }
+
+    mean_time_to_happen = { months = 60 }
+
+    option = {
+        name = "EVTOPTA4431"
+		add_tax_relative_income = 0.4
+		any_pop = { limit = { type = capitalists } money = -200 }
+		any_pop = {
+			limit = { type = aristocrats }
+			militancy = 9 consciousness = 9 money = -200 pop_type = capitalists
+		}
+		nationalize = yes
+		ai_chance = { factor = 70 }
+    }
+
+    option = {
+        name = "EVTOPTB4431"
+        badboy = 1
+        add_tax_relative_income = 0.8
+        any_pop = { limit = { type = aristocrats } money = -500 reduce_pop = 0.0 }
+        any_pop = { militancy = -2 }
+        nationalize = yes
+        ai_chance = { factor = 20 }
+    }
+
+    option = {
+        name = "EVTOPTC4431"
+        set_country_flag = landowner_loving_radicals
+        any_pop = {
+            scaled_militancy = {
+                ideology = radical
+                factor = 7
+            }
+        }
+        ai_chance = { factor = 10 }
+    }
+}
+
 #Fascist Government Coup Puppets - Set Up
 country_event = {
     id = 443024
@@ -3808,7 +3858,7 @@ country_event = {
             factor = 0.5
             OR = {
                 overlord = { war = yes }
-                overlord = { has_recently_lost_war = yes }
+                overlord = { has_country_modifier = recently_lost_war }
             }
         }
     }
@@ -3834,7 +3884,7 @@ country_event = {
         FROM = { country_event = { id = 443026 days = 2 } }
         any_greater_power = { limit = { NOT = { government = fascist_dictatorship } } relation = { who = THIS value = -25 } }
         any_country = { limit = { government = proletarian_dictatorship } relation = { who = THIS value = -100 } }
-        any_country = { limit = {  is_our_vassal = THIS NOT = { government = fascist_dictatorship } } relation = { who = THIS value = -100 } }
+        any_country = { limit = { is_our_vassal = THIS NOT = { government = fascist_dictatorship } } relation = { who = THIS value = -100 } }
         ai_chance = { factor = 0.95 }
     }
 
@@ -3870,22 +3920,6 @@ country_event = {
         political_reform = underground_parties
         political_reform = primary_culture_only
         political_reform = mandatory_service
-        clr_country_flag = communist_gov
-        clr_country_flag = absolute_monarchy_gov
-        clr_country_flag = semi_constitutional_monarchy_gov
-        clr_country_flag = constitutional_monarchy_gov
-        clr_country_flag = democracy_gov
-        clr_country_flag = presidential_dictatorship_gov
-        set_country_flag = fascist_gov
-        clr_country_flag = anarcho_liberal_gov
-        clr_country_flag = election_started
-        clr_country_flag = conservative_party_in_power
-        clr_country_flag = liberal_party_in_power
-        clr_country_flag = reactionary_party_in_power
-        clr_country_flag = socialist_party_in_power
-        clr_country_flag = communist_party_in_power
-        clr_country_flag = fascist_party_in_power
-        clr_country_flag = anarcho_liberal_party_in_power
         create_alliance = FROM
         relation = { who = FROM value = 200 }
         FROM = { diplomatic_influence = { who = THIS value = 100 } }
@@ -3897,7 +3931,7 @@ country_event = {
             modifier = {
                 factor = 0.1
                     OR = {
-                        FROM = { has_recently_lost_war = yes }
+                        FROM = { has_country_modifier = recently_lost_war }
                         FROM = { NOT = { military_score = 100 } }
                     }
                 }
@@ -4088,7 +4122,7 @@ country_event = {
             factor = 0.5
             OR = {
                 overlord = { war = yes }
-                overlord = { has_recently_lost_war = yes }
+                overlord = { has_country_modifier = recently_lost_war }
             }
         }
     }
@@ -4113,7 +4147,7 @@ country_event = {
         FROM = { country_event = { id = 443030 days = 2 } }
         any_greater_power = { limit = { NOT = { government = proletarian_dictatorship } } relation = { who = THIS value = -25 } }
         any_country = { limit = { government = fascist_dictatorship } relation = { who = THIS value = -100 } }
-        any_country = { limit = {  is_our_vassal = THIS NOT = { government = proletarian_dictatorship } } relation = { who = THIS value = -100 } }
+        any_country = { limit = { is_our_vassal = THIS NOT = { government = proletarian_dictatorship } } relation = { who = THIS value = -100 } }
         ai_chance = { factor = 100 }
     }
 
@@ -4138,106 +4172,31 @@ country_event = {
     option = {
         name = "EVT443030OPTA"
         prestige_factor = -0.25
-		random_owned = {
-			limit = {
-				owner = {
-					tag = RUS 
-				}
-			}
-			owner = {
-				change_tag = SOV
-				SOV = {
-					government = proletarian_dictatorship
-					ruling_party_ideology = communist
-					political_reform = none_voting
-					political_reform = party_appointed
-					political_reform = no_meeting
-					political_reform = state_press
-					political_reform = state_controlled
-					political_reform = underground_parties
-					political_reform = no_slavery
-					political_reform = debtors_prisons
-					social_reform = good_minimum_wage
-					social_reform = eight_hours
-					social_reform = good_subsidies
-					social_reform = good_pensions
-					set_country_flag = communist_gov
-					clr_country_flag = absolute_monarchy_gov
-					clr_country_flag = semi_constitutional_monarchy_gov
-					clr_country_flag = constitutional_monarchy_gov
-					clr_country_flag = democracy_gov
-					clr_country_flag = presidential_dictatorship_gov
-					clr_country_flag = fascist_gov
-					clr_country_flag = anarcho_liberal_gov
-					clr_country_flag = election_started
-					clr_country_flag = conservative_party_in_power
-					clr_country_flag = liberal_party_in_power
-					clr_country_flag = reactionary_party_in_power
-					clr_country_flag = socialist_party_in_power
-					clr_country_flag = communist_party_in_power
-					clr_country_flag = fascist_party_in_power
-					clr_country_flag = anarcho_liberal_party_in_power
-					clr_country_flag = Government_Democracy
-					create_alliance = FROM
-					relation = { who = FROM value = 200 }
-					FROM = { diplomatic_influence = { who = THIS value = 100 } }
-					any_country = { limit = { NOT = { government = proletarian_dictatorship } } relation = { who = THIS value = -100 } }
-					any_greater_power = { limit = { NOT = { government = proletarian_dictatorship } } diplomatic_influence = { who = THIS value = -100 } }
-				}
-				RUS = { country_event = { id = 123429 days = 1 } }
-			}
-		}
-		random_owned = {
-			limit = {
-				owner = {
-					NOT = { tag = RUS }
-				}
-			}
-			owner = {
-				government = proletarian_dictatorship
-				ruling_party_ideology = communist
-				political_reform = none_voting
-				political_reform = party_appointed
-				political_reform = no_meeting
-				political_reform = state_press
-				political_reform = state_controlled
-				political_reform = underground_parties
-				political_reform = no_slavery
-				political_reform = debtors_prisons
-				social_reform = good_minimum_wage
-				social_reform = eight_hours
-				social_reform = good_subsidies
-				social_reform = good_pensions
-				set_country_flag = communist_gov
-				clr_country_flag = absolute_monarchy_gov
-				clr_country_flag = semi_constitutional_monarchy_gov
-				clr_country_flag = constitutional_monarchy_gov
-				clr_country_flag = democracy_gov
-				clr_country_flag = presidential_dictatorship_gov
-				clr_country_flag = fascist_gov
-				clr_country_flag = anarcho_liberal_gov
-				clr_country_flag = election_started
-				clr_country_flag = conservative_party_in_power
-				clr_country_flag = liberal_party_in_power
-				clr_country_flag = reactionary_party_in_power
-				clr_country_flag = socialist_party_in_power
-				clr_country_flag = communist_party_in_power
-				clr_country_flag = fascist_party_in_power
-				clr_country_flag = anarcho_liberal_party_in_power
-				clr_country_flag = Government_Democracy
-				create_alliance = FROM
-				relation = { who = FROM value = 200 }
-				FROM = { diplomatic_influence = { who = THIS value = 100 } }
-				any_country = { limit = { NOT = { government = proletarian_dictatorship } } relation = { who = THIS value = -100 } }
-				any_greater_power = { limit = { NOT = { government = proletarian_dictatorship } } diplomatic_influence = { who = THIS value = -100 } }
-			}
-		}
+		government = proletarian_dictatorship
+		ruling_party_ideology = communist
+		political_reform = none_voting
+		political_reform = party_appointed
+		political_reform = no_meeting
+		political_reform = state_press
+		political_reform = state_controlled
+		political_reform = underground_parties
+		political_reform = no_slavery
+		political_reform = debtors_prisons
+		social_reform = good_minimum_wage
+		social_reform = eight_hours
+		social_reform = good_subsidies
+		social_reform = good_pensions
+		create_alliance = FROM
+		relation = { who = FROM value = 200 }
+		FROM = { diplomatic_influence = { who = THIS value = 100 } }
+		any_country = { limit = { NOT = { government = proletarian_dictatorship } } relation = { who = THIS value = -100 } }
+		any_greater_power = { limit = { NOT = { government = proletarian_dictatorship } } diplomatic_influence = { who = THIS value = -100 } }
         ai_chance = {
             factor = 30
             modifier = {
                 factor = 0.1
                     OR = {
-                        FROM = { has_recently_lost_war = yes }
+                        FROM = { has_country_modifier = recently_lost_war }
                         FROM = { NOT = { military_score = 100 } }
                     }
                 }
@@ -4426,7 +4385,7 @@ country_event = {
             factor = 0.5
             OR = {
                 overlord = { war = yes }
-                overlord = { has_recently_lost_war = yes }
+                overlord = { has_country_modifier = recently_lost_war }
             }
         }
     }
@@ -4569,7 +4528,7 @@ country_event = {
 
 
         any_country = {
-            limit = { neighbour = THIS NOT = { vassal_of = THIS } NOT = { alliance_with = THIS } NOT = { is_greater_power = yes } }
+            limit = { neighbour = THIS NOT = { vassal_of = THIS } NOT = { alliance_with = THIS } is_greater_power = no }
                 any_pop = { dominant_issue = { value = jingoism factor = 0.05 } }
                 relation = { who = THIS value = -100 }
                 }
@@ -4791,7 +4750,7 @@ country_event = {
     desc = "EVTDESC443039"
     picture = "crisis_revolution_enabled"
 
-    allow_multiple_instances  = yes
+    allow_multiple_instances = yes
 
     is_triggered_only = yes
 
@@ -4802,9 +4761,6 @@ country_event = {
         }
         random_country = { limit = { tag = FROM primary_culture = byelorussian }
             THIS = { remove_accepted_culture = byelorussian }
-        }
-        random_country = { limit = { tag = FROM primary_culture = alaskan }
-            THIS = { remove_accepted_culture = alaskan }
         }
     }
 }
