@@ -57,15 +57,16 @@ GFM owes its existence to:
 * UlfDerDritte
 * Erling E. Kristiansen
 * Wooper Goldberg
+* Sarifzx
 * Atlas
 * General Garcia
-* Sarif#2056
 * Dukeçza Victor
 * Batislav
 * the based department
 * Davi Cerqueira
 * lili Lawa
 * RadRadishRadiator
+* ElYisusKing
 * Trigori
 
 
