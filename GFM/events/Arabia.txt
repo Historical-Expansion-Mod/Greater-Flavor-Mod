@@ -14,7 +14,15 @@ country_event = {
 
     trigger = {
 		tag = TUR
-        civilized = yes
+        any_owned_province = {
+            any_core = {
+                OR = {
+                    primary_culture = mashriqi
+                    primary_culture = bedouin
+                    primary_culture = misri
+                }
+            }
+        }
 		OR = {
 			has_country_modifier = recently_lost_war
 			national_provinces_occupied = 0.4
@@ -23,7 +31,6 @@ country_event = {
             revolution_n_counterrevolution = 1
             any_neighbor_country = { has_country_flag = arab_revolt }
         }
-        year = 1900
         NOT = {
             AND = {
                 has_country_modifier = ottomanism_reform
@@ -35,15 +42,7 @@ country_event = {
             has_country_flag = arab_revolt_ended
             has_country_flag = friend_of_the_arabs
         }
-        any_owned_province = {
-            any_core = {
-                OR = {
-                    primary_culture = mashriqi
-                    primary_culture = bedouin
-                    primary_culture = misri
-                }
-            }
-        }
+        year = 1900
     }
 
     mean_time_to_happen = {
@@ -306,12 +305,12 @@ country_event = {
     picture = "arab_revolt"
 
     trigger = {
-        is_vassal = yes
-        is_culture_group = arab
-        NOT = { has_country_flag = arab_revolt }
         any_neighbor_country = {
             has_country_flag = arab_revolt
         }
+        is_culture_group = arab
+        is_vassal = yes
+        NOT = { has_country_flag = arab_revolt }
     }
 
     mean_time_to_happen = {
@@ -433,9 +432,6 @@ province_event = {
                 is_culture_group = iranian_turanian
             }
         }
-
-        controlled_by = THIS
-        NOT = { has_province_modifier = nationalist_agitation }
         any_core = {
             OR = {
                 primary_culture = mashriqi
@@ -448,6 +444,8 @@ province_event = {
             culture = bedouin
             culture = misri
         }
+        controlled_by = THIS
+        NOT = { has_province_modifier = nationalist_agitation }
     }
 
     mean_time_to_happen = {
@@ -541,6 +539,7 @@ country_event = {
     picture = "arab_revolt"
     fire_only_once = yes
     trigger = {
+        owns = 1159
         OR = {
             tag = HAL
             tag = HDJ
@@ -549,8 +548,10 @@ country_event = {
             owned_by = THIS
             NOT = { units_in_province = 1 }
         }
-        owns = 1159
-        NOT = { exists = ARA }
+            OR = {
+				ARA = { exists = no }
+				ARA = { owns = 1174 NOT = { owns = 1155 } government = theocracy }
+			}
         has_global_flag = house_of_saud_exiled
         has_global_flag = arab_revolt_has_begun
     }
@@ -569,10 +570,14 @@ country_event = {
         set_global_flag = house_of_saud_returned
 		1180 = { remove_core = NEJ }
 		3273 = { remove_core = NEJ }
+		3859 = { remove_core = NEJ }
 		1172 = { remove_core = NEJ }
 		1170 = { remove_core = NEJ }
+		3688 = { remove_core = NEJ }
 		12 = { remove_core = NEJ }
-        NEJ_1160 = { add_core = NEJ } #Ha'il
+		3916 = { remove_core = NEJ }
+        NEJ_1156 = { add_core = NEJ } #Kaf
+        NEJ_1160 = { add_core = NEJ } #Kaf
 		3278 = { add_core = NEJ }
 		1156 = { add_core = NEJ }
 		2639 = { add_core = NEJ }
@@ -612,9 +617,9 @@ country_event = {
     fire_only_once = yes
     trigger = {
         tag = HDJ
+        TUR = { war_with = EGY }
         vassal_of = EGY
         in_sphere = TUR
-        TUR = { war_with = EGY }
     }
 
     mean_time_to_happen = { months = 1 }
@@ -702,14 +707,17 @@ country_event = {
     picture = "arab_revolt"
 
     trigger = {
+        tag = NEJ
+		owns = 1159
+        HAL = {
+			owns = 1158
+			owns = 3404
+            is_vassal = no
+            exists = yes
+        }
+        any_owned_province = { country_units_in_province = NEJ }
         war = no
         is_vassal = no
-        tag = NEJ
-        any_owned_province = { country_units_in_province = NEJ }
-        HAL = {
-            exists = yes
-            is_vassal = no
-        }
         NOT = {
             truce_with = HAL
             any_greater_power = { is_sphere_leader_of = HAL war = no }
@@ -747,6 +755,7 @@ country_event = {
             leave_alliance = THIS
             relation = { who = THIS value = -50 }
         }
+		1159 = { secede_province = THIS secede_province = HAL }
         war = {
             target = HAL
             attacker_goal = {
@@ -757,6 +766,15 @@ country_event = {
             }
             call_ally = yes
         }
+		HAL = {
+			create_alliance = TUR
+			# Audax Validator "." Ignore_NEXT
+			war = {
+				# Audax Validator "." Ignore_NEXT
+				attacker_goal = { casus_belli = call_allies_cb }
+				call_ally = yes
+			}
+		}
     }
 }
 
@@ -773,12 +791,14 @@ country_event = {
     picture = "arab_revolt"
 
     trigger = {
-        war = no
         tag = HAL
-        is_vassal = no
+		owns = 1158
+		owns = 3404
         any_owned_province = { country_units_in_province = HAL }
+        war = no
+        is_vassal = no
         NEJ = {
-            exists = yes
+            owns = 1159
             is_vassal = no
         }
         NOT = {
@@ -821,6 +841,7 @@ country_event = {
             leave_alliance = THIS
             relation = { who = THIS value = -50 }
         }
+		1159 = { secede_province = THIS secede_province = HAL }
         war = {
             target = NEJ
             attacker_goal = {
@@ -831,6 +852,13 @@ country_event = {
             }
             call_ally = yes
         }
+		create_alliance = TUR
+		# Audax Validator "." Ignore_NEXT
+		war = {
+			# Audax Validator "." Ignore_NEXT
+			attacker_goal = { casus_belli = call_allies_cb }
+			call_ally = yes
+		}
     }
 }
 
@@ -905,12 +933,14 @@ country_event = {
 				2564 = { add_core = EGY }
 				1817 = { add_core = EGY }
 				1739 = { add_core = EGY }
+				3701 = { add_core = EGY }
 			}
 		}
         1758 = { add_core = ARU }
         2564 = { add_core = ARU }
         1817 = { add_core = ARU }
         1739 = { add_core = ARU }
+        3701 = { add_core = ARU }
         any_country = {
             limit = {
                 exists = yes
@@ -943,11 +973,10 @@ country_event = {
     desc = "EVTDESC96122"
     picture = "arab_revolt"
 
+    fire_only_once = yes
+
     trigger = {
-        war = no
         tag = KWT
-        exists = yes
-        year = 1880
         has_global_flag = berlin_conference
         OR = {
             overlord = {
@@ -979,13 +1008,14 @@ country_event = {
                 }
             }
         }
+        war = no
+        exists = yes
         any_greater_power = {
             NOT = { tag = RUS }
             owns = 1251
         }
+        year = 1880
     }
-
-    fire_only_once = yes
 
     mean_time_to_happen = {
         months = 40
@@ -1152,33 +1182,32 @@ country_event = {
 
     trigger = {
         has_country_flag = claimed_yemen
-        ai = yes
-        war = no
         any_neighbor_country = {
             OR = {
                 tag = FDL
-                tag = LHJ
+                tag = YEM
                 tag = KTH
                 tag = MHR
             }
 			exists = yes
         }
+        war = no
         NOT = { casus_belli = FDL }
-        NOT = { casus_belli = LHJ }
+        NOT = { casus_belli = YEM }
         NOT = { casus_belli = KTH }
         NOT = { casus_belli = MHR }
         NOT = { truce_with = FDL }
-		NOT = { truce_with = LHJ }
+		NOT = { truce_with = YEM }
 		NOT = { truce_with = KTH }
 		NOT = { truce_with = MHR }
 		NOT = { year = 1900 }
+        ai = yes
     }
 
     mean_time_to_happen = { days = 30 }
 
     option = {
         name = "EVT98725OPTA"
-		diplomatic_influence = { who = LHJ value = -400 }
 		diplomatic_influence = { who = FDL value = -400 }
 		diplomatic_influence = { who = KTH value = -400 }
 		diplomatic_influence = { who = MHR value = -400 }
@@ -1189,7 +1218,7 @@ country_event = {
 				exists = yes
 				OR = {
 					tag = FDL
-					tag = LHJ
+					tag = YEM
 					tag = KTH
 					tag = MHR
 				}
