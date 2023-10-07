@@ -62,7 +62,6 @@ war_reparations
 become_independent
 dismantle_cb
 egyptian_ottoman_war
-conquest_senegal
 crusade_for_canada
 war_for_canada
 anglo_persian_cb
@@ -326,7 +325,14 @@ acquire_core_state = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        any_owned_province = { is_core = THIS }
+		is_substate = no
+        NOT = {
+            AND = {
+                #THIS = { ai = yes }
+                has_global_flag = sw_set
+                NOT = { year = 1840 }
+            }
+        }
         OR = {
             AND = {
                 THIS = { total_amount_of_ships = 5 }
@@ -336,7 +342,11 @@ acquire_core_state = {
             war_with = THIS
             any_neighbor_country = { substate_of = THIS }
         }
+        NOT = { is_our_vassal = THIS }
         number_of_states = 1 # annex if you want their last state
+        any_owned_province = { is_core = THIS }
+        NOT = { has_country_modifier = neutrality_modifier }
+        THIS = { NOT = { has_country_modifier = neutrality_modifier } }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = punitive_effects } }
@@ -346,17 +356,6 @@ acquire_core_state = {
             THIS = { NOT = { has_country_flag = in_great_war } }
             THIS = { ai = no }
         }
-		is_substate = no
-        NOT = {
-            AND = {
-                #THIS = { ai = yes }
-                has_global_flag = sw_set
-                NOT = { year = 1840 }
-            }
-        }
-        NOT = { is_our_vassal = THIS }
-        NOT = { has_country_modifier = neutrality_modifier }
-        THIS = { NOT = { has_country_modifier = neutrality_modifier } }
     }
 
     allowed_states = {
@@ -414,18 +413,19 @@ acquire_all_cores = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        any_owned_province = { is_core = THIS }
+        NOT = {
+            AND = {
+                #THIS = { ai = yes }
+                has_global_flag = sw_set
+                NOT = { year = 1840 }
+            }
+        }
         civilized = yes
+        NOT = { is_our_vassal = THIS }
         number_of_states = 2 # annex if you want their last state
-        OR = {
-            war_with = THIS
-            THIS = { NOT = { has_country_modifier = punitive_effects } }
-        }
-        OR = {
-            NOT = { has_country_flag = dismantle_declared }
-            THIS = { NOT = { has_country_flag = in_great_war } }
-            THIS = { ai = no }
-        }
+        any_owned_province = { is_core = THIS }
+        any_owned_province = { NOT = { is_core = THIS } }
+        NOT = { has_country_modifier = neutrality_modifier }
         THIS = {
             NOT = {
                 has_country_modifier = neutrality_modifier
@@ -435,16 +435,15 @@ acquire_all_cores = {
                 }
             }
         }
-        NOT = {
-            AND = {
-                #THIS = { ai = yes }
-                has_global_flag = sw_set
-                NOT = { year = 1840 }
-            }
+        OR = {
+            war_with = THIS
+            THIS = { NOT = { has_country_modifier = punitive_effects } }
         }
-        NOT = { is_our_vassal = THIS }
-        NOT = { has_country_modifier = neutrality_modifier }
-        any_owned_province = { NOT = { is_core = THIS } }
+        OR = {
+            NOT = { has_country_flag = dismantle_declared }
+            THIS = { NOT = { has_country_flag = in_great_war } }
+            THIS = { ai = no }
+        }
     }
 
     allowed_countries = {
@@ -506,25 +505,35 @@ restore_austrian_empire = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        neighbour = AUS
+        NOT = {
+			tag = HUN
+            AND = {
+                #THIS = { ai = yes }
+                has_global_flag = sw_set
+                NOT = { year = 1840 }
+            }
+			has_global_flag = outside_cores_removed
+        }
+        NOT = { is_our_vassal = THIS }
         THIS = {
-            tag = AUS
             OR = {
                 war_policy = jingoism
                 war_policy = pro_military
                 war_with = THIS
             }
-            OR = {
-                is_greater_power = yes
-                is_secondary_power = yes
-            }
+            tag = AUS
             OR = {
                 government = absolute_empire
                 government = semi_constitutional_empire
                 government = constitutional_empire
                 government = fascist_dictatorship
             }
+            OR = {
+                is_greater_power = yes
+                is_secondary_power = yes
+            }
         }
+        neighbour = THIS
         any_owned_province = {
             OR = {
                 is_core = VEN
@@ -540,12 +549,15 @@ restore_austrian_empire = {
                 region = AUS_652
                 region = AUS_657
             }
-			NOT = { province_id = 3669 } #Neum
-			NOT = { province_id = 742 } #Neum
-			NOT = { province_id = 741 } #Neum
-			NOT = { province_id = 743 } #Neum
-			NOT = { province_id = 3277 } #Hultschin/Hlucin/Hlucin
+				NOT = { province_id = 3669 } #Neum
+				NOT = { province_id = 3277 } #Hultschin/Hlucin/Hlucin
         }
+        OR = {
+            NOT = { tag = ITA }
+            THIS = { NOT = { has_country_flag = accepts_italy } }
+        }
+        NOT = { has_country_modifier = neutrality_modifier }
+        NOT = { in_sphere = THIS }
         OR = {
             THIS = {
                 NOT = { has_country_modifier = neutrality_modifier }
@@ -557,22 +569,6 @@ restore_austrian_empire = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = punitive_effects } }
         }
-        OR = {
-            NOT = { tag = ITA }
-            THIS = { NOT = { has_country_flag = accepts_italy } }
-        }
-        NOT = {
-			tag = HUN
-            AND = {
-                #THIS = { ai = yes }
-                has_global_flag = sw_set
-                NOT = { year = 1840 }
-            }
-			has_global_flag = outside_cores_removed
-        }
-        NOT = { is_our_vassal = THIS }
-        NOT = { has_country_modifier = neutrality_modifier }
-        NOT = { in_sphere = THIS }
 		NOT = { has_country_flag = ai_demand_sigmaringen }
 		NOT = { has_global_flag = outside_cores_removed }
     }
@@ -646,6 +642,13 @@ zemene_mesafint = {
     good_relation_militancy_factor = 1
 
     can_use = {
+        NOT = {
+            AND = {
+                has_global_flag = sw_set
+                NOT = { year = 1840 }
+            }
+        }
+        NOT = { is_our_vassal = THIS }
 		OR = {
 			tag = GJM
 			tag = GON
@@ -664,6 +667,9 @@ zemene_mesafint = {
 			}
         }
         neighbour = THIS
+        NOT = { has_country_modifier = neutrality_modifier }
+        NOT = { in_sphere = THIS }
+		NOT = { exists = ETH }
         OR = {
             THIS = {
                 NOT = { has_country_modifier = neutrality_modifier }
@@ -675,16 +681,6 @@ zemene_mesafint = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = punitive_effects } }
         }
-        NOT = {
-            AND = {
-                has_global_flag = sw_set
-                NOT = { year = 1840 }
-            }
-        }
-        NOT = { is_our_vassal = THIS }
-        NOT = { has_country_modifier = neutrality_modifier }
-        NOT = { in_sphere = THIS }
-		NOT = { exists = ETH }
     }
 
     allowed_states = {
@@ -733,21 +729,6 @@ colonial_reconquest_cb = {
     always = yes
 
     can_use = {
-        THIS = {
-            OR = {
-                is_secondary_power = yes
-                is_greater_power = yes
-            }
-            OR = {
-                government = absolute_monarchy
-                government = prussian_constitutionalism
-                government = hms_government
-                government = absolute_empire
-                government = semi_constitutional_empire
-                government = constitutional_empire
-            }
-            NOT = { revolution_n_counterrevolution = 1 }
-        }
         OR = {
             AND = {
                 THIS = {
@@ -785,6 +766,7 @@ colonial_reconquest_cb = {
                 tag = MAL
             }
         }
+        NOT = { number_of_states = 3 }
         part_of_sphere = no
         OR = {
             THIS = {
@@ -793,11 +775,25 @@ colonial_reconquest_cb = {
             }
             war_with = THIS
         }
+        THIS = {
+            OR = {
+                is_secondary_power = yes
+                is_greater_power = yes
+            }
+            OR = {
+                government = absolute_monarchy
+                government = prussian_constitutionalism
+                government = hms_government
+                government = absolute_empire
+                government = semi_constitutional_empire
+                government = constitutional_empire
+            }
+            NOT = { revolution_n_counterrevolution = 1 }
+        }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = punitive_effects } }
         }
-        NOT = { number_of_states = 3 }
     }
 
     po_annex = yes
@@ -836,6 +832,8 @@ restore_america = {
     good_relation_militancy_factor = 1
 
     can_use = {
+        war_policy = jingoism
+        NOT = { is_our_vassal = THIS }
         THIS = {
             OR = {
                 primary_culture = yankee
@@ -843,15 +841,6 @@ restore_america = {
             }
             NOT = { tag = USA }
         }
-        any_owned_province = {
-            OR = {
-                is_core = USA
-                is_core = CSA
-                is_core = FSA
-            }
-        }
-        war_policy = jingoism
-        neighbour = THIS
         OR = {
             THIS = { has_global_flag = second_american_civil_war }
 			USA = { exists = no }
@@ -866,6 +855,15 @@ restore_america = {
             }
             war_with = THIS
         }
+        neighbour = THIS
+        any_owned_province = {
+            OR = {
+                is_core = USA
+                is_core = CSA
+                is_core = FSA
+            }
+        }
+        NOT = { in_sphere = THIS }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = punitive_effects } }
@@ -877,8 +875,6 @@ restore_america = {
             }
             war_with = THIS
         }
-        NOT = { is_our_vassal = THIS }
-        NOT = { in_sphere = THIS }
     }
 
     allowed_states = {
@@ -917,48 +913,27 @@ conquest_low = {
     can_use = {
         THIS = { ai = no }
         total_pops = 100000
+        NOT = { total_pops = 400000 }
+        NOT = { is_our_vassal = THIS }
 		OR = {
             war_with = THIS
             THIS = { total_amount_of_divisions = 1 }
         }
+        THIS = { NOT = { has_country_modifier = neutrality_modifier } }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = no_more_war } }
         }
+		NOT = { number_of_states = 3 }
         OR = {
             AND = {
                 THIS = { total_amount_of_ships = 5 }
                 any_owned_province = { port = yes }
             }
-            AND = {
-                civilized = no
-                THIS = { civilized = no }
-                OR = {
-					NOT = { number_of_states = 4 }
-					NOT = { number_of_cities = 5 }
-				}
-            }
-            AND = {
-                civilized = no
-				NOT = { number_of_states = 3 }
-                THIS = { civilized = yes }
-            }
-            AND = {
-                civilized = yes
-				NOT = { number_of_states = 3 }
-                THIS = { civilized = yes }
-            }
-        }
-        OR = {
-            any_owned_province = { port = yes }
             neighbour = THIS
             AND = { OR = { any_neighbor_country = { substate_of = THIS } any_neighbor_country = { vassal_of = THIS } } THIS = { ai = no } }
             AND = { war_with = THIS ai = no }
         }
-        NOT = { total_pops = 400000 }
-        NOT = { is_our_vassal = THIS }
-        THIS = { NOT = { has_country_modifier = neutrality_modifier } }
-		NOT = { number_of_states = 3 }
     }
 
     badboy_factor = 1.0
@@ -997,48 +972,27 @@ conquest_tiny = {
     can_use = {
         THIS = { ai = no }
         total_pops = 10000
+        NOT = { total_pops = 100000 }
+        NOT = { is_our_vassal = THIS }
 		OR = {
             war_with = THIS
             THIS = { total_amount_of_divisions = 1 }
         }
+        THIS = { NOT = { has_country_modifier = neutrality_modifier } }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = no_more_war } }
         }
+		NOT = { number_of_states = 3 }
         OR = {
             AND = {
                 THIS = { total_amount_of_ships = 5 }
                 any_owned_province = { port = yes }
             }
-            AND = {
-                civilized = no
-                THIS = { civilized = no }
-                OR = {
-					NOT = { number_of_states = 4 }
-					NOT = { number_of_cities = 5 }
-				}
-            }
-            AND = {
-                civilized = no
-				NOT = { number_of_states = 3 }
-                THIS = { civilized = yes }
-            }
-            AND = {
-                civilized = yes
-				NOT = { number_of_states = 3 }
-                THIS = { civilized = yes }
-            }
-        }
-        OR = {
-            any_owned_province = { port = yes }
             neighbour = THIS
             AND = { OR = { any_neighbor_country = { substate_of = THIS } any_neighbor_country = { vassal_of = THIS } } THIS = { ai = no } }
             AND = { war_with = THIS ai = no }
         }
-        NOT = { total_pops = 100000 }
-        NOT = { is_our_vassal = THIS }
-        THIS = { NOT = { has_country_modifier = neutrality_modifier } }
-		NOT = { number_of_states = 3 }
     }
 
     badboy_factor = 0.5
@@ -1075,52 +1029,31 @@ conquest_minuscule = {
     crisis = no
 
     can_use = {
-        THIS = { ai = no }
 		is_vassal = no
 		is_substate = no
+		NOT = { has_country_modifier = neutrality_modifier }
+        THIS = { ai = no }
+        NOT = { total_pops = 10000 }
+        NOT = { is_our_vassal = THIS }
 		OR = {
             war_with = THIS
             THIS = { total_amount_of_divisions = 1 }
         }
+        THIS = { NOT = { has_country_modifier = neutrality_modifier } }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = no_more_war } }
         }
+		NOT = { number_of_states = 3 }
         OR = {
             AND = {
                 THIS = { total_amount_of_ships = 5 }
                 any_owned_province = { port = yes }
             }
-            AND = {
-                civilized = no
-                THIS = { civilized = no }
-                OR = {
-					NOT = { number_of_states = 4 }
-					NOT = { number_of_cities = 5 }
-				}
-            }
-            AND = {
-                civilized = no
-				NOT = { number_of_states = 3 }
-                THIS = { civilized = yes }
-            }
-            AND = {
-                civilized = yes
-				NOT = { number_of_states = 3 }
-                THIS = { civilized = yes }
-            }
-        }
-        OR = {
-            any_owned_province = { port = yes }
             neighbour = THIS
             AND = { OR = { any_neighbor_country = { substate_of = THIS } any_neighbor_country = { vassal_of = THIS } } THIS = { ai = no } }
             AND = { war_with = THIS ai = no }
         }
-		NOT = { has_country_modifier = neutrality_modifier }
-        NOT = { total_pops = 10000 }
-        NOT = { is_our_vassal = THIS }
-		NOT = { number_of_states = 3 }
-        THIS = { NOT = { has_country_modifier = neutrality_modifier } }
     }
 
     badboy_factor = 0.1
@@ -1173,8 +1106,8 @@ claim_holy_land = {
     good_relation_militancy_factor = 1
 
     can_use = {
+        NOT = { is_our_vassal = THIS }
         THIS = {
-            ai = no
             is_greater_power = yes
             OR = {
                 tag = FRA
@@ -1188,6 +1121,7 @@ claim_holy_land = {
                 is_culture_group = italian
                 is_culture_group = iberian
             }
+            ai = no
             has_global_flag = abandoned_holy_land
         }
         OR = {
@@ -1199,6 +1133,8 @@ claim_holy_land = {
             }
             war_with = THIS
         }
+        NOT = { is_canal_enabled = 2 }
+        NOT = { is_greater_power = yes }
         any_owned_province = {
             OR = {
                 is_core = PLS
@@ -1207,14 +1143,11 @@ claim_holy_land = {
                 is_core = SYR
             }
         }
+        NOT = { in_sphere = THIS }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = punitive_effects } }
         }
-        NOT = { is_our_vassal = THIS }
-        NOT = { in_sphere = THIS }
-        NOT = { is_canal_enabled = 2 }
-        NOT = { is_greater_power = yes }
     }
 
     allowed_states = {
@@ -1285,10 +1218,16 @@ unification_casus_belli = {
     always = yes
 
     can_use = {
+        NOT = { is_our_vassal = THIS }
+        NOT = { tag = PRU }
+        NOT = { tag = NGF }
+        THIS = { NOT = { tag = KUK } }
+        THIS = { NOT = { tag = DNB } }
+        THIS = { NOT = { tag = UBD } }
         THIS = {
-            is_greater_power = yes
             culture_has_union_tag = yes
             nationalism_n_imperialism = 1
+            is_greater_power = yes
             is_cultural_union = no
             NOT = { has_country_modifier = neutrality_modifier }
         }
@@ -1322,12 +1261,6 @@ unification_casus_belli = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = punitive_effects } }
         }
-        NOT = { is_our_vassal = THIS }
-        NOT = { tag = PRU }
-        NOT = { tag = NGF }
-        THIS = { NOT = { tag = KUK } }
-        THIS = { NOT = { tag = DNB } }
-        THIS = { NOT = { tag = UBD } }
     }
     allowed_states = {
         any_owned_province = {
@@ -1433,6 +1366,7 @@ unification_annex_casus_belli = {
     always = yes
 
     can_use = {
+        NOT = { is_our_vassal = THIS }
         THIS = {
             culture_has_union_tag = yes
             nationalism_n_imperialism = 1
@@ -1444,17 +1378,18 @@ unification_annex_casus_belli = {
             THIS = { total_amount_of_divisions = 1 }
         }
         OR = {
+            NOT = { is_culture_group = THIS }
             AND = {
-                is_culture_group = THIS
                 war_with = THIS
+                is_culture_group = THIS
                 part_of_sphere = no
                 THIS = { NOT = { tag = AUS } }
                 THIS = { NOT = { tag = KUK } }
                 THIS = { NOT = { tag = DNB } }
                 THIS = { NOT = { tag = UBD } }
             }
-            NOT = { is_culture_group = THIS }
         }
+        NOT = { number_of_states = 2 }
         any_owned_province = {
             any_core = {
                 this_culture_union = this_union
@@ -1465,8 +1400,6 @@ unification_annex_casus_belli = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = punitive_effects } }
         }
-        NOT = { is_our_vassal = THIS }
-        NOT = { number_of_states = 2 }
     }
 
     po_annex = yes
@@ -1505,7 +1438,21 @@ annex_core_country = {
     good_relation_militancy_factor = 1
 
     can_use = {
+        NOT = {
+            AND = {
+                #THIS = { ai = yes }
+                has_global_flag = sw_set
+                NOT = { year = 1840 }
+            }
+        }
+        NOT = { is_our_vassal = THIS }
         any_owned_province = { is_core = THIS }
+        NOT = {
+            any_owned_province = {
+                NOT = { is_core = THIS }
+            }
+        }
+        NOT = { has_country_modifier = neutrality_modifier }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = neutrality_modifier } }
@@ -1519,20 +1466,6 @@ annex_core_country = {
             THIS = { NOT = { has_country_flag = in_great_war } }
             THIS = { ai = no }
         }
-        NOT = {
-            AND = {
-                #THIS = { ai = yes }
-                has_global_flag = sw_set
-                NOT = { year = 1840 }
-            }
-        }
-        NOT = { is_our_vassal = THIS }
-        NOT = {
-            any_owned_province = {
-                NOT = { is_core = THIS }
-            }
-        }
-        NOT = { has_country_modifier = neutrality_modifier }
     }
 
     po_annex = yes
@@ -1570,11 +1503,15 @@ add_to_sphere = {
     good_relation_militancy_factor = 1
 
     can_use = {
+        NOT = { is_our_vassal = THIS }
+        NOT = { total_pops = 11000000 }
         THIS = { is_greater_power = yes }
+        is_greater_power = no
         OR = {
-			part_of_sphere = no
+        part_of_sphere = no
             war_with = THIS
         }
+        NOT = { has_country_modifier = neutrality_modifier }
         OR = {
             war_with = THIS
             THIS = {
@@ -1592,7 +1529,6 @@ add_to_sphere = {
             NOT = { relation = { who = THIS value = 0 } }
             THIS = { ai = no }
         }
-        is_greater_power = no
         NOT = {
             AND = {
                 THIS = {
@@ -1604,9 +1540,6 @@ add_to_sphere = {
                 NOT = { is_cultural_union = THIS }
             }
         }
-        NOT = { is_our_vassal = THIS }
-        NOT = { total_pops = 11000000 }
-        NOT = { has_country_modifier = neutrality_modifier }
     }
 
     po_add_to_sphere = yes
@@ -1669,12 +1602,11 @@ unification_humiliate_cb = {
     always = yes
 
     can_use = {
-        is_greater_power = yes
-        is_culture_group = THIS
+        NOT = { is_our_vassal = THIS }
         THIS = {
-            is_greater_power = yes
             culture_has_union_tag = yes
             nationalism_n_imperialism = 1
+            is_greater_power = yes
             NOT = { tag = KUK }
             NOT = { tag = UBD }
             NOT = { tag = DNB }
@@ -1686,6 +1618,8 @@ unification_humiliate_cb = {
                 total_amount_of_divisions = 1
             }
         }
+        is_greater_power = yes
+        is_culture_group = THIS
         cultural_union = { exists = no }
         has_cultural_sphere = yes
         OR = {
@@ -1707,7 +1641,6 @@ unification_humiliate_cb = {
                 }
             }
         }
-        NOT = { is_our_vassal = THIS }
     }
     po_clear_union_sphere = yes
 
@@ -1760,18 +1693,22 @@ unification_GP_humiliate = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        is_greater_power = yes
+        NOT = { is_our_vassal = THIS }
+        NOT = { tag = KUK }
+        NOT = { tag = UBD }
+        NOT = { tag = DNB }
         culture_has_union_tag = yes
         is_culture_group = THIS
+        is_greater_power = yes
         cultural_union = { exists = no }
         NOT = { has_cultural_sphere = yes }
         THIS = {
+            ai = yes
             is_greater_power = yes
             nationalism_n_imperialism = 1
             NOT = { tag = KUK }
             NOT = { tag = UBD }
             NOT = { tag = DNB }
-            ai = yes
         }
         OR = {
             war_with = THIS
@@ -1780,6 +1717,7 @@ unification_GP_humiliate = {
                 total_amount_of_divisions = 1
             }
         }
+        NOT = { has_country_modifier = neutrality_modifier }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = no_more_war } }
@@ -1790,11 +1728,6 @@ unification_GP_humiliate = {
             war_with = THIS
             NOT = { relation = { who = THIS value = -50 } }
         }
-        NOT = { is_our_vassal = THIS }
-        NOT = { tag = KUK }
-        NOT = { tag = UBD }
-        NOT = { tag = DNB }
-        NOT = { has_country_modifier = neutrality_modifier }
     }
 
     po_remove_prestige = yes
@@ -1839,11 +1772,12 @@ unification_release_puppet_cb = {
     good_relation_militancy_factor = 1
 
     can_use = {
+        NOT = { is_our_vassal = THIS }
         num_of_vassals_no_substates = 1
         THIS = {
-            is_greater_power = yes
             culture_has_union_tag = yes
             nationalism_n_imperialism = 1
+            is_greater_power = yes
             NOT = { is_cultural_union = yes }
             NOT = { tag = KUK }
             NOT = { tag = UBD }
@@ -1856,7 +1790,6 @@ unification_release_puppet_cb = {
                 total_amount_of_divisions = 1
             }
         }
-        NOT = { is_our_vassal = THIS }
         NOT = {
             is_cultural_union = yes
             is_culture_group = THIS
@@ -1915,22 +1848,24 @@ unification_add_to_sphere = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        culture_has_union_tag = yes
-        is_culture_group = THIS
+        NOT = { is_our_vassal = THIS }
+        is_greater_power = no
         OR = {
-			part_of_sphere = no
+        part_of_sphere = no
             war_with = THIS
         }
-        is_greater_power = no
+        culture_has_union_tag = yes
+        is_culture_group = THIS
         cultural_union = { exists = no }
+        NOT = { has_country_modifier = neutrality_modifier }
         THIS = {
+            ai = yes
             is_greater_power = yes
             nationalism_n_imperialism = 1
             NOT = { tag = KUK }
             NOT = { tag = UBD }
             NOT = { tag = DNB }
             NOT = { has_country_modifier = no_more_war }
-            ai = yes
         }
         OR = {
             war_with = THIS
@@ -1939,8 +1874,6 @@ unification_add_to_sphere = {
                 total_amount_of_divisions = 1
             }
         }
-        NOT = { is_our_vassal = THIS }
-        NOT = { has_country_modifier = neutrality_modifier }
     }
 
     po_add_to_sphere = yes
@@ -1980,6 +1913,8 @@ take_from_sphere = {
     good_relation_militancy_factor = 1
 
     can_use = {
+        NOT = { is_our_vassal = THIS }
+
         THIS = { is_greater_power = yes }
         is_greater_power = yes
         OR = {
@@ -2000,7 +1935,6 @@ take_from_sphere = {
             NOT = { relation = { who = THIS value = 0 } }
             THIS = { ai = no }
         }
-        NOT = { is_our_vassal = THIS }
     }
 
     # THIS - us
@@ -2092,6 +2026,7 @@ free_peoples = {
             war_with = THIS
             any_neighbor_country = { OR = { vassal_of = THIS substate_of = THIS in_sphere = THIS } }
         }
+        NOT = { is_our_vassal = THIS }
         number_of_states = 2
         OR = {
             war_with = THIS
@@ -2100,6 +2035,7 @@ free_peoples = {
                 total_amount_of_divisions = 1
             }
         }
+        NOT = { has_country_modifier = neutrality_modifier }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = no_more_war } }
@@ -2120,8 +2056,6 @@ free_peoples = {
             FROM = { involved_in_crisis = yes }
             THIS = { ai = no }
         }
-        NOT = { is_our_vassal = THIS }
-        NOT = { has_country_modifier = neutrality_modifier }
     }
 
     # THIS - us
@@ -2151,6 +2085,7 @@ free_peoples = {
 			FROM = { has_country_flag = i_am_wsf }
             FROM = { tag = TPG }
             FROM = { tag = POL }
+            FROM = { tag = CPL }
             FROM = { tag = QNG }
             FROM = { tag = CHI }
             FROM = { tag = CSA }
@@ -2467,6 +2402,10 @@ liberate_country = {
 
 
     can_use = {
+        NOT = {
+            is_our_vassal = THIS
+            has_country_modifier = neutrality_modifier
+        }
         number_of_states = 2
         OR = {
             war_with = THIS
@@ -2502,10 +2441,6 @@ liberate_country = {
             has_global_flag = italy_fights_turk
             has_global_flag = wakhan_treaty
             has_global_flag = persia_treaty
-        }
-        NOT = {
-            is_our_vassal = THIS
-            has_country_modifier = neutrality_modifier
         }
     }
 
@@ -2812,6 +2747,7 @@ free_allied_cores = {
     good_relation_militancy_factor = 1
 
     can_use = {
+        NOT = { is_our_vassal = THIS }
         number_of_states = 2
         OR = {
             war_with = THIS
@@ -2820,6 +2756,7 @@ free_allied_cores = {
                 total_amount_of_divisions = 1
             }
         }
+        NOT = { has_country_modifier = neutrality_modifier }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = no_more_war } }
@@ -2836,8 +2773,6 @@ free_allied_cores = {
             THIS = { NOT = { has_country_flag = in_great_war } }
             THIS = { ai = no }
         }
-        NOT = { is_our_vassal = THIS }
-        NOT = { has_country_modifier = neutrality_modifier }
     }
 
     # THIS - us
@@ -2975,9 +2910,10 @@ free_balkans = {
     always = yes
 
     can_use = {
-        tag = TUR
+        NOT = { is_our_vassal = THIS }
         is_vassal = no
         number_of_states = 2
+        tag = TUR
         any_owned_province = {
             OR = {
                 is_core = GRE
@@ -2995,6 +2931,7 @@ free_balkans = {
                 }
             }
         }
+        NOT = { has_country_modifier = neutrality_modifier }
         OR = {
             war_with = THIS
             THIS = {
@@ -3023,8 +2960,6 @@ free_balkans = {
             THIS = { NOT = { has_country_flag = in_great_war } }
             THIS = { ai = no }
         }
-        NOT = { is_our_vassal = THIS }
-        NOT = { has_country_modifier = neutrality_modifier }
     }
 
     # THIS - us
@@ -3145,10 +3080,12 @@ monroe_doctrine = {
             }
             any_core = {
                 OR = {
-					AND = {
-						is_culture_group = latin_american_cultures
-						NOT = { primary_culture = caribeno }
-					}
+                    primary_culture = mexican
+                    primary_culture = central_american
+                    primary_culture = north_andean
+                    primary_culture = south_andean
+                    primary_culture = platinean
+                    primary_culture = brazilian
                     primary_culture = mayan
                     AND = {
                         tag = CUB
@@ -3194,10 +3131,12 @@ monroe_doctrine = {
         }
         FROM = {
             OR = {
-				AND = {
-					is_culture_group = latin_american_cultures
-					NOT = { primary_culture = caribeno }
-				}
+                primary_culture = mexican
+                primary_culture = central_american
+                primary_culture = north_andean
+                primary_culture = south_andean
+                primary_culture = platinean
+                primary_culture = brazilian
                 primary_culture = mayan
                 AND = {
                     tag = CUB
@@ -3279,12 +3218,15 @@ oriental_crisis = {
     always = yes
 
     can_use = {
-        tag = EGY
-        has_global_flag = oriental_crisis
+        NOT = { is_our_vassal = THIS }
         is_vassal = no
         number_of_states = 2
+        tag = EGY
         civilized = no
+        has_global_flag = oriental_crisis
         any_owned_province = { is_core = TUR }
+        NOT = { has_country_modifier = neutrality_modifier }
+        NOT = { year = 1860 }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = no_more_war } }
@@ -3297,9 +3239,6 @@ oriental_crisis = {
                 relation = { who = TUR value = 50 }
             }
         }
-        NOT = { is_our_vassal = THIS }
-        NOT = { has_country_modifier = neutrality_modifier }
-        NOT = { year = 1860 }
     }
 
     # THIS - us
@@ -3364,7 +3303,9 @@ release_puppet = {
             }
             war_with = THIS
         }
+        NOT = { is_our_vassal = THIS }
         num_of_vassals_no_substates = 1
+        NOT = { has_country_modifier = neutrality_modifier }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = neutrality_modifier } }
@@ -3378,8 +3319,6 @@ release_puppet = {
             THIS = { NOT = { has_country_flag = in_great_war } }
             THIS = { ai = no }
         }
-        NOT = { is_our_vassal = THIS }
-        NOT = { has_country_modifier = neutrality_modifier }
     }
 
     # THIS - us
@@ -3432,6 +3371,7 @@ release_puppet_AI = {
     always = yes
 
     can_use = {
+        NOT = { is_our_vassal = THIS }
         num_of_vassals_no_substates = 1
         OR = {
             war_with = THIS
@@ -3443,8 +3383,8 @@ release_puppet_AI = {
             }
         }
         THIS = {
-            NOT = { has_country_modifier = neutrality_modifier }
             ai = yes
+            NOT = { has_country_modifier = neutrality_modifier }
         }
         OR = {
             war_with = THIS
@@ -3457,7 +3397,6 @@ release_puppet_AI = {
             THIS = { NOT = { has_country_flag = in_great_war } }
             THIS = { ai = no }
         }
-        NOT = { is_our_vassal = THIS }
     }
 
     # THIS - us
@@ -3516,15 +3455,16 @@ gunboat = {
     always = yes
 
     can_use = {
-        in_default = THIS
-        THIS = {
-            is_greater_power = yes
-            NOT = { has_country_modifier = neutrality_modifier }
-        }
+        NOT = { is_our_vassal = THIS }
         OR = {
             has_country_modifier = in_bankrupcy
             has_country_modifier = generalised_debt_default
         }
+        THIS = {
+            is_greater_power = yes
+            NOT = { has_country_modifier = neutrality_modifier }
+        }
+        in_default = THIS
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = no_more_war } }
@@ -3534,7 +3474,6 @@ gunboat = {
             NOT = { relation = { who = THIS value = 50 } }
             THIS = { ai = no }
         }
-        NOT = { is_our_vassal = THIS }
     }
 
     on_add = {
@@ -3579,6 +3518,10 @@ cut_down_to_size = {
     war_name = CUT_DOWN_TO_SIZE_WAR_NAME
 
     can_use = {
+		NOT = {
+            is_our_vassal = THIS
+            has_country_modifier = neutrality_modifier
+        }
         OR = {
             AND = {
                 THIS = { total_amount_of_ships = 5 }
@@ -3613,10 +3556,6 @@ cut_down_to_size = {
             THIS = { NOT = { has_country_flag = in_great_war } }
             THIS = { ai = no }
         }
-		NOT = {
-            is_our_vassal = THIS
-            has_country_modifier = neutrality_modifier
-        }
     }
 
     on_add = {
@@ -3648,9 +3587,6 @@ cut_down_to_size = {
                         #owns = 1540 #Nantong
                         owns = 1071 #Qeshm
                         owns = 1695 #Ifni
-						owns = 3884 #Benty
-						owns = 3682 #Tarfaya
-						owns = 3841 #Juzur Khuriya Muriya
                     }
                 }
                 THIS = {
@@ -3751,34 +3687,19 @@ great_game_cb = {
     war_name = WAR_PUPPET_NAME
 
     can_use = {
-        THIS = {
-            is_greater_power = yes
-            OR = {
-                tag = ENG
-                tag = RUS
-            }
-            OR = {
-                government = absolute_monarchy
-                government = prussian_constitutionalism
-                government = hms_government
-                government = absolute_empire
-                government = semi_constitutional_empire
-                government = constitutional_empire
-            }
-            NOT = {
-                has_country_flag = no_more_great_game
-                has_country_modifier = punitive_effects
-                badboy = 0.85
-            }
-            NOT = { has_country_modifier = neutrality_modifier }
+        is_vassal = no
+        civilized = no
+        war = no
+        NOT = {
+            has_global_flag = british_dismantled
+            is_our_vassal = THIS
+            truce_with = THIS
+            in_sphere = THIS
         }
         OR = {
             neighbour = THIS
             any_neighbor_country = { vassal_of = THIS }
         }
-        is_vassal = no
-        civilized = no
-        war = no
         OR = {
             AND = { tag = SIN THIS = { tag = ENG } }
             AND = { tag = KAS THIS = { tag = ENG } }
@@ -3855,15 +3776,30 @@ great_game_cb = {
 				THIS = { NOT = { has_global_flag = afghanistan_is_neutral } }
 			}
 		}
+        THIS = {
+            is_greater_power = yes
+            OR = {
+                tag = ENG
+                tag = RUS
+            }
+            OR = {
+                government = absolute_monarchy
+                government = prussian_constitutionalism
+                government = hms_government
+                government = absolute_empire
+                government = semi_constitutional_empire
+                government = constitutional_empire
+            }
+            NOT = {
+                has_country_flag = no_more_great_game
+                has_country_modifier = punitive_effects
+                badboy = 0.85
+            }
+            NOT = { has_country_modifier = neutrality_modifier }
+        }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = no_more_war } }
-        }
-        NOT = {
-            has_global_flag = british_dismantled
-            is_our_vassal = THIS
-            truce_with = THIS
-            in_sphere = THIS
         }
     }
 
@@ -3936,6 +3872,18 @@ great_game_cb_events = {
     war_name = WAR_PUPPET_NAME
 
     can_use = {
+        is_vassal = no
+        civilized = no
+        war = no
+        NOT = {
+            has_global_flag = british_dismantled
+            is_our_vassal = THIS
+            in_sphere = THIS
+        }
+        OR = {
+            neighbour = THIS
+            any_neighbor_country = { vassal_of = THIS }
+        }
         THIS = {
             is_greater_power = yes
             OR = {
@@ -3957,20 +3905,8 @@ great_game_cb_events = {
             NOT = { has_country_modifier = neutrality_modifier }
         }
         OR = {
-            neighbour = THIS
-            any_neighbor_country = { vassal_of = THIS }
-        }
-        is_vassal = no
-        civilized = no
-        war = no
-        OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = no_more_war } }
-        }
-        NOT = {
-            has_global_flag = british_dismantled
-            is_our_vassal = THIS
-            in_sphere = THIS
         }
     }
 
@@ -4026,6 +3962,17 @@ restore_british_raj = {
     war_name = WAR_BRITISH_RAJ_NAME
 
     can_use = {
+        NOT = { has_global_flag = sw_set }
+        is_vassal = no
+        is_disarmed = no
+        civilized = no
+        NOT = {
+            is_our_vassal = THIS
+            truce_with = THIS
+            tag = HND
+            has_country_modifier = neutrality_modifier
+            has_global_flag = british_dismantled
+        }
         OR = {
             tag = ASM
             tag = AWA
@@ -4062,9 +4009,6 @@ restore_british_raj = {
             }
             NOT = { has_country_modifier = neutrality_modifier }
         }
-        is_vassal = no
-        is_disarmed = no
-        civilized = no
         OR = {
             war_with = THIS
             THIS = {
@@ -4072,14 +4016,6 @@ restore_british_raj = {
                     has_country_modifier = no_more_war
                 }
             }
-        }
-        NOT = { has_global_flag = sw_set }
-        NOT = {
-            is_our_vassal = THIS
-            truce_with = THIS
-            tag = HND
-            has_country_modifier = neutrality_modifier
-            has_global_flag = british_dismantled
         }
     }
 
@@ -4118,60 +4054,60 @@ humiliate = {
     good_relation_militancy_factor = 1
 
     can_use = {
+        NOT = { is_our_vassal = THIS }
+        NOT = { has_country_modifier = recently_lost_war }
         OR = {
             war_with = THIS
             THIS = {
                 total_amount_of_divisions = 1
                 NOT = { has_country_modifier = neutrality_modifier }
             }
-			OR = {
-				war_with = THIS
-				THIS = { NOT = { has_country_modifier = no_more_war } }
-			}
-			OR = {
-				THIS = { government = fascist_dictatorship }
-				THIS = { government = proletarian_dictatorship }
-				war_with = THIS
-				NOT = { relation = { who = THIS value = 0 } }
-				THIS = { ai = no }
-			}
-			OR = {
-				NOT = { has_country_flag = dismantle_declared }
-				THIS = { NOT = { has_country_flag = in_great_war } }
-				THIS = { ai = no }
-			}
-			OR = {
-				prestige = 10
-				THIS = { ai = no }
-			}
-			OR = {
-				neighbour = THIS
-				THIS = { is_greater_power = yes }
-				THIS = { ai = no }
-				AND = { OR = { any_neighbor_country = { substate_of = THIS } any_neighbor_country = { vassal_of = THIS } } THIS = { ai = no } }
-			}
-			#AI GP's will not invoke Humiliate when they have Unification Humiliate available
-			NOT = {
-				AND = {
-					culture_has_union_tag = yes
-					is_culture_group = THIS
-					is_greater_power = yes
-					cultural_union = { exists = no }
-					NOT = { has_cultural_sphere = yes }
-					THIS = {
-						ai = yes
-						is_greater_power = yes
-						nationalism_n_imperialism = 1
-					}
-				}
-			}
-		}
-        NOT = { is_our_vassal = THIS }
-        NOT = { has_country_modifier = recently_lost_war }
+        }
         NOT = {
             AND = {
                 has_country_modifier = neutrality_modifier
                 is_greater_power = no
+            }
+        }
+        OR = {
+            war_with = THIS
+            THIS = { NOT = { has_country_modifier = no_more_war } }
+        }
+        OR = {
+            THIS = { government = fascist_dictatorship }
+            THIS = { government = proletarian_dictatorship }
+            war_with = THIS
+            NOT = { relation = { who = THIS value = 0 } }
+            THIS = { ai = no }
+        }
+        OR = {
+            NOT = { has_country_flag = dismantle_declared }
+            THIS = { NOT = { has_country_flag = in_great_war } }
+            THIS = { ai = no }
+        }
+        OR = {
+            prestige = 10
+            THIS = { ai = no }
+        }
+        OR = {
+            neighbour = THIS
+            THIS = { is_greater_power = yes }
+            THIS = { ai = no }
+            AND = { OR = { any_neighbor_country = { substate_of = THIS } any_neighbor_country = { vassal_of = THIS } } THIS = { ai = no } }
+        }
+        #AI GP's will not invoke Humiliate when they have Unification Humiliate available
+        NOT = {
+            AND = {
+                culture_has_union_tag = yes
+                is_culture_group = THIS
+                is_greater_power = yes
+                cultural_union = { exists = no }
+                NOT = { has_cultural_sphere = yes }
+                THIS = {
+                    ai = yes
+                    is_greater_power = yes
+                    nationalism_n_imperialism = 1
+                }
             }
         }
     }
@@ -4217,6 +4153,7 @@ place_in_the_sun = {
     good_relation_militancy_factor = 1
 
     can_use = {
+        NOT = { is_our_vassal = THIS }
         any_owned_province = { is_colonial = yes }
         THIS = {
             NOT = { has_country_modifier = neutrality_modifier }
@@ -4240,23 +4177,23 @@ place_in_the_sun = {
         }
         #AI Pacifist will not use this
         OR = {
+            THIS = { ai = no }
             THIS = { NOT = { war_policy = pacifism } }
             war_with = THIS
-            THIS = { ai = no }
         }
         #AI Anti Military will not use this commonly
         OR = {
+            THIS = { ai = no }
             THIS = { NOT = { war_policy = anti_military } }
             NOT = { relation = { who = THIS value = -50 } }
             war_with = THIS
-            THIS = { ai = no }
         }
         #AI after the Berlin Conference will need to hate each other guts to use this
         OR = {
+            THIS = { ai = no }
             NOT = { has_global_flag = berlin_conference }
             NOT = { relation = { who = THIS value = -100 } }
             war_with = THIS
-            THIS = { ai = no }
         }
 
         OR = {
@@ -4267,7 +4204,6 @@ place_in_the_sun = {
             NOT = { relation = { who = THIS value = 0 } }
             THIS = { ai = no }
         }
-        NOT = { is_our_vassal = THIS }
     }
 
     allowed_states = {
@@ -4411,6 +4347,11 @@ acquire_state = {
     good_relation_militancy_factor = 1
 
     can_use = {
+		is_substate = no
+		OR = {
+			THIS = { civilized = no }
+			NOT = { year = 1860 }
+		}
         OR = {
             AND = {
                 THIS = { total_amount_of_ships = 5 }
@@ -4420,15 +4361,14 @@ acquire_state = {
             neighbour = THIS
             war_with = THIS
         }
+        NOT = {
+            is_our_vassal = THIS
+            has_country_modifier = neutrality_modifier
+        }
         any_state = {
             is_colonial = no
             NOT = { any_owned_province = { is_capital = yes } }
         }
-		is_substate = no
-		OR = {
-			THIS = { civilized = no }
-			NOT = { year = 1860 }
-		}
         OR = {
             THIS = { civilized = no }
             civilized = yes
@@ -4460,6 +4400,7 @@ acquire_state = {
         }
         #AI will not use this CB when duking it out over hegemony
         OR = {
+            THIS = { ai = no }
             NOT = {
                 AND = {
                     culture_has_union_tag = yes
@@ -4469,11 +4410,6 @@ acquire_state = {
                     THIS = { is_greater_power = yes }
                 }
             }
-            THIS = { ai = no }
-        }
-        NOT = {
-            is_our_vassal = THIS
-            has_country_modifier = neutrality_modifier
         }
     }
 
@@ -4687,8 +4623,9 @@ acquire_state_mid = {
 
     can_use = {
 		THIS = { civilized = yes }
-		civilized = yes
 		year = 1860
+		civilized = yes
+		NOT = { year = 1880 }
         OR = {
             AND = {
                 THIS = { total_amount_of_ships = 5 }
@@ -4697,6 +4634,10 @@ acquire_state_mid = {
             neighbour = THIS
 			AND = { OR = { any_neighbor_country = { substate_of = THIS } any_neighbor_country = { vassal_of = THIS } } THIS = { ai = no } }
             war_with = THIS
+        }
+        NOT = {
+            is_our_vassal = THIS
+            has_country_modifier = neutrality_modifier
         }
         any_state = {
             is_colonial = no
@@ -4738,11 +4679,6 @@ acquire_state_mid = {
                     THIS = { is_greater_power = yes }
                 }
             }
-        }
-		NOT = { year = 1880 }
-        NOT = {
-            is_our_vassal = THIS
-            has_country_modifier = neutrality_modifier
         }
     }
 
@@ -4968,6 +4904,10 @@ acquire_state_late = {
 			AND = { OR = { any_neighbor_country = { substate_of = THIS } any_neighbor_country = { vassal_of = THIS } } THIS = { ai = no } }
             war_with = THIS
         }
+        NOT = {
+            is_our_vassal = THIS
+            has_country_modifier = neutrality_modifier
+        }
         any_state = {
             is_colonial = no
             NOT = { any_owned_province = { is_capital = yes } }
@@ -5008,10 +4948,6 @@ acquire_state_late = {
                     THIS = { is_greater_power = yes }
                 }
             }
-        }
-        NOT = {
-            is_our_vassal = THIS
-            has_country_modifier = neutrality_modifier
         }
     }
 
@@ -5226,13 +5162,14 @@ china_acquire_state = {
     always = yes
 
     can_use = {
-        THIS = {
-            is_culture_group = east_asian
-            NOT = {
-                has_country_modifier = neutrality_modifier
-                war_policy = pacifism
+        NOT = {
+            AND = {
+                #THIS = { ai = yes }
+                has_global_flag = sw_set
+                NOT = { year = 1840 }
             }
         }
+        NOT = { is_our_vassal = THIS }
 		neighbour = THIS
         OR = {
             any_owned_province = {
@@ -5240,6 +5177,13 @@ china_acquire_state = {
                 is_core = CHI
             }
             is_culture_group = east_asian
+        }
+        THIS = {
+            is_culture_group = east_asian
+            NOT = {
+                has_country_modifier = neutrality_modifier
+                war_policy = pacifism
+            }
         }
         OR = {
             war_with = THIS
@@ -5304,14 +5248,6 @@ china_acquire_state = {
                 }
             }
         }
-        NOT = {
-            AND = {
-                #THIS = { ai = yes }
-                has_global_flag = sw_set
-                NOT = { year = 1840 }
-            }
-        }
-        NOT = { is_our_vassal = THIS }
     }
 
     allowed_states = {
@@ -5382,34 +5318,6 @@ sahel_jihad_cb = {
     good_relation_militancy_factor = 0
 
     can_use = {
-        any_owned_province = {
-            OR = {
-                province_id = 1786
-                province_id = 3781
-                province_id = 1789
-                province_id = 3787
-                province_id = 3788
-                province_id = 3830
-                province_id = 1794
-                province_id = 3770
-                province_id = 1800
-                province_id = 1804
-                province_id = 1808
-                province_id = 1878
-                province_id = 3831
-                province_id = 1880
-                province_id = 3778
-                province_id = 3780
-            }
-        }
-        THIS = {
-            civilized = no
-            OR = {
-                government = theocracy
-                government = absolute_monarchy
-            }
-            primary_culture = fulbe
-        }
         OR = {
             AND = {
                 THIS = { total_amount_of_ships = 5 }
@@ -5419,20 +5327,40 @@ sahel_jihad_cb = {
             neighbour = THIS
         }
         civilized = no
+        NOT = { is_our_vassal = THIS }
+        any_owned_province = {
+            OR = {
+                province_id = 1786
+                province_id = 1789
+                province_id = 1794
+                province_id = 1800
+                province_id = 1804
+                province_id = 1808
+                province_id = 1878
+                province_id = 1880
+            }
+        }
+        NOT = { has_country_flag = sunni_country }
+        THIS = {
+            civilized = no
+            OR = {
+                government = theocracy
+                government = absolute_monarchy
+            }
+            primary_culture = fulbe
+        }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = no_more_war } }
         }
-        NOT = { is_our_vassal = THIS }
-        NOT = { has_country_flag = sunni_country }
     }
 
     allowed_states = {
+        NOT = { any_owned_province = { is_core = THIS } }
         OR = {
             any_owned_province = { any_neighbor_province = { owned_by = THIS } }
             AND = { owner = { war_with = THIS } THIS = { ai = no } }
         }
-        NOT = { any_owned_province = { is_core = THIS } }
     }
 
     po_demand_state = yes
@@ -5488,6 +5416,7 @@ demand_concession_casus_belli = {
 			AND = { OR = { any_neighbor_country = { substate_of = THIS } any_neighbor_country = { vassal_of = THIS } } THIS = { ai = no } }
             AND = { war_with = THIS ai = no }
         }
+        NOT = { is_our_vassal = THIS }
         THIS = {
             civilized = yes
             NOT = { nationalism_n_imperialism = 1 }
@@ -5531,7 +5460,6 @@ demand_concession_casus_belli = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = punitive_effects } }
         }
-        NOT = { is_our_vassal = THIS }
     }
 
     allowed_states = {
@@ -5699,6 +5627,19 @@ demand_concession_NI_casus_belli = {
     always = no
 
     can_use = {
+        OR = {
+            AND = {
+                OR = {
+                    THIS = { total_amount_of_ships = 5 }
+                    THIS = { ai = no }
+                }
+                any_owned_province = { port = yes }
+            }
+            neighbour = THIS
+			AND = { OR = { any_neighbor_country = { substate_of = THIS } any_neighbor_country = { vassal_of = THIS } } THIS = { ai = no } }
+            AND = { war_with = THIS ai = no }
+        }
+        NOT = { is_our_vassal = THIS }
         THIS = {
 			OR = {
 				AND = {
@@ -5718,18 +5659,6 @@ demand_concession_NI_casus_belli = {
 					}
 				}
 			}
-        }
-        OR = {
-            AND = {
-                OR = {
-                    THIS = { total_amount_of_ships = 5 }
-                    THIS = { ai = no }
-                }
-                any_owned_province = { port = yes }
-            }
-            neighbour = THIS
-			AND = { OR = { any_neighbor_country = { substate_of = THIS } any_neighbor_country = { vassal_of = THIS } } THIS = { ai = no } }
-            AND = { war_with = THIS ai = no }
         }
         OR = {
             war_with = THIS
@@ -5768,7 +5697,6 @@ demand_concession_NI_casus_belli = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = punitive_effects } }
         }
-        NOT = { is_our_vassal = THIS }
     }
 
     allowed_states = {
@@ -5937,12 +5865,6 @@ demand_concession_BC_casus_belli = {
     always = no
 
     can_use = {
-		THIS = {
-            civilized = yes
-            nationalism_n_imperialism = 1
-            has_global_flag = berlin_conference
-            NOT = { has_country_modifier = neutrality_modifier }
-        }
         OR = {
             AND = {
                 OR = {
@@ -5954,6 +5876,13 @@ demand_concession_BC_casus_belli = {
             neighbour = THIS
 			AND = { OR = { any_neighbor_country = { substate_of = THIS } any_neighbor_country = { vassal_of = THIS } } THIS = { ai = no } }
             AND = { war_with = THIS ai = no }
+        }
+        NOT = { is_our_vassal = THIS }
+		THIS = {
+            civilized = yes
+            nationalism_n_imperialism = 1
+            has_global_flag = berlin_conference
+            NOT = { has_country_modifier = neutrality_modifier }
         }
         OR = {
             war_with = THIS
@@ -5992,7 +5921,6 @@ demand_concession_BC_casus_belli = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = punitive_effects } }
         }
-        NOT = { is_our_vassal = THIS }
     }
 
     allowed_states = {
@@ -6160,21 +6088,6 @@ rude_boy = {
     always = yes
 
     can_use = {
-        badboy = 1
-        is_disarmed = no
-        OR = {
-            war_with = THIS
-            THIS = {
-                NOT = { has_country_modifier = neutrality_modifier }
-                total_amount_of_divisions = 1
-            }
-        }
-
-        OR = {
-            NOT = { has_country_flag = dismantle_declared }
-            THIS = { NOT = { has_country_flag = in_great_war } }
-            THIS = { ai = no }
-        }
 		NOT = {
 			AND = {
 				government = proletarian_dictatorship
@@ -6196,6 +6109,21 @@ rude_boy = {
 			}
 		}
         NOT = { is_our_vassal = THIS }
+        badboy = 1
+        is_disarmed = no
+        OR = {
+            war_with = THIS
+            THIS = {
+                NOT = { has_country_modifier = neutrality_modifier }
+                total_amount_of_divisions = 1
+            }
+        }
+
+        OR = {
+            NOT = { has_country_flag = dismantle_declared }
+            THIS = { NOT = { has_country_flag = in_great_war } }
+            THIS = { ai = no }
+        }
     }
 
     po_remove_prestige = yes
@@ -6224,6 +6152,14 @@ conquest = {
     crisis = no
 
     can_use = {
+		NOT = {
+			AND = {
+				THIS = { ai = no }
+				NOT = { total_pops = 400000 }
+				NOT = { number_of_states = 3 }
+			}
+		}
+        NOT = { is_our_vassal = THIS }
         OR = {
             AND = {
                 THIS = { total_amount_of_ships = 5 }
@@ -6259,6 +6195,13 @@ conquest = {
                 NOT = { number_of_states = 4 }
             }
         }
+        NOT = { has_country_modifier = neutrality_modifier }
+        THIS = {
+            NOT = {
+                has_country_modifier = neutrality_modifier
+                has_country_modifier = disable_conquest_cb
+            }
+        }
         OR = {
             war_with = THIS
             THIS = { total_amount_of_divisions = 1 }
@@ -6277,12 +6220,13 @@ conquest = {
 
         #AI anti-military will not use this
         OR = {
-            THIS = { NOT = { war_policy = anti_military } }
             THIS = { ai = no }
+            THIS = { NOT = { war_policy = anti_military } }
         }
 
         #AI will not use this when fighting for hegemony
         OR = {
+            THIS = { ai = no }
             NOT = {
                 AND = {
                     any_owned_province = {
@@ -6300,11 +6244,11 @@ conquest = {
                     THIS = { is_greater_power = yes }
                 }
             }
-            THIS = { ai = no }
         }
 
         #AI can only grab neighboring states, coastal if it's a coastal GP
         OR = {
+            THIS = { ai = no }
             any_owned_province = { any_neighbor_province = { owned_by = THIS } }
             AND = {
                 any_owned_province = { port = yes }
@@ -6316,11 +6260,11 @@ conquest = {
                     any_owned_province = { port = yes }
                 }
             }
-            THIS = { ai = no }
         }
 
         #AI will not grab cores of allies/spherelings
         OR = {
+            THIS = { ai = no }
             NOT = {
                 any_owned_province = {
                     any_core = {
@@ -6333,11 +6277,11 @@ conquest = {
                     }
                 }
             }
-            THIS = { ai = no }
         }
 
         #AI will not try to grab cores of their union if they're sphere to a GP of their culture group
         OR = {
+            THIS = { ai = no }
             NOT = {
                 AND = {
                     THIS = {
@@ -6355,7 +6299,6 @@ conquest = {
                     }
                 }
             }
-            THIS = { ai = no }
         }
 
         #pro-military AI will not grab cores of non-existing, non-union countries
@@ -6363,6 +6306,7 @@ conquest = {
         #jingoistic will also grab existing cores that they already own some of
         #fascist & communist countries are exempt from this
         OR = {
+            THIS = { ai = no }
             THIS = { government = proletarian_dictatorship }
             THIS = { government = fascist_dictatorship }
             AND = {
@@ -6392,22 +6336,6 @@ conquest = {
                         }
                     }
                 }
-            }
-            THIS = { ai = no }
-        }
-		NOT = {
-			AND = {
-				THIS = { ai = no }
-				NOT = { total_pops = 400000 }
-				NOT = { number_of_states = 3 }
-			}
-		}
-        NOT = { is_our_vassal = THIS }
-        NOT = { has_country_modifier = neutrality_modifier }
-        THIS = {
-            NOT = {
-                has_country_modifier = neutrality_modifier
-                has_country_modifier = disable_conquest_cb
             }
         }
     }
@@ -6465,20 +6393,7 @@ annex_africa = {
     always = yes
 
     can_use = {
-        THIS = {
-            has_global_flag = berlin_conference
-            OR = {
-                is_greater_power = yes
-                is_secondary_power = yes
-            }
-            nationalism_n_imperialism = 1
-            capital_scope = { continent = europe }
-            slavery = no_slavery
-            NOT = { has_country_modifier = neutrality }
-            civilized = yes
-            NOT = { tag = RUS }
-            NOT = { tag = TUR }
-        }
+        NOT = { has_country_flag = congo_master }
         OR = {
             AND = {
                 THIS = { any_owned_province = { port = yes } }
@@ -6487,7 +6402,32 @@ annex_africa = {
             neighbour = THIS
             AND = { war_with = THIS ai = no }
         }
+        NOT = { is_our_vassal = THIS }
         number_of_states = 2
+        THIS = {
+            nationalism_n_imperialism = 1
+            capital_scope = { continent = europe }
+            NOT = { tag = RUS }
+            NOT = { tag = TUR }
+            slavery = no_slavery
+            OR = {
+                is_greater_power = yes
+                is_secondary_power = yes
+            }
+            NOT = { has_country_modifier = neutrality }
+            civilized = yes
+            has_global_flag = berlin_conference
+        }
+        NOT = {
+            tag = MOR
+            tag = ALD
+            tag = TRI
+            tag = LIB
+            tag = ETH
+            tag = MAD
+            tag = EGY
+            has_country_flag = post_colonial_country
+        }
         civilized = no
         OR = {
             capital_scope = { continent = africa }
@@ -6496,6 +6436,7 @@ annex_africa = {
             capital_scope = { continent = east_africa }
             capital_scope = { continent = south_africa }
         }
+        ai = yes
         OR = {
             war_with = THIS
             THIS = {
@@ -6558,7 +6499,6 @@ annex_africa = {
 						}
 						#Nigeria
 						AND = {
-							ENG = { has_country_flag = niger_coast_protectorate }
 							any_owned_province = {
 								OR = {
 									region = FRA_1923
@@ -6567,7 +6507,6 @@ annex_africa = {
 									region = SOK_1934
 									region = SOK_1945
 									region = SOK_1937
-									region = SOK_1941
 								}
 							}
 							any_neighbor_country = {
@@ -6581,18 +6520,17 @@ annex_africa = {
 										region = SOK_1934
 										region = SOK_1945
 										region = SOK_1937
-										region = SOK_1941
 									}
 								}
 							}
 						}
 						#Guinea
 						AND = {
-							any_owned_province = { OR = { region = FRA_1883 region = FRA_1879 } }
+							any_owned_province = { region = FRA_1883 }
 							any_neighbor_country = {
 								NOT = { tag = THIS }
 								civilized = yes
-								any_owned_province = { OR = { region = FRA_1883 region = FRA_1879 } }
+								any_owned_province = { region = FRA_1883 }
 							}
 						}
 						#Guinea-Bissau
@@ -6618,10 +6556,8 @@ annex_africa = {
 							any_owned_province = {
 								OR = {
 									region = FRA_1783
-									region = FRA_1787
 									region = FRA_1788
 									region = FRA_1775
-									region = FRA_1780
 								}
 							}
 							any_neighbor_country = {
@@ -6630,10 +6566,8 @@ annex_africa = {
 								any_owned_province = {
 									OR = {
 										region = FRA_1783
-										region = FRA_1787
 										region = FRA_1788
 										region = FRA_1775
-										region = FRA_1780
 									}
 								}
 							}
@@ -6644,7 +6578,6 @@ annex_africa = {
 								OR = {
 									region = FRA_1798
 									region = FRA_1801
-									region = FRA_1794
 									region = FRA_1803
 								}
 							}
@@ -6655,7 +6588,6 @@ annex_africa = {
 									OR = {
 										region = FRA_1798
 										region = FRA_1801
-										region = FRA_1794
 										region = FRA_1803
 									}
 								}
@@ -6664,13 +6596,13 @@ annex_africa = {
 						#Niger
 						AND = {
 							any_owned_province = {
-								OR = { region = FRA_1808 region = FRA_1813 }
+								region = FRA_1808
 							}
 							any_neighbor_country = {
 								NOT = { tag = THIS }
 								civilized = yes
 								any_owned_province = {
-									OR = { region = FRA_1808 region = FRA_1813 }
+									region = FRA_1808
 								}
 							}
 						}
@@ -6812,7 +6744,6 @@ annex_africa = {
 								OR = {
 									region = SOM_1868
 									region = SOM_1872
-									region = SOM_1871
 								}
 							}
 							any_neighbor_country = {
@@ -6822,7 +6753,6 @@ annex_africa = {
 									OR = {
 										region = SOM_1868
 										region = SOM_1872
-										region = SOM_1871
 									}
 								}
 							}
@@ -6831,19 +6761,6 @@ annex_africa = {
 				}
 			}
 		}
-        NOT = { has_country_flag = congo_master }
-        NOT = { is_our_vassal = THIS }
-        NOT = {
-            tag = MOR
-            tag = ALD
-            tag = TRI
-            tag = LIB
-            tag = ETH
-            tag = MAD
-            tag = EGY
-            has_country_flag = post_colonial_country
-        }
-        ai = yes
     }
 
     allowed_states = {
@@ -6900,13 +6817,6 @@ annex_africa_full = {
 
     can_use = {
         OR = {
-            capital_scope = { continent = africa }
-            capital_scope = { continent = central_africa }
-            capital_scope = { continent = west_africa }
-            capital_scope = { continent = east_africa }
-            capital_scope = { continent = south_africa }
-        }
-        OR = {
             AND = {
                 THIS = { total_amount_of_ships = 5 }
                 any_owned_province = { port = yes }
@@ -6914,27 +6824,50 @@ annex_africa_full = {
             neighbour = THIS
             war_with = THIS
         }
+        NOT = { is_our_vassal = THIS }
+        NOT = { number_of_states = 2 }
         OR = {
             war_with = THIS
             THIS = { total_amount_of_divisions = 1 }
         }
         THIS = {
-            has_global_flag = berlin_conference
+            nationalism_n_imperialism = 1
+            capital_scope = { continent = europe }
+            NOT = { tag = RUS }
+            NOT = { tag = TUR }
+            slavery = no_slavery
             OR = {
                 is_greater_power = yes
                 is_secondary_power = yes
             }
-            nationalism_n_imperialism = 1
-            capital_scope = { continent = europe }
-            slavery = no_slavery
               NOT = { has_country_modifier = neutrality_modifier }
             NOT = { has_country_modifier = claimed_africa }
             NOT = { has_country_flag = congo_award }
             civilized = yes
-            NOT = { tag = RUS }
-            NOT = { tag = TUR }
+            has_global_flag = berlin_conference
         }
         civilized = no
+        NOT = {
+            tag = MOR
+            tag = ALD
+            tag = TRI
+            tag = LIB
+            tag = CYR
+            primary_culture = kefficho
+            primary_culture = amhara
+            primary_culture = tigray
+            primary_culture = oromo
+            primary_culture = harari
+            has_country_flag = post_colonial_country
+        }
+        OR = {
+            capital_scope = { continent = africa }
+            capital_scope = { continent = central_africa }
+            capital_scope = { continent = west_africa }
+            capital_scope = { continent = east_africa }
+            capital_scope = { continent = south_africa }
+        }
+        ai = yes
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = punitive_effects } }
@@ -6962,7 +6895,6 @@ annex_africa_full = {
 			NOT = {
 				AND = {
 					THIS = { ai = yes }
-					
 					OR = {
 						#Ghana
 						AND = {
@@ -7012,7 +6944,6 @@ annex_africa_full = {
 									region = SOK_1934
 									region = SOK_1945
 									region = SOK_1937
-									region = SOK_1941
 								}
 							}
 							any_neighbor_country = {
@@ -7026,18 +6957,17 @@ annex_africa_full = {
 										region = SOK_1934
 										region = SOK_1945
 										region = SOK_1937
-										region = SOK_1941
 									}
 								}
 							}
 						}
 						#Guinea
 						AND = {
-							any_owned_province = { OR = { region = FRA_1883 region = FRA_1879 } }
+							any_owned_province = { region = FRA_1883 }
 							any_neighbor_country = {
 								NOT = { tag = THIS }
 								civilized = yes
-								any_owned_province = { OR = { region = FRA_1883 region = FRA_1879 } }
+								any_owned_province = { region = FRA_1883 }
 							}
 						}
 						#Guinea-Bissau
@@ -7063,10 +6993,8 @@ annex_africa_full = {
 							any_owned_province = {
 								OR = {
 									region = FRA_1783
-									region = FRA_1787
 									region = FRA_1788
 									region = FRA_1775
-									region = FRA_1780
 								}
 							}
 							any_neighbor_country = {
@@ -7075,10 +7003,8 @@ annex_africa_full = {
 								any_owned_province = {
 									OR = {
 										region = FRA_1783
-										region = FRA_1787
 										region = FRA_1788
 										region = FRA_1775
-										region = FRA_1780
 									}
 								}
 							}
@@ -7089,7 +7015,6 @@ annex_africa_full = {
 								OR = {
 									region = FRA_1798
 									region = FRA_1801
-									region = FRA_1794
 									region = FRA_1803
 								}
 							}
@@ -7100,7 +7025,6 @@ annex_africa_full = {
 									OR = {
 										region = FRA_1798
 										region = FRA_1801
-										region = FRA_1794
 										region = FRA_1803
 									}
 								}
@@ -7109,13 +7033,13 @@ annex_africa_full = {
 						#Niger
 						AND = {
 							any_owned_province = {
-								OR = { region = FRA_1808 region = FRA_1813 }
+								region = FRA_1808
 							}
 							any_neighbor_country = {
 								NOT = { tag = THIS }
 								civilized = yes
 								any_owned_province = {
-									OR = { region = FRA_1808 region = FRA_1813 }
+									region = FRA_1808
 								}
 							}
 						}
@@ -7257,7 +7181,6 @@ annex_africa_full = {
 								OR = {
 									region = SOM_1868
 									region = SOM_1872
-									region = SOM_1871
 								}
 							}
 							any_neighbor_country = {
@@ -7267,7 +7190,6 @@ annex_africa_full = {
 									OR = {
 										region = SOM_1868
 										region = SOM_1872
-										region = SOM_1871
 									}
 								}
 							}
@@ -7276,22 +7198,6 @@ annex_africa_full = {
 				}
 			}
 		}
-        NOT = { is_our_vassal = THIS }
-        NOT = { number_of_states = 2 }
-        NOT = {
-            tag = MOR
-            tag = ALD
-            tag = TRI
-            tag = LIB
-            tag = CYR
-            primary_culture = kefficho
-            primary_culture = amhara
-            primary_culture = tigray
-            primary_culture = oromo
-            primary_culture = harari
-            has_country_flag = post_colonial_country
-        }
-        ai = yes
     }
 
     po_annex = yes
@@ -7340,14 +7246,6 @@ establish_protectorate_casus_belli = {
 
     can_use = {
 
-		THIS = {
-            civilized = yes
-			NOT = {
-				nationalism_n_imperialism = 1
-				has_global_flag = berlin_conference
-				has_country_modifier = neutrality_modifier
-			}
-        }
 		OR = {
             any_owned_province = { any_neighbor_province = { owned_by = THIS } }
             AND = {
@@ -7356,6 +7254,19 @@ establish_protectorate_casus_belli = {
             }
         }
 		civilized = no
+        NOT = {
+			is_our_vassal = THIS
+			has_country_modifier = neutrality_modifier
+			number_of_states = 2
+		}
+		THIS = {
+            civilized = yes
+			NOT = {
+				nationalism_n_imperialism = 1
+				has_global_flag = berlin_conference
+				has_country_modifier = neutrality_modifier
+			}
+        }
         OR = {
             war_with = THIS
             THIS = { total_amount_of_divisions = 1 }
@@ -7458,11 +7369,6 @@ establish_protectorate_casus_belli = {
             }
         } ###End of Non-African Restrictions
 
-        NOT = {
-			is_our_vassal = THIS
-			has_country_modifier = neutrality_modifier
-			number_of_states = 2
-		}
     }
 
     po_annex = yes
@@ -7504,6 +7410,14 @@ establish_protectorate_NI_casus_belli = {
     always = no
 
     can_use = {
+        OR = {
+            any_owned_province = { any_neighbor_province = { owned_by = THIS } }
+            AND = {
+                any_owned_province = { port = yes }
+                THIS = { any_owned_province = { port = yes } }
+            }
+        }
+        NOT = { is_our_vassal = THIS }
         THIS = {
 			OR = {
 				AND = {
@@ -7525,13 +7439,6 @@ establish_protectorate_NI_casus_belli = {
 			}
         }
         OR = {
-            any_owned_province = { any_neighbor_province = { owned_by = THIS } }
-            AND = {
-                any_owned_province = { port = yes }
-                THIS = { any_owned_province = { port = yes } }
-            }
-        }
-        OR = {
             war_with = THIS
             THIS = { total_amount_of_divisions = 1 }
         }
@@ -7545,6 +7452,7 @@ establish_protectorate_NI_casus_belli = {
                 THIS = { tag = JAP }
             }
         }
+        NOT = { number_of_states = 3 }
         civilized = no
         OR = {
             war_with = THIS
@@ -7633,8 +7541,6 @@ establish_protectorate_NI_casus_belli = {
                 }
             }
         } ###End of Non-African Restrictions
-        NOT = { is_our_vassal = THIS }
-        NOT = { number_of_states = 3 }
     }
 
     po_annex = yes
@@ -7676,18 +7582,19 @@ establish_protectorate_BC_casus_belli = {
     always = no
 
     can_use = {
-        THIS = {
-            civilized = yes
-            nationalism_n_imperialism = 1
-            has_global_flag = berlin_conference
-            NOT = { has_country_modifier = neutrality_modifier }
-        }
         OR = {
             any_owned_province = { any_neighbor_province = { owned_by = THIS } }
             AND = {
                 any_owned_province = { port = yes }
                 THIS = { any_owned_province = { port = yes } }
             }
+        }
+        NOT = { is_our_vassal = THIS }
+        THIS = {
+            civilized = yes
+            nationalism_n_imperialism = 1
+            has_global_flag = berlin_conference
+            NOT = { has_country_modifier = neutrality_modifier }
         }
         OR = {
             war_with = THIS
@@ -7702,6 +7609,11 @@ establish_protectorate_BC_casus_belli = {
                 tag = KOR
                 THIS = { tag = JAP }
             }
+        }
+        NOT = {
+            civilized = yes
+            war_with = THIS
+            has_country_modifier = neutrality_modifier
         }
         OR = {
             NOT = { number_of_states = 12 }
@@ -7718,6 +7630,7 @@ establish_protectorate_BC_casus_belli = {
         #}
 
         OR = {
+            THIS = { ai = no }
             THIS = { war_policy = jingoism NOT = { government = democracy } }
             NOT = {
                 THIS = {
@@ -7728,7 +7641,6 @@ establish_protectorate_BC_casus_belli = {
                     }
                 }
             }
-            THIS = { ai = no }
         }
 
         #Restrictions to non-African State conquering
@@ -7799,12 +7711,6 @@ establish_protectorate_BC_casus_belli = {
                 }
             }
         } ###End of Non-African Restrictions
-        NOT = { is_our_vassal = THIS }
-        NOT = {
-            civilized = yes
-            war_with = THIS
-            has_country_modifier = neutrality_modifier
-        }
     }
 
     po_annex = yes
@@ -7846,10 +7752,10 @@ negotiated_transfer = {
     construction_speed = 1000.0
 
     can_use = {
-        ai = no
-        THIS = { ai = no }
         number_of_states = 2 # annex if you want their last state
         is_vassal = no
+        ai = no
+        THIS = { ai = no }
         THIS = { civilized = yes }
     }
 
@@ -7903,89 +7809,6 @@ egyptian_ottoman_war = {
 
     on_po_accepted = {
 		THIS = { country_event = 18482273 }
-		add_country_modifier = { name = recently_lost_war duration = 1825 }
-    }
-}
-conquest_senegal = {
-    sprite_index = 7
-    is_triggered_only = yes
-    months = 12
-
-    badboy_factor = 0
-    prestige_factor = 1
-    peace_cost_factor = 60
-    penalty_factor = 0
-    constructing_cb = no
-    crisis = no
-
-    break_truce_prestige_factor = 0
-    break_truce_infamy_factor = 0
-    break_truce_militancy_factor = 0
-    truce_months = 48
-
-    good_relation_prestige_factor = 0
-    good_relation_infamy_factor = 0
-    good_relation_militancy_factor = 0
-
-	po_status_quo = yes
-
-    war_name = CONQUEST_SENEGAL_WAR_NAME
-
-    can_use = {
-    }
-
-    on_add = {
-    }
-
-    on_po_accepted = {
-		random_owned = {
-			limit = {
-				owner = {
-					FRA = { exists = yes } BOR = { exists = no }
-				}
-			}
-			owner = {
-				any_owned = {
-					limit = { OR = {
-						province_id = 3786
-						province_id = 3885
-						province_id = 3787
-						province_id = 3788
-						province_id = 3830
-						province_id = 3785
-						province_id = 3829
-						province_id = 1790
-						province_id = 1796
-					} }
-					secede_province = THIS
-					secede_province = FRA
-				}
-			}
-		}
-		random_owned = {
-			limit = {
-				owner = {
-					FRA = { exists = no } BOR = { exists = yes }
-				}
-			}
-			owner = {
-				any_owned = {
-					limit = { OR = {
-						province_id = 3786
-						province_id = 3885
-						province_id = 3787
-						province_id = 3788
-						province_id = 3830
-						province_id = 3785
-						province_id = 3829
-						province_id = 1790
-						province_id = 1796
-					} }
-					secede_province = THIS
-					secede_province = BOR
-				}
-			}
-		}
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
     }
 }
@@ -8139,6 +7962,7 @@ anglo_persian_cb = {
 								owns = 3511
 								owns = 3513
 								owns = 3526
+								owns = 1221
 								owns = 1215
 								owns = 1146
 								owns = 1144
@@ -8670,8 +8494,8 @@ cut_down_to_size_boxer = {
 
     can_use = {
         tag = QNG
-        has_country_flag = boxers_appeared
         civilized = no
+        has_country_flag = boxers_appeared
         NOT = { has_country_flag = boxers_disbanded }
     }
 
@@ -8905,7 +8729,22 @@ make_puppet = {
     good_relation_militancy_factor = 1
 
     can_use = {
+		ai = yes
 		total_pops = 400000
+        NOT = {
+            is_our_vassal = THIS
+            has_country_modifier = neutrality_modifier
+            OR = {
+				AND = {
+					total_pops = 5000000
+					NOT = { has_global_flag = you_are_playing_mp }
+				}
+				AND = {
+					total_pops = 2000000
+					has_global_flag = you_are_playing_mp
+				}
+			}
+        }
         OR = {
             AND = {
                 THIS = { total_amount_of_ships = 5 }
@@ -8921,27 +8760,6 @@ make_puppet = {
                 }
             }
         }
-        OR = {
-            THIS = { government = fascist_dictatorship }
-            THIS = { government = proletarian_dictatorship }
-            war_with = THIS
-            NOT = { relation = { who = THIS value = 0 } }
-            THIS = { ai = no }
-        }
-        NOT = {
-            is_our_vassal = THIS
-            has_country_modifier = neutrality_modifier
-            OR = {
-				AND = {
-					total_pops = 5000000
-					NOT = { has_global_flag = you_are_playing_mp }
-				}
-				AND = {
-					total_pops = 2000000
-					has_global_flag = you_are_playing_mp
-				}
-			}
-        }
         is_vassal = no
         is_greater_power = no
         OR = {
@@ -8955,7 +8773,13 @@ make_puppet = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = no_more_war } }
         }
-		ai = yes
+        OR = {
+            THIS = { government = fascist_dictatorship }
+            THIS = { government = proletarian_dictatorship }
+            war_with = THIS
+            NOT = { relation = { who = THIS value = 0 } }
+            THIS = { ai = no }
+        }
     }
 
     # THIS - us
@@ -9002,13 +8826,12 @@ make_puppet_small = {
     good_relation_militancy_factor = 1
 
     can_use = {
+		ai = yes
 		total_pops = 100000
-        OR = {
-            THIS = { government = fascist_dictatorship }
-            THIS = { government = proletarian_dictatorship }
-            war_with = THIS
-            NOT = { relation = { who = THIS value = 0 } }
-            THIS = { ai = no }
+        NOT = {
+			total_pops = 400000
+            is_our_vassal = THIS
+            has_country_modifier = neutrality_modifier
         }
         OR = {
             AND = {
@@ -9038,12 +8861,13 @@ make_puppet_small = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = no_more_war } }
         }
-        NOT = {
-			total_pops = 400000
-            is_our_vassal = THIS
-            has_country_modifier = neutrality_modifier
+        OR = {
+            THIS = { government = fascist_dictatorship }
+            THIS = { government = proletarian_dictatorship }
+            war_with = THIS
+            NOT = { relation = { who = THIS value = 0 } }
+            THIS = { ai = no }
         }
-		ai = yes
     }
 
     # THIS - us
@@ -9090,14 +8914,13 @@ make_puppet_tiny = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        OR = {
-            THIS = { government = fascist_dictatorship }
-            THIS = { government = proletarian_dictatorship }
-            war_with = THIS
-            NOT = { relation = { who = THIS value = 0 } }
-            THIS = { ai = no }
-        }
+		ai = yes
 		total_pops = 10000
+        NOT = {
+			total_pops = 100000
+            is_our_vassal = THIS
+            has_country_modifier = neutrality_modifier
+        }
         OR = {
             AND = {
                 THIS = { total_amount_of_ships = 5 }
@@ -9126,12 +8949,13 @@ make_puppet_tiny = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = no_more_war } }
         }
-        NOT = {
-			total_pops = 100000
-            is_our_vassal = THIS
-            has_country_modifier = neutrality_modifier
+        OR = {
+            THIS = { government = fascist_dictatorship }
+            THIS = { government = proletarian_dictatorship }
+            war_with = THIS
+            NOT = { relation = { who = THIS value = 0 } }
+            THIS = { ai = no }
         }
-		ai = yes
     }
 
     # THIS - us
@@ -9178,12 +9002,11 @@ make_puppet_minuscule = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        OR = {
-            THIS = { government = fascist_dictatorship }
-            THIS = { government = proletarian_dictatorship }
-            war_with = THIS
-            NOT = { relation = { who = THIS value = 0 } }
-            THIS = { ai = no }
+		ai = yes
+        NOT = {
+			total_pops = 10000
+            is_our_vassal = THIS
+            has_country_modifier = neutrality_modifier
         }
         OR = {
             AND = {
@@ -9213,12 +9036,13 @@ make_puppet_minuscule = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = no_more_war } }
         }
-        NOT = {
-			total_pops = 10000
-            is_our_vassal = THIS
-            has_country_modifier = neutrality_modifier
+        OR = {
+            THIS = { government = fascist_dictatorship }
+            THIS = { government = proletarian_dictatorship }
+            war_with = THIS
+            NOT = { relation = { who = THIS value = 0 } }
+            THIS = { ai = no }
         }
-		ai = yes
     }
 
     # THIS - us
@@ -9333,6 +9157,7 @@ uninstall_communist_gov_cb = {
     good_relation_militancy_factor = 1
 
     can_use = {
+        THIS = { NOT = { ruling_party_ideology = communist } }
         government = proletarian_dictatorship
         OR = {
             war_with = THIS
@@ -9349,7 +9174,6 @@ uninstall_communist_gov_cb = {
                 }
             }
         }
-        THIS = { NOT = { ruling_party_ideology = communist } }
     }
 
     po_uninstall_communist_gov_type = yes
@@ -9391,7 +9215,6 @@ great_war_install_democracy = {
     always = yes
 
     can_use = {
-        has_country_flag = in_great_war
         THIS = {
             has_country_flag = in_great_war
             is_greater_power = yes
@@ -9401,13 +9224,14 @@ great_war_install_democracy = {
                 government = democracy
             }
         }
-        war_with = THIS
+        has_country_flag = in_great_war
         civilized = yes
+        NOT = { is_our_vassal = THIS }
+        war_with = THIS
         OR = {
             government = proletarian_dictatorship
             government = fascist_dictatorship
         }
-        NOT = { is_our_vassal = THIS }
     }
 
     po_remove_prestige = yes
@@ -9452,15 +9276,15 @@ great_war_install_fascism = {
     always = yes
 
     can_use = {
-        has_country_flag = in_great_war
         THIS = {
             has_country_flag = in_great_war
             is_greater_power = yes
             government = fascist_dictatorship
         }
-        war_with = THIS
+        has_country_flag = in_great_war
         civilized = yes
         NOT = { is_our_vassal = THIS }
+        war_with = THIS
         NOT = { government = fascist_dictatorship }
     }
 
@@ -9506,15 +9330,15 @@ great_war_install_communism = {
     always = yes
 
     can_use = {
-        has_country_flag = in_great_war
         THIS = {
             has_country_flag = in_great_war
             is_greater_power = yes
             government = proletarian_dictatorship
         }
-        war_with = THIS
+        has_country_flag = in_great_war
         civilized = yes
         NOT = { is_our_vassal = THIS }
+        war_with = THIS
         NOT = { government = proletarian_dictatorship }
     }
 
@@ -9560,17 +9384,18 @@ install_democracy = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        has_global_flag = great_wars_enabled
         THIS = {
+            NOT = { has_country_flag = in_great_war }
             is_greater_power = yes
             OR = {
                 government = hms_government
                 government = constitutional_empire
                 government = democracy
             }
-            NOT = { has_country_flag = in_great_war }
         }
+        has_global_flag = great_wars_enabled
         civilized = yes
+        NOT = { is_our_vassal = THIS }
         OR = {
             government = proletarian_dictatorship
             government = fascist_dictatorship
@@ -9591,7 +9416,6 @@ install_democracy = {
                 }
             }
         }
-        NOT = { is_our_vassal = THIS }
     }
 
     po_remove_prestige = yes
@@ -9646,12 +9470,14 @@ install_fascism = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        is_ideology_enabled = fascist
         THIS = {
-            government = fascist_dictatorship
             NOT = { has_country_flag = in_great_war }
+            government = fascist_dictatorship
         }
+        is_ideology_enabled = fascist
         civilized = yes
+        NOT = { is_our_vassal = THIS }
+        NOT = { government = fascist_dictatorship }
         OR = {
             war_with = THIS
             THIS = {
@@ -9668,8 +9494,6 @@ install_fascism = {
                 }
             }
         }
-        NOT = { is_our_vassal = THIS }
-        NOT = { government = fascist_dictatorship }
     }
 
     po_remove_prestige = yes
@@ -9725,12 +9549,15 @@ install_communism = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        is_ideology_enabled = communist
         THIS = {
-            government = proletarian_dictatorship
             NOT = { has_country_flag = in_great_war }
+            government = proletarian_dictatorship
         }
+        is_ideology_enabled = communist
         civilized = yes
+        NOT = { is_our_vassal = THIS }
+        NOT = { government = proletarian_dictatorship }
+        NOT = { has_country_modifier = neutrality_modifier }
         OR = {
             war_with = THIS
             THIS = {
@@ -9747,9 +9574,6 @@ install_communism = {
                 }
             }
         }
-        NOT = { is_our_vassal = THIS }
-        NOT = { government = proletarian_dictatorship }
-        NOT = { has_country_modifier = neutrality_modifier }
     }
 
     po_remove_prestige = yes
@@ -9808,8 +9632,9 @@ acquire_substate_region = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        THIS = { ai = no }
+        NOT = { is_our_vassal = THIS }
         num_of_substates = 1 # if has any substate
+        THIS = { ai = no }
         any_substate = {
             OR = {
                 neighbour = THIS
@@ -9824,7 +9649,6 @@ acquire_substate_region = {
                 is_colonial = no
             }
         }
-        NOT = { is_our_vassal = THIS }
     }
 
     allowed_substate_regions = {
@@ -9884,8 +9708,16 @@ acquire_substate_core_region = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        THIS = { ai = no }
+        NOT = {
+            AND = {
+                #THIS = { ai = yes }
+                has_global_flag = sw_set
+                NOT = { year = 1840 }
+            }
+        }
+        NOT = { is_our_vassal = THIS }
         num_of_substates = 1 # if has any substate
+        THIS = { ai = no }
         any_substate = {
             any_owned_province = { is_core = THIS }
             #NOT = { any_owned_province = { is_capital = yes } }
@@ -9900,14 +9732,6 @@ acquire_substate_core_region = {
             NOT = { in_sphere = THIS }
             number_of_states = 1
         }
-        NOT = {
-            AND = {
-                #THIS = { ai = yes }
-                has_global_flag = sw_set
-                NOT = { year = 1840 }
-            }
-        }
-        NOT = { is_our_vassal = THIS }
     }
 
     allowed_substate_regions = {
@@ -10000,7 +9824,10 @@ dismantle_forts = {
 
 
     can_use = {
-        THIS = { civilized = yes }
+        NOT = {
+            is_our_vassal = THIS
+            has_country_modifier = neutrality_modifier
+        }
         OR = {
             war_with = THIS
             THIS = {
@@ -10008,6 +9835,7 @@ dismantle_forts = {
                 total_amount_of_divisions = 1
             }
         }
+        THIS = { civilized = yes }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = no_more_war } }
@@ -10019,10 +9847,6 @@ dismantle_forts = {
             war_with = THIS
             NOT = { relation = { who = THIS value = 0 } }
             THIS = { ai = no }
-        }
-        NOT = {
-            is_our_vassal = THIS
-            has_country_modifier = neutrality_modifier
         }
     }
 
@@ -10271,7 +10095,6 @@ spanish_reconquista = {
 
     can_use = {
 		THIS = {
-			has_global_flag = reconquista
 			OR = {
 				tag = SPA
 				tag = SPC
@@ -10279,6 +10102,7 @@ spanish_reconquista = {
 			}
 			primary_culture = spanish
 			NOT = { has_global_flag = spanish_american_war }
+			has_global_flag = reconquista
 		}
 		OR = {
 			tag = MEX
@@ -10492,6 +10316,7 @@ treaty_port_casus_belli = {
     always = no
 
     can_use = {
+        NOT = { is_our_vassal = THIS }
         THIS = {
             civilized = yes
             is_disarmed = no
@@ -10512,6 +10337,15 @@ treaty_port_casus_belli = {
                 war_with = THIS
             }
         }
+        NOT = { has_country_modifier = neutrality_modifier }
+        civilized = no
+        is_vassal = no
+        num_of_cities = 2
+        OR = {
+            war_with = THIS
+            THIS = { NOT = { has_country_modifier = punitive_effects } }
+        }
+
         OR = {
             owns = 1498 #Macao
             owns = 1538 #Shanghai
@@ -10539,20 +10373,7 @@ treaty_port_casus_belli = {
             owns = 1704 #Oran
             owns = 1701 #Bougie
             owns = 1709 #Bone
-            owns = 3884 #Benty
-            owns = 3682 #Tarfaya
-            owns = 3841 #Juzur Khuriya Muriya
         }
-        civilized = no
-        is_vassal = no
-        num_of_cities = 2
-        OR = {
-            war_with = THIS
-            THIS = { NOT = { has_country_modifier = punitive_effects } }
-        }
-
-        NOT = { is_our_vassal = THIS }
-        NOT = { has_country_modifier = neutrality_modifier }
     }
 
     po_reparations = yes
@@ -10602,10 +10423,12 @@ treaty_port_casus_belli = {
 						owns = 1704 #Oran
 						owns = 1701 #Bougie
 						owns = 1709 #Bone
-						owns = 3884 #Benty
-						owns = 3682 #Tarfaya
-						owns = 3841 #Juzur Khuriya Muriya
                     }
+                }
+                THIS = {
+                    civilized = yes
+                    NOT = { is_culture_group = east_asian }
+                    any_owned_province = { port = yes }
                 }
             }
 			owner = { add_country_modifier = { name = negotiating_unequal_treaty duration = -1 } }
@@ -10693,9 +10516,6 @@ treaty_port_casus_belli_no_infamy = {
             owns = 1704 #Oran
 			owns = 1701 #Bougie
 			owns = 1709 #Bone
-            owns = 3884 #Benty
-            owns = 3682 #Tarfaya
-            owns = 3841 #Juzur Khuriya Muriya
         }
     }
 
@@ -10746,10 +10566,12 @@ treaty_port_casus_belli_no_infamy = {
 						owns = 1704 #Oran
 						owns = 1701 #Bougie
 						owns = 1709 #Bone
-						owns = 3884 #Benty
-						owns = 3682 #Tarfaya
-						owns = 3841 #Juzur Khuriya Muriya
                     }
+                }
+                THIS = {
+                    civilized = yes
+                    NOT = { is_culture_group = east_asian }
+                    any_owned_province = { port = yes }
                 }
             }
 			owner = { add_country_modifier = { name = negotiating_unequal_treaty duration = -1 } }
@@ -10811,9 +10633,9 @@ install_fascism_make_puppet = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        is_vassal = no
-        NOT = { is_our_vassal = THIS }
 		ai = yes
+        NOT = { is_our_vassal = THIS }
+        is_vassal = no
     }
 
     po_make_puppet = yes
@@ -10857,9 +10679,9 @@ install_communism_make_puppet = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        is_vassal = no
-        NOT = { is_our_vassal = THIS }
 		ai = yes
+        NOT = { is_our_vassal = THIS }
+        is_vassal = no
     }
 
     po_make_puppet = yes
@@ -10904,8 +10726,24 @@ end_radicals = {
     good_relation_militancy_factor = 1
 
     can_use = {
+        NOT = { is_our_vassal = THIS }
+		THIS = {
+			NOT = {
+				government = democracy
+				government = radical_republic
+				ruling_party_ideology = radical
+			}
+		}
 		government = radical_republic
 		is_vassal = no
+        NOT = {
+            is_our_vassal = THIS
+            has_country_modifier = neutrality_modifier
+			AND = {
+				has_country_modifier = francia_utopia
+				THIS = { ai = yes }
+			}
+        }
         civilized = yes
         OR = {
             war_with = THIS
@@ -10920,22 +10758,6 @@ end_radicals = {
 			AND = { OR = { any_neighbor_country = { substate_of = THIS } any_neighbor_country = { vassal_of = THIS } } THIS = { ai = no } }
             war_with = THIS
         }
-        NOT = {
-            is_our_vassal = THIS
-            has_country_modifier = neutrality_modifier
-			AND = {
-				has_country_modifier = francia_utopia
-				THIS = { ai = yes }
-			}
-        }
-        NOT = { is_our_vassal = THIS }
-		THIS = {
-			NOT = {
-				government = democracy
-				government = radical_republic
-				ruling_party_ideology = radical
-			}
-		}
     }
 
 	po_add_to_sphere = yes
@@ -11174,7 +10996,15 @@ guillotine_cb = {
 
     can_use = {
 		THIS = { government = radical_republic }
+		NOT = {
+			government = democracy
+			government = radical_republic
+		}
 		is_vassal = no
+        NOT = {
+            is_our_vassal = THIS
+            has_country_modifier = neutrality_modifier
+        }
         civilized = yes
         OR = {
             war_with = THIS
@@ -11189,14 +11019,6 @@ guillotine_cb = {
 			AND = { OR = { any_neighbor_country = { substate_of = THIS } any_neighbor_country = { vassal_of = THIS } } THIS = { ai = no } }
             war_with = THIS
         }
-        NOT = {
-            is_our_vassal = THIS
-            has_country_modifier = neutrality_modifier
-        }
-		NOT = {
-			government = democracy
-			government = radical_republic
-		}
     }
 
 	po_remove_prestige = yes
@@ -11240,9 +11062,9 @@ install_democracy_make_puppet = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        is_vassal = no
-        NOT = { is_our_vassal = THIS }
 		ai = yes
+        NOT = { is_our_vassal = THIS }
+        is_vassal = no
     }
 
     po_make_puppet = yes
@@ -11295,28 +11117,11 @@ colonial_conquest = {
             neighbour = THIS
             war_with = THIS
         }
-        THIS = {
-            civilized = yes
-            is_disarmed = no
-            NOT = { war_policy = pacifism }
-            OR = {
-                AND = {
-				capital_scope = { continent = europe }
-                    NOT = {
-                        tag = TUR
-                        tag = RUS
-                    }
-                }
-                tech_school = naval_tech_school
-                tech_school = japanese_tech_school
-            }
-            state_n_government = 1
-            NOT = { has_country_modifier = no_more_war }
-            NOT = { has_country_modifier = neutrality_modifier }
-            NOT = { has_country_modifier = punitive_effects }
-            NOT = { has_country_modifier = claimed_africa }
-        }
         number_of_states = 2
+        NOT = { has_country_modifier = neutrality_modifier }
+        NOT = { in_sphere = THIS }
+        civilized = no
+        exists = yes
         OR = {
             NOT = { relation = { who = THIS value = 150 } }
             THIS = { ai = no }
@@ -11330,10 +11135,27 @@ colonial_conquest = {
             war_with = THIS
             THIS = { NOT = { badboy = 0.88 } }
         }
-        NOT = { has_country_modifier = neutrality_modifier }
-        NOT = { in_sphere = THIS }
-        civilized = no
-        exists = yes
+        THIS = {
+            civilized = yes
+            NOT = { has_country_modifier = no_more_war }
+            NOT = { has_country_modifier = neutrality_modifier }
+            NOT = { has_country_modifier = punitive_effects }
+            NOT = { has_country_modifier = claimed_africa }
+            is_disarmed = no
+            NOT = { war_policy = pacifism }
+            OR = {
+                AND = {
+            capital_scope = { continent = europe }
+                    NOT = {
+                        tag = TUR
+                        tag = RUS
+                    }
+                }
+                tech_school = naval_tech_school
+                tech_school = japanese_tech_school
+            }
+            state_n_government = 1
+        }
 
         OR = {
             #Mozambique
@@ -11389,10 +11211,10 @@ colonial_conquest = {
                     nationalism_n_imperialism = 1
                     OR = {
                         owns = 1412
-                        is_sphere_leader_of = YEM
+                        is_sphere_leader_of = LHJ
                     }
                 }
-                any_owned_province = { OR = { region = YEM_1412 region = YEM_1173 } }
+                any_owned_province = { region = YEM_1412 }
             }
             #Indonesia
             AND = {
@@ -11561,10 +11383,10 @@ colonial_conquest = {
                     nationalism_n_imperialism = 1
                     OR = {
                         owns = 1412
-                        is_sphere_leader_of = YEM
+                        is_sphere_leader_of = LHJ
                     }
                 }
-                any_owned_province = { OR = { region = YEM_1412 region = YEM_1173 } }
+                any_owned_province = { region = YEM_1412 }
             }
             #Indonesia
             AND = {
@@ -11729,17 +11551,6 @@ colonial_conquest_full = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        THIS = {
-            civilized = yes
-            capital_scope = { continent = europe }
-            state_n_government = 1
-            is_disarmed = no
-            NOT = { has_country_modifier = no_more_war }
-            NOT = { has_country_modifier = neutrality_modifier }
-            NOT = { has_country_modifier = punitive_effects }
-            NOT = { has_country_modifier = claimed_africa }
-            NOT = { war_policy = pacifism }
-        }
         OR = {
             AND = {
                 THIS = { total_amount_of_ships = 5 }
@@ -11747,6 +11558,12 @@ colonial_conquest_full = {
             }
             neighbour = THIS
         }
+        NOT = { number_of_states = 2 }
+        NOT = { is_our_vassal = THIS }
+        NOT = { has_country_modifier = neutrality_modifier }
+        NOT = { in_sphere = THIS }
+        civilized = no
+        exists = yes
         OR = {
             NOT = { relation = { who = THIS value = 150 } }
             THIS = { ai = no }
@@ -11760,8 +11577,17 @@ colonial_conquest_full = {
             war_with = THIS
             THIS = { NOT = { badboy = 0.88 } }
         }
-        civilized = no
-        exists = yes
+        THIS = {
+            civilized = yes
+            NOT = { has_country_modifier = no_more_war }
+            NOT = { has_country_modifier = neutrality_modifier }
+            NOT = { has_country_modifier = punitive_effects }
+            NOT = { has_country_modifier = claimed_africa }
+            is_disarmed = no
+            NOT = { war_policy = pacifism }
+            capital_scope = { continent = europe }
+            state_n_government = 1
+        }
 
         OR = {
             #Mozambique
@@ -11815,10 +11641,10 @@ colonial_conquest_full = {
                     nationalism_n_imperialism = 1
                     OR = {
                         owns = 1412
-                        is_sphere_leader_of = YEM
+                        is_sphere_leader_of = LHJ
                     }
                 }
-                any_owned_province = { OR = { region = YEM_1412 region = YEM_1173 } }
+                any_owned_province = { region = YEM_1412 }
             }
             #Indonesia
             AND = {
@@ -11954,10 +11780,6 @@ colonial_conquest_full = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = punitive_effects } }
         }
-        NOT = { number_of_states = 2 }
-        NOT = { is_our_vassal = THIS }
-        NOT = { has_country_modifier = neutrality_modifier }
-        NOT = { in_sphere = THIS }
     }
 
     po_annex = yes
@@ -12015,16 +11837,16 @@ war_reparations = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        THIS = {
-            civilized = yes
-            NOT = { has_country_modifier = neutrality_modifier }
-        }
         war_with = THIS
         NOT = {
             is_our_vassal = THIS
             has_country_modifier = neutrality_modifier
             has_country_modifier = no_more_war
             has_country_flag = in_great_war
+        }
+        THIS = {
+            civilized = yes
+            NOT = { has_country_modifier = neutrality_modifier }
         }
     }
 
@@ -12095,9 +11917,13 @@ claim_colonial_region = {
     good_relation_militancy_factor = 0
 
     can_use = {
+        NOT = { is_our_vassal = THIS }
+        NOT = { has_country_flag = post_colonial_country }
         number_of_states = 2
         civilized = no
         capital_scope = { continent = africa }
+        ai = yes
+        NOT = { in_sphere = THIS }
 		neighbour = THIS
         OR = {
             #Ghana
@@ -12145,7 +11971,6 @@ claim_colonial_region = {
                             region = SOK_1934
                             region = SOK_1945
                             region = SOK_1937
-							region = SOK_1941
                         }
                     }
                 }
@@ -12157,14 +11982,13 @@ claim_colonial_region = {
                         region = SOK_1934
                         region = SOK_1945
                         region = SOK_1937
-						region = SOK_1941
                     }
                 }
             }
             #Guinea
             AND = {
-                THIS = { any_owned_province = { OR = { region = FRA_1883 region = FRA_1879 } } }
-                any_owned_province = { OR = { region = FRA_1883 region = FRA_1879 } }
+                THIS = { any_owned_province = { region = FRA_1883 } }
+                any_owned_province = { region = FRA_1883 }
             }
             #Guinea-Bissau
             AND = {
@@ -12177,19 +12001,15 @@ claim_colonial_region = {
                     any_owned_province = {
                         OR = {
                             region = FRA_1783
-							region = FRA_1787
                             region = FRA_1775
-							region = FRA_1780
                         }
                     }
                 }
                 any_owned_province = {
                     OR = {
                         region = FRA_1783
-						region = FRA_1787
                         region = FRA_1788
                         region = FRA_1775
-						region = FRA_1780
                     }
                 }
             }
@@ -12200,7 +12020,6 @@ claim_colonial_region = {
                         OR = {
                             region = FRA_1798
                             region = FRA_1801
-							region = FRA_1794
                             region = FRA_1803
                         }
                     }
@@ -12209,7 +12028,6 @@ claim_colonial_region = {
                     OR = {
                         region = FRA_1798
                         region = FRA_1801
-						region = FRA_1794
                         region = FRA_1803
                     }
                 }
@@ -12218,11 +12036,11 @@ claim_colonial_region = {
             AND = {
                 THIS = {
                     any_owned_province = {
-						OR = { region = FRA_1808 region = FRA_1813 }
+                        region = FRA_1808
                     }
                 }
                 any_owned_province = {
-					OR = { region = FRA_1808 region = FRA_1813 }
+                    region = FRA_1808
                 }
             }
             #Mozambique
@@ -12400,7 +12218,6 @@ claim_colonial_region = {
                         OR = {
                             region = SOM_1868
                             region = SOM_1872
-							region = SOM_1871
                         }
                     }
                 }
@@ -12408,7 +12225,6 @@ claim_colonial_region = {
                     OR = {
                         region = SOM_1868
                         region = SOM_1872
-						region = SOM_1871
                     }
                 }
             }
@@ -12433,10 +12249,6 @@ claim_colonial_region = {
                 NOT = { has_country_modifier = punitive_effects }
             }
         }
-        NOT = { is_our_vassal = THIS }
-        NOT = { has_country_flag = post_colonial_country }
-        NOT = { in_sphere = THIS }
-        ai = yes
     }
 
     allowed_states = {
@@ -12487,7 +12299,6 @@ claim_colonial_region = {
                             region = SOK_1934
                             region = SOK_1945
                             region = SOK_1937
-							region = SOK_1941
                         }
                     }
                 }
@@ -12499,14 +12310,13 @@ claim_colonial_region = {
                         region = SOK_1934
                         region = SOK_1945
                         region = SOK_1937
-						region = SOK_1941
                     }
                 }
             }
             #Guinea
             AND = {
-                THIS = { any_owned_province = { OR = { region = FRA_1883 region = FRA_1879 } } }
-                any_owned_province = { OR = { region = FRA_1883 region = FRA_1879 } }
+                THIS = { any_owned_province = { region = FRA_1883 } }
+                any_owned_province = { region = FRA_1883 }
             }
             #Guinea-Bissau
             AND = {
@@ -12519,19 +12329,15 @@ claim_colonial_region = {
                     any_owned_province = {
                         OR = {
                             region = FRA_1783
-							region = FRA_1787
                             region = FRA_1775
-							region = FRA_1780
                         }
                     }
                 }
                 any_owned_province = {
                     OR = {
                         region = FRA_1783
-						region = FRA_1787
                         region = FRA_1788
                         region = FRA_1775
-						region = FRA_1780
                     }
                 }
             }
@@ -12542,7 +12348,6 @@ claim_colonial_region = {
                         OR = {
                             region = FRA_1798
                             region = FRA_1801
-							region = FRA_1794
                             region = FRA_1803
                         }
                     }
@@ -12551,7 +12356,6 @@ claim_colonial_region = {
                     OR = {
                         region = FRA_1798
                         region = FRA_1801
-						region = FRA_1794
                         region = FRA_1803
                     }
                 }
@@ -12560,11 +12364,11 @@ claim_colonial_region = {
             AND = {
                 THIS = {
                     any_owned_province = {
-						OR = { region = FRA_1808 region = FRA_1813 }
+                        region = FRA_1808
                     }
                 }
                 any_owned_province = {
-					OR = { region = FRA_1808 region = FRA_1813 }
+                    region = FRA_1808
                 }
             }
             #Mozambique
@@ -12737,7 +12541,6 @@ claim_colonial_region = {
                         OR = {
                             region = SOM_1868
                             region = SOM_1872
-							region = SOM_1871
                         }
                     }
                 }
@@ -12745,7 +12548,6 @@ claim_colonial_region = {
                     OR = {
                         region = SOM_1868
                         region = SOM_1872
-						region = SOM_1871
                     }
                 }
             }
@@ -12794,8 +12596,13 @@ claim_colonial_region_full = {
     always = yes
 
     can_use = {
+        NOT = { is_our_vassal = THIS }
+        NOT = { has_country_flag = post_colonial_country }
+        NOT = { number_of_states = 2 }
         civilized = no
         capital_scope = { continent = africa }
+        ai = yes
+        NOT = { in_sphere = THIS }
 		neighbour = THIS
 
         OR = {
@@ -12847,7 +12654,6 @@ claim_colonial_region_full = {
                             region = SOK_1934
                             region = SOK_1945
                             region = SOK_1937
-							region = SOK_1941
                         }
                     }
                 }
@@ -12859,14 +12665,13 @@ claim_colonial_region_full = {
                         region = SOK_1934
                         region = SOK_1945
                         region = SOK_1937
-						region = SOK_1941
                     }
                 }
             }
             #Guinea
             AND = {
-                THIS = { NOT = { tag = TUR } any_owned_province = { OR = { region = FRA_1883 region = FRA_1879 } } }
-                any_owned_province = { OR = { region = FRA_1883 region = FRA_1879 } }
+                THIS = { NOT = { tag = TUR } any_owned_province = { region = FRA_1883 } }
+                any_owned_province = { region = FRA_1883 }
             }
             #Guinea-Bissau
             AND = {
@@ -12880,19 +12685,15 @@ claim_colonial_region_full = {
                     any_owned_province = {
                         OR = {
                             region = FRA_1783
-							region = FRA_1787
                             region = FRA_1775
-							region = FRA_1780
                         }
                     }
                 }
                 any_owned_province = {
                     OR = {
                         region = FRA_1783
-						region = FRA_1787
                         region = FRA_1788
                         region = FRA_1775
-						region = FRA_1780
                     }
                 }
             }
@@ -12904,7 +12705,6 @@ claim_colonial_region_full = {
                         OR = {
                             region = FRA_1798
                             region = FRA_1801
-							region = FRA_1794
                             region = FRA_1803
                         }
                     }
@@ -12913,7 +12713,6 @@ claim_colonial_region_full = {
                     OR = {
                         region = FRA_1798
                         region = FRA_1801
-						region = FRA_1794
                         region = FRA_1803
                     }
                 }
@@ -12923,11 +12722,11 @@ claim_colonial_region_full = {
                 THIS = {
                     NOT = { tag = TUR }
                     any_owned_province = {
-						OR = { region = FRA_1808 region = FRA_1813 }
+                        region = FRA_1808
                     }
                 }
                 any_owned_province = {
-					OR = { region = FRA_1808 region = FRA_1813 }
+                    region = FRA_1808
                 }
             }
             #Mozambique
@@ -13104,7 +12903,6 @@ claim_colonial_region_full = {
                         OR = {
                             region = SOM_1868
                             region = SOM_1872
-							region = SOM_1871
                         }
                     }
                 }
@@ -13112,7 +12910,6 @@ claim_colonial_region_full = {
                     OR = {
                         region = SOM_1868
                         region = SOM_1872
-						region = SOM_1871
                     }
                 }
             }
@@ -13136,11 +12933,6 @@ claim_colonial_region_full = {
                 NOT = { has_country_modifier = punitive_effects }
             }
         }
-        NOT = { in_sphere = THIS }
-        NOT = { is_our_vassal = THIS }
-        NOT = { has_country_flag = post_colonial_country }
-        NOT = { number_of_states = 2 }
-        ai = yes
     }
 
     po_annex = yes
@@ -13180,7 +12972,13 @@ steal_puppet = {
     good_relation_militancy_factor = 1
 
     can_use = {
-		THIS = { ai = no }
+        THIS = {
+            NOT = {
+                has_country_flag = in_great_war
+                has_country_modifier = neutrality_modifier
+				has_country_modifier = neutrality
+            }
+        }
         OR = {
             war_with = THIS
             THIS = { total_amount_of_divisions = 1 }
@@ -13194,8 +12992,13 @@ steal_puppet = {
 			AND = { OR = { any_neighbor_country = { substate_of = THIS } any_neighbor_country = { vassal_of = THIS } } THIS = { ai = no } }
             war_with = THIS
         }
+        NOT = {
+            is_our_vassal = THIS
+            has_country_modifier = neutrality_modifier
+        }
         civilized = yes
         num_of_vassals_no_substates = 1
+		NOT = { is_our_vassal = THIS }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = no_more_war } }
@@ -13205,18 +13008,7 @@ steal_puppet = {
             THIS = { NOT = { has_country_flag = in_great_war } }
             THIS = { ai = no }
         }
-        THIS = {
-            NOT = {
-                has_country_flag = in_great_war
-                has_country_modifier = neutrality_modifier
-				has_country_modifier = neutrality
-            }
-        }
-        NOT = {
-            is_our_vassal = THIS
-            has_country_modifier = neutrality_modifier
-        }
-		NOT = { is_our_vassal = THIS }
+		THIS = { ai = no }
     }
 
     # THIS - us
@@ -13374,10 +13166,10 @@ monroe2 = {
 
     can_use = {
         THIS = {
-            has_country_flag = shield_NW
             tag = USA
-            is_greater_power = yes
             government = democracy
+            is_greater_power = yes
+            has_country_flag = shield_NW
         }
         OR = {
             capital_scope = { continent = europe }
@@ -13448,8 +13240,8 @@ USS_monroe = {
     can_use = {
         THIS = {
             has_country_flag = formed_USS
-            has_country_flag = USS_miranda
             is_greater_power = yes
+            has_country_flag = USS_miranda
         }
         OR = {
             is_culture_group = american_cultures
@@ -13471,7 +13263,13 @@ USS_monroe = {
             }
             any_core = {
                 OR = {
-                    is_culture_group = latin_american_cultures
+                    primary_culture = mexican
+                    primary_culture = central_american
+                    primary_culture = north_andean
+                    primary_culture = south_andean
+                    primary_culture = platinean
+                    primary_culture = brazilian
+                    primary_culture = caribeno
                     primary_culture = afro_latino
                     primary_culture = afro_brazilian
                 }
@@ -13502,7 +13300,13 @@ USS_monroe = {
         }
         FROM = {
             OR = {
-                is_culture_group = latin_american_cultures
+                primary_culture = mexican
+                primary_culture = central_american
+                primary_culture = north_andean
+                primary_culture = south_andean
+                primary_culture = platinean
+                primary_culture = brazilian
+                primary_culture = caribeno
                 primary_culture = afro_latino
                 primary_culture = afro_brazilian
             }
@@ -13563,11 +13367,33 @@ take_capital = {
     good_relation_militancy_factor = 1
 
     can_use = {
+        NOT = {
+            AND = {
+                #THIS = { ai = yes }
+                has_global_flag = sw_set
+                NOT = { year = 1840 }
+            }
+        }
+        THIS = {
+            NOT = {
+                has_country_flag = in_great_war
+                has_country_modifier = no_more_war
+                has_country_modifier = neutrality_modifier
+            }
+        }
         OR = {
             war_with = THIS
             THIS = { total_amount_of_divisions = 1 }
         }
+        NOT = {
+            is_our_vassal = THIS
+            has_country_modifier = neutrality_modifier
+        }
         number_of_states = 2 # annex if you want their last state
+        any_owned_province = {
+            NOT = { is_core = THIS }
+            is_colonial = no
+        }
         OR = {
             neighbour = THIS
 			AND = { OR = { any_neighbor_country = { substate_of = THIS } any_neighbor_country = { vassal_of = THIS } } THIS = { ai = no } }
@@ -13577,11 +13403,6 @@ take_capital = {
                 any_owned_province = { port = yes }
             }
         }
-        any_owned_province = {
-            NOT = { is_core = THIS }
-            is_colonial = no
-        }
-        is_vassal = no
         OR = {
             AND = {
                 civilized = yes
@@ -13596,24 +13417,7 @@ take_capital = {
                 }
             }
         }
-        THIS = {
-            NOT = {
-                has_country_flag = in_great_war
-                has_country_modifier = no_more_war
-                has_country_modifier = neutrality_modifier
-            }
-        }
-        NOT = {
-            is_our_vassal = THIS
-            has_country_modifier = neutrality_modifier
-        }
-        NOT = {
-            AND = {
-                #THIS = { ai = yes }
-                has_global_flag = sw_set
-                NOT = { year = 1840 }
-            }
-        }
+        is_vassal = no
     }
 
     allowed_states = {
@@ -13671,16 +13475,22 @@ demand_concession_capital_late = {
 
     can_use = {
         THIS = {
-            has_global_flag = berlin_conference
-            civilized = yes
-            nationalism_n_imperialism = 1
             NOT = {
                 has_country_flag = in_great_war
                 has_country_modifier = no_more_war
                 has_country_modifier = neutrality_modifier
             }
+            civilized = yes
+            nationalism_n_imperialism = 1
+            has_global_flag = berlin_conference
         }
+        NOT = { is_our_vassal = THIS }
         number_of_states = 2 # annex if you want their last state
+        any_owned_province = {
+            NOT = { is_core = THIS }
+            is_colonial = no
+        }
+        civilized = no
         OR = {
             AND = {
                 OR = {
@@ -13693,16 +13503,10 @@ demand_concession_capital_late = {
 			AND = { OR = { any_neighbor_country = { substate_of = THIS } any_neighbor_country = { vassal_of = THIS } } THIS = { ai = no } }
             AND = { war_with = THIS ai = no }
         }
-        civilized = no
-        any_owned_province = {
-            NOT = { is_core = THIS }
-            is_colonial = no
-        }
         OR = {
             war_with = THIS
             THIS = { total_amount_of_divisions = 1 }
         }
-        NOT = { is_our_vassal = THIS }
     }
 
     allowed_states = {
@@ -13871,7 +13675,12 @@ demand_concession_capital = {
 				}
 			}
         }
+        NOT = { is_our_vassal = THIS }
         number_of_states = 2 # annex if you want their last state
+        any_owned_province = {
+            NOT = { is_core = THIS }
+            is_colonial = no
+        }
         civilized = no
         OR = {
             AND = {
@@ -13888,11 +13697,6 @@ demand_concession_capital = {
         OR = {
             war_with = THIS
             THIS = { total_amount_of_divisions = 1 }
-        }
-        NOT = { is_our_vassal = THIS }
-        any_owned_province = {
-            NOT = { is_core = THIS }
-            is_colonial = no
         }
     }
 
@@ -14050,11 +13854,13 @@ demand_concession_capital_early = {
 				nationalism_n_imperialism = 1
             }
         }
+        NOT = { is_our_vassal = THIS }
+        number_of_states = 2 # annex if you want their last state
         any_owned_province = {
             NOT = { is_core = THIS }
             is_colonial = no
         }
-        number_of_states = 2 # annex if you want their last state
+        civilized = no
         OR = {
             AND = {
                 OR = {
@@ -14067,12 +13873,10 @@ demand_concession_capital_early = {
 			AND = { OR = { any_neighbor_country = { substate_of = THIS } any_neighbor_country = { vassal_of = THIS } } THIS = { ai = no } }
             AND = { war_with = THIS ai = no }
         }
-        civilized = no
         OR = {
             war_with = THIS
             THIS = { total_amount_of_divisions = 1 }
         }
-        NOT = { is_our_vassal = THIS }
     }
 
     allowed_states = {
@@ -14221,6 +14025,7 @@ acquire_core_substate_region = {
     good_relation_militancy_factor = 1
 
     can_use = {
+        NOT = { is_our_vassal = THIS }
         num_of_substates = 1 # if has any substate
         any_substate = {
             number_of_states = 1
@@ -14229,7 +14034,6 @@ acquire_core_substate_region = {
                 is_colonial = no
             }
         }
-        NOT = { is_our_vassal = THIS }
     }
 
     allowed_substate_regions = {
@@ -14281,6 +14085,12 @@ liberate_puppet = {
 
 
     can_use = {
+		ai = yes
+        NOT = {
+            is_our_vassal = THIS
+            has_country_modifier = neutrality
+			has_country_modifier = neutrality_modifier
+        }
         OR = {
             THIS = {
                 total_amount_of_divisions = 1
@@ -14288,6 +14098,7 @@ liberate_puppet = {
             war_with = THIS
         }
         number_of_states = 2
+        THIS = { NOT = { has_country_modifier = neutrality } }
         THIS = { is_greater_power = yes }
         OR = {
             war_with = THIS
@@ -14309,13 +14120,6 @@ liberate_puppet = {
             FROM = { involved_in_crisis = yes }
             THIS = { ai = no }
         }
-        NOT = {
-            is_our_vassal = THIS
-            has_country_modifier = neutrality
-			has_country_modifier = neutrality_modifier
-        }
-        THIS = { NOT = { has_country_modifier = neutrality } }
-		ai = yes
     }
 
     # THIS - us
@@ -14512,7 +14316,12 @@ liberate_puppet_no_infamy = {
     po_transfer_provinces = yes
 
     can_use = {
-        THIS = { is_greater_power = yes }
+		ai = yes
+        NOT = {
+            is_our_vassal = THIS
+            has_country_modifier = neutrality
+			has_country_modifier = neutrality_modifier
+        }
         OR = {
             THIS = {
                 total_amount_of_divisions = 1
@@ -14520,6 +14329,8 @@ liberate_puppet_no_infamy = {
             war_with = THIS
         }
         number_of_states = 2
+        THIS = { NOT = { has_country_modifier = neutrality } }
+        THIS = { is_greater_power = yes }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = no_more_war } }
@@ -14540,13 +14351,6 @@ liberate_puppet_no_infamy = {
             FROM = { involved_in_crisis = yes }
             THIS = { ai = no }
         }
-        THIS = { NOT = { has_country_modifier = neutrality } }
-        NOT = {
-            is_our_vassal = THIS
-            has_country_modifier = neutrality
-			has_country_modifier = neutrality_modifier
-        }
-		ai = yes
 	}
 
     allowed_countries = {
