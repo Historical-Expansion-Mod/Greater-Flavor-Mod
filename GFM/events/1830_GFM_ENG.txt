@@ -1,0 +1,859 @@
+######## ENGLAND ########
+
+country_event = {
+    id = 8573978
+    title = "The Return of Ross' Second Arctic Expedition"
+    desc = "ROSSEXPEDITION"
+    picture = "ross_expedition"
+    fire_only_once = yes
+
+    trigger = {
+		tag = ENG
+	    has_global_flag = eighteenthirty_startdate
+		year = 1833
+		month = 10
+    }
+
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "Hurrah!"
+		prestige = 5
+		ai_chance = { factor = 1 }
+    }
+}
+
+# Reform riots - fires for ENG if they don't have wealth_voting
+country_event = {
+	id = 189000
+	title = "The $YEAR$ Reform riots"
+	desc = "1831_reform_riots_desc"
+	picture = "1831_reform_riots"
+
+	fire_only_once = yes
+
+	mean_time_to_happen = { months = 12 }
+
+	trigger = {
+		tag = ENG
+		NOT = { vote_franschise = wealth_voting }
+		year = 1831
+	    has_global_flag = eighteenthirty_startdate
+	}
+
+	option = {
+		name = "So uncivilised..."
+		any_pop = {
+			limit = { NOT = { strata = rich } location = { continent = europe is_core = THIS } }
+			militancy = 2
+			consciousness = 2
+		}
+		set_country_flag = 1831_reform_riots
+	}
+}
+
+# Poor Law Amendment Act - fires for ENG if their party is Liberal
+country_event = {
+	id = 189002
+	title = "The Poor Law Amendment Act of $YEAR$"
+	desc = "poor_law_amendment_act_desc"
+	picture = "poor_law_amendment_act"
+
+	trigger = {
+		tag = ENG
+	    has_global_flag = eighteenthirty_startdate
+		ruling_party_ideology = liberal
+		year = 1834
+	}
+
+	fire_only_once = yes
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "Amending the Amendment act huh?"
+		any_pop = {
+			limit = { NOT = { strata = rich strata = middle } location = { continent = europe is_core = THIS } }
+			militancy = -1
+			consciousness = -1
+		}
+		any_pop = {
+			limit = { NOT = { strata = poor } location = { continent = europe is_core = THIS } }
+			militancy = 0.5
+			consciousness = 0.5
+		}
+	}
+}
+
+# Merthyr Rising - fires of an ENG that owns Cardiff
+country_event = {
+	id = 127845
+	title = "The Merthyr Rising"
+	desc = "MERTHYRRISING"
+	picture = "merthyr_rising"
+
+	fire_only_once = yes
+	mean_time_to_happen = { days = 9 }
+
+	trigger = {
+		tag = ENG
+	    has_global_flag = eighteenthirty_startdate
+		owns = 273 # Cardiff
+		year = 1831
+	}
+
+	option = {
+	    name = "Put down the rebellion!"
+		any_pop = {
+			limit = {
+				has_pop_culture = welsh
+			}
+			militancy = 6
+			consciousness = 3
+		}
+		ai_chance = { factor = 100 }
+	}
+
+	option = {
+	    name = "Give them more rights."
+	    prestige = -2
+		any_pop = {
+			limit = { has_pop_culture = welsh }
+			militancy = -2
+			consciousness = 1
+		}
+		social_reform = trinket_wage
+		ai_chance = { factor = 0 }
+	}
+}
+
+# Baptist War - fires of an ENG that owns Jamaica [2217]
+country_event = {
+    id = 127857
+    title = "The Baptist War"
+    desc = "EVTDESC127857"
+    picture = "jamaica_slaverev"
+
+    fire_only_once = yes
+
+    trigger = {
+        tag = ENG
+	    has_global_flag = eighteenthirty_startdate
+		owns = 2217 # Jamaica
+		year = 1831
+    }
+
+    mean_time_to_happen = { months = 12 }
+
+    option = {
+        name = "Stop them at once!"
+        any_pop = {
+            limit = { location = { province_id = 2217 } has_pop_culture = afro_caribbean } # Jamaica
+            consciousness = 9
+			militancy = 9
+        }
+		random_owned = {
+			limit = { owner = { HAI = { exists = yes } } }
+			HAI = { country_event = { id = 127858 days = 2 } }
+		}
+
+        ai_chance = { factor = 100 }
+    }
+	option = {
+        name = "Long Live Jamaica. §BPlay as Jamaica§W"
+		2217 = { secede_province = JAM add_core = JAM }
+		HAI = { create_alliance = JAM }
+		war = {
+            target = JAM
+            attacker_goal = { casus_belli = conquest_any }
+            defender_goal = { casus_belli = humiliate_no_infamy }
+			call_ally = yes
+        }
+		JAM = { political_reform = no_slavery  government = prov_gov_liberal }
+		set_global_flag = jamaicanrebell1831
+		diplomatic_influence = { who = JAM value = -400 }
+		change_tag_no_core_switch = JAM
+        ai_chance = { factor = 0 }
+    }
+}
+
+# Baptist War - fires for HAI - caused by event [Id = 127857] in "events/1830_GFM_ENG.txt"
+country_event = {
+    id = 127858
+    title = "The Baptist War"
+    desc = "EVTDESC127858"
+    picture = "jamaica_slaverev"
+
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "Don't do anything."
+		any_pop = {
+            limit = { has_pop_culture = afro_french }
+            consciousness = 2
+        }
+		ai_chance = {
+			factor = 1
+			modifier = {
+                factor = 100
+                NOT = { money = 50100 }
+            }
+		}
+    }
+
+	option = {
+        name = "Fully support them §BStart a revolt in Jamaica and ally them§!."
+        any_pop = {
+            limit = { has_pop_culture = afro_french }
+            consciousness = -4
+        }
+		treasury = -100000
+		JAM = { treasury = 100000 }
+		ENG = { country_event = { id = 127859 days = 2 } }
+		ai_chance = { factor = 0 }
+    }
+}
+
+# Baptist War if Haiti fully supports them (Impossible for the AI for whatever bullshit reason) - fires for ENG - caused by Option C in event [Id = 127858] in "events/1830_GFM_ENG.txt"
+country_event = {
+    id = 127859
+    title = "The Baptist War"
+    desc = "Haiti supports Jamaica!"
+    picture = "jamaica_slaverev"
+
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    # Declare war on Jamaica with the conquest_any Casus Belli - Stay as England
+    option = {
+        name = "Fight them."
+        2217 = { secede_province = JAM add_core = JAM }
+		HAI = { create_alliance = JAM }
+		war = {
+            target = JAM
+            attacker_goal = { casus_belli = conquest_any }
+            defender_goal = { casus_belli = humiliate_no_infamy }
+			call_ally = yes
+        }
+		JAM = { political_reform = no_slavery government = democracy }
+		set_global_flag  = jamaicanrebell1831
+		diplomatic_influence = { who = JAM value = -400 }
+    }
+
+}
+
+# Baptist War win event for England - fires for ENG if they win against Jamaica
+country_event = {
+    id = 127961
+    title = "Victory in the Baptist War"
+    desc = "After fighting the Jamaican slaves, we finally have won the war."
+    picture = "jamaica_slaverev"
+
+    fire_only_once = yes
+
+    trigger = {
+        tag = ENG
+	    has_global_flag = eighteenthirty_startdate
+		owns = 2217
+		war = no
+		has_global_flag = jamaicanrebell1831
+		NOT = { year = 1835 }
+		year = 1831
+    }
+
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "Perfect!"
+        JAM = { all_core = { remove_core = JAM } }
+		random_owned = {
+			limit = {
+				owner = {
+					OR = {
+						slavery = yes_slavery
+						slavery = freedom_of_womb
+					}
+				}
+			}
+			owner = {
+				ENG_203 = { is_slave = yes }
+				any_pop = { limit = { location = { province_id = 2217 } has_pop_culture = afro_caribbean } pop_type = slaves }
+			}
+		}
+        ai_chance = { factor = 100 }
+    }
+}
+
+# The Great Trek - fires for an ENG who owns Cape town [2087] and Port Elizabeth [2096]
+country_event = {
+    id = 18351836
+    title = "The Great Trek"
+    desc = "EVTDESC18351836"
+    picture = "trekboers_crossing_the_karoo"
+
+    fire_only_once = yes
+
+    trigger = {
+		owns = 2087 # Cape Town
+		owns = 2096 # Port Elizabeth
+	    has_global_flag = eighteenthirty_startdate
+	    NOT = {
+		    primary_culture = dutch
+		    primary_culture = boer
+		    primary_culture = flemish
+			primary_culture = frisian
+		}
+		slavery = no_slavery
+		year = 1834
+    }
+
+    mean_time_to_happen = { months = 12 }
+
+    option = {
+        name = "Their loss!"
+		CLN = { primary_culture = boer country_event = 183518367 }
+        any_pop = {
+            limit = { location = { province_id = 2096 } has_pop_culture = boer } # Port Elizabeth
+            reduce_pop = 0.15
+        }
+        any_pop = {
+            limit = { location = { province_id = 2097 } has_pop_culture = boer } # Graaf Reinet
+            reduce_pop = 0.15
+        }
+		any_country = {
+		    limit = { owns = 2101 civilized = no } # Botshabelo
+			country_event = 183518362
+		}
+		ai_chance = { factor = 95 }
+    }
+
+	option = {
+	    name = "The military shall make them stay! §RGain 1 infamy§W"
+        any_pop = {
+            limit = { has_pop_culture = boer }
+            militancy = 8
+			consciousness = 8
+        }
+		THIS = { treasury = -10000 }
+		badboy = 1
+		ai_chance = { factor = 5 }
+	}
+}
+country_event = {
+    id = 183518367
+    title = "The Great Trek"
+    desc = "Boers have gained effective control over Botshabelo."
+    picture = "trekboers_crossing_the_karoo"
+
+    fire_only_once = yes
+
+    is_triggered_only = yes
+
+    option = {
+	    name = "f"
+		2919 = { any_pop = { move_pop = 2113 } }
+		2918 = { any_pop = { move_pop = 2112 } }
+		2917 = { any_pop = { move_pop = 2111 } }
+		2916 = { any_pop = { move_pop = 2110 } }
+		2915 = { any_pop = { move_pop = 2109 } }
+		2914 = { any_pop = { move_pop = 2108 } }
+		2913 = { any_pop = { move_pop = 2107 } }
+		2912 = { any_pop = { move_pop = 2106 } }
+		2911 = { any_pop = { move_pop = 2105 } }
+		2910 = { any_pop = { move_pop = 2102 } }
+		primary_culture = british
+    }
+}
+
+# The Great Trek - fires for whichever unciv owns Botshabelo [2101]
+country_event = {
+    id = 183518362
+    title = "The Great Trek"
+    desc = "Boers have gained effective control over Botshabelo."
+    picture = "trekboers_crossing_the_karoo"
+
+    fire_only_once = yes
+
+    is_triggered_only = yes
+
+    option = {
+        name = "There's nothing we can do."
+		2101 = { #Botshabelo
+		    secede_province = ORA
+		    add_core = ORA
+		}
+		ORA = { government = prov_gov_conservative }
+    }
+}
+
+# Ashanti Peace Treaty - fires for Ashanti - caused by decision [anglo_ashanti_treaty] in decisions "1830_GFM_ENG.txt"
+country_event = {
+	id = 16051835
+	title = "The Anglo-Ashanti Peace Treaty"
+	desc = "EVTDESC16051835"
+	picture = "ashanti_war"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Enough of this useless fighting and death. We shall accept."
+		prestige = -5
+		FROM = { country_event = 16051836 }
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "Interesting. How about we carve more goblets out of those British officers' skulls instead?"
+		prestige = 20
+		FROM = { country_event = 16051837 }
+		ai_chance = { factor = 0 }
+	}
+}
+
+# Ashanti Peace Treay - fires for ENG - caused by Option A in the event [Id = 16051835] in "events/1830_GFM_ENG.txt"
+country_event = {
+	id = 16051836
+	title = "The Ashanti accept our Ultimatum"
+	desc = "EVTDESC16051836"
+	picture = "ashanti_war"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "They are smart. Nobody defies Britannia and lives."
+		prestige = 3
+		1908 = { secede_province = THIS }
+		relation = { who = FROM value = 20 }
+	}
+}
+
+# Ashanti Peace Treay - fires for ENG - caused by Option B in the event [Id = 16051835] in "events/1830_GFM_ENG.txt"
+country_event = {
+	id = 16051837
+	title = "The Ashanti Reject our Ultimatum"
+	desc = "EVTDESC16051837"
+	picture = "ashanti_war"
+
+	is_triggered_only = yes
+
+	# Declare war on Ashanti with the humiliate_no_infamy Casus Belli
+	option = {
+		name = "The British boot will quickly stomp them into the ground."
+		create_alliance = FTE
+		war = {
+			target = ASH
+			attacker_goal = { casus_belli = humiliate_no_infamy }
+			defender_goal = { casus_belli = acquire_core_state state_province_id = 1908 }
+		}
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "We have no time for this."
+		prestige = -20
+		ai_chance = { factor = 0 }
+	}
+}
+
+# Burning of the Parliament - fires for an ENG who owns London [300]
+country_event = {
+	id = 16051839
+	title = "The Burning of the Parliament"
+	desc = "EVTDESC16051839"
+	picture = "parliament_burning"
+
+	fire_only_once = yes
+	mean_time_to_happen = { days = 16 }
+
+	trigger = {
+		tag = ENG
+	    has_global_flag = eighteenthirty_startdate
+		owns = 300 # London
+		year = 1834
+		month = 9
+	}
+
+	immediate = {
+        300 = { # London
+            infrastructure = -1
+            any_pop = { consciousness = 1.5 }
+        }
+    }
+
+	option = {
+		name = "Pray for the victims of the fire."
+		set_country_flag = parliament_burning
+	}
+}
+
+# Annexation of Kachari - fires for ENG
+country_event = {
+    id = 16051882
+	title = "The Annexation of Kachari"
+    desc = "ASSAMQUESTION"
+    picture = "assam_gets_trolled"
+
+    fire_only_once = yes
+    mean_time_to_happen = { days = 16 }
+
+    trigger = {
+        tag = ENG
+	    has_global_flag = eighteenthirty_startdate
+		year = 1832
+		month = 2
+		ASM = { ai = yes }
+    }
+
+    option = {
+        name = "Britannia's frontiers forever expand!"
+        1258 = { secede_province = ENG } # Gauhati
+        1258 = { secede_province = EIC } # Gauhati
+		relation = { who = ASM value = -100 }
+    }
+}
+
+# Declaration of Independence of New Zealand - fires for ENG
+country_event = {
+	id = 16051924
+	title = "The Declaration of Independence of New Zealand"
+	desc = "NEWZEALANDINDEPENDENCE"
+	picture = "new_zealand_indepe"
+
+    fire_only_once = yes
+
+    trigger = {
+		tag = ENG
+	    has_global_flag = eighteenthirty_startdate
+		year = 1835
+		month = 3
+    }
+
+    mean_time_to_happen = { days = 12 }
+
+	option = {
+        name = "Rapscallions! All of them!"
+		any_pop = {
+			limit = { has_pop_culture = maori }
+			consciousness = 8
+			militancy = 6
+		}
+	}
+}
+
+# Sixth Xhosa War
+country_event = {
+
+    id = 17051922
+    title = "The Sixth Xhosa War"
+    desc = "SIXTHXHOSAWAR"
+    picture = "sixth_xhosa_war"
+
+    fire_only_once = yes
+
+    trigger = {
+        tag = ENG
+	    has_global_flag = eighteenthirty_startdate
+		owns = 2091
+		year = 1834
+		month = 5
+		NOT = {
+			war_with = XHO
+			truce_with = XHO
+		}
+		exists = XHO
+		neighbour = XHO
+    }
+
+    mean_time_to_happen = { days = 1 }
+
+    # Declare war on Xhosa with the add_to_sphere Casus Belli
+    option = {
+        name = "Vengeance will be ours!"
+		casus_belli = { target = XHO type = add_to_sphere months = 36 }
+		war = {
+			target = XHO
+			attacker_goal = { casus_belli = add_to_sphere }
+			defender_goal = { casus_belli = status_quo }
+		}
+		ai_chance = { factor = 1 }
+    }
+
+	option = {
+        name = "We must retreat and salvage what we can of our African lands."
+		prestige = -15
+		ai_chance = { factor = 0 }
+    }
+}
+
+# Black War - fires of an ENG who owns Van Dimen's Land [2482]
+country_event = {
+	id = 16051937
+	title = "The Black War"
+	desc = "BLACKWAR"
+	picture = "black_war"
+
+    fire_only_once = yes
+
+    trigger = {
+		tag = ENG
+	    has_global_flag = eighteenthirty_startdate
+		owns = 2482 # Van Dimen's Land
+		year = 1832
+		month = 2
+	}
+
+    mean_time_to_happen = { days = 2 }
+
+	option = {
+        name = "BLACKWAROPT"
+		2482 = { any_pop = { limit = { has_pop_culture = aborigine } reduce_pop = 0.10 } } # Van Dimen's Land
+	}
+}
+
+# Kol Uprising - fires for ENG
+country_event = {
+	id = 16051938
+	title = "The Kol Uprising"
+	desc = "KOLUPRISING"
+	picture = "kol_uprising"
+
+    fire_only_once = yes
+
+    trigger = {
+		tag = ENG
+		EIC = { vassal_of = THIS owns = 1250 }
+		year = 1832
+		month = 2
+	}
+
+    mean_time_to_happen = { days = 2 }
+
+	option = {
+        name = "KOLUPRISINGOPT"
+		1250 = { any_pop = { limit = { has_pop_culture = asian_minor } militancy = 10 } }
+	}
+}
+
+# Tithe War - fures for an ENG who owns Dublin [263]
+country_event = {
+	id = 16051940
+	title = "The Tithe War"
+	desc = "TITHEWAR"
+	picture = "tithe_war"
+
+    fire_only_once = yes
+
+    trigger = {
+		tag = ENG
+	    has_global_flag = eighteenthirty_startdate
+		owns = 263 # Dublin
+	}
+
+    mean_time_to_happen = { months = 12 }
+
+	option = {
+        name = "TITHEWAROPT"
+		any_pop = { limit = { has_pop_culture = irish } militancy = 2 consciousness = 3 }
+	}
+}
+
+# Incorporation of Toronto - fires for the owner of 46
+country_event = {
+	id = 16051935
+	title = "The Incorporation of Toronto"
+	desc = "INCORPORATIONOFTORONTO"
+	picture = "york_to_toronto"
+
+    fire_only_once = yes
+
+    trigger = {
+		owns = 46
+	    has_global_flag = eighteenthirty_startdate
+		NOT = { year = 1837 }
+		year = 1834
+		month = 2
+	}
+
+    mean_time_to_happen = { days = 22 }
+
+	option = {
+        name = "Huzzah!"
+		46 = { change_province_name = "Toronto" any_pop = { consciousness = -1 } }
+	}
+}
+
+# Battle of Peshwar - fires for Afghanistan when the Sikhs take a decision to steal the province of Peshawar
+country_event = {
+	id = 16051897
+	title = "The Battle of Peshawar"
+	desc = "BATTLEOFPESHAWAR"
+	picture = "seize_peshawar"
+
+    is_triggered_only = yes
+    fire_only_once = yes
+
+	option = {
+        name = "We must retake it!"
+		war = {
+			target = FROM
+			attacker_goal = { casus_belli = acquire_core_state state_province_id = 1218 }
+		}
+        ai_chance = { factor = 0 }
+	}
+
+	option = {
+        name = "There is nothing we can do."
+		prestige = -5
+        ai_chance = { factor = 100 }
+	}
+}
+
+# Britain tries to buy Socotra - fires for the owner of Socotra
+country_event = {
+    id = 16051961
+    title = "Britain offers to purchase Socotra"
+    desc = "BRITISHSOCOTRA"
+    picture = "socotra_british"
+
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "It's a deal!"
+		treasury = 30000
+		ENG = { country_event = 16051962 }
+		1177 = { secede_province = ENG }
+		relation = { who = ENG value = 50 }
+        ai_chance = { factor = 20 }
+    }
+
+    option = {
+        name = "We refuse."
+		ENG = { country_event = 16051963 }
+		relation = { who = ENG value = -50 }
+        ai_chance = { factor = 80 }
+    }
+}
+
+# Mahra agrees - fires for ENG
+country_event = {
+    id = 16051962
+    title = "Mahra agrees"
+    desc = "MAHRASOCOTRAYES"
+    picture = "socotra_british"
+
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "Hurray!"
+		1177 = { naval_base = 1 }
+		treasury = -30000
+    }
+}
+
+# Mahra refuses - fires for ENG
+country_event = {
+    id = 16051963
+    title = "Mahra refuses"
+    desc = "MAHRASOCOTRANO"
+    picture = "socotra_british"
+
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "Oh well."
+        ai_chance = { factor = 1 }
+    }
+    option = {
+        name = "We shall take it for ourselves. §RGain 1 infamy§W"
+		war = {
+			target = MHR
+			attacker_goal = { casus_belli = treaty_port_casus_belli_no_infamy }
+			defender_goal = { casus_belli = humiliate_no_infamy }
+		}
+        ai_chance = { factor = 0 }
+    }
+}
+country_event = {
+
+    id = 16051977
+    title = "George IV Dies"
+    desc = "GEORGEIVDED"
+    picture = "george_iv"
+
+    trigger = {
+        tag = ENG
+	    has_global_flag = eighteenthirty_startdate
+		OR = {
+			government = absolute_empire
+			government = semi_constitutional_empire
+			government = constitutional_empire
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
+		year = 1830
+		month = 5
+    }
+
+    fire_only_once = yes
+
+    mean_time_to_happen = { days = 26 }
+
+    option = {
+        name = "Long Live The King!"
+        any_pop = { consciousness = 1 }
+	}
+}
+
+# Incorporation of Perth - fires for the owner of 2497
+country_event = {
+	id = 16059235
+	title = "The Incorporation of Perth"
+	desc = "INCORPORATIONOFPERTH"
+	picture = "perth_incorporated"
+
+    fire_only_once = yes
+
+    trigger = {
+		owns = 2497
+	    has_global_flag = eighteenthirty_startdate
+		NOT = { year = 1837 }
+		year = 1832
+		month = 1
+	}
+
+    mean_time_to_happen = { days = 6 }
+
+	option = {
+        name = "Perth it is!"
+		2497 = { change_province_name = "Perth" state_scope = { change_region_name = "Western Australia" } any_pop = { consciousness = -1 } }
+	}
+}
+country_event = {
+    id = 36879395
+    title = "The Noongar Massacre"
+    desc = "NOONGARMASSACRE"
+    picture = "battle_pinjarra"
+	fire_only_once = yes
+
+	trigger = {
+		tag = ENG
+	    has_global_flag = eighteenthirty_startdate
+		owns = 2497
+		year = 1834
+		month = 9
+	}
+
+	mean_time_to_happen = { days = 1 }
+
+    option = {
+		name = "NOONGARMASSACREOPT"
+		ENG_2497 = { any_pop = { limit = { has_pop_culture = aborigine } militancy = 8 } }
+	}
+}
+
+######## END OF THE ENGLAND FILE ########
