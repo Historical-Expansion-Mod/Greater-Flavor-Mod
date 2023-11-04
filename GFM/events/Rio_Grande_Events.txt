@@ -1,0 +1,595 @@
+country_event = {
+    id = 62009
+    title = "Unrest in the Rio Grande"
+    desc = "62009_desc"
+    fire_only_once = yes
+	
+    trigger = {
+		tag = MEX
+        is_vassal = no
+        year = 1838
+		month = 10
+        NOT = {
+            exists = RGR
+           	has_country_flag = texas_recaptured
+		}
+	}
+	
+    mean_time_to_happen = { 
+		days = 1 
+	}
+	
+	option = {
+        name = "Find the renegados!" #Rio Grande militancy rises
+       MEX_2146 = {
+            any_pop = { militancy = 1 }
+		}
+        ai_chance = {
+            factor = 1
+		}
+	}
+}
+
+country_event = {
+    id = 62010
+    title = "Breaking point in Northern Mexico"
+    desc = "62010_desc"
+    fire_only_once = yes
+    trigger = {
+		tag = RGR
+		MEX = { war_with = RGR }
+	}
+	option = {
+	
+        name = "We will defeat the Centralists!" #Start of war with Mexico, changes gov to Provisional gov
+		RGR = { government = prov_gov_conservative }
+	        ai_chance = {
+            factor = 1
+		}
+	}
+}
+
+
+country_event = {
+    id = 62011
+    title = "Texan aid!"
+    desc = "62011_desc"
+    fire_only_once = yes
+    trigger = {
+		tag = RGR
+		war = yes 
+		year = 1840
+		NOT = { year = 1842 }
+	}
+
+
+    mean_time_to_happen = { 
+		months = 1 
+	}
+	
+	option = {
+        name = "The Tejanos are our brothers and sisters!" #Flavor event for Texan volunteers
+		138 = { 
+			sub_unit = { type = infantry value = current } 
+		}
+		138 = { 
+			sub_unit = { type = artillery value = current } 
+		}
+		138 = { 
+			sub_unit = { type = cavalry value = current } 
+		}
+		TEX = { country_event = 62013 }
+		ai_chance = {
+            factor = 1
+		}
+	}
+}
+
+country_event = {
+    id = 62013
+    title = "Helping the Rio Grande"
+    desc = "62013_desc"
+    fire_only_once = yes
+    is_triggered_only = yes
+	
+	option = {
+        name = "We will do everything we can manage-in secret." #Controversial and possibly yankee propaganda, but added nonetheless.
+		TEX = { treasury = -1000 }
+		RGR = {
+			relation = { who = THIS value = 50 }
+			military_access = THIS
+		}
+		RGR = { country_event = 62014 }
+        ai_chance = {
+            factor = 1
+		}
+	}
+}
+
+country_event = {
+    id = 62014
+    title = "The Texan Dilemma"
+    desc = "62014_desc"
+    fire_only_once = yes
+    is_triggered_only = yes
+	
+	option = {
+        name = "We will take anything the Tejanos can offer us." #Recieving the Texan aid
+		RGR = {
+			relation = { who = TEX value = 50 }
+			military_access = TEX
+				treasury = 1000
+		}
+        ai_chance = {
+            factor = 1
+		}
+	}
+}
+
+country_event = {
+    id = 62015
+    title = "President Cardenas surrenders!"
+    desc = "62015_desc"
+    fire_only_once = yes
+    trigger = {
+		year = 1841
+		tag = MEX
+		RGR = { exists = no }
+        MEX_2146 = { owned_by = THIS }
+	}
+    mean_time_to_happen = { 
+		months = 1 
+	}
+	option = {
+        name = "The Rio Grande is pacified." #where were you when cardenas was dies
+		any_owned = { 
+			limit = {
+				OR = {
+					province_id = 138
+					province_id = 2147
+					province_id = 2152
+					province_id = 2155
+					province_id = 2151
+					province_id = 2150
+					province_id = 2149
+				}
+			}
+			add_province_modifier = { name = war_torn duration = 100 }
+		}
+        ai_chance = {
+            factor = 1
+		}
+	}
+}
+
+
+country_event = {
+    id = 62016
+    title = "We are victorious!"
+    desc = "62016_desc"
+    fire_only_once = yes
+    trigger = {
+		tag = RGR
+		war = no 
+		truce_with = MEX
+		RGR = { 
+			all_core = THIS }
+	}
+	
+    mean_time_to_happen = { 
+		months = 1 
+	}
+	
+	option = {
+       name = "Viva Rio Grande!" #Rio Grande somehow wins
+        138 = {  life_rating = 1 } 
+		RGR = { 
+			clr_country_modifier = unrecognized_country
+			add_country_modifier = {
+            	name = global_baby_boom 
+            	duration = 728
+       		}
+			government = republic
+			political_reform = state_equal_weight
+			political_reform = universal_weighted_voting
+			political_reform = free_press
+			political_reform = non_secret_ballots
+			prestige = 5
+		}
+		set_global_flag = RGR_Free
+        ai_chance = {
+            factor = 1
+		}
+	}
+}
+
+country_event = {
+    id = 62017
+    title = "Settling the Laredo Dispute"
+    desc = "62017_desc"
+    fire_only_once = yes
+    trigger = {
+		tag = RGR
+        138 = { owned_by = THIS }
+		war = no
+		has_global_flag = RGR_Free
+	}
+	
+    mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+        name = "Laredo will remain Riograndese, but we're open to negotiations with Texas." #Texan claim removed, US cant decision-steal
+        138 = { remove_core = TEX }
+		TEX = { 
+			treasury = 2000 
+			relation = {
+				who = RGR
+				value = -2000
+		    }
+		}
+		RGR = { treasury = -2 }
+		RGR = { set_country_flag = Laredo_RGR }
+		ai_chance = {
+            factor = 90
+		}
+	}
+	option = {
+        name = "The Texans will pay for Laredo if they want it." #Texas acquires Laredo
+        138 = { 
+			remove_core = RGR
+			secede_province = TEX 
+		}
+		TEX = { 
+			treasury = -2
+			relation = {
+				who = RGR
+				value = -2000
+		    }		
+		}
+		RGR = { treasury = 2000 }
+        ai_chance = {
+            factor = 10
+		}
+	}
+}
+
+country_event = {
+    id = 62018
+    title = "The Rio Grande Identity"
+    desc = "62018_desc"
+    fire_only_once = yes
+    trigger = {
+		tag = RGR
+		prestige = 10
+		war = no 
+	}
+	
+    mean_time_to_happen = { months = 25 }
+	
+	option = {
+        name = "We will stand the test of time." #More Rio Grande LARP
+        prestige = 2
+        2149 = { change_province_name = "Puerto Canales" }
+		2147 = { change_province_name = "Carbajal" }
+        2152 = { change_province_name = "Zapata" }
+		2155 = { change_province_name = "Cardenas" }
+        ai_chance = {
+            factor = 1
+		}
+	}
+}
+
+country_event = {
+    id = 62019
+    title = "Rejoining Mexico?"
+    desc = "62019_desc"
+    fire_only_once = yes
+   trigger = {
+		tag = RGR
+		war = no 
+		year = 1860
+	}
+	
+    mean_time_to_happen = {
+			months = 3 
+			}
+	
+	option = {
+        name = "We can't put this off forever." #Prelude to a second war with Mexico
+		any_pop = { consciousness = 5 }
+		relation = { 
+			who = MEX 
+			value 15 
+			}
+        ai_chance = {
+            factor = 1
+		}
+	}
+}
+
+country_event = {
+    id = 62020
+    title = "Petition for US annexation?"
+    desc = "62020_desc"
+    fire_only_once = yes
+    trigger = {
+		tag = RGR
+		year = 1850
+		war = no 
+		RGR = { in_sphere = USA }
+		TEX = { 
+			exists = no
+			owned_by = USA
+		}
+		USA = { war = no }
+	}
+	
+    mean_time_to_happen = { 
+			months = 5 
+			}
+	
+	option = {
+        name = "This option is off the table." #fuck the US
+		prestige = 5
+		militancy = 1
+		consciousness = -6
+        ai_chance = {
+            factor = 90
+		}
+	}
+	
+	option = {
+        name = "Submit a petition to the US government." #daddy US uwu
+		set_country_flag = usstatehood_we_have_applied
+		prestige = -5
+		militancy = -1
+		consciousness = 6
+		USA = { country_event = 6202011 }
+        ai_chance = {
+            factor = 10
+		}
+	}
+}
+
+country_event = {
+    id = 6202011
+    title = "Rio Grande annexation?"
+    desc = "6202011_desc"
+    fire_only_once = yes
+
+	option = {
+        name = "Welcome to the United States of America." #Congress is insane and accepts it
+		any_pop = {
+			limit = {
+				has_pop_culture = dixie
+			}
+			consciousness = -2
+			militancy = 4
+		}
+			RGR = { clr_country_flag = usstatehood_we_have_applied }
+			USA = { inherit = RGR }
+        ai_chance = {
+            factor = 50
+		}
+	}
+	option = {
+       name = "This is a terrible idea. Reject the petition." #Congress is racist and rejects it
+		prestige = -5
+		any_pop = {
+			limit = {
+				has_pop_culture = dixie
+			}
+			consciousness = 2
+			militancy = -4
+		}
+			RGR = { clr_country_flag = usstatehood_we_have_applied }
+        ai_chance = {
+            factor = 50
+		}
+	}
+}
+
+country_event = {
+    id = 62021
+    title = "Time of Decision!"
+    desc = "62021_desc"
+    picture = "1854_Alamo"
+    fire_only_once = yes
+	 trigger = { 
+		year = 1865 
+		RGR = { exists = yes
+			{ NOT = { 
+				has_country_flag = rgr_destiny_decided }
+				}
+			}
+	
+
+    option = {
+        name = "This has been a long time coming." #REJOINING MEXICO
+		any_pop = {
+			militancy = 4
+			consciousness = -4
+		}
+		RGR = { change_tag_no_core_switch = MEX }
+		MEX = { inherit = RGR }
+        ai_chance = {
+            factor = 5
+		}
+	}
+	
+	option = {
+		name = "Our destiny lies separate from Mexico."
+		prestige = 10
+		any_pop = {
+			militancy = -4
+			consciousness = 4
+		}
+		relation = {
+			who = MEX
+			value = -50
+		}
+		RGR = { set_country_flag = rgr_destiny_decided }
+		MEX = { country_event = 62022 }
+        ai_chance = {
+            factor = 95
+		}
+	}
+}
+
+country_event = {
+
+    id = 62022
+    title = "Recognizing the Rio Grande Republic"
+    desc = "62022_desc"
+    picture = "1854_Alamo"
+    fire_only_once = yes
+	 trigger = { 
+		year = 1865 
+		has_global_flag = rgr_vs_mex
+		RGR = { exists = yes 
+				has_country_flag rgr_destiny_decided }
+				}
+
+    option = {
+		set_global_flag = rgr_vs_mex
+        name = "This is unacceptable!" #Second War for Independence
+		MEX = {
+			prestige = -5
+			badboy = 10 
+			war = {
+				target = RGR
+				attacker_goal = {
+					casus_belli = annex_core_country
+					country = MEX
+				}
+				defender_goal = {
+					casus_belli = status_quo
+					country = RGR
+				}
+			}
+		}
+		RGR = {
+			relation = {
+				who = USA
+				value = 100
+			}
+			alliance_with = USA
+		}
+        ai_chance = {
+            factor = 60
+		}
+    }
+	
+	option = {
+		name = "There is nothing we can do, let them go." #Recognize their independence
+		prestige = -20
+		relation = {
+			who = RGR
+			value = 100
+		}
+		RGR = { country_event = 62023 }
+        ai_chance = {
+            factor = 40
+		}
+	}
+}
+
+country_event = {
+
+    id = 62023
+    title = "The Republic lives on!"
+    desc = "62023_desc"
+    picture = "RGR_flag_big" 
+    fire_only_once = yes
+
+    trigger = {
+		has_global_flag = rgr_vs_mex
+		RGR = {
+			exists = yes 
+			war = no
+			truce_with = MEX
+		NOT = { has_global_flag = RGR_defiant }
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+        name = "Hurrah!" #abe what the fuck you put the global flag in the wrong place thank god i checked
+		clr_global_flag = rgr_vs_mex
+		set_global_flag = RGR_defiant
+		prestige = 15
+		RGR = {
+			all_core = {
+				limit = {
+					is_core = MEX
+				}
+				remove_core = MEX
+			}
+		}
+	}
+}
+country_event = {
+    id = 62024
+    title = "Rio Grande stands defiant!"
+    desc = "62024_desc"
+    picture = "RGR_flag_big" 
+    fire_only_once = yes
+
+    trigger = {
+		RGR = { exists = yes 
+				has_global_flag = RGR_defiant } 
+		MEX = {
+			war = no
+			truce_with = RGR
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+        name = "If they wish to be Renegados forever, then let them!" #Mexico gets bitch slapped
+		prestige = -20
+		any_pop = {
+			militancy = 4
+			consciousness = 5
+		}
+	}
+}
+country_event = {
+    id = 62025
+    title = "U.S. claims Laredo!"
+    desc = "62025_desc"
+    fire_only_once = yes
+	
+    trigger = {
+		tag = RGR
+			AND = {
+				138 = { all_core = USA }
+				138 = { all_core = RGR }
+				USA = relations = { who = THIS value -100 }
+					}
+				138 = {
+					NOT = { owned_by = USA
+						OR = { owned_by = TEX } 
+					}
+						}
+	}
+	
+
+	
+	option = {
+        name = "A dire situation" #US being a bad neighbor. who would have guessed
+		relation = {
+			who = USA
+			value = -50
+		}
+	}
+}
+
