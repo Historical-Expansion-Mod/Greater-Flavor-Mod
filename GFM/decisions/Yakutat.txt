@@ -1047,7 +1047,11 @@ political_decisions = {
 	help_muhammad_sharif = {
 		picture = help_muhammad_sharif
         potential = {
-			tag = DAR
+			OR = {
+				tag = DAR
+				tag = MGH
+			}
+			owns = 3702
 			has_global_flag = darfur_gonna_die
             NOT = { has_global_flag = help_muhammad_sharif }
 			NOT = { has_global_flag = sw_set }
@@ -1086,8 +1090,8 @@ political_decisions = {
 					attacker_goal = { casus_belli = civil_war }
 					defender_goal = { casus_belli = civil_war }
 				}
-				create_alliance = DAR
-				relation = { who = DAR value = 200 }
+				create_alliance = THIS
+				relation = { who = THIS value = 200 }
 				# Audax Validator "." Ignore_NEXT
 				war = { attacker_goal = { casus_belli = call_allies_cb } call_ally = yes }
 				add_country_modifier = {
@@ -1109,19 +1113,33 @@ political_decisions = {
 		picture = help_muhammad_sharif
         potential = {
 			tag = WAD
+			OR = {
+				vassal_of = MGH
+				vassal_of = DAR
+			}
 			has_global_flag = you_gonna_get_trolled_dar
             NOT = { has_global_flag = betray_darfur }
         }
         allow = {
             war = no
 			is_disarmed = no
-			OR = { ai = yes relation = { who = DAR value = -100 } }
+			OR = {
+				ai = yes
+				AND = { relation = { who = DAR value = -100 } DAR = { owns = 3702 } }
+				AND = { relation = { who = MGH value = -100 } MGH = { owns = 3702 } }
+			}
 			year = 1839
         }
         effect = {
             set_global_flag = betray_darfur
 			prestige = 5
-			DAR = { release_vassal = WAD country_event = 18490039 } CPV = { government = absolute_monarchy }
+			random_owned = { limit = { owner = {
+			vassal_of = DAR
+			}} owner = { DAR = { release_vassal = WAD country_event = 18490039 } } }
+			random_owned = { limit = { owner = {
+			vassal_of = MGH
+			}} owner = { MGH = { release_vassal = WAD country_event = 18490039 } } }
+		    CPV = { government = absolute_monarchy }
 			add_country_modifier = {
 				name = muhammad_sharif
 				duration = 7200
@@ -1135,6 +1153,64 @@ political_decisions = {
 				personality = defence_3.1
 				background = attack_4.1
 			}
+        }
+        ai_will_do = {
+            factor = 1
+        }
+    }
+	wara_empire = {
+		picture = help_muhammad_sharif
+        potential = {
+			ai = no
+			OR = {
+				tag = WAD
+				tag = MGH
+			}
+			OR = {
+				owns = 3821
+				owns = 1841
+				owns = 3702
+				owns = 1821
+			}
+            NOT = { has_global_flag = wara_empire }
+        }
+        allow = {
+            war = no
+			is_disarmed = no
+			owns = 3821
+			owns = 1841
+			owns = 3702
+			owns = 1821
+			OR = {
+				AND = { WAD = { exists = no } tag = MGH }
+				AND = { OR = { MGH = { exists = no } MGH = { OR = { owns = 1680 owns = 1700 owns = 1725 } } } tag = WAD }
+			}
+        }
+        effect = {
+            set_global_flag = wara_empire
+			prestige = 5
+			MGH = { all_core = { remove_core = MGH add_core = WAD } }
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { tag = WAD }
+					}
+				}
+				owner = {
+					change_tag = WAD
+				}
+			}
+			government = absolute_monarchy
+			primary_culture = bedouin
+			add_accepted_culture = teda
+			add_accepted_culture = fur
+			add_accepted_culture = sara
+			add_accepted_culture = baguirmi
+			DAR = { all_core = { add_core = WAD } }
+			CHD = { all_core = { add_core = WAD } }
+			ADW = { all_core = { add_core = WAD } }
+			KBO = { all_core = { add_core = WAD } }
+			CAR = { all_core = { add_core = WAD } }
         }
         ai_will_do = {
             factor = 1
