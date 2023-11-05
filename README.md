@@ -42,7 +42,7 @@ For Increased Performace(64-bit PCs):
 3. Select V2game.exe
 4. Check "Large Address Aware Flag"
 5. Save
-6. Enjoy! the game now should run twice as fast now for any mod
+6. Enjoy! The game now should run faster if you were low on RAM
 
 ## Acknowledgements
 
