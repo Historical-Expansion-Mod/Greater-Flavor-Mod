@@ -42,7 +42,7 @@ For Increased Performace(64-bit PCs):
 3. Select V2game.exe
 4. Check "Large Address Aware Flag"
 5. Save
-6. Enjoy! the game now should run twice as fast now for any mod
+6. Enjoy! The game now should run faster if you were low on RAM
 
 ## Acknowledgements
 
@@ -57,15 +57,16 @@ GFM owes its existence to:
 * UlfDerDritte
 * Erling E. Kristiansen
 * Wooper Goldberg
+* Sarifzx
 * Atlas
 * General Garcia
-* Sarif#2056
 * Dukeçza Victor
 * Batislav
 * the based department
 * Davi Cerqueira
 * lili Lawa
 * RadRadishRadiator
+* ElYisusKing
 * Trigori
 
 
