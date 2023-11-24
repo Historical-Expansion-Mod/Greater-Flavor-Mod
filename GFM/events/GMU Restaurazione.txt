@@ -241,7 +241,7 @@ country_event = {
 
     immediate = {
         set_global_flag = five_days_of_milan_occurred
-        LOM = { government = democracy }
+        LOM = { government = prov_gov_liberal }
         726 = { secede_province = LOM }
         relation = { who = LOM value = -100 }
         prestige = -15
@@ -1195,24 +1195,19 @@ country_event = {
     title = "EVTNAME202014"
     desc = "EVTDESC202014"
     picture = "Pope"
+	fire_only_once = yes
 
     trigger = {
         tag = PAP
         government = theocracy
-        year = 1840
+        year = 1846
         NOT = { year = 1849 }
-        NOT = {
-            has_global_flag = pius_IX_reforms
-            has_global_flag = no_pope_reforms
-        }
     }
 
-    mean_time_to_happen = { months = 6 }
+    mean_time_to_happen = { months = 1 }
 
     option = {
         name = "It is time for reforms."
-        set_global_flag = pius_IX_reforms
-        prestige = 5
         any_pop = {
             ideology = {
                 value = liberal
@@ -1231,36 +1226,18 @@ country_event = {
                 factor = -1
             }
         }
-        ai_chance = {
-            factor = 70
-            modifier = {
-                factor = 1.5
-                ruling_party_ideology = liberal
-            }
-        }
+        ai_chance = { factor = 1 }
     }
 
     option = {
         name = "No concessions to anyone - I'm the Pope!"
-        prestige = 20
-        set_global_flag = no_pope_reforms
         any_pop = {
             scaled_militancy = {
                 ideology = liberal
                 factor = 4
             }
         }
-        ai_chance = {
-            factor = 30
-            modifier = {
-                factor = 1.3
-                ruling_party_ideology = conservative
-            }
-            modifier = {
-                factor = 1.5
-                ruling_party_ideology = reactionary
-            }
-        }
+        ai_chance = { factor = 0 }
     }
 }
 
@@ -1278,11 +1255,11 @@ country_event = {
             FRA = { is_sphere_leader_of = PAP }
             BOR = { is_sphere_leader_of = PAP }
         }
-        has_global_flag = pius_IX_reforms
-        SAR = { has_country_flag = first_war_of_italian_independence_intervention }
-        SAR = { war_with = AUS }
-        NOT = { government = democracy }
-
+        SAR = {
+			has_country_flag = first_war_of_italian_independence_intervention
+			war_with = AUS
+		}
+		government = theocracy
         NOT = { has_global_flag = roman_republic_occured }
     }
 
@@ -1296,6 +1273,7 @@ country_event = {
 
     option = {
         name = "Long live the Roman Republic!"
+		ruling_party_ideology = radical
         random_country = {
             limit = {
                 primary_culture = french
@@ -1303,8 +1281,7 @@ country_event = {
             }
             country_event = 202016
         }
-        prestige = 5
-        government = democracy
+        government = radical_republic
         political_reform = universal_voting
         political_reform = free_press
         political_reform = population_equal_weight
@@ -1312,43 +1289,89 @@ country_event = {
         political_reform = non_socialist
         political_reform = secret_ballots
         political_reform = yes_meeting
-        random_country = {
-            limit = { is_sphere_leader_of = THIS }
-            release_vassal = THIS
-            leave_alliance = THIS
+		overlord = {
+			release_vassal = THIS
+		}
+        any_country = {
+            limit = {
+				is_greater_power = yes
+				NOT = { government = radical_republic }
+			}
             diplomatic_influence = {
                 who = THIS
-                value = -200
+                value = -400
             }
+        }
+        any_country = {
+            limit = {
+				NOT = { government = radical_republic }
+			}
+            leave_alliance = THIS
             relation = {
                 who = THIS
-                value = -50
+                value = -400
             }
         }
         any_pop = {
             ideology = {
                 value = liberal
-                factor = 0.1
+                factor = 0.05
             }
-        }
-        any_pop = {
+            ideology = {
+                value = radical
+                factor = 0.05
+            }
             scaled_consciousness = {
-                ideology = liberal
-                factor = 2
+                ideology = conservative
+                factor = 10
             }
-        }
-        any_pop = {
+            scaled_consciousness = {
+                ideology = reactionary
+                factor = 10
+            }
             scaled_militancy = {
                 ideology = liberal
                 factor = -10
             }
+            scaled_militancy = {
+                ideology = radical
+                factor = -10
+            }
+            scaled_consciousness = {
+                ideology = liberal
+                factor = -10
+            }
+            scaled_consciousness = {
+                ideology = radical
+                factor = -10
+            }
         }
+		random_country = {
+			limit = {
+				OR = {
+					tag = AUS
+					tag = NAP
+					tag = SIC
+					tag = SPA
+					tag = SPC
+				}
+				NOT = {
+					government = democracy
+					government = radical_republic
+				}
+			}
+			casus_belli = {
+				target = THIS
+				type = cut_down_to_size
+				months = 36
+			}
+		}
         remove_country_modifier = global_liberal_agitation
         remove_country_modifier = springtime_of_nations
         clr_country_flag = liberal_revolution_in_progress
         clr_country_flag = liberal_revolution_fired
         set_country_flag = had_liberal_revolution
-        ai_chance = { factor = 100 }
+        ai_chance = { factor = 1 }
     }
 
     option = {
@@ -1360,10 +1383,16 @@ country_event = {
                 ideology = liberal
                 factor = 10
             }
-        }
-        any_pop = {
             scaled_militancy = {
                 ideology = liberal
+                factor = 10
+            }
+            scaled_consciousness = {
+                ideology = radical
+                factor = 10
+            }
+            scaled_militancy = {
+                ideology = radical
                 factor = 10
             }
         }
@@ -1383,25 +1412,23 @@ country_event = {
     immediate = {
         casus_belli = {
             target = PAP
-            type = add_to_sphere
+            type = make_puppet_no_infamy
             months = 60
         }
     }
 
     option = {
         name = "We must put the Pope back on the throne!"
-        prestige = -5
         war = {
             target = PAP
-            attacker_goal = { casus_belli = add_to_sphere }
+            attacker_goal = { casus_belli = make_puppet_no_infamy }
         }
-        ai_chance = {
-            factor = 100
-        }
+        ai_chance = { factor = 1 }
     }
+
     option = {
         name = "We have more pressing matters."
-        set_country_flag = france_let_rome_go
+        set_global_flag = france_let_rome_go
         prestige = -15
         ai_chance = { factor = 0 }
     }
@@ -1421,16 +1448,16 @@ country_event = {
         tag = PAP
         has_global_flag = roman_republic_occured
         OR = {
-            FRA = { is_sphere_leader_of = PAP }
+            vassal_of = FRA
+			vassal_of = BOR
             BOR = { is_sphere_leader_of = PAP }
         }
-        PAP = {
-			government = democracy
-		}
+		government = radical_republic
+		NOT = { has_global_flag = france_let_rome_go }
     }
 
     mean_time_to_happen = {
-        days = 10
+        days = 1
     }
 
     option = {
@@ -1450,6 +1477,7 @@ country_event = {
             political_reform = first_past_the_post
             political_reform = no_trade_unions
             political_reform = underground_parties
+			ruling_party_ideology = conservative
         }
         random_country = {
             limit = {
@@ -1461,7 +1489,15 @@ country_event = {
                 }
             }
             annex_to = PAP
-            any_owned = { secede_province = PAP }
+        }
+        any_country = {
+            limit = {
+				NOT = { government = radical_republic }
+			}
+            relation = {
+                who = THIS
+                value = 200
+            }
         }
     }
 }
@@ -1479,18 +1515,16 @@ country_event = {
     option = {
         name = "We are pleased."
         prestige = 10
-        random_country = {
-            limit = { is_sphere_leader_of = FROM }
-            diplomatic_influence = {
-                who = FROM
-                value = 200
-            }
-            relation = {
-                who = FROM
-                value = 200
-            }
-            create_alliance = FROM
-        }
+		release_vassal = PAP
+		diplomatic_influence = {
+			who = PAP
+			value = 400
+		}
+		relation = {
+			who = PAP
+			value = 400
+		}
+		create_alliance = PAP
     }
 }
 
@@ -1570,6 +1604,7 @@ country_event = {
         any_country = {
             limit = {
                 exists = yes
+				ai = yes
                 OR = {
                     tag = TUS
                     tag = PAR
@@ -1787,10 +1822,9 @@ country_event = {
 
     option = {
         name = "I liked Bergamo better."
-                release_vassal = LOM
-                inherit = LOM
-
-        }
+		release_vassal = LOM
+		inherit = LOM
+	}
 }
 
 #Toscana helps
@@ -1819,17 +1853,16 @@ country_event = {
 
     option = {
         name = "Together we fight, together we fall!"
-                war_exhaustion = -5
-
-                relation = {
-                        who = TUS
-                        value = 100
-                }
-                add_country_modifier = {
-                name = italico_valore
-                duration = 180
-            }
-        }
+		war_exhaustion = -5
+		relation = {
+			who = TUS
+			value = 100
+		}
+		add_country_modifier = {
+			name = italico_valore
+			duration = 180
+		}
+	}
 }
 
 #Rome helps
@@ -1861,38 +1894,38 @@ country_event = {
 
     option = {
         name = "Together we fight, together we fall!"
-                war_exhaustion = -5
+		war_exhaustion = -5
 
-                relation = {
-                        who = PAP
-                        value = 100
-                }
-                add_country_modifier = {
-                name = italico_valore
-                duration = 180
-            }
-        }
+		relation = {
+				who = PAP
+				value = 100
+		}
+		add_country_modifier = {
+			name = italico_valore
+			duration = 180
+		}
+	}
 }
 
 #Naples helps
 country_event = {
     id = 202028
-    title = "Two Siclies sends help"
+    title = "Two Sicilies sends help"
     desc = "Our compatriots in Naples have send us a corps of volunteers."
     picture = "cinque_giornate"
 
     fire_only_once = yes
 
     trigger = {
-                AUS = { war_with = THIS }
-                owns = 726
+		AUS = { war_with = THIS }
+		owns = 726
         has_country_flag = first_war_of_italian_independence_intervention
-                NOT = { has_country_flag = first_war_of_italian_independence_refused }
-                NOT = { has_global_flag = first_war_of_italian_independence_lost }
-                NOT = { has_global_flag = first_war_of_italian_independence_won }
-                NOT = { has_country_modifier = italico_valore }
-                SIC = { is_vassal = no }
-                NOT = { SIC = { government = absolute_monarchy } }
+		NOT = { has_country_flag = first_war_of_italian_independence_refused }
+		NOT = { has_global_flag = first_war_of_italian_independence_lost }
+		NOT = { has_global_flag = first_war_of_italian_independence_won }
+		NOT = { has_country_modifier = italico_valore }
+		SIC = { is_vassal = no }
+		NOT = { SIC = { government = absolute_monarchy } }
     }
 
     mean_time_to_happen = {
@@ -1901,17 +1934,16 @@ country_event = {
 
     option = {
         name = "Together we fight, together we fall!"
-                war_exhaustion = -5
-
-                relation = {
-                        who = SIC
-                        value = 100
-                }
-                add_country_modifier = {
-                name = italico_valore
-                duration = 180
-            }
-        }
+		war_exhaustion = -5
+		relation = {
+			who = SIC
+			value = 100
+		}
+		add_country_modifier = {
+			name = italico_valore
+			duration = 180
+		}
+	}
 }
 
 #Guglielmo Pepe
@@ -1924,13 +1956,13 @@ country_event = {
     fire_only_once = yes
 
     trigger = {
-                tag = VEN
-                AUS = { war_with = THIS }
-                NOT = { has_country_modifier = italico_valore }
-                SIC = { is_vassal = no }
-                NOT = { SIC = { government = absolute_monarchy } }
-                NOT = { has_global_flag = first_war_of_italian_independence_lost }
-                NOT = { has_global_flag = first_war_of_italian_independence_won }
+		tag = VEN
+		AUS = { war_with = THIS }
+		NOT = { has_country_modifier = italico_valore }
+		SIC = { is_vassal = no }
+		NOT = { SIC = { government = absolute_monarchy } }
+		NOT = { has_global_flag = first_war_of_italian_independence_lost }
+		NOT = { has_global_flag = first_war_of_italian_independence_won }
     }
 
     mean_time_to_happen = {
@@ -2328,7 +2360,7 @@ country_event = {
     is_triggered_only = yes
 
     option = {
-        name = "Fratelli d'Italia, l'Italia s'? desta!"
+        name = "Fratelli d'Italia, l'Italia s'é desta!"
                 prestige = 2
                 plurality = 1
         any_pop = {
