@@ -3699,6 +3699,120 @@ country_event = {
     }
 }
 
+#Vassal Stolen CB - Vassals bounce event to player
+country_event = {
+	id = 6016855
+	title = "EVTNAME6016855"
+	desc = "EVTDESC6016855"
+	picture = "danishgovernment"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT6016855OPTA"
+		FROM = { country_event = 6016856 }
+	}
+}
+
+#Vassal Stolen CB - Player chooses which vassal they are targeting
+country_event = {
+	id = 6016856
+	title = "EVTNAME6016856"
+	desc = "EVTDESC6016856"
+	picture = "danishgovernment"
+
+	allow_multiple_instances = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT6016856OPTA"
+		random_owned = {
+			limit = { owner = { NOT = { has_country_flag = picked_steal_target } } }
+			owner = { set_country_flag = picked_steal_target FROM = { set_country_flag = transfer_to_new_overlord } }
+		}
+	}
+
+	option = {
+		name = "EVT6016856OPTB"
+	}
+}
+
+#Vassal Stolen CB - Vassal gets transferred to the new overlord - 2/3
+country_event = {
+    id = 6016823
+    title = "EVTNAME6016823"
+    desc = "EVTDESC6016823"
+    picture = "danishgovernment"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "EVT6016823OPTA"
+        FROM = {
+			create_vassal = THIS
+			country_event = 6016826
+		}
+    }
+}
+
+#Vassal Stolen CB - Guarantee there's vassal transfer without any funny behaviour - 1/3
+country_event = {
+    id = 6016824
+    title = "EVTNAME6016824"
+    desc = "EVTDESC6016824"
+    picture = "danishgovernment"
+
+    is_triggered_only = yes
+	allow_multiple_instances = yes
+
+    option = {
+        name = "EVT6016824OPTA"
+		clr_country_flag = new_overlord
+        FROM = {
+            any_owned = {
+                limit = { is_core = THIS }
+                remove_core = THIS
+                add_province_modifier = { name = core_when_done duration = 30 }
+            }
+            any_pop = {
+                limit = {
+                    is_primary_culture = no
+                    NOT = {
+                        is_accepted_culture = yes
+                        is_primary_culture = THIS
+                    }
+                }
+                militancy = 1
+                consciousness = 3
+            }
+            country_event = 6016823
+        }
+    }
+}
+#Vassal Stolen CB - Cores the overlord had on the vassal get re-added 3/3
+country_event = {
+	id = 6016826
+	title = "EVTNAME6016826"
+	desc = "EVTDESC6016826"
+	picture = "danishgovernment"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT6016826OPTA"
+		any_country = {
+			limit = {
+				vassal_of = THIS
+			}
+			any_owned = {
+				limit = { has_province_modifier = core_when_done }
+				add_core = THIS
+				remove_province_modifier = core_when_done
+			}
+		}
+	}
+}
+
 country_event = {
 	id = 4778821
 	title = "AI: French Rev Sanity Check"
