@@ -1210,7 +1210,6 @@ country_event = {
 
     option = {
         name = "It is time for reforms."
-        prestige = 5
         any_pop = {
             ideology = {
                 value = liberal
@@ -1234,7 +1233,6 @@ country_event = {
 
     option = {
         name = "No concessions to anyone - I'm the Pope!"
-        prestige = 20
         any_pop = {
             scaled_militancy = {
                 ideology = liberal
@@ -1277,6 +1275,7 @@ country_event = {
 
     option = {
         name = "Long live the Roman Republic!"
+		ruling_party_ideology = radical
         random_country = {
             limit = {
                 primary_culture = french
@@ -1284,8 +1283,7 @@ country_event = {
             }
             country_event = 202016
         }
-        prestige = 5
-        government = democracy
+        government = radical_republic
         political_reform = universal_voting
         political_reform = free_press
         political_reform = population_equal_weight
@@ -1293,43 +1291,89 @@ country_event = {
         political_reform = non_socialist
         political_reform = secret_ballots
         political_reform = yes_meeting
-        random_country = {
-            limit = { is_sphere_leader_of = THIS }
-            release_vassal = THIS
-            leave_alliance = THIS
+		overlord = {
+			release_vassal = THIS
+		}
+        any_country = {
+            limit = {
+				is_greater_power = yes
+				NOT = { government = radical_republic }
+			}
             diplomatic_influence = {
                 who = THIS
-                value = -200
+                value = -400
             }
+        }
+        any_country = {
+            limit = {
+				NOT = { government = radical_republic }
+			}
+            leave_alliance = THIS
             relation = {
                 who = THIS
-                value = -50
+                value = -400
             }
         }
         any_pop = {
             ideology = {
                 value = liberal
-                factor = 0.1
+                factor = 0.05
             }
-        }
-        any_pop = {
+            ideology = {
+                value = radical
+                factor = 0.05
+            }
             scaled_consciousness = {
-                ideology = liberal
-                factor = 2
+                ideology = conservative
+                factor = 10
             }
-        }
-        any_pop = {
+            scaled_consciousness = {
+                ideology = reactionary
+                factor = 10
+            }
             scaled_militancy = {
                 ideology = liberal
                 factor = -10
             }
+            scaled_militancy = {
+                ideology = radical
+                factor = -10
+            }
+            scaled_consciousness = {
+                ideology = liberal
+                factor = -10
+            }
+            scaled_consciousness = {
+                ideology = radical
+                factor = -10
+            }
         }
+		random_country = {
+			limit = {
+				OR = {
+					tag = AUS
+					tag = NAP
+					tag = SIC
+					tag = SPA
+					tag = SPC
+				}
+				NOT = {
+					government = democracy
+					government = radical_republic
+				}
+			}
+			casus_belli = {
+				target = THIS
+				type = cut_down_to_size
+				months = 36
+			}
+		}
         remove_country_modifier = global_liberal_agitation
         remove_country_modifier = springtime_of_nations
         clr_country_flag = liberal_revolution_in_progress
         clr_country_flag = liberal_revolution_fired
         set_country_flag = had_liberal_revolution
-        ai_chance = { factor = 100 }
+        ai_chance = { factor = 1 }
     }
 
     option = {
@@ -1341,10 +1385,16 @@ country_event = {
                 ideology = liberal
                 factor = 10
             }
-        }
-        any_pop = {
             scaled_militancy = {
                 ideology = liberal
+                factor = 10
+            }
+            scaled_consciousness = {
+                ideology = radical
+                factor = 10
+            }
+            scaled_militancy = {
+                ideology = radical
                 factor = 10
             }
         }
@@ -1364,25 +1414,23 @@ country_event = {
     immediate = {
         casus_belli = {
             target = PAP
-            type = add_to_sphere
+            type = make_puppet_no_infamy
             months = 60
         }
     }
 
     option = {
         name = "We must put the Pope back on the throne!"
-        prestige = -5
         war = {
             target = PAP
-            attacker_goal = { casus_belli = add_to_sphere }
+            attacker_goal = { casus_belli = make_puppet_no_infamy }
         }
-        ai_chance = {
-            factor = 100
-        }
+        ai_chance = { factor = 1 }
     }
+
     option = {
         name = "We have more pressing matters."
-        set_country_flag = france_let_rome_go
+        set_global_flag = france_let_rome_go
         prestige = -15
         ai_chance = { factor = 0 }
     }
@@ -1400,18 +1448,17 @@ country_event = {
     trigger = {
         tag = PAP
         has_global_flag = roman_republic_occured
+		government = radical_republic
         OR = {
-            FRA = { is_sphere_leader_of = PAP }
+            vassal_of = FRA
+			vassal_of = BOR
             BOR = { is_sphere_leader_of = PAP }
         }
-        war = no
-        PAP = {
-			government = democracy
-		}
+		NOT = { has_global_flag = france_let_rome_go }
     }
 
     mean_time_to_happen = {
-        days = 10
+        days = 1
     }
 
     option = {
@@ -1431,6 +1478,16 @@ country_event = {
             political_reform = first_past_the_post
             political_reform = no_trade_unions
             political_reform = underground_parties
+			ruling_party_ideology = conservative
+        }
+        any_country = {
+            limit = {
+				NOT = { government = radical_republic }
+			}
+            relation = {
+                who = THIS
+                value = 200
+            }
         }
     }
 }
@@ -1448,18 +1505,16 @@ country_event = {
     option = {
         name = "We are pleased."
         prestige = 10
-        random_country = {
-            limit = { is_sphere_leader_of = FROM }
-            diplomatic_influence = {
-                who = FROM
-                value = 200
-            }
-            relation = {
-                who = FROM
-                value = 200
-            }
-            create_alliance = FROM
-        }
+		release_vassal = PAP
+		diplomatic_influence = {
+			who = PAP
+			value = 400
+		}
+		relation = {
+			who = PAP
+			value = 400
+		}
+		create_alliance = PAP
     }
 }
 
@@ -3172,7 +3227,7 @@ country_event = {
     fire_only_once = yes
 
     trigger = {
-        tag = EGY
+		OR = { tag = EGY tag = ALA }
         OR = {
             exists = ITA
             exists = ITS
