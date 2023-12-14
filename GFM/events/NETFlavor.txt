@@ -3080,7 +3080,7 @@ country_event = {
         relation = { who = NET value = 50 }
         any_country = { release = LBG leave_alliance = LBG }
         FROM = { inherit = LBG }
-        381 = { remove_core = LBG change_province_name = "Maastricht" }
+        381 = { remove_core = LBG add_core = FROM change_province_name = "Maastricht" }
         ai_chance = { factor = 90 }
     }
 
@@ -3088,17 +3088,9 @@ country_event = {
         name = "EVT952514OPTB"
         set_country_flag = limburg_crisis
         badboy = 4
-        random_owned = { limit = { owner = { ai = no } } owner = { casus_belli = { target = NET type = release_puppet months = 12 } } }
-        random_owned = { limit = { owner = { ai = yes } } owner = { casus_belli = { target = NET type = release_puppet_AI months = 12 } } }
-        add_country_modifier = { name = preparations_for_war duration = 370 }
+		LBG = { all_core = { add_core = THIS } }
 
-        casus_belli = {
-            target = LBG
-            type = add_to_sphere
-            months = 6
-        }
-
-        NET = { country_event = 952515 }
+        NET = { country_event = { id = 952515 days = 1 } }
         relation = { who = NET value = -400 }
         relation = { who = LBG value = -400 }
         diplomatic_influence = { who = LBG value = -400 }
@@ -3120,8 +3112,25 @@ country_event = {
     is_triggered_only = yes
 
     option = {
-        name = "EVT952515OPTA"
+        name = "Damn the Germans!"
         set_country_flag = limburg_crisis_NET
+		release_vassal = LBG
+		create_alliance = LBG
+		FROM = {
+			war = {
+				target = LBG
+				attacker_goal = { casus_belli = conquest_any }
+				defender_goal = { casus_belli = humiliate_no_infamy }
+			}
+		}
+		ai_chance = { factor = 6 }
+    }
+
+    option = {
+        name = "We must back down."
+		FROM = { inherit = LBG }
+        381 = { remove_core = THIS remove_core = LBG add_core = FROM change_province_name = "Maastricht" }
+		ai_chance = { factor = 4 }
     }
 }
 
@@ -3137,10 +3146,7 @@ country_event = {
     trigger = {
         tag = NET
         has_country_flag = limburg_crisis_NET
-        war = no
-        is_our_vassal = LBG
-        LBG = { exists = yes }
-        any_neighbor_country = { is_culture_group = germanic NOT = { casus_belli = LBG } }
+        LBG = { exists = yes ai = yes is_vassal = no war = no }
     }
 	
     mean_time_to_happen = { days = 1 }
@@ -3152,7 +3158,7 @@ country_event = {
         any_country = { limit = { has_country_flag = support_netherlands } clr_country_flag = support_netherlands leave_alliance = THIS }
         any_country = { release = LBG leave_alliance = LBG }
         inherit = LBG
-        381 = { remove_core = LBG change_province_name = "Maastricht" }
+        381 = { remove_core = LBG remove_core = GCF remove_core = GER remove_core = NGF change_province_name = "Maastricht" }
     }
 }
 
@@ -3169,11 +3175,11 @@ country_event = {
         name = "EVT952517OPTA"
         set_country_flag = support_netherlands
         leave_alliance = FROM
-        create_alliance = NET
+        create_alliance = LBG
         relation = { who = FROM value = -250 }
         relation = { who = NET value = 400 }
         ai_chance = {
-            factor = 80
+            factor = 25
             modifier = {
                 factor = 0
                 OR = {
@@ -3183,11 +3189,7 @@ country_event = {
                 }
             }
             modifier = {
-                factor = 75
-                relation = { who = PRU value = 175 }
-            }
-            modifier = {
-                factor = 40
+                factor = 0
                 NOT = { relation = { who = NET value = 0 } }
             }
         }
@@ -3196,19 +3198,7 @@ country_event = {
     option = {
         name = "EVT952517OPTB"
         ai_chance = {
-            factor = 0
-            modifier = {
-                factor = 100
-                OR = {
-                    alliance_with = GCF
-                    alliance_with = GER
-                    alliance_with = NGF
-                }
-            }
-            modifier = {
-                factor = 10
-                relation = { who = PRU value = 175 }
-            }
+            factor = 75
         }
     }
 }
