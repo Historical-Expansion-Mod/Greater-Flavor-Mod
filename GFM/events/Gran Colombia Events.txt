@@ -121,9 +121,11 @@ country_event = {
     option = {
         name = "End the Peruvian threat once and for all!"
         set_country_flag = fight_the_PBC
+		badboy = 10
         leave_alliance = PBC
 		PEU = { all_core = { add_core = GCO }}
 		SPU = { all_core = { add_core = GCO }}
+		BOL = { all_core = { add_core = GCO }}
         any_pop = {
             dominant_issue = {
                 factor = 0.05
@@ -187,7 +189,10 @@ country_event = {
 		GCO = { is_disarmed = yes
 			OR = { has_country_flag = fight_the_PBC }}
 		PBC = { 
-			OR = { truce_with = GCO truce_with = CHL truce_with = ARC truce_with = LPL } }
+			OR = { truce_with = GCO 
+				   truce_with = CHL 
+				   truce_with = ARC 
+				   truce_with = LPL } }
         war = no
     }
 
@@ -211,6 +216,8 @@ country_event = {
 		PEU = {
 			all_core = { remove_core = GCO } }
 		SPU = {
+			all_core = { remove_core = GCO } }
+		BOL = {
 			all_core = { remove_core = GCO } }
         ai_chance = { factor = 1 }
 		}
@@ -242,79 +249,36 @@ country_event = {
     option = {
         name = "The Viceroyalty of Peru is truly dead now!"
 		GCO = { prestige = 20
-		set_country_flag = PEU_partition 
-		badboy = 10 }
-		CHL = { prestige = 10 
-		set_country_flag = PEU_partition 
-		badboy = 10 }
-	OR = { ARC = { prestige = 10 
-			set_country_flag = PEU_partition 
-			badboy = 10 }
-			LPL = { prestige = 10 
-			set_country_flag = PEU_partition 
-			badboy = 10 } }
-		BRZ = { prestige = 5 
-		set_country_flag = PEU_partition 
-		badboy = 1 }
-	3381 = { add_core = BRZ }
-	3435 = { add_core = BRZ }
-	3382 = { add_core = BRZ }
-	BRZ_2408 = { 
-			any_owned = {
-				limit = { owned_by = PEU } 
-					secede_province = BRZ } }
-	BRZ_2416 = { 
-			any_owned = {
-				limit = { owned_by = BOL } 
-					secede_province = BRZ } }
-	BRZ = { 
-			any_owned = {
-				limit = { is_core = GCO } 
-					remove_core = GCO  } }
-	BOL_2309 = { add_core = CHL }
-	2578 = { add_core = CHL }
-	PEU = { 
-			any_owned = {
-				limit = { is_core = CHL } 
-					secede_province = CHL } }
-	PBC = { 
-			any_owned = {
-				limit = { is_core = CHL } 
-					secede_province = CHL } }
-	SPU = { 
-			any_owned = {
-				limit = { is_core = CHL } 
-					secede_province = CHL } }
-	CHL = { 
-			any_owned = {
-				limit = { is_core = GCO } 
-					remove_core = GCO  } }
-	PEU = { 
-			any_owned = {
-				limit = { is_core = GCO } 
-					secede_province = GCO } }
-	SPU = { 
-			any_owned = {
-				limit = { is_core = GCO } 
-					secede_province = GCO } }
-	OR = {
-		BOL = { 
-			any_owned = {
-				limit = { owned_by = BOL } 
-					secede_province = ARC } }
-		BOL = { 
-			any_owned = {
-				limit = { owned_by  = BOL } 
-					add_core = LPL } } }
-	OR = { 
-		BOL = { 
-			any_owned = {
-				limit = { owned_by = ARC } 
-					add_core = ARC } }
-		BOL = { 
-			any_owned = {
-				limit = { owned_by = LPL } 
-					add_core = LPL } } }
+				set_country_flag = PEU_partition 
+				inherit = PEU
+			random_owned = { 
+			limit = {
+				SPU = {
+					exists = yes } }
+			GCO = { inherit = SPU } }
+		random_owned = { 
+			limit = {
+				BOL = {
+					exists = yes } }
+			GCO = { inherit = BOL } }
+		random_owned = { 
+			limit = {
+				PBC = {
+					exists = yes } }
+			GCO = { inherit = PBC } } 
+								}
+		CHL = { country_event = 62030 } 
+		BRZ = { country_event = 62031 }
+		random_owned = { 
+			{ limit = { 
+				ARC = {
+					exists = yes } }
+			ARC = { country_event = 62032 } } } 
+		random_owned = { 
+			{ limit = {
+				LPL = {
+					exists = yes } }
+			LPL = { country_event = 62032 } } }
 any_pop = {
             limit = {
                 has_pop_culture = south_andean
@@ -334,5 +298,131 @@ any_pop = {
             militancy = 5
             consciousness = -2 }
         ai_chance = { factor = 1 }
+		}
+	}
+#Chile's Partition event
+country_event = {
+    id = 62030
+    title = "The treaty of Cuzco"
+    desc = "62030_desc"
+    picture = "deliberation"
+	is_triggered_only = yes
+	
+   option = {
+        name = "The Atacama and her resources are ours for the exploiting!"
+		CHL = { prestige = 10 
+				set_country_flag = PEU_partition 
+				badboy = 5 }
+	BOL_2309 = { add_core = CHL }
+	2578 = { add_core = CHL }
+	GCO = { any_owned = { 
+		limit = { province_id = 2578
+				  region = BOL_2309 } 
+				secede_province = CHL } }
+	CHL = { 
+			any_owned = {
+					limit = { is_core = GCO
+							is_core = CHL }
+						remove_core = GCO  } }
+        random_owned = {
+            limit = { owner = { GCO = { exists = yes } } }
+            owner = { relation = { who = GCO value = 100 } }
+        }
+        ai_chance = { factor = 1 }
+		}
+	}
+#Brazil's Partition event
+country_event = {
+    id = 62031
+    title = "The treaty of Cuzco"
+    desc = "62031_desc"
+    picture = "deliberation"
+	is_triggered_only = yes
+	option = {
+		name = "Accept the arbitration, but cut diplomatic ties afterward."
+		BRZ = { prestige = -5
+				set_country_flag = PEU_partition 
+				badboy = 1 }
+        random_owned = {
+            limit = { owner = { GCO = { exists = yes } } }
+            owner = { relation = { who = GCO value = -50 } } }
+        random_owned = {
+            limit = { owner = { CHL = { exists = yes } } }
+            owner = { relation = { who = CHL value = -50 } } }
+        random_owned = {
+            limit = { owner = { ARC = { exists = yes } } }
+            owner = { relation = { who = ARC value = -50 } } }
+        random_owned = {
+            limit = { owner = { LPL  = { exists = yes } } }
+            owner = { relation = { who = LPL value = -50 } } }
+	3380 = { add_core = BRZ }
+	3381 = { add_core = BRZ }
+	3435 = { add_core = BRZ }
+	3382 = { add_core = BRZ }
+	BRZ = { 
+			any_owned = {
+					limit = { is_core = GCO
+							  is_core = BRZ	
+							  OR = { is_core = PEU 
+									 is_core = BOL } }
+						secede_province = BRZ  } }
+	BRZ = { 
+			any_owned = {
+					limit = { is_core = GCO
+							  is_core = BRZ	
+							  OR = { is_core = PEU 
+									 is_core = BOL } }
+						remove_core = GCO  } }
+        ai_chance = { factor = 1 }
+		}
+	}
+#Argentina's Partition event
+country_event = {
+    id = 62032
+    title = "The treaty of Cuzco"
+    desc = "62031_desc"
+    picture = "deliberation"
+	is_triggered_only = yes
+	option = {
+		name = "Alto Peru is returned to us at last."
+        random_owned = {
+            limit = { owner = 
+					{ ARC  = { exists = yes } } }
+						ARC = { prestige = 10 
+						set_country_flag = PEU_partition 
+						badboy = 5 } } 
+        random_owned = {
+            limit = { owner = 
+					{ LPL  = { exists = yes } } }
+						LPL = { prestige = 10 
+						set_country_flag = PEU_partition 
+						badboy = 5 } } 
+	THIS = { 
+			any_owned = {
+					limit = { is_core = BOL
+							  is_core = GCO
+							  is_core = THIS 
+							  NOT = { is_core = BRZ 
+									  is_core = CHL } }
+						      add_core = THIS } }
+	THIS = { 
+			any_owned = {
+					limit = { is_core = BOL
+							  is_core = GCO
+							  is_core = THIS 
+							  NOT = { is_core = BRZ 
+									  is_core = CHL } }
+						      secede_province = THIS } }
+	THIS = { 
+			any_owned = {
+					limit = { is_core = BOL
+							  is_core = GCO
+							  is_core = THIS }
+						      remove_core = GCO } }
+        random_owned = {
+            limit = { owner = { GCO = { exists = yes } } }
+            owner = { relation = { who = GCO value = 100 } }
+        }
+        ai_chance = { factor = 1 } 
 		}
 	}
