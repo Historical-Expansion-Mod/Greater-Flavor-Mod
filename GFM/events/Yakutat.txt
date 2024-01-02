@@ -6501,7 +6501,8 @@ country_event = {
         name = "Perfect."
 		1915 = { any_pop = { limit = { type = soldiers } reduce_pop = 0.2 } }
 		prestige = 2
-		military_reform = yes_foreign_weapons
+		military_reform = yes_foreign_artillery
+		activate_technology = bronze_muzzle_loaded_artillery
 		small_arms = 5
 		treasury = 2000
 		ai_chance = { factor = 1 }
@@ -29326,7 +29327,6 @@ country_event = {
 		1742 = { add_core = CYR }
 		1754 = { add_core = CYR }
 		1758 = { add_core = CYR }
-		1759 = { add_core = CYR }
 		1817 = { add_core = CYR }
 		2564 = { add_core = CYR }
 		3687 = { add_core = CYR }
@@ -29334,6 +29334,7 @@ country_event = {
 		1753 = { add_core = CYR }
 		2585 = { add_core = CYR }
 		3868 = { add_core = CYR }
+		1752 = { add_core = CYR }
     }
 
 }
@@ -31760,6 +31761,582 @@ country_event = {
         }
     }
 
+}
+country_event = {
+    id = 184824988
+    title = "Leave the Sokoto Caliphate?"
+    desc = "Our state might deserve independence after all these years of oppression.."
+    picture = "adamawa_map"
+
+	is_triggered_only = yes
+	allow_multiple_instances = yes
+
+
+    option = {
+        name = "For the liberation of our lands!"
+		prestige = 3
+		set_global_flag = ilorin_left_us
+		relation = {
+			who = SOK
+			value = -100
+		}
+		SOK = { country_event = 184824989 }
+		remove_country_modifier = puppet_ilorin
+		ai_chance = {
+			factor = 0.2
+		}
+    }
+
+    option = {
+        name = "This is not a good idea."
+		prestige = -5
+		relation = {
+			who = SOK
+			value = 100
+		}
+		ai_chance = {
+			factor = 0.8
+		}
+    }
+
+}
+country_event = {
+    id = 184824989
+    title = "Ilorin Leaves Us!"
+    desc = "$FROMCOUNTRY$ has decided to wait for the Mahdi alone."
+    picture = "adamawa_map"
+	
+	is_triggered_only = yes
+	allow_multiple_instances = yes
+
+    option = {
+        name = "We have to do it united!"
+		GMJ = { war = {
+            target = SOK
+            attacker_goal = { casus_belli = become_independent }
+        } }
+		ai_chance = {
+			factor = 0.8
+		}
+	}
+
+    option = {
+        name = "They shall do what they shall."
+		ai_chance = {
+			factor = 0.2
+		}
+	}
+}
+country_event = {
+    id = 18482499
+    title = "The Senussi's Expansion to the Desert"
+    desc = "We have been able to expand southwards and extend our influence throughout the Sahara Desert."
+    picture = "senussi_on_the_march"
+
+    fire_only_once = yes
+
+    trigger = {
+		tag = CYR
+		owns = 3686
+		2585 = { empty = yes }
+		OR = {
+			year = 1876
+			nationalism_n_imperialism = 1
+		}
+		NOT = { year = 1886 }
+    }
+
+    mean_time_to_happen = { days = 1 }
+	
+    option = {
+        name = "Great!"
+		prestige = 2
+		all_core = {
+			limit = {
+				empty = yes
+			}
+			secede_province = THIS
+		}
+		random_owned = { limit = { owner = { owns = 2585 } } owner = { capital = 2585 } }
+        ai_chance = {
+            factor = 0
+        }
+    }
+    option = {
+        name = "Take over Siwa while we're at it."
+		prestige = 5
+		all_core = {
+			limit = {
+				empty = yes
+			}
+			secede_province = THIS
+		}
+		random_owned = { limit = { owner = { owns = 2585 } } owner = { capital = 2585 } }
+		any_country = { limit = { owns = 1754 } country_event = 184824991 }
+		1754 = { secede_province = THIS }
+        ai_chance = {
+            factor = 1
+        }
+    }
+
+}
+country_event = {
+    id = 184824991
+    title = "The Senussi's Expansion to Siwa"
+    desc = "The Senussi have conquered the Oasis of Siwa, effectively annexing it from our local rulers."
+    picture = "senussi_on_the_march"
+	
+	is_triggered_only = yes
+
+    option = {
+        name = "We'll take it back someday."
+		prestige = -3
+		ai_chance = {
+			factor = 0.8
+		}
+	}
+
+    option = {
+        name = "To war!"
+		casus_belli = { target = CYR type = demand_concession_casus_belli_no_infamy months = 50 }
+        CYR = { war = {
+            target = THIS
+            attacker_goal = { casus_belli = humiliate_no_infamy }
+            defender_goal = { casus_belli = demand_concession_casus_belli_no_infamy state_province_id = 1754 }
+            call_ally = no
+        } }
+		ai_chance = {
+			factor = 0.2
+		}
+	}
+}
+country_event = {
+    id = 18482500
+    title = "The First $COUNTRY_ADJ$-Senussi War"
+    desc = "SENUSSIITALY"
+    picture = "senussi_on_the_march"
+
+    fire_only_once = yes
+
+    trigger = {
+		civilized = yes
+		owns = 1731
+		CYR = { owns = 1742 }
+		year = 1915
+		war = no
+		NOT = { 1731 = { is_core = THIS } }
+		NOT = { year = 1925 }
+    }
+
+    mean_time_to_happen = { days = 1 }
+	
+	immediate = { set_country_flag = senussi_insanity }
+	
+    option = {
+        name = "To war!"
+		prestige = 2
+        war = {
+            target = CYR
+            attacker_goal = { casus_belli = senussi_cb }
+            defender_goal = { casus_belli = acquire_all_cores }
+            call_ally = no
+        }
+		CYR = { country_event = { id = 184825001 days = 2 } }
+        ai_chance = {
+            factor = 1
+        }
+    }
+
+}
+country_event = {
+    id = 184825001
+    title = "The First $FROMCOUNTRY_ADJ$-Senussi War"
+    desc = "The $FROMCOUNTRY_ADJ$ aim to destroy our state, should we claim Tripolitania? We have supporters in the region that would help us to take over."
+    picture = "senussi_on_the_march"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "Go on! (Merge the resulting brigades)"
+		prestige = 5
+        FROM = {
+			any_owned = { limit = { OR = { region = TRI_1731 region = TRI_1735 } NOT = { province_id = 1731 province_id = 1733 province_id = 1736 } } secede_province = THIS }
+        }
+		random_owned = {
+			limit = {
+				owner = {
+					owns = 1735
+				}
+			}
+			owner = {
+				1735 = {
+					sub_unit = { type = infantry value = current }
+					sub_unit = { type = infantry value = current }
+					sub_unit = { type = infantry value = current }
+					sub_unit = { type = artillery value = current }
+					sub_unit = { type = hussar value = current }
+				}
+			}
+		}
+        ai_chance = {
+            factor = 1
+        }
+    }
+    option = {
+        name = "Why would we annex Tripolitania?"
+        ai_chance = {
+            factor = 0
+        }
+    }
+}
+country_event = {
+    id = 18482501
+    title = "The Battle of Fada"
+    desc = "The Senussi own lands in the Sahara Desert we lay claim to -- should we force them to leave?"
+    picture = "senussi_on_the_march"
+
+    fire_only_once = yes
+
+    trigger = {
+		civilized = yes
+		owns = 1821
+		CYR = { owns = 3687 }
+		year = 1895
+		war = no
+		NOT = { 1821 = { is_core = THIS } }
+    }
+
+    mean_time_to_happen = { days = 1 }
+		
+    option = {
+        name = "To war!"
+		prestige = 2
+        war = {
+            target = CYR
+            attacker_goal = { casus_belli = senussi_cb }
+            defender_goal = { casus_belli = acquire_all_cores }
+            call_ally = no
+        }
+		CYR = { country_event = { id = 184825011 days = 1 } }
+        ai_chance = {
+            factor = 1
+        }
+    }
+    option = {
+        name = "This isn't necessary..."
+		prestige = -2
+        ai_chance = {
+            factor = 0
+        }
+    }
+
+}
+country_event = {
+    id = 184825011
+    title = "The Battle of Fada"
+    desc = "The $FROMCOUNTRY_ADJ$ have sent us an Ultimatum -- leave Fada or they will continue the war."
+    picture = "senussi_on_the_march"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "Go on!"
+		prestige = 5
+        ai_chance = {
+            factor = 0
+        }
+    }
+    option = {
+        name = "Cede Fada..."
+		end_war = FROM
+		3687 = { secede_province = FROM }
+		FROM = { country_event = 184825012 }
+        ai_chance = {
+            factor = 1
+        }
+    }
+}
+country_event = {
+    id = 184825012
+    title = "The Battle of Fada"
+    desc = "The $FROMCOUNTRY_ADJ$ have ceded us Fada without any bloodshed."
+    picture = "senussi_on_the_march"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "Great..."
+		prestige = 2
+		end_war = FROM
+		3687 = { secede_province = THIS }
+        ai_chance = {
+            factor = 1
+        }
+    }
+}
+country_event = {
+    id = 18482502
+    title = "The $FROMCOUNTRY_ADJ$-Senussi War"
+    desc = "The Senussi own lands in the Sahara Desert we lay claim to -- should we force them to leave?"
+    picture = "senussi_on_the_march"
+
+    fire_only_once = yes
+
+    trigger = {
+		civilized = yes
+		owns = 1759
+		CYR = { owns = 1758 }
+		year = 1899
+		war = no
+		NOT = { 1759 = { is_core = THIS } }
+    }
+
+    mean_time_to_happen = { days = 1 }
+		
+    option = {
+        name = "To war!"
+		prestige = 2
+        war = {
+            target = CYR
+            attacker_goal = { casus_belli = senussi_cb }
+            defender_goal = { casus_belli = acquire_all_cores }
+            call_ally = no
+        }
+		CYR = { country_event = { id = 184825021 days = 1 } }
+        ai_chance = {
+            factor = 1
+        }
+    }
+    option = {
+        name = "This isn't necessary..."
+		prestige = -2
+        ai_chance = {
+            factor = 0
+        }
+    }
+
+}
+country_event = {
+    id = 184825021
+    title = "The Battle of Farafira"
+    desc = "The $FROMCOUNTRY_ADJ$ have sent us an Ultimatum -- leave Farafira or they will continue the war."
+    picture = "senussi_on_the_march"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "Go on!"
+		prestige = 5
+        ai_chance = {
+            factor = 0
+        }
+    }
+    option = {
+        name = "Cede Farafira..."
+		end_war = FROM
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 1752
+					province_id = 1753
+					province_id = 1754
+					province_id = 1758
+				}
+			}
+			secede_province = FROM
+		}
+		FROM = { country_event = 184825022 }
+        ai_chance = {
+            factor = 1
+        }
+    }
+}
+country_event = {
+    id = 184825022
+    title = "The Battle of Farafira"
+    desc = "The $FROMCOUNTRY_ADJ$ have ceded us Farafira without any bloodshed."
+    picture = "senussi_on_the_march"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "Great..."
+		prestige = 2
+		end_war = FROM
+        ai_chance = {
+            factor = 1
+        }
+    }
+}
+country_event = {
+    id = 18482503
+    title = "The Second $FROMCOUNTRY_ADJ$-Senussi War"
+    desc = "The Senussi own lands in the Sudanese Sahara Desert we lay claim to -- should we force them to leave?"
+    picture = "senussi_on_the_march"
+
+    fire_only_once = yes
+
+    trigger = {
+		civilized = yes
+		owns = 1739
+		CYR = { owns = 2564 }
+		year = 1898
+		war = no
+		NOT = { 1739 = { is_core = THIS } }
+    }
+
+    mean_time_to_happen = { days = 1 }
+		
+    option = {
+        name = "To war!"
+		prestige = 2
+        war = {
+            target = CYR
+            attacker_goal = { casus_belli = senussi_cb }
+            defender_goal = { casus_belli = acquire_all_cores }
+            call_ally = no
+        }
+		CYR = { country_event = { id = 184825031 days = 1 } }
+        ai_chance = {
+            factor = 1
+        }
+    }
+    option = {
+        name = "This isn't necessary..."
+		prestige = -2
+        ai_chance = {
+            factor = 0
+        }
+    }
+
+}
+country_event = {
+    id = 184825031
+    title = "The Battle of Laqiya Arba'in"
+    desc = "The $FROMCOUNTRY_ADJ$ have sent us an Ultimatum -- leave Laqiya Arba'in or they will continue the war."
+    picture = "senussi_on_the_march"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "Go on!"
+		prestige = 5
+        ai_chance = {
+            factor = 0
+        }
+    }
+    option = {
+        name = "Cede Laqiya Arba'in..."
+		end_war = FROM
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 2564
+					province_id = 3868
+					province_id = 1817
+				}
+			}
+			secede_province = FROM
+		}
+		FROM = { country_event = 184825032 }
+        ai_chance = {
+            factor = 1
+        }
+    }
+}
+country_event = {
+    id = 184825032
+    title = "The Battle of Laqiya Arba'in"
+    desc = "The $FROMCOUNTRY_ADJ$ have ceded us Laqiya Arba'in without any bloodshed."
+    picture = "senussi_on_the_march"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "Great..."
+		prestige = 2
+		end_war = FROM
+        ai_chance = {
+            factor = 1
+        }
+    }
+}
+country_event = {
+    id = 184825008
+    title = "EVTNAME2650" #Territory Lost
+    desc = "EVTDESC2650"
+    picture = "war_ended"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "EVT2650OPTA"
+        FROM = {
+            country_event = 184825009
+        }
+    }
+}
+country_event = {
+    id = 184825009
+    title = "We Won Against the Senussi!" #Territory Lost
+    desc = "After some bloody battles against the trained Senussi troops, we have been able to pacify the Sahara."
+    picture = "senussi_on_the_march"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "Great!"
+		random_owned = {
+			limit = {
+				owner = {
+					owns = 1821
+				}
+			}
+			owner = { CYR = {
+				any_owned = { limit = { province_id = 3687 } secede_province = THIS }
+			} }
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					owns = 1838
+				}
+			}
+			owner = { CYR = {
+				any_owned = { limit = { province_id = 1817 } secede_province = THIS }
+			} }
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					owns = 1739
+				}
+			}
+			owner = { CYR = {
+				any_owned = { limit = { OR = { province_id = 2564 province_id = 3868 } } secede_province = THIS }
+			} }
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					owns = 1759
+				}
+			}
+			owner = { CYR = {
+				any_owned = { limit = { OR = { province_id = 1754 province_id = 1758 } } secede_province = THIS }
+			} }
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					has_country_flag = senussi_insanity
+				}
+			}
+			owner = { CYR = {
+				any_owned = { limit = { is_core = LBY } secede_province = THIS }
+			} }
+		}
+    }
 }
 # Audax Validator "." Ignore_NEXT
 country_event = {
