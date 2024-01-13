@@ -68,6 +68,8 @@ anglo_persian_cb
 colonial_competition
 acquire_all_cores
 acquire_core_state
+free_acquire_all_cores
+free_acquire_core_state
 restore_austrian_empire
 colonial_reconquest_cb
 restore_america
@@ -307,13 +309,12 @@ acquire_core_state = {
     is_triggered_only = yes
     months = 12
 
-    construction_speed = 0.8
+    construction_speed = 1.7
 
     badboy_factor = 0
     prestige_factor = 2
     peace_cost_factor = 0.7
     penalty_factor = 1
-    always = yes
 
     break_truce_prestige_factor = 5
     break_truce_infamy_factor = 2
@@ -325,14 +326,7 @@ acquire_core_state = {
     good_relation_militancy_factor = 1
 
     can_use = {
-		is_substate = no
-        NOT = {
-            AND = {
-                #THIS = { ai = yes }
-                has_global_flag = sw_set
-                NOT = { year = 1840 }
-            }
-        }
+        any_owned_province = { is_core = THIS }
         OR = {
             AND = {
                 THIS = { total_amount_of_ships = 5 }
@@ -342,11 +336,7 @@ acquire_core_state = {
             war_with = THIS
             any_neighbor_country = { substate_of = THIS }
         }
-        NOT = { is_our_vassal = THIS }
         number_of_states = 1 # annex if you want their last state
-        any_owned_province = { is_core = THIS }
-        NOT = { has_country_modifier = neutrality_modifier }
-        THIS = { NOT = { has_country_modifier = neutrality_modifier } }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = punitive_effects } }
@@ -356,6 +346,17 @@ acquire_core_state = {
             THIS = { NOT = { has_country_flag = in_great_war } }
             THIS = { ai = no }
         }
+		is_substate = no
+        NOT = {
+            AND = {
+                #THIS = { ai = yes }
+                has_global_flag = sw_set
+                NOT = { year = 1840 }
+            }
+        }
+        NOT = { is_our_vassal = THIS }
+        NOT = { has_country_modifier = neutrality_modifier }
+        THIS = { NOT = { has_country_modifier = neutrality_modifier } }
     }
 
     allowed_states = {
@@ -394,6 +395,195 @@ acquire_all_cores = {
     sprite_index = 5
     is_triggered_only = yes
     months = 12
+    crisis = no
+
+    construction_speed = 1.0
+
+    badboy_factor = 0
+    prestige_factor = 2
+    peace_cost_factor = 0.7
+    penalty_factor = 1
+
+    break_truce_prestige_factor = 5
+    break_truce_infamy_factor = 2
+    break_truce_militancy_factor = 2
+    truce_months = 48
+
+    good_relation_prestige_factor = 1
+    good_relation_infamy_factor = 1
+    good_relation_militancy_factor = 1
+
+    can_use = {
+        any_owned_province = { is_core = THIS }
+        civilized = yes
+        number_of_states = 2 # annex if you want their last state
+        OR = {
+            war_with = THIS
+            THIS = { NOT = { has_country_modifier = punitive_effects } }
+        }
+        OR = {
+            NOT = { has_country_flag = dismantle_declared }
+            THIS = { NOT = { has_country_flag = in_great_war } }
+            THIS = { ai = no }
+        }
+        THIS = {
+            NOT = {
+                has_country_modifier = neutrality_modifier
+                AND = {
+                    war_policy = pacifism
+                    war = no
+                }
+            }
+        }
+        NOT = {
+            AND = {
+                #THIS = { ai = yes }
+                has_global_flag = sw_set
+                NOT = { year = 1840 }
+            }
+        }
+        NOT = { is_our_vassal = THIS }
+        NOT = { has_country_modifier = neutrality_modifier }
+        any_owned_province = { NOT = { is_core = THIS } }
+    }
+
+    allowed_countries = {
+        FROM = { tag = THIS }
+    }
+
+    allowed_states = {
+        any_owned_province = { is_core = THIS }
+        #NOT = { any_owned_province = { is_capital = yes } }
+        OR = {
+            THIS = { ai = no }
+            AND = {
+                THIS = { any_owned_province = { port = yes } }
+                any_owned_province = { port = yes }
+            }
+            any_owned_province = { any_neighbor_province = { owned_by = THIS } }
+        }
+    }
+
+    all_allowed_states = yes
+    po_transfer_provinces = yes
+
+    war_name = WAR_ALL_CORES_NAME
+
+    on_add = {
+        move_issue_percentage = {
+            from = jingoism
+            to = pro_military
+            value = 0.25
+        }
+    }
+
+    on_po_accepted = {
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+        country_event = 2650    # Territorial Loss event
+    }
+}
+
+# Free Acquire Core State
+free_acquire_core_state = {
+    sprite_index = 5
+    is_triggered_only = yes
+    months = 12
+
+    construction_speed = 1.7
+
+    badboy_factor = 0
+    prestige_factor = 2
+    peace_cost_factor = 0.7
+    penalty_factor = 1
+	always = yes
+
+    break_truce_prestige_factor = 5
+    break_truce_infamy_factor = 2
+    break_truce_militancy_factor = 2
+    truce_months = 48
+
+    good_relation_prestige_factor = 1
+    good_relation_infamy_factor = 1
+    good_relation_militancy_factor = 1
+
+    can_use = {
+        OR = {
+            capital_scope = { continent = africa }
+            capital_scope = { continent = west_africa }
+            capital_scope = { continent = central_africa }
+            capital_scope = { continent = east_africa }
+            capital_scope = { continent = south_africa }
+		}
+		civilized = no
+		any_owned_province = { is_core = THIS }
+        OR = {
+            AND = {
+                THIS = { total_amount_of_ships = 5 }
+                any_owned_province = { port = yes }
+            }
+            neighbour = THIS
+            war_with = THIS
+            any_neighbor_country = { substate_of = THIS }
+        }
+        number_of_states = 1 # annex if you want their last state
+        OR = {
+            war_with = THIS
+            THIS = { NOT = { has_country_modifier = punitive_effects } }
+        }
+        OR = {
+            NOT = { has_country_flag = dismantle_declared }
+            THIS = { NOT = { has_country_flag = in_great_war } }
+            THIS = { ai = no }
+        }
+		is_substate = no
+        NOT = {
+            AND = {
+                #THIS = { ai = yes }
+                has_global_flag = sw_set
+                NOT = { year = 1840 }
+            }
+        }
+        NOT = { is_our_vassal = THIS }
+        NOT = { has_country_modifier = neutrality_modifier }
+        THIS = { NOT = { has_country_modifier = neutrality_modifier } }
+    }
+
+    allowed_states = {
+        any_owned_province = { is_core = THIS }
+        #NOT = { any_owned_province = { is_capital = yes } }
+        OR = {
+            THIS = { ai = no }
+            AND = {
+                THIS = { total_amount_of_ships = 5 }
+                any_owned_province = { port = yes }
+            }
+            any_owned_province = { any_neighbor_province = { owned_by = THIS } }
+        }
+    }
+
+    po_demand_state = yes
+
+    war_name = WAR_TAKE_CORE_NAME
+
+    on_add = {
+        move_issue_percentage = {
+            from = jingoism
+            to = pro_military
+            value = 0.25
+        }
+    }
+
+    on_po_accepted = {
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+        country_event = 2650    # Territorial Loss event
+    }
+}
+
+# Free Acquire All Core States
+free_acquire_all_cores = {
+    sprite_index = 5
+    is_triggered_only = yes
+    months = 12
     constructing_cb = no
     crisis = no
 
@@ -413,28 +603,17 @@ acquire_all_cores = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        NOT = {
-            AND = {
-                #THIS = { ai = yes }
-                has_global_flag = sw_set
-                NOT = { year = 1840 }
-            }
-        }
+        OR = {
+            capital_scope = { continent = africa }
+            capital_scope = { continent = west_africa }
+            capital_scope = { continent = central_africa }
+            capital_scope = { continent = east_africa }
+            capital_scope = { continent = south_africa }
+		}
+		civilized = no
+		any_owned_province = { is_core = THIS }
         civilized = yes
-        NOT = { is_our_vassal = THIS }
         number_of_states = 2 # annex if you want their last state
-        any_owned_province = { is_core = THIS }
-        any_owned_province = { NOT = { is_core = THIS } }
-        NOT = { has_country_modifier = neutrality_modifier }
-        THIS = {
-            NOT = {
-                has_country_modifier = neutrality_modifier
-                AND = {
-                    war_policy = pacifism
-                    war = no
-                }
-            }
-        }
         OR = {
             war_with = THIS
             THIS = { NOT = { has_country_modifier = punitive_effects } }
@@ -444,6 +623,25 @@ acquire_all_cores = {
             THIS = { NOT = { has_country_flag = in_great_war } }
             THIS = { ai = no }
         }
+        THIS = {
+            NOT = {
+                has_country_modifier = neutrality_modifier
+                AND = {
+                    war_policy = pacifism
+                    war = no
+                }
+            }
+        }
+        NOT = {
+            AND = {
+                #THIS = { ai = yes }
+                has_global_flag = sw_set
+                NOT = { year = 1840 }
+            }
+        }
+        NOT = { is_our_vassal = THIS }
+        NOT = { has_country_modifier = neutrality_modifier }
+        any_owned_province = { NOT = { is_core = THIS } }
     }
 
     allowed_countries = {
