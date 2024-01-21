@@ -12,11 +12,6 @@ country_event = {
     desc = "EVTDESC95500"
     picture = "berlin_conference"
     major = yes
-	
-    news = yes
-    news_desc_long = "EVTDESC95500_NEWS_LONG"
-    news_desc_medium = "EVTDESC95500_NEWS_MEDIUM"
-    news_desc_short = "EVTDESC95500_NEWS_SHORT"
 
     allow_multiple_instances = no
 
@@ -48,16 +43,13 @@ country_event = {
         set_global_flag = berlin_conference
         prestige = 25
         #Ivory Coast
-        1895 = { trade_goods = gold } #Bouake  (Kokumbo Mine)
+        1897 = { trade_goods = gold } #Bouake  (Kokumbo Mine)
         1899 = { trade_goods = coffee } #Bondouku
-        1897 = { trade_goods = coffee } #Akoupe
         1896 = { trade_goods = coffee } #Man
         1900 = { trade_goods = fruit } #Odienne
         3768 = { trade_goods = fruit } #Odienne
         3769 = { trade_goods = fruit } #Odienne
         #Ghana
-        1909 = { trade_goods = gold } #Sekondi (Tarkwa Mine)
-        1910 = { trade_goods = gold } #Kumai (Obuasi Mine)
         3763 = { trade_goods = coffee } #Atimpoku
         3887 = { trade_goods = coffee } #Atimpoku
         3888 = { trade_goods = coffee } #Atimpoku
@@ -219,7 +211,6 @@ country_event = {
                     province_id = 1786
                     province_id = 1789
 					province_id = 3787
-					province_id = 3788
                     province_id = 1794
 					province_id = 3770
                     province_id = 1800
@@ -266,7 +257,6 @@ country_event = {
                         province_id = 1786
                         province_id = 1789
 						province_id = 3787
-						province_id = 3788
                         province_id = 1794
 						province_id = 3770
                         province_id = 1800
@@ -470,11 +460,6 @@ country_event = {
     id = 95507
     title = "EVTNAME95507" #Nationals Expelled
     desc = "EVTDESC95507"
-    news = yes
-    news_title = "EVTNAME95507_NEWS_TITLE"
-    news_desc_long = "EVTDESC95507_NEWS_LONG"
-    news_desc_medium = "EVTDESC95507_NEWS_MEDIUM"
-    news_desc_short = "EVTDESC95507_NEWS_SHORT"
     picture = "scramble_for_africa"
 
     is_triggered_only = yes
@@ -585,10 +570,7 @@ country_event = {
         }
 		OR = {
 			is_culture_group = italian
-			AND = {
-				ITS = { exists = no }
-				ITA = { exists = no }
-			}
+			ITA = { exists = no }
 		}
     }
 
@@ -598,11 +580,6 @@ country_event = {
             factor = 1.5
             is_secondary_power = yes
             NOT = { tag = ITA }
-        }
-        modifier = {
-            factor = 1.5
-            is_secondary_power = yes
-            NOT = { tag = ITS }
         }
         modifier = {
             factor = 0.5
@@ -616,10 +593,7 @@ country_event = {
         }
         modifier = {
             factor = 0.5
-            OR = {
-				tag = ITA
-				tag = ITS
-			}
+            tag = ITA
         }
     }
 
@@ -632,6 +606,14 @@ country_event = {
         badboy = 2
         1851 = { owner = { country_event = 95509 } }
         1851 = { secede_province = THIS }
+        random_country = {
+            limit = { civilized = no owns = 1850 owns = 1849 }
+            1850 = { secede_province = THIS }
+        }
+        random_country = {
+            limit = { civilized = no owns = 1850 owns = 1849 }
+            1848 = { secede_province = THIS }
+        }
         random_country = {
             limit = { civilized = no owns = 1849 }
             1849 = { secede_province = THIS }
@@ -647,10 +629,6 @@ country_event = {
         random_country = {
             limit = { civilized = yes owns = 3696 NOT = { tag = THIS } }
             country_event = 123585
-        }
-        random_country = {
-            limit = { civilized = no owns = 1850 owns = 1849 }
-            1850 = { secede_province = THIS }
         }
         ai_chance = {
             factor = 75
@@ -686,10 +664,6 @@ country_event = {
             modifier = {
                 factor = 0
                 tag = ITA
-            }
-            modifier = {
-                factor = 0
-                tag = ITS
             }
         }
     }
@@ -970,15 +944,12 @@ country_event = {
         NOT = { tag = RUS }
         has_global_flag = berlin_conference
         has_global_flag = mahdist_uprising
-        SUD = { exists = no }
-        EGY = {
-            any_owned_province = { is_core = SUD has_province_modifier = fundamentalist_sympathies }
-            owns = 1827
-            exists = yes
-        }
+		EGY = {
+			war_with = SUD
+		}
     }
 
-    mean_time_to_happen = { months = 8 }
+    mean_time_to_happen = { months = 100 }
 
 
     option = {
@@ -1006,21 +977,12 @@ country_event = {
     option = {
         name = "EVT955178OPTA"
         prestige = -5
-        any_owned = {
-            limit = {
-                OR = {
-                    is_core = SUD
-                    is_core = ETH
-					is_core = DAR
-					province_id = 1843
-					province_id = 1823
-					province_id = 1849
-					province_id = 3696
-                }
-            }
-			secede_province = SUD
-        }
-		FROM = { inherit = SUD }
+		end_war = SUD
+        FROM = { war = {
+            target = SUD
+            attacker_goal = { casus_belli = annex_africa_full }
+            defender_goal = { casus_belli = humiliate_no_infamy }
+        } }
         FROM = { country_event = 955179 }
         ai_chance = { factor = 0.95 }
     }
@@ -1045,7 +1007,8 @@ country_event = {
     option = {
         name = "EVT955179OPTA"
         prestige = 5
-        SUD = { civilized = no all_core = { remove_core = EGY remove_core = DAR remove_core = SHK remove_core = TUR any_pop = { militancy = 7 consciousness = 4 } } }
+        SUD = { civilized = no all_core = { remove_core = EGY remove_core = DAR remove_core = SHK remove_core = TUR any_pop = { consciousness = 4 } } }
+        1849 = { remove_core = EGY }
         1834 = { add_core = EGY }
         FROM = {
 			money = 50000
@@ -1067,26 +1030,12 @@ country_event = {
         name = "EVT955180OPTA"
         relation = { who = FROM value = -400 }
         diplomatic_influence = { who = FROM value = -400 }
-        FROM = { any_owned = { limit = { OR = { is_core = SUD is_core = DAR is_core = ETH } } secede_province = SUD } }
-        SUD = { all_core = { remove_core = DAR remove_core = SHK } }
-        SUD = {
-            civilized = no
-            government = theocracy
-            ruling_party_ideology = reactionary
-            political_reform = none_voting
-            political_reform = party_appointed
-            political_reform = no_meeting
-            political_reform = state_press
-            political_reform = state_controlled
-            political_reform = underground_parties
-            political_reform = primary_culture_only
-            political_reform = mandatory_service
+        war = {
+            target = EGY
+            attacker_goal = { casus_belli = annex_africa_full }
+            defender_goal = { casus_belli = humiliate_no_infamy }
         }
-        casus_belli = { target = SUD type = conquest_any months = 30 }
-        FROM = {
-            relation = { who = SUD value = -400 }
-            casus_belli = { target = SUD type = conquest_any months = 30 }
-        }
+		create_alliance = SUD
     }
 }
 #The Gambia Treaty
@@ -1142,7 +1091,6 @@ country_event = {
 		diplomatic_influence = { who = TOO value = -400 }
 		diplomatic_influence = { who = JAL value = -400 }
 		diplomatic_influence = { who = GMB value = -400 }
-		diplomatic_influence = { who = SLM value = -400 }
 		diplomatic_influence = { who = GBU value = -400 }
         ai_chance = {
             factor = 1
@@ -1229,26 +1177,6 @@ country_event = {
 				}
 			}
 			secede_province = FROM
-		}
-		any_country = {
-			limit = {
-				owns = 1793
-				ai = yes
-				civilized = no
-			 }
-			 set_country_flag = pauilmoment
-		}
-		random_owned = {
-			limit = {
-				owner = {
-					has_country_flag = pauilmoment
-				}
-			}
-			owner = {
-				# Audax Validator "." Ignore_NEXT
-				1793 = { secede_province = THIS secede_province = FROM }
-				clr_country_flag = pauilmoment
-			}
 		}
 		GMB = { all_core = { remove_core = GMB } }
 		1785 = { add_core = GMB }
