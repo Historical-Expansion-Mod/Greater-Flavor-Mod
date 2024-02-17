@@ -625,7 +625,11 @@ country_event = {
     trigger = {
 		owns = 2048
 		year = 1849
-		ZAN = { OR = { exists = no owns = 3718 } }
+		OR = {
+			ZAN = { exists = no }
+			ZAN = { owns = 3718 }
+			AND = { ZAN = { owns = 2066 } MRW = { exists = no } }
+		}
     }
 
     mean_time_to_happen = { days = 1 }
@@ -633,6 +637,7 @@ country_event = {
     option = {
         name = "Great."
 		random_owned = { limit = { owner = { ZAN = { owns = 3718 } } } owner = { 3718 = { secede_province = THIS secede_province = NULL } } }
+		random_owned = { limit = { owner = { ZAN = { owns = 2066 } } } owner = { MRW = { inherit = ZAN } } }
 		ZAN = {
 			government = hms_government all_core = { remove_core = ZAN }
 			capital = 3875
@@ -6816,40 +6821,17 @@ country_event = {
 
 country_event = {
     id = 18482417
-    title = "The Ngoni Take Us Over!"
-    desc = "The Ngoni have raided our neighbors for now a decade, and they have decided to settle. Sadly, in the meantime they have overthrown our holy state."
+    title = "The Conquest of Nkhotakhota"
+    desc = "We have been able to take over Nkhotakhota and successfully create a state in the region."
     picture = "zulu"
 
     fire_only_once = yes
-    mean_time_to_happen = { days = 1 }
-
-    trigger = {
-        tag = MLW
-		government = absolute_empire
-		OR = { has_global_flag = ngoni_cometh AND = { ai = yes year = 1840 NOT = { owns = 2066 } } }
-		NOT = { year = 1842 }
-    }
+    is_triggered_only = yes
 
     option = {
-        name = "This can't be true!"
-		government = absolute_monarchy
+        name = "Great!"
 		prestige = 10
-		2066 = { add_core = MLW }
-		3806 = { add_core = MLW }
-		3805 = { add_core = MLW }
-		3804 = { add_core = MLW }
-		3804 = { add_core = MLW }
-		3795 = { add_core = MLW }
-        random_owned = {
-            limit = {
-				owner = {
-					3806 = { OR = { empty = yes } owner = { civilized = no ai = yes } }
-				}
-            }
-            owner = {
-				3806 = { secede_province = THIS life_rating = 20 any_pop = { literacy = -0.99 } }
-            }
-        }
+		2066 = { add_core = ZAN }
 		CLN = { primary_culture = nguni country_event = 184824171 }
 		any_pop = { limit = { type = soldiers } reduce_pop = 0.8 }
 		capital_scope = { 
@@ -6857,10 +6839,15 @@ country_event = {
 				sub_unit = { type = irregular value = current }
 				sub_unit = { type = cavalry value = current }
 		}
+		MRW = { capital_scope = { 
+				sub_unit = { type = irregular value = current }
+				sub_unit = { type = cavalry value = current }
+		} any_pop = { limit = { type = soldiers } reduce_pop = 1.3 } 
+        military_reform = yes_foreign_training
+		military_reform = yes_army_schools }
         military_reform = yes_foreign_training
 		military_reform = yes_army_schools
 		set_global_flag = the_nguni_cometh
-		any_country = { limit = { owns = 2635 } inherit = ZAN }
 		ai_chance = { factor = 1 }
 	}
 }
@@ -6880,10 +6867,99 @@ country_event = {
 		3083 = { any_pop = { move_pop = 2067 } }
 		3084 = { any_pop = { move_pop = 2066 } }
 		3085 = { any_pop = { move_pop = 3806 } }
-		MLW = { primary_culture = nguni add_accepted_culture = chewa }
+		ZAN = { add_accepted_culture = chewa }
 		primary_culture = british
 		ai_chance = { factor = 1 }
     }
+}
+country_event = {
+    id = 184824177
+    title = "The Conquest of the Jumbe"
+    desc = "The Jumbe, a Swahili group from Zanzibar, have taken Nkhotakhota and the regions to its north."
+    picture = "zulu"
+
+    fire_only_once = yes
+    mean_time_to_happen = { days = 1 }
+
+    trigger = {
+        OR = {
+			tag = ZAN
+			tag = MRW
+		}
+		MLW = { exists = no }
+		owns = 2066
+		year = 1846
+		NOT = { year = 1848 }
+    }
+
+    option = {
+        name = "Great."
+		prestige = -2
+		MLW = { all_core = { remove_core = MLW } }
+		2066 = { secede_province = THIS secede_province = MLW add_core = MLW }
+		2067 = { secede_province = THIS secede_province = MLW life_rating = 20 add_core = MLW }
+		MLW = {
+			government = theocracy
+			primary_culture = swahili
+			add_accepted_culture = chewa
+			add_accepted_culture = nguni
+			add_accepted_culture = southern_bantu
+			add_accepted_culture = lunda
+			remove_accepted_culture = georgian
+			remove_accepted_culture = greek
+			capital_scope = { 
+					sub_unit = { type = irregular value = current }
+					sub_unit = { type = irregular value = current }
+					sub_unit = { type = cavalry value = current }
+			}
+		}
+		random_owned = { limit = { owner = { ZAN = { exists = yes } } }
+			owner = {
+				MLW = { inherit = ZAN }
+			}
+		}
+		random_owned = { limit = { owner = { has_global_flag = global_mc_setup_complete } }
+			owner = {
+				CLN = { country_event = 365457443 }
+			}
+		}
+		ai_chance = { factor = 1 }
+	}
+
+    option = {
+        name = "The Jumbe are the rightful rulers of Nkhotakhota. §BPlay as Jumbe§W"
+		prestige = -2
+		MLW = { all_core = { remove_core = MLW } }
+		2066 = { secede_province = THIS secede_province = MLW add_core = MLW }
+		2067 = { secede_province = THIS secede_province = MLW life_rating = 20 add_core = MLW }
+		MLW = {
+			government = theocracy
+			primary_culture = swahili
+			add_accepted_culture = chewa
+			add_accepted_culture = nguni
+			add_accepted_culture = southern_bantu
+			add_accepted_culture = lunda
+			remove_accepted_culture = georgian
+			remove_accepted_culture = greek
+			capital_scope = { 
+					sub_unit = { type = irregular value = current }
+					sub_unit = { type = irregular value = current }
+					sub_unit = { type = cavalry value = current }
+			}
+		}
+		random_owned = { limit = { owner = { ZAN = { exists = yes } } }
+			owner = {
+				MLW = { inherit = ZAN }
+			}
+		}
+		random_owned = { limit = { owner = { has_global_flag = global_mc_setup_complete } }
+			owner = {
+				CLN = { country_event = 365457443 }
+			}
+		}
+		change_tag_no_core_switch = MLW
+		ai_chance = { factor = 0 }
+	}
 }
 country_event = {
     id = 18482418
@@ -6895,8 +6971,7 @@ country_event = {
     mean_time_to_happen = { days = 1 }
 
     trigger = {
-        tag = MLW
-		government = absolute_monarchy
+        tag = ZAN
 		year = 1839
 		month = 7
 		war = no
@@ -6908,6 +6983,7 @@ country_event = {
         name = "Launch it, and fast!"
 		prestige = 4
 		2066 = { secede_province = THIS }
+		3805 = { secede_province = THIS }
 		3806 = { secede_province = THIS life_rating = 20 any_pop = { literacy = -0.99 } }
 		war = {
             target = MRW
@@ -6915,13 +6991,13 @@ country_event = {
             defender_goal = { casus_belli = conquest_any }
         }
 		MRW = { country_event = 184824181 }
-		ai_chance = { factor = 1 }
+		ai_chance = { factor = 0 }
 	}
 
     option = {
         name = "That's not how it works."
 		prestige = -5
-		ai_chance = { factor = 0 }
+		ai_chance = { factor = 1 }
 	}
 }
 country_event = {
@@ -18427,6 +18503,228 @@ country_event = {
 
 	option = {
         name = "Create a new Ottoman Empire under the Ali. §RGain 30 infamy§W"
+		random_owned = {
+			limit = {
+				owner = {
+					KLS = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = KLS }
+				inherit = KLS
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					MLN = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = MLN }
+				inherit = MLN
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					TSI = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = TSI }
+				inherit = TSI
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					BHT = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = BHT }
+				inherit = BHT
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					BNB = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = BNB }
+				inherit = BNB
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					BDN = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = BDN }
+				inherit = BDN
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					BZD = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = BZD }
+				inherit = BZD
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					DJK = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = DJK }
+				inherit = DJK
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					KDS = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = KDS }
+				inherit = KDS
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					KHA = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = KHA }
+				inherit = KHA
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					KHL = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = KHL }
+				inherit = KHL
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					MKN = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = MKN }
+				inherit = MKN
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					MKU = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = MKU }
+				inherit = MKU
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					RDL = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = RDL }
+				inherit = RDL
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					SHD = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = SHD }
+				inherit = SHD
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					URM = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = URM }
+				inherit = URM
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					ZFN = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = ZFN }
+				inherit = ZFN
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					SRN = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = SRN }
+				TUR = { diplomatic_influence = { who = SRN value = -600 } leave_alliance = SRN }
+				ARU = {
+					war = {
+						target = SRN
+						attacker_goal = { casus_belli = conquest_any }
+						defender_goal = { casus_belli = humiliate_no_infamy }
+					}
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					SRN = { is_vassal = no }
+				}
+			}
+			owner = {
+				TUR = { diplomatic_influence = { who = SRN value = -600 } leave_alliance = SRN }
+				ARU = {
+					war = {
+						target = SRN
+						attacker_goal = { casus_belli = conquest_any }
+						defender_goal = { casus_belli = humiliate_no_infamy }
+					}
+				}
+			}
+		}
             random_owned = {
                 limit = {
                         owner = { NOT = { point_defense_system = 1 } }
@@ -18928,24 +19226,6 @@ country_event = {
 		random_owned = {
 			limit = {
 				owner = {
-					KLS = { vassal_of = TUR }
-				}
-			}
-			owner = {
-				TUR = { release_vassal = KLS }
-				TUR = { diplomatic_influence = { who = KLS value = -600 } leave_alliance = KLS }
-				ARU = {
-					war = {
-						target = KLS
-						attacker_goal = { casus_belli = conquest_any }
-						defender_goal = { casus_belli = humiliate_no_infamy }
-					}
-				}
-			}
-		}
-		random_owned = {
-			limit = {
-				owner = {
 					AZH = { vassal_of = TUR }
 				}
 			}
@@ -18964,19 +19244,23 @@ country_event = {
 		random_owned = {
 			limit = {
 				owner = {
+					KLS = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = KLS }
+				inherit = KLS
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
 					MLN = { vassal_of = TUR }
 				}
 			}
 			owner = {
 				TUR = { release_vassal = MLN }
-				TUR = { diplomatic_influence = { who = MLN value = -600 } leave_alliance = MLN }
-				ARU = {
-					war = {
-						target = MLN
-						attacker_goal = { casus_belli = conquest_any }
-						defender_goal = { casus_belli = humiliate_no_infamy }
-					}
-				}
+				inherit = MLN
 			}
 		}
 		random_owned = {
@@ -18987,14 +19271,7 @@ country_event = {
 			}
 			owner = {
 				TUR = { release_vassal = TSI }
-				TUR = { diplomatic_influence = { who = TSI value = -600 } leave_alliance = TSI }
-				ARU = {
-					war = {
-						target = TSI
-						attacker_goal = { casus_belli = conquest_any }
-						defender_goal = { casus_belli = humiliate_no_infamy }
-					}
-				}
+				inherit = TSI
 			}
 		}
 		random_owned = {
@@ -19005,14 +19282,150 @@ country_event = {
 			}
 			owner = {
 				TUR = { release_vassal = BHT }
-				TUR = { diplomatic_influence = { who = BHT value = -600 } leave_alliance = BHT }
-				ARU = {
-					war = {
-						target = BHT
-						attacker_goal = { casus_belli = conquest_any }
-						defender_goal = { casus_belli = humiliate_no_infamy }
-					}
+				inherit = BHT
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					BNB = { vassal_of = TUR }
 				}
+			}
+			owner = {
+				TUR = { release_vassal = BNB }
+				inherit = BNB
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					BDN = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = BDN }
+				inherit = BDN
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					BZD = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = BZD }
+				inherit = BZD
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					DJK = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = DJK }
+				inherit = DJK
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					KDS = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = KDS }
+				inherit = KDS
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					KHA = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = KHA }
+				inherit = KHA
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					KHL = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = KHL }
+				inherit = KHL
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					MKN = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = MKN }
+				inherit = MKN
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					MKU = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = MKU }
+				inherit = MKU
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					RDL = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = RDL }
+				inherit = RDL
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					SHD = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = SHD }
+				inherit = SHD
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					URM = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = URM }
+				inherit = URM
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					ZFN = { vassal_of = TUR }
+				}
+			}
+			owner = {
+				TUR = { release_vassal = ZFN }
+				inherit = ZFN
 			}
 		}
 		random_owned = {
@@ -19036,15 +19449,14 @@ country_event = {
 		random_owned = {
 			limit = {
 				owner = {
-					BNB = { vassal_of = TUR }
+					SRN = { is_vassal = no }
 				}
 			}
 			owner = {
-				TUR = { release_vassal = BNB }
-				TUR = { diplomatic_influence = { who = BNB value = -600 } leave_alliance = BNB }
+				TUR = { diplomatic_influence = { who = SRN value = -600 } leave_alliance = SRN }
 				ARU = {
 					war = {
-						target = BNB
+						target = SRN
 						attacker_goal = { casus_belli = conquest_any }
 						defender_goal = { casus_belli = humiliate_no_infamy }
 					}
@@ -19498,21 +19910,10 @@ country_event = {
 				attacker_goal = { casus_belli = conquest_any }
 				defender_goal = { casus_belli = humiliate_no_infamy }
 			}
-			war = {
-				target = BNB
-				attacker_goal = { casus_belli = conquest_any }
-				defender_goal = { casus_belli = humiliate_no_infamy }
-			}
-			war = {
-				target = TSI
-				attacker_goal = { casus_belli = conquest_any }
-				defender_goal = { casus_belli = humiliate_no_infamy }
-			}
-			war = {
-				target = MLN
-				attacker_goal = { casus_belli = conquest_any }
-				defender_goal = { casus_belli = humiliate_no_infamy }
-			}
+			inherit = BNB
+			inherit = TSI
+			inherit = MLN
+			inherit = BDN
 			war = {
 				target = KWT
 				attacker_goal = { casus_belli = conquest_any }
@@ -19521,21 +19922,12 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
-						EGY = { NOT = { war_with = BDN } }
+						BDN = { exists = yes }
 					}
 				}
 				owner = {
-					war = {
-						target = BDN
-						attacker_goal = { casus_belli = conquest_any }
-						defender_goal = { casus_belli = humiliate_no_infamy }
-					}
+					inherit = BDN
 				}
-			}
-			war = {
-				target = BHT
-				attacker_goal = { casus_belli = conquest_any }
-				defender_goal = { casus_belli = humiliate_no_infamy }
 			}
 		}
 	}
@@ -19551,21 +19943,10 @@ country_event = {
 	option = {
 		name = "."
 		EGY = {
-			war = {
-				target = BNB
-				attacker_goal = { casus_belli = conquest_any }
-				defender_goal = { casus_belli = humiliate_no_infamy }
-			}
-			war = {
-				target = TSI
-				attacker_goal = { casus_belli = conquest_any }
-				defender_goal = { casus_belli = humiliate_no_infamy }
-			}
-			war = {
-				target = MLN
-				attacker_goal = { casus_belli = conquest_any }
-				defender_goal = { casus_belli = humiliate_no_infamy }
-			}
+			inherit = BNB
+			inherit = TSI
+			inherit = MLN
+			inherit = BDN
 			war = {
 				target = KWT
 				attacker_goal = { casus_belli = conquest_any }
@@ -19574,21 +19955,12 @@ country_event = {
 			random_owned = {
 				limit = {
 					owner = {
-						EGY = { NOT = { war_with = BDN } }
+						BDN = { exists = yes }
 					}
 				}
 				owner = {
-					war = {
-						target = BDN
-						attacker_goal = { casus_belli = conquest_any }
-						defender_goal = { casus_belli = humiliate_no_infamy }
-					}
+					inherit = BDN
 				}
-			}
-			war = {
-				target = BHT
-				attacker_goal = { casus_belli = conquest_any }
-				defender_goal = { casus_belli = humiliate_no_infamy }
 			}
 		}
 	}
@@ -19850,44 +20222,20 @@ country_event = {
 	option = {
 		name = "."
 		EGY = {
-			war = {
-				target = KHA
-				attacker_goal = { casus_belli = conquest_any }
-				defender_goal = { casus_belli = humiliate_no_infamy }
-			}
-			war = {
-				target = DJK
-				attacker_goal = { casus_belli = conquest_any }
-				defender_goal = { casus_belli = humiliate_no_infamy }
-			}
-			war = {
-				target = BZD
-				attacker_goal = { casus_belli = conquest_any }
-				defender_goal = { casus_belli = humiliate_no_infamy }
-			}
+			inherit = KHA
+			inherit = DJK
+			inherit = BZD
+			inherit = BTL
+			inherit = KHL
 			random_owned = {
 				limit = {
 					owner = {
-						EGY = { NOT = { war_with = BDN } }
+						BDN = { exists = yes }
 					}
 				}
 				owner = {
-					war = {
-						target = BDN
-						attacker_goal = { casus_belli = conquest_any }
-						defender_goal = { casus_belli = humiliate_no_infamy }
-					}
+					inherit = BDN
 				}
-			}
-			war = {
-				target = BTL
-				attacker_goal = { casus_belli = conquest_any }
-				defender_goal = { casus_belli = humiliate_no_infamy }
-			}
-			war = {
-				target = KHL
-				attacker_goal = { casus_belli = conquest_any }
-				defender_goal = { casus_belli = humiliate_no_infamy }
 			}
 		}
 	}
@@ -19903,34 +20251,18 @@ country_event = {
 	option = {
 		name = "."
 		EGY = {
-			war = {
-				target = BZD
-				attacker_goal = { casus_belli = conquest_any }
-				defender_goal = { casus_belli = humiliate_no_infamy }
-			}
+			inherit = BZD
+			inherit = BTL
+			inherit = KHL
 			random_owned = {
 				limit = {
 					owner = {
-						EGY = { NOT = { war_with = BDN } }
+						BDN = { exists = yes }
 					}
 				}
 				owner = {
-					war = {
-						target = BDN
-						attacker_goal = { casus_belli = conquest_any }
-						defender_goal = { casus_belli = humiliate_no_infamy }
-					}
+					inherit = BDN
 				}
-			}
-			war = {
-				target = BTL
-				attacker_goal = { casus_belli = conquest_any }
-				defender_goal = { casus_belli = humiliate_no_infamy }
-			}
-			war = {
-				target = KHL
-				attacker_goal = { casus_belli = conquest_any }
-				defender_goal = { casus_belli = humiliate_no_infamy }
 			}
 		}
 	}
@@ -27896,7 +28228,7 @@ country_event = {
 		}
 	}
     option = {
-        name = "Build up our military first. (Event in 3 years)"
+        name = "Build up our military first. (Event in 5 years)"
 		prestige = -5
 		random_owned = { limit = { owner = { 3718 = { is_core = THIS } } } owner = {
 			3718 = {
@@ -27906,7 +28238,7 @@ country_event = {
 			set_country_flag = readd_cores_ngoni
 		}
 		}
-		CLN = { country_event = { id = 184824503 days = 1000 } }
+		CLN = { country_event = { id = 184824503 days = 1700 } }
 		any_pop = { limit = { type = soldiers } reduce_pop = 1.4 }
 		ai_chance = {
 			factor = 1
@@ -27953,7 +28285,7 @@ country_event = {
 		ZAN = { country_event = 184824505 }
 		war = {
 			target = ZAN
-			attacker_goal = { casus_belli = cut_down_to_size_no_infamy }
+			attacker_goal = { casus_belli = conquest_any }
 			call_ally = no
 		}
 		ai_chance = {
@@ -27974,10 +28306,11 @@ country_event = {
 		prestige = 5
 		end_war = FROM
 		set_global_flag = ngoni_cometh
-		3718 = { any_pop = { limit = { has_pop_culture = nguni } reduce_pop = 1.1 move_pop = 2067 } }
-		change_tag_no_core_switch = MLW
-		FROM = { inherit = ZAN }
-		ZAN = { government = absolute_monarchy }
+		end_war
+		2066 = { secede_province = THIS }
+		3718 = { secede_province = NULL }
+		country_event = 18482417
+		3718 = { any_pop = { limit = { has_pop_culture = nguni } reduce_pop = 1.1 move_pop = 2066 } }
 		ai_chance = {
 			factor = 1
 		}
@@ -34955,6 +35288,16 @@ country_event = {
 		set_global_flag = zemene_mesafint_start
         add_country_modifier = { name = tewodros_reforms duration = 1825 }
         any_pop = { limit = { has_pop_culture = amhara } militancy = -1 }
+		add_country_modifier = {
+			name = fanatic_army
+			duration = -1
+		}
+		capital_scope = {
+			sub_unit = { type = infantry value = current }
+			sub_unit = { type = irregular value = current }
+			sub_unit = { type = cavalry value = current }
+		}
+		any_pop = { limit = { type = soldiers } reduce_pop = 1.5 }
 		ai_chance = {
 			factor = 1
 		}
@@ -35244,6 +35587,32 @@ country_event = {
 		CHO = { political_reform = two_year_draft }
 		YZW = { political_reform = two_year_draft }
 		SEN = { political_reform = two_year_draft }
+		ai_chance = {
+			factor = 1
+		}
+    }
+
+}
+country_event = {
+    id = 18482522
+    title = "The Conquest of Mpika"
+    desc = "We have been able to conquer the southern paramountcies of Mpika, and we finally control all of Bemba."
+    picture = "blood_tax"
+
+    fire_only_once = yes
+
+    trigger = {
+		owns = 3721
+		year = 1831
+		2016 = { empty = yes }
+    }
+
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "Great."
+		prestige = 2
+		2016 = { secede_province = THIS life_rating = 15 any_pop = { literacy = -0.99 } }
 		ai_chance = {
 			factor = 1
 		}
