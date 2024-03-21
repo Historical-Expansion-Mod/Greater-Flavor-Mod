@@ -1,6 +1,6 @@
 defines = {
 
-start_date = '1836.1.1',
+start_date = '1830.1.1',
 end_date = '1936.1.1',
 
 country = {
@@ -57,7 +57,7 @@ country = {
 	PRESTIGE_HIT_ON_BREAK_COUNTRY = -0.20, -- percentage reduction when country gets taken by rebels
 	MIN_MOBILIZE_LIMIT = 3,
 	POP_GROWTH_COUNTRY_CACHE_DAYS = 30, -- period of cached pop growth (used for player)
-	NEWSPAPER_PRINTING_FREQUENCY = 350, -- days frequency when the news attempt to be printed (may not print if not enough facts collected, and retry after another X days)
+	NEWSPAPER_PRINTING_FREQUENCY = 450, -- days frequency when the news attempt to be printed (may not print if not enough facts collected, and retry after another X days)
 	NEWSPAPER_TIMEOUT_PERIOD = 890, -- the max period for news that may be printed. The probability is decreased with time.
 	NEWSPAPER_MAX_TENSION = 750, -- when tension of printing gets this high, the newspaper will attempt to be printed immediately.
 	NAVAL_BASE_SUPPLY_SCORE_BASE = 10, -- base value that is powered by level of naval base. Determines the naval supplying capabilities.
@@ -90,7 +90,7 @@ country = {
 	COLONIZATION_INFLUENCE_TEMPERATURE_PER_LEVEL = 0.005,
 	PARTY_LOYALTY_HIT_ON_WAR_LOSS = 0.95, -- Drops the ruling party loyalty if war is lost.
 	RESEARCH_POINTS_ON_CONQUER_MULT = 300, -- multiplier to RP got by conquering as unciv when got enacted military reforms
-	MAX_RESEARCH_POINTS = 35000, -- max RP you can store for uncivs
+	MAX_RESEARCH_POINTS = 40000, -- max RP you can store for uncivs Pauil edit: used to be 35k
 },
 
 economy = {
