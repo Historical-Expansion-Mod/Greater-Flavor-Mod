@@ -1,0 +1,253 @@
+#The End of the Chilean silver rush
+    country_event = {
+        id = 97081
+        title = "EVTNAME97081"
+        desc = "EVTDESC97081"
+        picture = "chilean_silver_rush"
+
+        trigger = {
+            2323 = { owned_by = THIS trade_goods = precious_metal }
+            year = 1880
+        }
+
+        fire_only_once = yes
+
+        mean_time_to_happen = {
+            months = 48
+            modifier = {
+                factor = 0.8
+                year = 1885
+            }
+            modifier = {
+                factor = 0.5
+                year = 1886
+            }
+            modifier = {
+                factor = 0.5
+                year = 1887
+            }
+            modifier = {
+                factor = 0.5
+                year = 1888
+            }
+        }
+
+        option = {
+            name = "EVT97081OPTA"
+            #2322 = { trade_goods = iron remove_province_modifier = silver_mine }
+            2323 = { trade_goods = iron remove_province_modifier = silver_mine }
+        }
+}
+
+#The War of the Pacific - 1/2
+country_event = {
+    id = 97082
+    title = "EVTNAME97082"
+    desc = "EVTDESC97082"
+    picture = "sinking_of_the_esmeralda"
+
+    trigger = {
+        tag = CHL
+        is_vassal = no
+        NOT = { has_country_modifier = recently_lost_war }
+        is_disarmed = no
+        war = no
+        NOT = { war_exhaustion = 20 }
+        2308 = {
+            OR = {
+                owner = { NOT = { truce_with = THIS } }
+                owned_by = THIS
+            }
+        }
+        2305 = {
+            OR = {
+                owner = { NOT = { truce_with = THIS } }
+                owned_by = THIS
+            }
+        }
+        OR = {
+            year = 1878
+            AND = {
+                invention = ironclads
+                nationalism_n_imperialism = 1
+            }
+        }
+    }
+
+    fire_only_once = yes
+
+    mean_time_to_happen = {
+        months = 12
+    }
+
+    immediate = { set_global_flag = war_of_the_pacific }
+
+    option = {
+        name = "EVT97082OPTA"
+        badboy = 2
+        2308 = { trade_goods = sulphur add_core = CHL }
+        2309 = { add_core = CHL }
+        2307 = { add_core = CHL }
+        2305 = { trade_goods = sulphur add_core = CHL }
+		3554 = { add_core = CHL }
+        2578 = { add_core = CHL }
+
+        any_country = {
+            limit = {
+                any_owned_province = {
+                    OR = {
+                        region = BOL_2309
+                        province_id = 2578
+                    }
+                }
+                OR = {
+                    in_sphere = THIS
+                    vassal_of = THIS
+                }
+            }
+
+            relation = { who = THIS value = -400 }
+            any_owned = {
+                limit = {
+                    OR = {
+                        region = BOL_2309
+                        province_id = 2578
+                    }
+                }
+                secede_province = THIS
+            }
+        }
+
+        any_country = {
+            limit = {
+                any_owned_province = {
+                    OR = {
+                        region = BOL_2309
+                        province_id = 2578
+                    }
+                }
+                NOT = {
+                    in_sphere = THIS
+                    vassal_of = THIS
+                }
+            }
+            relation = { who = THIS value = -400 }
+            leave_alliance = THIS
+            end_military_access = THIS
+            country_event = 97083
+        }
+        add_country_modifier = { name = small_country_draft duration = 180 }
+
+        ai_chance = { factor = 100 }
+    }
+
+    option = {
+        name = "EVT97082OPTB"
+        badboy = 2
+        2308 = { trade_goods = sulphur add_core = CHL }
+        2309 = { add_core = CHL }
+        2307 = { add_core = CHL }
+        2305 = { trade_goods = sulphur add_core = CHL }
+		3554 = { add_core = CHL }
+        2578 = { add_core = CHL }
+        relation = { who = BOL value = -400 }
+        relation = { who = PEU value = -400 }
+        ai_chance = { factor = 0 }
+    }
+
+    option = {
+        name = "EVT97082OPTC"
+        badboy = -4
+        prestige_factor = -0.1
+        ai_chance = { factor = 0 }
+    }
+}
+
+#The War of the Pacific - BOL/PEU Declare War 2/2
+country_event = {
+    id = 97083
+    title = "EVTNAME97082"
+    desc = "EVTDESC97083"
+    picture = "sinking_of_the_esmeralda"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "Prepare for war."
+        any_country = {
+            limit = {
+                NOT = { war_with = THIS }
+                OR = {
+                    is_sphere_leader_of = CHL
+                    is_sphere_leader_of = THIS
+                }
+            }
+            country_event = 97084
+        }
+        war = {
+            target = FROM
+            attacker_goal = {
+                casus_belli = war_reparations
+            }
+
+            defender_goal = {
+                casus_belli = acquire_all_cores
+                country = CHL
+            }
+            call_ally = yes
+        }
+        ai_chance = { factor = 90 }
+    }
+
+    option = {
+        name = "Bide our time."
+        any_owned = {
+            limit = {
+                OR = {
+                    province_id = 2305
+					province_id = 3554
+                    province_id = 2309
+                    province_id = 2308
+                    province_id = 2307
+                    province_id = 2578
+                }
+            }
+            secede_province = CHL
+        }
+        ai_chance = {
+            factor = 10
+            modifier = { factor = 3 war = yes }
+        }
+    }
+}
+
+#The War of the Pacific - Sphere owner declares neutrality?
+country_event = {
+    id = 97084
+    title = "EVTNAME97084"
+    desc = "EVTDESC97084"
+    picture = "sinking_of_the_esmeralda"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "EVT97084OPTA" #We will not intervene
+		leave_alliance = CHL
+        ai_chance = {
+            factor = 90
+            modifier = {
+                factor = 0.25
+                is_sphere_leader_of = CHL
+                relation = { who = FROM value = 150 }
+            }
+        }
+    }
+
+    option = {
+        name = "EVT97084OPTB"
+        ai_chance = {
+            factor = 10
+            modifier = { factor = 0 war = yes }
+        }
+    }
+}

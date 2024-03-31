@@ -1,0 +1,213 @@
+political_decisions = {
+    #####################################################
+    #1848 Revolutions#
+    #####################################################
+
+    abdication_of_ferdinand_i = {
+        picture = ferdinand_i
+        potential = {
+            tag = AUS
+            has_global_flag = hungarian_revolution_occurred
+            war_with = HUN
+            OR = {
+                ai = no
+                war_exhaustion = 10
+            }
+            OR = {
+                government = hms_government
+                government = prussian_constitutionalism
+                government = absolute_monarchy
+                government = absolute_empire
+                government = semi_constitutional_empire
+                government = constitutional_empire
+            }
+            NOT = { has_global_flag = franz_joseph_i }
+            NOT = { year = 1870 }
+        }
+
+        allow = { war_with = HUN }
+
+        effect = {
+            set_global_flag = franz_joseph_i
+            country_event = 99990
+			prestige = -10
+			war_exhaustion = -25
+        }
+        ai_will_do = { factor = 1 }
+    }
+
+    request_russian_intervention = {
+        picture = military_aid
+        potential = {
+            tag = AUS
+            has_global_flag = franz_joseph_i
+            has_global_flag = hungarian_revolution_occurred
+            war_with = HUN
+            exists = HUN
+            NOT = { has_country_flag = austria_let_hungary_go }
+            NOT = { has_country_flag = called_russian_intervention }
+        }
+
+        allow = {
+            war_with = HUN
+            NOT = { any_greater_power = { war_with = RUS } }
+            RUS = {
+                OR = {
+                    government = absolute_empire
+                    government = semi_constitutional_empire
+                }
+                is_greater_power = yes
+                NOT = { truce_with = HUN }
+                NOT = { truce_with = THIS }
+            }
+        }
+
+        effect = {
+            set_country_flag = called_russian_intervention
+            RUS = { country_event = 32512 }
+        }
+        ai_will_do = { factor = 1 }
+    }
+
+    embraced_jews_in_austria = {
+		picture = embrace_the_jews
+        potential = {
+            OR = {
+                tag = AUS
+                tag = KUK
+                tag = DNB
+            }
+            has_global_flag = franz_joseph_i
+            NOT = { has_country_flag = embraced_jews }
+        }
+
+        allow = {
+            war = no
+            year = 1850
+            OR = {
+                government = hms_government
+                government = prussian_constitutionalism
+                government = absolute_monarchy
+                government = absolute_empire
+                government = semi_constitutional_empire
+                government = constitutional_empire
+            }
+        }
+
+        effect = {
+            set_country_flag = embraced_jews
+            any_pop = {
+                limit = {
+                    NOT = { has_pop_religion = jewish }
+                }
+                militancy = 1
+                consciousness = 2
+            }
+            add_accepted_culture = ashkenazi
+            any_pop = {
+                limit = {
+                    culture = ashkenazi
+                    location = { province_id = 619 } #Vienna
+                }
+                militancy = -10
+                consciousness = -10
+                reduce_pop = 2
+            }
+            any_pop = {
+                limit = {
+                    has_pop_religion = jewish
+                }
+                militancy = -10
+                consciousness = -10
+            }
+        }
+        ai_will_do = { factor = 1 }
+    }
+
+    #####################################################
+    #The German Confederation#
+    #####################################################
+
+    peace_of_prague = { #Lets AI Austria Take Sigmaringen if they win brother's war/white peace AI Prussia
+        picture = gtfo
+        potential = {
+            tag = AUS
+            OR = {
+                SGM = { vassal_of = THIS }
+                owns = 594
+                SGM = {
+                    exists = yes
+                    vassal_of = PRU
+                }
+                SGM = {
+                    exists = yes
+                    is_vassal = no
+                }
+                AND = {
+                    NOT = { exists = SGM }
+                    594 = { owned_by = PRU } #Sigmaringen
+                }
+            }
+            NOT = {
+                exists = NGF
+                AND = { exists = SGF NOT = { owns = 594 } }
+                exists = GER
+                exists = GCF
+                has_country_flag = brothers_war_loser
+            }
+            OR = {
+                BAV = { in_sphere = THIS }
+                BAD = { in_sphere = THIS }
+            }
+            NOT = { has_country_flag = ai_demand_sigmaringen }
+        }
+
+        allow = {
+            war = no
+            truce_with = PRU
+            PRU = { has_country_modifier = recently_lost_war }
+            OR = {
+                has_country_modifier = brothers_war_aggressor
+                has_country_flag = brothers_war_winner
+            }
+            NOT = { exists = NGF }
+        }
+
+        effect = {
+            set_country_flag = ai_demand_sigmaringen
+			relation = { who = PRU value = -400 }
+			diplomatic_influence = { who = PRU value = -400 }
+            war_exhaustion = -25
+            badboy = 5
+            remove_country_modifier = brothers_war_aggressor
+			random_owned = {
+				limit = {
+					owner = {
+						has_global_flag = you_are_playing_mp
+					}
+				}
+				owner = {
+					set_global_flag = austria_wins
+					any_country = {
+						limit = {
+							tag = PRU
+							truce_with = THIS
+						}
+						country_event = 99810
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { has_global_flag = you_are_playing_mp }
+					}
+				}
+				owner = {
+					 country_event = 9899810
+				}
+			}
+        }
+        ai_will_do = { factor = 1 }
+    }
+}
