@@ -25908,8 +25908,8 @@ country_event = {
 }
 country_event = {
     id = 18482424
-    title = "The Ottomans Cede Us 6 Nahiyas"
-    desc = "After treaties with Russia, the Ottomans have decided to cede to us the rest of the territory we occupied before the last Ottoman push in the Serbian Revolution."
+    title = "The Hatt-i-Sharif of $YEAR$"
+    desc = "SERHATTSHARIF33"
     picture = "serbia_borders_later"
 
     fire_only_once = yes
@@ -35620,7 +35620,6 @@ country_event = {
     title = "Medoko's Rebellion"
     desc = "MEDOKOREVOLTS"
     picture = "sahle_selassie"
-
     fire_only_once = yes
 
     trigger = {
@@ -35673,14 +35672,13 @@ country_event = {
 			factor = 0
 		}
     }
-
 }
+
 country_event = {
     id = 184825251
     title = "Medoko's Rebellion"
     desc = "The Oromo in Shewa have revolted and joined us, and Shewa for now has not retaliated."
     picture = "sahle_selassie"
-
     fire_only_once = yes
 	is_triggered_only = yes
 
@@ -35690,14 +35688,13 @@ country_event = {
 			factor = 1
 		}
     }
-
 }
+
 country_event = {
     id = 184825252
     title = "Medoko's Rebellion"
     desc = "The Oromo in Shewa have revolted, and our army has joined them."
     picture = "sahle_selassie"
-
     fire_only_once = yes
 	is_triggered_only = yes
 
@@ -35707,23 +35704,29 @@ country_event = {
 			factor = 1
 		}
     }
-
 }
+
 country_event = {
     id = 18482526
-    title = "The Hatt-i-Sharif of 1830"
+    title = "The Hatt-i-Sharif of $YEAR$"
     desc = "HATTISHARIFEIGHTEENTHIRTY"
     picture = "serbia_borders_startdate"
-
     fire_only_once = yes
 
     trigger = {
 		tag = TUR
 		SER = { vassal_of = TUR }
+		NOT = { war_with = RUS }
 		owns = 3933
 		year = 1830
 		month = 9
-		NOT = { year = 1835 }
+		NOT = {
+			AND = {
+				year = 1833
+				month = 4
+			}
+			year = 1834
+		}
     }
 
     mean_time_to_happen = { days = 1 }
@@ -35734,89 +35737,101 @@ country_event = {
 	
     option = {
         name = "We must concede."
-		prestige = -2
 		SER = { country_event = 184825261 }
 		set_country_flag = conceded_serbia
-		ai_chance = {
-			factor = 1
-		}
+		ai_chance = { factor = 1 }
     }
     option = {
-        name = "We have to retaliate!"
-		prestige = 5
-		SER = { country_event = 184825262 }
-		RUS = {
-			country_event = 184825263
-			create_alliance = SER
-			relation = {
-				who = SER
-				value = 200
-			}
-			diplomatic_influence = { who = SER value = 600 }
+        name = "Serbia must be retaken. May Allah guide us to victory!"
+		leave_alliance = SER
+		diplomatic_influence = {
+			who = SER
+			value = -400
 		}
-		ai_chance = {
-			factor = 0
+		SER = { country_event = { id = 184825262 days = 1 } }
+		RUS = { country_event = 184825263 }
+		war = {
+			target = SER
+			attacker_goal = { casus_belli = conquest_any }
+			defender_goal = { casus_belli = acquire_all_cores }
+			call_ally = no
 		}
+		ai_chance = { factor = 0 }
     }
-
 }
+
 country_event = {
     id = 184825261
-    title = "The Hatt-i-Sharif of 1830 Succeeds"
-    desc = "The Ottomans have given us more autonomy, and freed us from vassaldom."
+    title = "The Hatt-i-Sharif of $YEAR$"
+    desc = "SERHATTSHARIFSTART"
     picture = "serbia_borders_startdate"
-
     fire_only_once = yes
 	is_triggered_only = yes
 
     option = {
-        name = "Great."
-		ai_chance = {
-			factor = 1
-		}
+        name = "Živela Srbija!"
     }
-
 }
+
 country_event = {
     id = 184825262
-    title = "The Hatt-i-Sharif of 1830 Fails"
-    desc = "The Ottomans have refused to give us more autonomy, and started a war against us."
+    title = "The Ottomans invade"
+    desc = "SERGETSINVADED"
     picture = "serbia_borders_startdate"
-
     fire_only_once = yes
 	is_triggered_only = yes
 
     option = {
-        name = "Oh no."
-		ai_chance = {
-			factor = 1
+        name = "Za Srbiju! Smrt Turcima!"
+		any_pop = {
+			limit = { is_primary_culture = yes }
+			dominant_issue = {
+				factor = 0.25
+				value = jingoism
+			}
 		}
     }
-
 }
+
 country_event = {
     id = 184825263
-    title = "The Hatt-i-Sharif of 1830 Fails"
-    desc = "The Ottomans have refused to give Serbia more autonomy, and have attacked Serbia."
+    title = "The Ottomans invade Serbia"
+    desc = "RUSHELPSSER"
     picture = "serbia_borders_startdate"
-
     fire_only_once = yes
 	is_triggered_only = yes
 
     option = {
-        name = "It will be decided in the fields of the Balkans."
-		ai_chance = {
-			factor = 1
+        name = "We must come to Serbia's aid!"
+		create_alliance = SER
+		relation = {
+			who = SER
+			value = 200
 		}
+		diplomatic_influence = { who = SER value = 600 }
+		# Audax Validator "." Ignore_NEXT
+		SER = { war = { attacker_goal = { casus_belli = call_allies_cb } call_ally = yes } }
+		ai_chance = { factor = 1 }
     }
 
+    option = {
+        name = "Serbia can fend for itself."
+		prestige = -20
+		leave_alliance = SER
+		relation = {
+			who = SER
+			value = -100
+		}
+		diplomatic_influence = { who = SER value = -200 }
+		ai_chance = { factor = 0 }
+    }
 }
+
 country_event = {
     id = 18482527
-    title = "The Hatt-i-Sharif of 1833"
+    title = "The Hatt-i-Sharif of $YEAR$"
     desc = "HATT_I_SHARIF_1833"
     picture = "serbia_borders_later"
-
     fire_only_once = yes
 
     trigger = {
@@ -35828,39 +35843,57 @@ country_event = {
 		SER = { owns = 797 owns = 3932 }
 		year = 1833
 		month = 4
-		has_global_flag = massacre_albbeys
-		OR = {
-			has_country_flag = conceded_serbia
-			AND = { has_country_modifier = recently_lost_war SER = { exists = yes } }
+		has_country_flag = conceded_serbia
+		NOT = {
+			war_with = SER
+			war_with = RUS
+			year = 1836
 		}
-		NOT = { year = 1836 }
     }
 
     mean_time_to_happen = { days = 1 }
 		
     option = {
-        name = "We must concede."
+        name = "We have no choice."
 		set_global_flag = hatt_i_sharif_1833
 		3934 = { remove_core = BOS remove_core = TUR }
 		3933 = { remove_core = TUR }
 		3347 = { remove_core = TUR }
 		795 = { remove_core = TUR }
-		any_owned = { limit = { OR = {
-				province_id = 3934
-				province_id = 3933
-				province_id = 3347
-				province_id = 795
-			} }
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 3934
+					province_id = 3933
+					province_id = 3347
+					province_id = 795
+				}
+			}
 			secede_province = SER
 		}
 		relation = { who = SER value = 100 }
 		SER = { country_event = 18482424 }
-		ai_chance = {
-			factor = 1
-		}
     }
 
+	option = {
+        name = "Us? Cede territory? Serbia shall be wiped off the map for their insolence!"
+		leave_alliance = SER
+		diplomatic_influence = {
+			who = SER
+			value = -400
+		}
+		SER = { country_event = { id = 184825262 days = 1 } }
+		RUS = { country_event = 184825263 }
+		war = {
+			target = SER
+			attacker_goal = { casus_belli = conquest_any }
+			defender_goal = { casus_belli = acquire_all_cores }
+			call_ally = no
+		}
+		ai_chance = { factor = 0 }
+    }
 }
+
 country_event = {
     id = 18482528
     title = "The Conquest of Southern Kordofan"
