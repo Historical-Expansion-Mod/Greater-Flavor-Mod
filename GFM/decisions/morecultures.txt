@@ -1,4 +1,215 @@
 political_decisions = {
+	form_boe_fra = {
+		picture = form_boe
+		potential = {
+			tag = BOR
+			ai = no
+			has_country_flag = bourbon_claim
+		}
+		allow = {
+			OR = {
+				AND = {
+					SPC = { exists = yes }
+					SPA = { exists = no }
+				}
+				SPA = { exists = yes all_core = { owned_by = THIS } }
+			}
+			war = no
+			is_vassal = no
+			is_disarmed = no
+			NOT = { has_country_modifier = recently_lost_war }
+			OR = {
+				government = absolute_monarchy
+				government = prussian_constitutionalism
+				government = hms_government
+			}
+		}
+		effect = {
+			SPC = { all_core = { add_core = BOE } }
+			inherit = SPC
+			all_core = { add_core = BOE }
+			inherit = ADO
+			ADO = { all_core = { add_core = BOE } }
+			change_tag = BOE
+			remove_country_modifier = spanish_kings
+			add_accepted_culture = spanish
+			add_accepted_culture = basque
+			add_accepted_culture = catalan
+			add_accepted_culture = galician
+			political_reform = regionalism
+			set_country_flag = stay_regionalist
+			set_country_flag = french_bourbon_empire
+			country_event = 80432079
+			prestige = 75
+			random_owned = {
+				limit = {
+					owner = {
+						government = absolute_monarchy
+					}
+				}
+				owner = {
+					government = absolute_empire
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						government = prussian_constitutionalism
+					}
+				}
+				owner = {
+					government = semi_constitutional_empire
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						government = hms_government
+					}
+				}
+				owner = {
+					government = constitutional_empire
+				}
+			}
+		}
+	}
+
+	form_boe_spc = {
+		picture = form_boe
+		potential = {
+			tag = SPC
+			ai = no
+			has_country_flag = bourbon_claim
+		}
+		allow = {
+			OR = {
+				AND = {
+					BOR = { exists = yes }
+					FRA = { exists = no }
+				}
+				FRA = { exists = yes all_core = { owned_by = THIS } }
+			}
+			war = no
+			is_vassal = no
+			is_disarmed = no
+			NOT = { has_country_modifier = recently_lost_war }
+			OR = {
+				government = absolute_monarchy
+				government = prussian_constitutionalism
+				government = hms_government
+			}
+		}
+		effect = {
+			BOR = { all_core = { add_core = BOE } }
+			inherit = BOR
+			all_core = { add_core = BOE }
+			inherit = ADO
+			ADO = { all_core = { add_core = BOE } }
+			change_tag = BOE
+			remove_country_modifier = spanish_kings
+			add_accepted_culture = french
+			add_accepted_culture = breton
+			add_accepted_culture = wallonian
+			add_accepted_culture = occitan
+			add_accepted_culture = arpitan
+			political_reform = regionalism
+			set_country_flag = stay_regionalist
+			set_country_flag = spanish_bourbon_empire
+			country_event = 80432079
+			prestige = 75
+			random_owned = {
+				limit = {
+					owner = {
+						government = absolute_monarchy
+					}
+				}
+				owner = {
+					government = absolute_empire
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						government = prussian_constitutionalism
+					}
+				}
+				owner = {
+					government = semi_constitutional_empire
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						government = hms_government
+					}
+				}
+				owner = {
+					government = constitutional_empire
+				}
+			}
+		}
+	}
+
+	spa_accept_minorities = {
+        picture = spanish_republic
+        potential = {
+            tag = SPA
+			NOT = { accepted_culture = catalan }
+        }
+
+        allow = {
+			OR = {
+				government = radical_republic
+				government = democracy
+				government = proletarian_dictatorship
+				AND = {
+					government = hms_government
+					political_parties = secret_ballots
+					upper_house_composition = population_equal_weight
+					trade_unions = all_trade_unions
+					vote_franschise = universal_voting
+					voting_system = proportional_representation
+					public_meetings = yes_meeting
+					slavery = no_slavery
+					press_rights = free_press
+				}
+			}
+			OR = {
+				AND = {
+					ruling_party_ideology = radical
+					NOT = { year = 1903 }
+				}
+				ruling_party_ideology = socialist
+				ruling_party_ideology = communist
+			}
+			citizens_rights = all_voting_pops
+			NOT = { war_exhaustion = 1 }
+			war = no
+        }
+
+        effect = {
+			clr_country_flag = stay_regionalist
+			set_country_flag = stay_federalist
+			political_reform = federalism
+			add_accepted_culture = catalan
+			add_accepted_culture = basque
+			add_accepted_culture = galician
+			any_pop = {
+				limit = {
+					is_accepted_culture = yes
+					location = { is_core = SPA }
+				}
+				militancy = -6
+				consciousness = -8
+			}
+			any_pop = {
+				limit = {
+					is_primary_culture = yes
+				}
+				consciousness = 4
+			}
+        }
+    }
     accept_ugrians = {
         picture = embrace_minority
         potential = {
@@ -130,6 +341,7 @@ political_decisions = {
                 is_greater_power = no
             }
             has_country_flag = had_liberal_revolution
+			NOT = { has_country_flag = ai_demand_sigmaringen }
         }
 
         effect = {
@@ -449,77 +661,20 @@ political_decisions = {
         }
 
         allow = {
-            PLC = {
-                all_core = {
-                    owned_by = THIS
-                }
-            }
-            revolution_n_counterrevolution = 1
-            is_greater_power = yes
+            any_owned_province = { OR = { is_core = UKR is_core = BYE } }
+			NOT = { exists = UKR exists = BYE }
+            nationalism_n_imperialism = 1
+            rank = 16
             citizens_rights = all_voting_pops
             citizenship_policy = full_citizenship
         }
 
         effect = {
-            PLC = {
-                all_core = {
-                    add_core = PLR
-                    remove_core = PLC
-                }
-            }
-            RUS_968 = {
-                add_core = PLR
-            }
-            RUS_955 = {
-                add_core = PLR
-            }
-            RUS_973 = {
-                add_core = PLR
-            }
-            RUS_978 = {
-                add_core = PLR
-            }
-            RUS_964 = {
-                add_core = PLR
-            }
-			RUS_1009 = {
-                add_core = PLR
-            }
-			RUS_976 = {
-                add_core = PLR
-            }
-            662 = {
-                add_core = PLR
-            }
+            change_tag = PLR
             add_accepted_culture = byelorussian
             add_accepted_culture = ukrainian
 			add_accepted_culture = polish
 			add_accepted_culture = lithuanian
-            change_tag = PLR
-            prestige = 40
-            any_country = {
-                limit = {
-                    OR = {
-                        in_sphere = THIS
-                        vassal_of = THIS
-                    }
-                }
-                any_owned = {
-                    limit = { is_core = PLR }
-                    secede_province = THIS
-                }
-            }
-            any_greater_power = {
-                limit = {
-                    OR = {
-                        primary_culture = russian
-                        is_culture_group = germanic
-                    }
-                    neighbour = THIS
-                }
-                relation = { who = THIS value = -200 }
-                leave_alliance = THIS
-            }
             set_country_flag = polish_lithuania_ruthenia_formed
             any_pop = {
                 limit = {
@@ -942,6 +1097,10 @@ political_decisions = {
                 LOM = { in_sphere = THIS }
                 VEN = { in_sphere = THIS }
             }
+			NOT = {
+				has_global_flag = austrian_outside_italy
+				has_global_flag = french_outside_italy
+			}
         }
         allow = {
             war = no
@@ -2331,11 +2490,14 @@ political_decisions = {
                 tag = GER
             }
             is_greater_power = yes
-            UBD = {
-                vassal_of = THIS
-                ai = yes
-                exists = yes
-            }
+			OR = {
+				357 = { owner = { in_sphere = THIS vassal_of = THIS } }
+				354 = { owner = { in_sphere = THIS vassal_of = THIS } }
+				349 = { owner = { in_sphere = THIS vassal_of = THIS } }
+				owns = 357
+				owns = 354
+				owns = 349
+			}
             OR = {
                 government = hms_government
                 government = prussian_constitutionalism
@@ -2344,30 +2506,22 @@ political_decisions = {
                 government = semi_constitutional_empire
                 government = constitutional_empire
             }
-            NOT = { has_global_flag = annex_baltic_duchy has_global_flag = you_are_playing_mp }
+            NOT = { has_global_flag = annex_baltic_duchy }
         }
 
         allow = {
             war = no
+			is_vassal = no
             NOT = { has_country_modifier = recently_lost_war }
-            is_sphere_leader_of = UBD
+			OR = {
+				EST = { all_core = { owner = { in_sphere = THIS vassal_of = THIS } } }
+				EST = { all_core = { owned_by = THIS } }
+			}
+			OR = {
+				LAT = { all_core = { owner = { in_sphere = THIS vassal_of = THIS } } }
+				LAT = { all_core = { owned_by = THIS } }
+			}
             nationalism_n_imperialism = 1
-            OR = {
-                RUS = {
-                    OR = {
-                        government = fascist_dictatorship
-                        government = proletarian_dictatorship
-                    }
-                    is_greater_power = yes
-                }
-                AND = {
-                    UBD = {
-                        vassal_of = THIS
-                        NOT = { has_country_modifier = drang_nach_osten_country }
-                    }
-                    has_country_flag = incorporate_the_baltic_states
-                }
-            }
             OR = {
                 government = hms_government
                 government = prussian_constitutionalism
@@ -2381,16 +2535,23 @@ political_decisions = {
 
         effect = {
             badboy = 2
-            diplomatic_influence = { who = UBD value = -400 }
-            release = UBD
-            leave_alliance = UBD
+            set_global_flag = annex_baltic_duchy
+            relation = { who = RUS value = -50 }
+			any_country = {
+				any_owned = {
+					limit = {
+						OR = {
+							is_core = LAT
+							is_core = EST
+						}
+					}
+					secede_province = THIS
+				}
+			}
             any_pop = {
                 limit = { is_culture_group = baltic }
                 militancy = 8
             }
-            inherit = UBD
-            set_global_flag = annex_baltic_duchy
-            relation = { who = RUS value = -50 }
             any_owned = {
                 limit = { is_core = UBD }
                 add_core = THIS
@@ -2410,104 +2571,6 @@ political_decisions = {
                 }
                 reduce_pop = 1.1
             }
-        }
-        ai_will_do = { factor = 1 }
-    }
-
-    incorporate_the_baltic_states = {
-        picture = annex_united_baltic_duchy
-        potential = {
-            is_greater_power = yes
-            OR = {
-                tag = GER
-                tag = GCF
-            }
-            exists = UBD
-			UBD = { ai = yes }
-            UBD = {
-                OR = {
-                    is_vassal = no
-                    is_substate = no
-                    vassal_of = THIS
-                }
-                primary_culture = volga_german
-                in_sphere = THIS
-            }
-            NOT = { has_country_flag = incorporate_the_baltic_states }
-        }
-
-        allow = {
-            war = no
-            nationalism_n_imperialism = 1
-			OR = {
-				AND = {
-					RUS = { truce_with = THIS }
-					RUS = { has_country_modifier = recently_lost_war }
-				}
-				AND = {
-					SOV = { truce_with = THIS }
-					SOV = { has_country_modifier = recently_lost_war }
-				}
-			}
-        }
-
-        effect = {
-            badboy = 2
-            prestige = 10
-            create_vassal = UBD
-            UBD = {
-                any_pop = {
-                    limit = { NOT = { is_culture_group = germanic } }
-                    militancy = 3
-                }
-                add_country_modifier = {
-                    name = drang_nach_osten_country
-                    duration = 1825
-                }
-            }
-            random_owned = { limit = { owner = { OR = { government = absolute_empire government = absolute_monarchy } } }
-                UBD = {
-                    government = absolute_monarchy
-                    political_reform = none_voting
-                }
-            }
-            random_owned = { limit = { owner = { OR = { government = semi_constitutional_empire government = prussian_constitutionalism } } }
-                UBD = {
-                    government = prussian_constitutionalism
-                    political_reform = landed_voting
-                }
-            }
-            random_owned = { limit = { owner = { OR = { government = constitutional_empire government = hms_government } } }
-                UBD = {
-                    government = hms_government
-                    political_reform = universal_voting
-                }
-            }
-            random_owned = { limit = { owner = { government = democracy } }
-                UBD = {
-                    government = democracy
-                    political_reform = universal_voting
-                }
-            }
-            random_owned = { limit = { owner = { government = proletarian_dictatorship } }
-                UBD = {
-                    government = proletarian_dictatorship
-                    political_reform = none_voting
-                }
-            }
-            random_owned = { limit = { owner = { government = fascist_dictatorship } }
-                UBD = {
-                    government = fascist_dictatorship
-                    political_reform = none_voting
-                }
-            }
-            random_owned = { limit = { owner = { government = presidential_dictatorship } }
-                UBD = {
-                    government = presidential_dictatorship
-                    political_reform = none_voting
-                }
-            }
-            set_country_flag = incorporate_the_baltic_states
         }
         ai_will_do = { factor = 1 }
     }
@@ -3584,7 +3647,7 @@ political_decisions = {
 			NOT = { owns = 139 }
             war = no
             NOT = { war_policy = pacifism }
-            revolution_n_counterrevolution = 1
+            nationalism_n_imperialism = 1
         }
 
         effect = {
@@ -4216,56 +4279,6 @@ political_decisions = {
         ai_will_do = { factor = 1 }
     }
 
-    mex_phl_integration = {
-        picture = mexfil
-        potential = {
-            OR = {
-                tag = MEX
-                AND = {
-                    primary_culture = mexican
-                    capital = 2172
-                }
-            }
-            NOT = { exists = PHL }
-            NOT = { has_country_flag = filipinos_accepted_mex }
-            1455 = { owned_by = THIS }
-            1460 = { owned_by = THIS }
-            1462 = { owned_by = THIS }
-        }
-
-        allow = {
-            year = 1880
-            is_greater_power = yes
-            war = no
-            is_disarmed = no
-            has_country_flag = native_protection_act_enacted
-            social_science = 1
-            revolution_n_counterrevolution = 1
-            PHL = { all_core = { OR = { owned_by = THIS empty = yes } } }
-        }
-
-        effect = {
-            set_country_flag = filipinos_accepted_mex
-            prestige = -25
-            add_accepted_culture = filipino
-            any_pop = {
-                limit = {
-                    has_pop_culture = filipino
-                }
-                militancy = -4
-                consciousness = -1
-            }
-            any_pop = {
-                limit = {
-                    has_pop_culture = moro
-                }
-                militancy = 0.5
-                consciousness = 5
-            }
-        }
-        ai_will_do = { factor = 1 }
-    }
-
 	unite_the_ugrian_peoples = {
 		picture = karelia_map
 		potential = {
@@ -4420,14 +4433,21 @@ political_decisions = {
 
         potential = {
             tag = PER
-            civilized = yes
             NOT = { has_country_flag = greater_iran }
         }
 
         allow = {
+			war = no
+			is_vassal = no
+			NOT = { has_country_modifier = recently_lost_war }
             nationalism_n_imperialism = 1
-            is_greater_power = yes
-            war_policy = jingoism
+			OR = {
+				is_greater_power = yes
+				AND = {
+					war_policy = jingoism
+					is_secondary_power = yes
+				}
+			}
         }
 
         effect = {
@@ -4442,7 +4462,11 @@ political_decisions = {
 			AFG_1215 = { add_core = PER }
 			AFG_1212 = { add_core = PER }
 			AZB_1105 = { add_core = PER }
-            1205 = { add_core = PER }
+			1054 = { add_core = PER }
+			1055 = { add_core = PER }
+			1057 = { add_core = PER }
+			3390 = { add_core = PER }
+			3391 = { add_core = PER }
             1204 = { add_core = PER }
             1091 = { add_core = PER }
             1090 = { add_core = PER }
@@ -4467,6 +4491,7 @@ political_decisions = {
 			3514 = { add_core = PER }
 			3356 = { add_core = PER }
 			2638 = { add_core = PER }
+			1093 = { add_core = PER }
 			add_accepted_culture = kurdish
         }
         ai_will_do = { factor = 1 }
