@@ -791,15 +791,15 @@ political_decisions = {
 			tag = JAL
 			GBU = { owns = 1878 }
             NOT = { has_global_flag = invade_kaabu }
-			NOT = { year = 1860 }
+			NOT = { year = 1880 }
         }
         allow = {
 			OR = { ai = yes civilization_progress = 0.3 }
-			all_core = { OR = { owned_by = THIS empty = yes } }
+			any_core = { NOT = { owned_by = GBU } }
             war = no
 			is_disarmed = no
 			GBU = { exists = yes }
-			NOT = { year = 1870 }
+			NOT = { year = 1880 }
 			year = 1840
         }
         effect = {
@@ -1188,8 +1188,8 @@ political_decisions = {
 				remove_accepted_culture = malagasy
 				war = {
 					target = WAD
-					attacker_goal = { casus_belli = civil_war }
-					defender_goal = { casus_belli = civil_war }
+					attacker_goal = { casus_belli = conquest_any }
+					defender_goal = { casus_belli = conquest_any }
 				}
 				create_alliance = THIS
 				relation = { who = THIS value = 400 }
@@ -2586,11 +2586,14 @@ political_decisions = {
 	sokoto_south = {
 		picture = adamawa_map
         potential = {
-			tag = SOK
-            NOT = { has_country_flag = sokoto_south }
+			OR = {
+				tag = SOK
+				has_country_flag = i_am_flc
+				has_country_flag = i_became_tou
+			}
+            NOT = { has_global_flag = sokoto_south }
         }
         allow = {
-			owns = 1933
 			OR = {
 				owns = 3890
 				owns = 1949
@@ -2599,17 +2602,36 @@ political_decisions = {
 			is_disarmed = no
         }
         effect = {
-            set_country_flag = sokoto_south
+            set_global_flag = sokoto_south
 			prestige = 5
+			random_owned = { limit = {
+				owner = {
+					IBD = { government = absolute_empire owns = 1933 }
+				} }
+				owner = {
+					war = {
+						target = IBD
+						attacker_goal = { casus_belli = conquest_any }
+						defender_goal = { casus_belli = acquire_any_state state_province_id = 3794 }
+					}
+				}
+			}
 			1941 = { add_core = THIS }
+			1933 = { add_core = THIS }
+			3894 = { add_core = THIS }
 			add_accepted_culture = east_kwa
         }
 	}
 	sokoto_kontagora = {
 		picture = adamawa_map
         potential = {
-			tag = SOK
-            NOT = { has_country_flag = sokoto_kontagora }
+			owns = 3794
+			OR = {
+				tag = SOK
+				has_country_flag = i_am_flc
+				has_country_flag = i_became_tou
+			}
+            NOT = { has_global_flag = sokoto_kontagora }
         }
         allow = {
 			owns = 3794
@@ -2622,17 +2644,21 @@ political_decisions = {
 			is_disarmed = no
         }
         effect = {
-            set_country_flag = sokoto_kontagora
-			prestige = 5
-			1940 = { add_core = THIS change_province_name = "Kontagora" }
+            set_global_flag = sokoto_kontagora
+			prestige = 3
+			1940 = { add_core = THIS change_province_name = "Kontagora" add_province_modifier = { name = recently_built_city duration = 210 } }
         }
 	}
 	sokoto_north = {
 		picture = adamawa_map
         potential = {
 			ai = no
-			tag = SOK
-            NOT = { has_country_flag = sokoto_north }
+			OR = {
+				tag = SOK
+				has_country_flag = i_am_flc
+				has_country_flag = i_became_tou
+			}
+            NOT = { has_global_flag = sokoto_north }
         }
         allow = {
 			owns = 1815
@@ -2641,7 +2667,7 @@ political_decisions = {
 			is_disarmed = no
         }
         effect = {
-            set_country_flag = sokoto_north
+            set_global_flag = sokoto_north
 			prestige = 5
 			1815 = { add_core = THIS }
 			1811 = { add_core = THIS }
@@ -2654,8 +2680,12 @@ political_decisions = {
 		picture = adamawa_map
         potential = {
 			ai = no
-			tag = SOK
-            NOT = { has_country_flag = sokoto_adamawa }
+			OR = {
+				tag = SOK
+				has_country_flag = i_am_flc
+				has_country_flag = i_became_tou
+			}
+            NOT = { has_global_flag = sokoto_adamawa }
         }
         allow = {
 			owns = 1950
@@ -2664,7 +2694,7 @@ political_decisions = {
 			is_disarmed = no
         }
         effect = {
-            set_country_flag = sokoto_adamawa
+            set_global_flag = sokoto_adamawa
 			prestige = 5
 			1934 = { add_core = THIS }
 			1950 = { add_core = THIS }
@@ -3263,24 +3293,39 @@ political_decisions = {
         potential = {
 			ai = no
 			tag = ADW
-			alliance_with = SOK
+			is_vassal = no
 			NOT = { has_global_flag = adamawa_left_us }
             NOT = { has_country_flag = leave_sokoto_adw }
         }
         allow = {
-			alliance_with = SOK
 			NOT = { has_global_flag = adamawa_left_us }
 			owns = 1950
             war = no
 			is_disarmed = no
-			NOT = { relation = { who = SOK value = -190 } }
+			OR = {
+				any_neighbor_country = { owns = 1948 tag = SOK NOT = { relation = { who = THIS value = -190 } } }
+				any_neighbor_country = { owns = 1948 has_country_flag = i_am_flc NOT = { relation = { who = THIS value = -190 } } }
+				any_neighbor_country = { owns = 1948 has_country_flag = i_became_tou NOT = { relation = { who = THIS value = -190 } } }
+			}
         }
         effect = {
             set_country_flag = leave_sokoto_adw
 			set_global_flag = adamawa_left_us
 			remove_country_modifier = puppet_adamawa
 			prestige = 5
-			SOK = { country_event = 184824328 }
+			any_country = {
+				limit = {
+					neighbour = THIS
+					owns = 1948
+					OR = {
+						tag = SOK
+						has_country_flag = i_am_flc
+						has_country_flag = i_became_tou
+					}
+					NOT = { relation = { who = THIS value = -190 } }
+				}
+				country_event = 184824328
+			}
         }
         ai_will_do = {
             factor = 1
@@ -8333,11 +8378,22 @@ political_decisions = {
 	end_the_jihad_kbo = {
 		picture = kbo_dec
         potential = {
+			ai = no
 			tag = KBO
             NOT = { has_global_flag = end_the_jihad_kbo }
         }
         allow = {
-			OR = { SOK = { vassal_of = KBO } AND = { owns = 1811 SOK = { exists = no } } }
+			OR = {
+				any_neighbor_country = { tag = SOK vassal_of = KBO }
+				any_neighbor_country = { has_country_flag = i_am_flc vassal_of = KBO }
+				any_neighbor_country = { has_country_flag = i_became_tou vassal_of = KBO }
+				AND = {
+					owns = 1811
+					SOK = { exists = no }
+					NOT = { any_neighbor_country = { has_country_flag = i_am_flc } }
+					NOT = { any_neighbor_country = { has_country_flag = i_became_tou } }
+				}
+			}
 			DAM = { exists = no }
 			year = 1840
             war = no
@@ -8347,26 +8403,69 @@ political_decisions = {
             set_global_flag = end_the_jihad_kbo
             any_country = {
 				limit = {
-					vassal_of = SOK
+					OR = {
+						vassal_of = SOK
+						overlord = { has_country_flag = i_am_flc }
+						overlord = { has_country_flag = i_became_tou }
+					}
 				}
 				country_event = 18482474
 			}
             any_country = {
 				limit = {
 					tag = ADW
-					alliance_with = SOK
+					OR = {
+						alliance_with = SOK
+						vassal_of = SOK
+						overlord = { has_country_flag = i_am_flc }
+						any_neighbor_country = { has_country_flag = i_am_flc alliance_with = ADW }
+						overlord = { has_country_flag = i_became_tou }
+						any_neighbor_country = { has_country_flag = i_became_tou alliance_with = ADW }
+					}
 				}
 				country_event = 18482474
 			}
             any_country = {
 				limit = {
 					tag = ILO
-					alliance_with = SOK
+					OR = {
+						alliance_with = SOK
+						vassal_of = SOK
+						overlord = { has_country_flag = i_am_flc }
+						any_neighbor_country = { has_country_flag = i_am_flc alliance_with = ADW }
+						overlord = { has_country_flag = i_became_tou }
+						any_neighbor_country = { has_country_flag = i_became_tou alliance_with = ADW }
+					}
 				}
 				country_event = 18482474
 			}
-			SOK = { all_core = { add_core = DAM remove_core = SOK } }
-			DAM = { government = absolute_empire inherit = SOK }
+			SOK = { all_core = { remove_core = SOK } }
+			3815 = { add_core = DAM }
+			3761 = { add_core = DAM }
+			3755 = { add_core = DAM }
+			3890 = { add_core = DAM }
+			1811 = { add_core = DAM }
+			1927 = { add_core = DAM }
+			3921 = { add_core = DAM }
+			FRA_1927 = { add_core = DAM }
+			SOK_1947 = { add_core = DAM }
+			SOK_1941 = { add_core = DAM }
+			DAM = { government = absolute_empire }
+            any_country = {
+				limit = {
+					tag = SOK
+				}
+				annex_to = DAM
+			}
+            any_country = {
+				limit = {
+					OR = {
+						has_country_flag = i_am_flc
+						has_country_flag = i_became_tou
+					}
+				}
+				country_event = 18482474
+			}
 			create_alliance = DAM
 			create_alliance = KWR
 			create_alliance = DND
