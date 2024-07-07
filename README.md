@@ -36,7 +36,7 @@ Failure to extract the mod may be due to a common GitHub issue, so try downloadi
 
 ### 64-bit increased performance
 
-For Increased Performace(64-bit PCs):
+RAM Patch for increased Performace (64-bit PCs):
 1. Download laa_2_0_4.zip from the site: https://www.techpowerup.com/forums/threads/large-address-aware.112556/
 2. Open the .exe
 3. Select V2game.exe
