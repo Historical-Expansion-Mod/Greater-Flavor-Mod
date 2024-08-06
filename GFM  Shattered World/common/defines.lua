@@ -1,6 +1,6 @@
 defines = {
 
-start_date = '1836.1.1',
+start_date = '1830.1.1',
 end_date = '1936.1.1',
 
 country = {
@@ -717,7 +717,7 @@ ai =
 	PEACE_BASE_RELUCTANCE = 15, -- AI base stubbornness to refuse peace (always applied) Abe edit: used to be 20
 	PEACE_TIME_MONTHS = 20, -- months of additional AI stubbornness in a war Abe edit: used to be 30
 	PEACE_TIME_FACTOR = 0.6, -- after months of stubbornness the effect of time passed is multiplied by this
-	PEACE_TIME_FACTOR_NO_GOALSPEACE_TIME_FACTOR_NO_GOALS = 2.0, -- this extra time factor is applied after PEACE_TIME_FACTOR if we ahve no wargoals
+	PEACE_TIME_FACTOR_NO_GOALS = 2.0, -- this extra time factor is applied after PEACE_TIME_FACTOR if we ahve no wargoals
 	PEACE_WAR_EXHAUSTION_FACTOR = 0.5, -- AI willingness to peace based on war exhaustion
 	PEACE_WAR_DIRECTION_FACTOR = 1.0, -- AI willingness to peace based on who's making gains in the war
 	PEACE_WAR_DIRECTION_WINNING_MULT = 5.0, -- Multiplies AI emphasis on war direction if it's the one making gains

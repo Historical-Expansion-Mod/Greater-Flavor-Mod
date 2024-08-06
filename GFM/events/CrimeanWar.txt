@@ -203,10 +203,9 @@ country_event = {
 
     trigger = {
         tag = TUR
-        has_country_flag = refused_french_claim
-        NOT = { has_global_flag = france_protector_of_eastern_christians }
-        war = no
         owns = 917
+        has_country_flag = refused_french_claim
+        war = no
         OR = {
             AND = {
                 OR = { in_sphere = FRA in_sphere = BOR }
@@ -217,6 +216,7 @@ country_event = {
                 is_disarmed = yes
             }
         }
+        NOT = { has_global_flag = france_protector_of_eastern_christians }
     }
 
     mean_time_to_happen = {
@@ -317,10 +317,6 @@ country_event = {
     trigger = {
         tag = TUR
         RUS = { war_with = TUR }
-        has_global_flag = crimea_has_happened
-        NOT = { has_global_flag = treaty_of_paris_1856 }
-        NOT = { has_global_flag = treaty_of_paris_russia }
-        NOT = { has_country_flag = crimean_surrender }
         any_owned_province = {
             is_capital = yes
             controlled_by = RUS
@@ -330,7 +326,11 @@ country_event = {
             NOT = { country_units_in_province = TUR }
             province_control_days = 90
         }
+        has_global_flag = crimea_has_happened
         national_provinces_occupied = .60
+        NOT = { has_global_flag = treaty_of_paris_1856 }
+        NOT = { has_global_flag = treaty_of_paris_russia }
+        NOT = { has_country_flag = crimean_surrender }
     }
 
     mean_time_to_happen = {
@@ -438,6 +438,7 @@ country_event = {
     }
 }
 
+#THIS is TUR, FROM is RUS
 country_event = {
     id = 97512
     title = "EVTNAME97510" #The Treaty of Paris (Russian Version)
@@ -453,7 +454,10 @@ country_event = {
     option = {
         name = "EVT97512OPTA"
         prestige = -20
-        treasury = -250000
+        
+        THIS = { treasury = -250000 } #Take
+        FROM = { treasury = 250000 } #Pay
+
         any_owned = {
             limit = {
                 OR = {
@@ -465,195 +469,133 @@ country_event = {
             secede_province = ROM
         }
 		any_country = {
-			limit = { tag = BOS war_with = THIS }
+			limit = {
+                OR = {
+                    tag = BOS #Bosnia
+                    #Annexed so we give lands to bosnia/serbia
+                    tag = SRR #Serbian Revolt
+                    tag = ALB #Albania
+                }
+                war_with = THIS
+            }
 			end_war = THIS
 			annex_to = THIS
 		}
 		any_country = {
-			limit = { tag = ALB war_with = THIS }
-			end_war = THIS
-			annex_to = THIS
-		}
-        any_owned = {
-            limit = { OR = { region = TUR_885 province_id = 1096 } }
+            limit = {
+                tag = BUL
+                war_with = THIS
+            }
+            end_war = THIS
+        }
+
+        any_owned = { #TCA exists
+            limit = {
+                exists = TCA
+                OR = { region = TUR_885 province_id = 1096 }
+            }
             secede_province = TCA
+            add_core = TCA
+            add_core = FROM
+        }
+        any_owned = { #TCA doesn't exist
+            limit = {
+                NOT = { exists = TCA }
+                OR = { region = TUR_885 province_id = 1096 }
+            }
+            secede_province = FROM
+            add_core = FROM
         }
 
         # Any Montenegran lands given to Montenegro, it is freed if vassaled
+        release = MON
+        release_vassal = MON
         any_owned = {
             limit = { is_core = MON }
             secede_province = MON
         }
-        random_country = {
-            limit = {
-                tag = MON
-                vassal_of = TUR
-            }
-            TUR = { release_vassal = MON }
-        }
 
         # Give Bulgaria, Eastern Rumelia and Silestre to Bulgaria, free it if vassaled
-
-		random_country = {
-            limit = {
-                tag = BUL
-                war_with = TUR
-            }
-            end_war = TUR
-        }
         random_country = {
-            limit = {
-                tag = BUL
-                vassal_of = TUR
-            }
-            TUR = { release_vassal = BUL }
+            limit = { tag = BUL vassal_of = THIS }
+            THIS = { release_vassal = BUL }
         }
-        random_owned = {
+        any_owned = {
             limit = {
-                province_id = 817 #Burgas
-                owned_by = TUR
-            }
-            state_scope = {
-                any_owned = {
-                    secede_province = BUL
+                OR = {
+                    province_id = 817 #Burgas
+                    province_id = 812 #Pleven
                 }
             }
+            state_scope = { any_owned = { secede_province = BUL } }
         }
-        random_owned = {
+        any_owned = {
             limit = {
-                province_id = 812 #Pleven
-                owned_by = TUR
-            }
-            state_scope = {
-                any_owned = {
-                    secede_province = BUL
+                OR = {
+                    province_id = 818 #Silistre
+                    province_id = 3371 #Mangalia
                 }
-            }
-        }
-        random_owned = {
-            limit = {
-                province_id = 818 #Silistre
-                owned_by = TUR
-            }
-            secede_province = BUL
-        }
-        random_owned = {
-            limit = {
-                province_id = 3371 #Mangalia
-                owned_by = TUR
             }
             secede_province = BUL
         }
 
         # Free Serbia if it is owned, return Nis, Leskovac
-        random_owned = {
+        random_country = {
+            limit = { tag = SER vassal_of = THIS }
+            THIS = { release_vassal = SER }
+        }
+        any_owned = {
+            limit = { province_id = 794 } #Belgrade
+            state_scope = { any_owned = { secede_province = SER } }
+        }
+        any_owned = {
             limit = {
-                province_id = 794 #Belgrade
-                owned_by = TUR
-            }
-            state_scope = {
-                any_owned = {
-                    secede_province = SER
+                OR = {
+                    province_id = 798 #Nis
+                    province_id = 799 #Leskovac
+                    province_id = 3347 #Nis
+                    province_id = 795 #Leskovac
+                    province_id = 3933 #Leskovac
+                    province_id = 3934 #Leskovac
+                    province_id = 3346 #Krusevay
+                    province_id = 804 #Krusevay
                 }
             }
-        }
-        random_owned = {
-            limit = {
-                province_id = 798 #Nis
-                owned_by = TUR
-            }
             secede_province = SER
-        }
-        random_owned = {
-            limit = {
-                province_id = 799 #Leskovac
-                owned_by = TUR
-            }
-            secede_province = SER
-        }
-        random_owned = {
-            limit = {
-                province_id = 3346 #Krusevay
-                owned_by = TUR
-            }
-            secede_province = SER
-        }
-        random_owned = {
-            limit = {
-                province_id = 804 #Krusevay
-                owned_by = TUR
-            }
-            secede_province = SER
-        }
-        random_country = {
-            limit = {
-                tag = SER
-                vassal_of = TUR
-            }
-            TUR = { release_vassal = SER }
         }
 
         # Thessalia, S. Macedonia returned to Greece
-        random_country = {
-            limit = {
-                tag = GRE
-                vassal_of = TUR
-            }
-            TUR = { release_vassal = GRE }
-        }
         random_owned = {
-            limit = {
-                province_id = 834 #Athens
-                owned_by = TUR
-                NOT = { exists = GRE }
-            }
-            owner = { release_vassal = GRE }
+            limit = { owner = { exists = GRE GRE = { vassal_of = THIS } } }
+            owner = { THIS = { release_vassal = GRE } }
         }
-
+        #Greece, with the above statment, will always exist
+        #And if turkey doesn't own 834 for some reason
+        #then the below statments will be false anyways
         random_owned = {
-            limit = {
-                province_id = 834 #Athens
-                owned_by = TUR
-				exists = GRE
-            }
-            state_scope = {
-                any_owned = {
-                    secede_province = GRE
+            limit = { province_id = 834 } #Athens
+            state_scope = { any_owned = { secede_province = GRE } }
+            THIS = { #Owner not safe, will be GRE after that secede
+                #Depends on owning athens!
+                random_owned = {
+                    limit = { province_id = 819 } #Florina
+                    state_scope = { any_owned = { secede_province = GRE } }
                 }
             }
         }
-        random_owned = {
+        any_owned = {
             limit = {
-                province_id = 819 #Florina
-                owned_by = TUR
-                824 = { owned_by = GRE }
-            }
-            state_scope = {
-                any_owned = {
-                    secede_province = GRE
+                OR = {
+                    province_id = 832 #Volos
+                    province_id = 842 #Patras
                 }
             }
-        }
-        random_owned = {
-            limit = {
-                province_id = 832 #Volos
-                owned_by = TUR
-            }
             state_scope = {
                 any_owned = {
-                    limit = { NOT = { province_id = 824 } } #Janina
-					limit = { NOT = { province_id = 3306 } } #Metsovo
-                    secede_province = GRE
-                }
-            }
-        }
-        random_owned = {
-            limit = {
-                province_id = 842 #Patras
-                owned_by = TUR
-            }
-            state_scope = {
-                any_owned = {
+                    limit = {
+                        NOT = { province_id = 824 } #Janina
+					    NOT = { province_id = 3306 } #Metsovo
+                    }
                     secede_province = GRE
                 }
             }
@@ -663,109 +605,76 @@ country_event = {
         random_owned = {
             limit = {
                 province_id = 843 #Chios & Samos
-                owned_by = TUR
                 NOT = { exists = SAM }
             }
             owner = { release_vassal = SAM }
         }
-        random_owned = {
-            limit = { exists = FRA }
-            FRA = {
-                prestige = -20
-                relation = { who = RUS value = -100 }
-                leave_alliance = RUS
-                casus_belli = {
-                    target = RUS
-                    type = take_from_sphere
-                    months = 60
-                }
-                casus_belli = {
-                    target = TUR
-                    type = add_to_sphere
-                    months = 60
-                }
-            }
-        }
-        random_owned = {
-            limit = { exists = BOR }
-            BOR = {
-                prestige = -20
-                relation = { who = RUS value = -100 }
-                leave_alliance = RUS
-                casus_belli = {
-                    target = RUS
-                    type = take_from_sphere
-                    months = 60
-                }
-                casus_belli = {
-                    target = TUR
-                    type = add_to_sphere
-                    months = 60
-                }
-            }
-        }
-
-        random_country = {
+        any_country = {
             limit = {
-                tag = ENG
-                has_country_flag = england_protecting_interests
+                OR = { #Only one, France or Borbon
+                    tag = FRA
+                    tag = BOR
+                    AND = {
+                        tag = ENG
+                        has_country_flag = england_protecting_interests
+                    }
+                }
+                exists = yes
             }
             prestige = -20
-            relation = { who = RUS value = -100 }
-            leave_alliance = RUS
+            relation = { who = FROM value = -100 }
+            leave_alliance = FROM
             casus_belli = {
-                target = RUS
+                target = FROM
                 type = take_from_sphere
                 months = 60
             }
             casus_belli = {
-                target = TUR
+                target = THIS
                 type = add_to_sphere
                 months = 60
             }
         }
-        RUS = {
-            military_access = TUR
-            diplomatic_influence = { who = TUR value = 100 }
-            relation = { who = TUR value = 200 }
-
-            relation = { who = SER value = 400 }
+        FROM = {
+            military_access = THIS
+            relation = { who = THIS value = 200 }
+            diplomatic_influence = { who = THIS value = 100 }
             diplomatic_influence = { who = SER value = 200 }
-            create_alliance = SER
-
-            relation = { who = BUL value = 400 }
             diplomatic_influence = { who = BUL value = 200 }
-            create_alliance = BUL
-
-            relation = { who = MON value = 400 }
             diplomatic_influence = { who = MON value = 200 }
-            create_alliance = MON
-
-            relation = { who = ROM value = 400 }
             diplomatic_influence = { who = ROM value = 200 }
-            create_alliance = ROM
         }
-        ROM = {
+        #Russia gains relations and influence with these countries
+        any_country = {
+            limit = {
+                OR = {
+                    tag = SER
+                    tag = MON
+                    tag = BUL
+                    tag = ROM
+                }
+            }
+            relation = { who = FROM value = 400 }
+            create_alliance = FROM
+        }
+        #And these specific countries get nationalistic agitations
+        any_country = {
+            limit = {
+                OR = {
+                    tag = BUL
+                    tag = GRE
+                    tag = ROM
+                }
+            }
             add_country_modifier = {
                 name = nationalist_balkans
                 duration = -1
             }
-            all_core = {
-                remove_core = WAL
-            }
         }
-        BUL = {
-            add_country_modifier = {
-                name = nationalist_balkans
-                duration = -1
-            }
-        }
-        GRE = {
-            add_country_modifier = {
-                name = nationalist_balkans
-                duration = -1
-            }
-        }
+        #No more Wallachia - Failsafe if it somehow exists
+        WAL = { change_tag = ROM }
+        ROM = { all_core = { remove_core = WAL } }
+        
 		release = BOS
 		release_vassal = BOS
         soldiers = {
@@ -832,7 +741,7 @@ country_event = {
 		random_owned = {
 			limit = {
 				owner = {
-					exists = URP
+					exists = ROM ROM = { OR = { government = absolute_empire government = semi_constitutional_empire government = constitutional_empire } }
 				}
 			}
 			owner = {
@@ -845,28 +754,41 @@ country_event = {
 						}
 					}
 					add_core = ROM
-					add_core = URP
-					secede_province = URP
+					secede_province = ROM
 				}
-				relation = { who = URP value = 200 }
-				diplomatic_influence = { who = URP value = 200 }
-				URP = {
+				any_owned = {
+					limit = {
+						OR = {
+							province_id = 3372
+							province_id = 675
+							province_id = 674
+							province_id = 3371
+							province_id = 818
+						}
+					}
+					add_core = ROM
+					add_core = TUR
+					secede_province = TUR
+				}
+				relation = { who = ROM value = 200 }
+				diplomatic_influence = { who = ROM value = 200 }
+				ROM = {
 					any_pop = { militancy = -8 }
 				}
 				TUR = {
-					release_vassal = URP
+					release_vassal = ROM
 				}
-				675 = { remove_core = URP }
-				674 = { remove_core = URP }
-				818 = { remove_core = URP }
-				3372 = { remove_core = URP }
-				3371 = { remove_core = URP }
+				675 = { remove_core = ROM }
+				674 = { remove_core = ROM }
+				818 = { remove_core = ROM }
+				3372 = { remove_core = ROM }
+				3371 = { remove_core = ROM }
 			}
 		}
 		random_owned = {
 			limit = {
 				owner = {
-					NOT = { exists = URP }
+					NOT = { exists = ROM }
 					670 = { owned_by = MOL }
 				}
 			}
@@ -909,7 +831,7 @@ country_event = {
 			annex_to = TUR
 		}
         ROM = { all_core = { remove_core = RUS } }
-        relation = { who = URP value = -100 }
+        relation = { who = ROM value = -100 }
         badboy = 10
         any_greater_power = {
             limit = {
@@ -982,22 +904,28 @@ country_event = {
                 }
             }
             add_core = ROM
-            add_core = URP
-            secede_province = URP
+            secede_province = ROM
         }
-        relation = { who = URP value = 200 }
-        diplomatic_influence = { who = URP value = 200 }
-        URP = {
+		any_owned = {
+			limit = {
+				province_id = 3372
+			}
+			add_core = ROM
+			secede_province = TUR
+		}
+        relation = { who = ROM value = 200 }
+        diplomatic_influence = { who = ROM value = 200 }
+        ROM = {
             any_pop = { militancy = -8 }
         }
         TUR = {
-            release_vassal = URP
+            release_vassal = ROM
         }
-        675 = { remove_core = URP }
-        674 = { remove_core = URP }
-        818 = { remove_core = URP }
-        3372 = { remove_core = URP }
-        3371 = { remove_core = URP }
+        675 = { remove_core = ROM }
+        674 = { remove_core = ROM }
+        818 = { remove_core = ROM }
+        3372 = { remove_core = ROM }
+        3371 = { remove_core = ROM }
         war_exhaustion = -10
         ai_chance = {
             factor = 99
@@ -1007,7 +935,7 @@ country_event = {
     option = {
         name = "EVT97510OPTB"
         ROM = { all_core = { remove_core = RUS } }
-        relation = { who = URP value = -100 }
+        relation = { who = ROM value = -100 }
         badboy = 10
         any_greater_power = {
             limit = {
@@ -1064,9 +992,9 @@ country_event = {
 
     trigger = {
         tag = ROM
-        war = no
         owns = 678
         vassal_of = TUR
+        war = no
         RUS = {
             is_greater_power = yes
             NOT = {
@@ -1265,9 +1193,9 @@ country_event = {
 
     trigger = {
         tag = ROM
+        owns = 678
         has_country_flag = romanian_war_of_independence
         war = no
-        owns = 678
         is_vassal = no
         RUS = {
             NOT = { war_with = TUR }
@@ -1284,7 +1212,7 @@ country_event = {
         clr_country_flag = romanian_war_of_independence
 		any_owned = {
 			limit = {
-				province_id = 678
+				OR = { province_id = 678 province_id = 3372 }
 				RUS = {
 					owns = 3279
 					owns = 676
@@ -1326,9 +1254,9 @@ country_event = {
 
     trigger = {
         tag = ROM
+        vassal_of = TUR
         has_country_flag = romanian_war_of_independence
         war = no
-        vassal_of = TUR
         RUS = { NOT = { war_with = TUR } }
         OR = {
             RUS = { NOT = { truce_with = TUR } }
