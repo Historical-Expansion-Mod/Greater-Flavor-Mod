@@ -1,0 +1,351 @@
+
+
+#GCF choose a new capital
+country_event = {
+    id = 8687890
+    title = "$FROMCOUNTRY$ claims the $COUNTRY_ADJ$ throne"
+    desc = "EVTDESC8687890"
+    picture = "administration"
+
+	is_triggered_only = yes
+
+    option = {
+        name = "We can't afford a war against them."
+        prestige = -100
+		FROM = { create_vassal = THIS relation = { who = THIS value = 400 } diplomatic_influence = { who = THIS value = 400 } country_event = 8687891 }
+        ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				THIS = { is_greater_power = yes }
+			}
+		}
+    }
+
+    option = {
+        name = "$COUNTRY$ will never be subjugated by the $FROMCOUNTRY_ADJ$ scum!"
+		prestige = 20
+        FROM = { relation = { who = THIS value = -200 } country_event = 8687892 }
+        ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				THIS = { is_greater_power = no }
+			}
+		}
+    }
+}
+
+country_event = {
+    id = 8687891
+    title = "The $FROMCOUNTRY_ADJ$ have accepted their new king"
+    desc = "EVTDESC8687890"
+	picture = "administration"
+	is_triggered_only = yes
+
+    option = {
+        name = "Huzzah!"
+        prestige = 15
+		random_owned = {
+			limit = { owner = { MRV = { vassal_of = THIS } } }
+			BOH = { inherit = MRV }
+		}
+    }
+}
+
+country_event = {
+    id = 8687892
+    title = "The $FROMCOUNTRY_ADJ$ have rejected their new king"
+    desc = "EVTDESC8687892"
+	picture = "administration"
+	is_triggered_only = yes
+
+    option = {
+        name = "The $COUNTRY_ADJ$ king is the legitimate ruler of the $FROMCOUNTRY_ADJ$ throne."
+        war = {
+			target = FROM
+            attacker_goal = { casus_belli = make_puppet_no_infamy }
+            defender_goal = { casus_belli = humiliate_no_infamy }
+		}
+		casus_belli = { target = FROM type = make_puppet_no_infamy months = 120 }
+		ai_chance = { factor = 1 }
+    }
+
+    option = {
+        name = "They are no worthy of our king!"
+		badboy = -5
+        prestige = -20
+		relation = { who = FROM value = 200 }
+		ai_chance = { factor = 0 }
+    }
+}
+
+country_event = {
+    id = 8687893
+    title = "The Bohemian question"
+    desc = "EVTDESC8687893"
+	picture = "administration"
+	
+	fire_only_once = yes
+
+	trigger = {
+		has_country_flag = claim_the_crown_of_bohemia
+		war = no
+		BOH = { vassal_of = THIS }
+		OR = {
+			MRV = { vassal_of = THIS }
+			MRV = { exists = no }
+		}
+		NOT = { badboy = 0.8 }
+	}
+
+    mean_time_to_happen = {
+        months = 6
+    }
+
+    option = {
+        name = "Take over the Sudetenland."
+        BOH = {
+			any_owned = {
+				limit = {
+					OR = {
+						province_id = 3426
+						province_id = 630
+						province_id = 629
+						province_id = 627
+						province_id = 628
+						province_id = 632
+						province_id = 688
+						region = PRU_685
+						region = PRU_682
+					}
+				}
+				add_core = THIS
+				secede_province = THIS
+			}
+			country_event = 8687894
+		}
+		random_owned = {
+			limit = { MRV = { exists = yes } }
+			MRV = {
+				any_owned = {
+					limit = {
+						OR = {
+							province_id = 3426
+							province_id = 630
+							province_id = 629
+							province_id = 627
+							province_id = 628
+							province_id = 632
+							province_id = 688
+							region = PRU_685
+							region = PRU_682
+						}
+					}
+					add_core = THIS
+					secede_province = THIS
+				}
+				country_event = 8687894
+			}
+		}
+		random_owned = {
+			limit = { owner = { NOT = { 558 = { owned_by = THIS } } NOT = { 3861 = { owned_by = THIS } } } }
+			owner = { country_event = { id = 8687895 days = 10 } }
+		}
+		any_owned = {
+			limit = {
+				OR = {
+					region = PRU_682
+					region = PRU_685
+				}
+				NOT = {
+					province_id = 689
+					province_id = 2584
+				}
+				is_core = THIS
+			}
+			remove_core = THIS
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					3335 = { owned_by = MRV }
+					OR = {
+						689 = { owned_by = THIS }
+						2584 = { owned_by = THIS }
+					}
+					NOT = { 685 = { owned_by = THIS } }
+				}
+			}
+			689 = { secede_province = MRV remove_core = THIS }
+			2584 = { secede_province = MRV remove_core = THIS }
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					3335 = { owned_by = BOH }
+					OR = {
+						689 = { owned_by = THIS }
+						2584 = { owned_by = THIS }
+					}
+					NOT = { 685 = { owned_by = THIS } }
+				}
+			}
+			689 = { secede_province = BOH remove_core = THIS }
+			2584 = { secede_province = BOH remove_core = THIS }
+		}
+		ai_chance = { factor = 6 }
+    }
+
+    option = {
+        name = "Integrate all of Bohemia."
+		badboy = 10
+        prestige = 10
+		BOH = { all_core = { add_core = THIS } country_event = 11101 }
+		random_owned = {
+			limit = { MRV = { exists = yes } }
+			MRV = { country_event = 11101 }
+		}
+		ai_chance = { factor = 3 }
+    }
+
+    option = {
+        name = "Respect the Bohemian territorial sovereignty."
+		badboy = -1
+		ai_chance = { factor = 1 }
+    }
+}
+
+country_event = {
+    id = 8687894
+    title = "The $FROMCOUNTRY_ADJ$ has taken the Sudetenland."
+    desc = "EVTDESC8687894"
+	picture = "administration"
+	is_triggered_only = yes
+
+    option = {
+        name = "Bah!"
+    }
+}
+
+country_event = {
+    id = 8687895
+    title = "The Sudetenland question"
+    desc = "EVTDESC8687895"
+	picture = "administration"
+	is_triggered_only = yes
+
+    option = {
+        name = "Offer the other Germans states parts of the sudetenland."
+		badboy = -2
+        any_country = {
+			limit = {
+				is_culture_group = germanic
+				owns = 558
+				NOT = { tag = THIS }
+			}
+			country_event = 8687896
+		}
+		any_country = {
+			limit = {
+				is_culture_group = germanic
+				owns = 3861
+				NOT = { tag = THIS }
+			}
+			country_event = 8687896
+		}
+		ai_chance = { factor = 1 }
+    }
+
+    option = {
+        name = "We will not share the Sudetenland with anyone."
+		ai_chance = { factor = 0 }
+    }
+}
+
+country_event = {
+    id = 8687896
+    title = "$FROMCOUNTRY$ has offered us majority German Bohemian land"
+    desc = "EVTDESC8687896"
+	picture = "administration"
+	is_triggered_only = yes
+
+    option = {
+        name = "Accept the offer."
+        random_owned = {
+			limit = {
+				owner = { 558 = { owned_by = THIS } }
+			}
+			owner = {
+				627 = { secede_province = THIS add_core = THIS remove_core = FROM }
+				628 = { secede_province = THIS add_core = THIS remove_core = FROM }
+			}
+		}
+        random_owned = {
+			limit = {
+				owner = { 3861 = { owned_by = THIS } }
+			}
+			owner = {
+				632 = { secede_province = THIS add_core = THIS remove_core = FROM }
+				688 = { secede_province = THIS add_core = THIS remove_core = FROM }
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = { 558 = { owned_by = THIS } }
+			}
+			country_event = 8687897
+		}
+		random_owned = {
+			limit = {
+				owner = { 558 = { NOT = { owned_by = THIS } } 3861 = { owned_by THIS } } }
+			}
+			country_event = 8687898
+		}
+		ai_chance = { factor = 1 }
+    }
+
+    option = {
+        name = "We don't want any Bohemian land."
+		country_event = 8687899
+		ai_chance = { factor = 0 }
+    }
+}
+
+country_event = {
+    id = 8687897
+    title = "$FROMCOUNTRY$ has accepted out offer."
+    desc = "EVTDESC8687897"
+	picture = "administration"
+	is_triggered_only = yes
+
+    option = {
+        name = "Huzzah!"
+		relation = { who = FROM value = 100 }
+    }
+}
+
+country_event = {
+    id = 8687898
+    title = "$FROMCOUNTRY$ has accepted out offer."
+    desc = "EVTDESC8687897"
+	picture = "administration"
+	is_triggered_only = yes
+
+    option = {
+        name = "Huzzah!"
+		relation = { who = FROM value = 100 }
+    }
+}
+
+country_event = {
+    id = 8687899
+    title = "$FROMCOUNTRY$ has rejected out offer."
+    desc = "EVTDESC8687897"
+	picture = "administration"
+	is_triggered_only = yes
+
+    option = {
+        name = "Oh well..."
+    }
+}
