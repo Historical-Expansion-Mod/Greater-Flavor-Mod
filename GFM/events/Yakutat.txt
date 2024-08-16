@@ -335,11 +335,10 @@ country_event = {
     trigger = {
 		tag = KNG
 		owns = 1898
-		year = 1856
+		year = 1858
 		month = 5
-		NOT = { year = 1858 }
+		NOT = { year = 1860 }
 		GWR = { exists = no }
-		has_global_flag = wargwirikohappened
 		NOT = { has_global_flag = sw_set }
     }
 
@@ -402,6 +401,7 @@ country_event = {
 		tag = GWR
 		neighbour = KNG
 		KNG = { is_vassal = no exists = yes }
+		NOT = { truce_with = KNG }
 		year = 1850
 		month = 2
     }
@@ -410,12 +410,35 @@ country_event = {
 
     option = {
         name = "For Gwiriko! §RDeclare war on Kong§W"
-		set_global_flag = wargwirikohappened
-		war = {
-			target = KNG
-			attacker_goal = { casus_belli = humiliate_no_infamy }
-			defender_goal = { casus_belli = acquire_any_state state_province_id = 1898 }
-			call_ally = no
+		random_owned = {
+			limit = {
+				owner = {
+					GWR = { owns = 1898 }
+				}
+			}
+			owner = {
+				war = {
+					target = KNG
+					attacker_goal = { casus_belli = humiliate_no_infamy }
+					defender_goal = { casus_belli = acquire_any_state state_province_id = 1898 }
+					call_ally = no
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					KNG = { owns = 1898 }
+				}
+			}
+			owner = {
+				war = {
+					target = KNG
+					attacker_goal = { casus_belli = acquire_any_state state_province_id = 1898 }
+					defender_goal = { casus_belli = conquest_any }
+					call_ally = no
+				}
+			}
 		}
 		ai_chance = {
 			factor = 1
@@ -40044,7 +40067,7 @@ country_event = {
 			has_country_flag = i_became_tou
 			has_country_flag = i_am_flc
 		}
-		BGU = { religion = fetishist }
+		BGU = { has_country_flag = animist_country }
 		owns = 1940
 		NOT = { year = 1875 }
     }
@@ -47747,16 +47770,18 @@ country_event = {
 country_event = {
     id = 18482578
     title = "Dyori Wattara Dies"
-    desc = "BORGUQUESTION"
-    picture = "borgu_map"
+    desc = "DYORIWATTARA"
+    picture = "kong_map"
 
     fire_only_once = yes
 
     trigger = {
 		tag = GWR
-		BGU = { religion = fetishist }
-		owns = 1940
-		NOT = { year = 1875 }
+		year = 1839
+		owns = 1898
+		NOT = { owns = 1900 }
+		KNG = { owns = 1900 }
+		NOT = { year = 1841 }
     }
 
     mean_time_to_happen = { days = 1 }
@@ -47765,37 +47790,123 @@ country_event = {
 		set_global_flag = gwiriko_not_feeling_good
 		kill_leader = "Dyori Wattara"
 		define_general = {
-			name = "Bako Moru Wattara"
-			personality = defence_3.1
-			background = attack_2.1
+			name = "Moru Wattara"
+			personality = defence_2.1
+			background = attack_1.1
 		}
+        any_owned = {
+			add_province_modifier = {
+				name = nationalist_agitation
+				duration = 190
+			}
+        }
+        add_country_modifier = {
+            name = national_confusion
+            duration = 365
+        }
 	}
 
     option = {
-        name = "We must convert the Bariba."
-		prestige = 1
-		BGU = { country_event = 184825391 }
+        name = "We must defeat this revolt!"
+		prestige = 3
+		KNG = { country_event = 184825781 }
+		any_pop = { limit = { NOT = { has_pop_culture = dyula has_pop_culture = bambara } } militancy = 8 }
+		ai_chance = {
+			factor = 0
+		}
+    }
+    option = {
+        name = "We can only wait."
+		prestige = -1
+		KNG = { country_event = 184825783 }
+		any_pop = { limit = { NOT = { has_pop_culture = dyula has_pop_culture = bambara } } militancy = 4 }
+		ai_chance = {
+			factor = 1
+		}
+    }
+
+}
+country_event = {
+    id = 184825781
+    title = "Gwiriko Invades Us"
+    desc = "DYORIWATTARABRUH"
+    picture = "kong_map"
+
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "Defend Tehini."
+		1898 = { add_core = THIS secede_province = THIS }
+		FROM = { war = {
+			target = THIS
+			attacker_goal = { casus_belli = acquire_all_cores }
+			defender_goal = { casus_belli = humiliate_no_infamy }
+		} }
+		ai_chance = {
+			factor = 0.5
+		}
+    }
+    option = {
+        name = "Cede Tehini back to Gwiriko."
+		relation = {
+			who = FROM
+			value = 100
+		}
+		FROM = { country_event = 184825782 }
+		ai_chance = {
+			factor = 0.5
+		}
+    }
+}
+country_event = {
+    id = 184825782
+    title = "The Kong Refuse to Help the Tyefo"
+    desc = "The Kong have stopped any support to Tyefo and the revolt has downscalled to guerrilla warfare."
+    picture = "kong_map"
+
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "Great!"
+		1898 = { remove_country_modifier = nationalist_agitation }
+		1898 = {
+			add_province_modifier = {
+				name = nationalist_agitation
+				duration = 390
+			}
+			any_pop = { militancy = 10 }
+		}
+    }
+}
+country_event = {
+    id = 184825783
+    title = "Tehini Joins Us"
+    desc = "TEHINIJOINSKONG"
+    picture = "kong_map"
+
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "Keep Tehini."
+		1898 = { add_core = THIS secede_province = THIS } 
 		ai_chance = {
 			factor = 1
 		}
     }
     option = {
-        name = "The only way is to Jihad! §RGain 3 infamy§W"
-		prestige = 5
-		badboy = 3
-		BGU = { all_core = { add_core = THIS } }
-		BGU = { country_event = 184825394 }
+        name = "Cede Tehini back to Gwiriko."
+		FROM = { country_event = 184825782 }
+		relation = {
+			who = FROM
+			value = 100
+		}
 		ai_chance = {
-			factor = 0
+			factor = 1
 		}
     }
-    option = {
-        name = "Why would we intervene in their affairs?"
-		ai_chance = {
-			factor = 0
-		}
-    }
-
 }
 country_event = {
     id = 18490044
@@ -47809,22 +47920,91 @@ country_event = {
 		GWR = { owns = 1905 }
 		owns = 1798
 		tag = KDG
-		OR = { year = 1840 AND = { ai = yes year = 1839 month = 3 has_global_flag = gwiriko_not_feeling_good } relation = { who = GWR value = -200 } }
+		OR = { year = 1840 AND = { ai = yes year = 1839 month = 2 has_global_flag = gwiriko_not_feeling_good } relation = { who = GWR value = -200 } }
 		NOT = { truce_with = GWR }
 		year = 1837
     }
 
     option = {
         name = "Yes, it is time! §RDeclare war on Gwiriko§W"
-		war = {
-			target = GWR
-			attacker_goal = {
-				casus_belli = acquire_any_state
-				state_province_id = 1905
+		random_owned = {
+			limit = {
+				owner = {
+					GWR = { owns = 1898 }
+					owns = 1906
+				}
 			}
-			defender_goal = {
-				casus_belli = acquire_any_state
-				state_province_id = 1906
+			owner = {
+				war = {
+					target = GWR
+					attacker_goal = {
+						casus_belli = acquire_any_state
+						state_province_id = 1905
+					}
+					defender_goal = {
+						casus_belli = acquire_any_state
+						state_province_id = 1906
+					}
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					GWR = { owns = 1898 }
+					NOT = { owns = 1906 }
+				}
+			}
+			owner = {
+				war = {
+					target = GWR
+					attacker_goal = {
+						casus_belli = acquire_any_state
+						state_province_id = 1905
+					}
+					defender_goal = {
+						casus_belli = humiliate_no_infamy
+					}
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					NOT = { GWR = { owns = 1898 } }
+					owns = 1906
+				}
+			}
+			owner = {
+				war = {
+					target = GWR
+					attacker_goal = {
+						casus_belli = conquest_any
+					}
+					defender_goal = {
+						casus_belli = acquire_any_state
+						state_province_id = 1906
+					}
+				}
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = {
+					NOT = { GWR = { owns = 1898 } }
+					NOT = { owns = 1906 }
+				}
+			}
+			owner = {
+				war = {
+					target = GWR
+					attacker_goal = {
+						casus_belli = conquest_any
+					}
+					defender_goal = {
+						casus_belli = humiliate_no_infamy
+					}
+				}
 			}
 		}
 		GWR = { country_event = 184900441 }
@@ -47866,9 +48046,153 @@ country_event = {
 			duration = 200
 		}
 		remove_country_modifier = national_confusion
+		any_owned = { remove_province_modifier = nationalist_agitation }
 		1905 = { any_pop = { militancy = -7 } }
 		3972 = { any_pop = { militancy = -7 } }
         ai_chance = { factor = 1 }
+    }
+}
+country_event = {
+    id = 18482579
+    title = "Moru Dies"
+    desc = "MORUWATTARA"
+    picture = "kong_map"
+
+    fire_only_once = yes
+
+    trigger = {
+		tag = GWR
+		year = 1854
+		owns = 1905
+		KNG = { owns = 1900 }
+		NOT = { year = 1856 }
+		has_global_flag = gwiriko_not_feeling_good
+    }
+
+    mean_time_to_happen = { days = 1 }
+	
+	immediate = {
+		kill_leader = "Moru Wattara"
+        any_owned = {
+			add_province_modifier = {
+				name = nationalist_agitation
+				duration = 230
+			}
+        }
+        add_country_modifier = {
+            name = national_confusion
+            duration = 400
+        }
+	}
+
+    option = {
+        name = "We must defeat this revolt!"
+		prestige = 3
+		KNG = { country_event = 184825791 }
+		any_pop = { limit = { NOT = { has_pop_culture = dyula has_pop_culture = bambara } } militancy = 8 }
+		ai_chance = {
+			factor = 0
+		}
+    }
+    option = {
+        name = "We can only wait."
+		prestige = -1
+		KNG = { country_event = 184825793 }
+		any_pop = { limit = { NOT = { has_pop_culture = dyula has_pop_culture = bambara } } militancy = 4 }
+		ai_chance = {
+			factor = 1
+		}
+    }
+
+}
+country_event = {
+    id = 184825791
+    title = "Gwiriko Invades Us"
+    desc = "MORUWATTARABRUH"
+    picture = "kong_map"
+
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "Defend Banfora."
+		1898 = { add_core = THIS secede_province = THIS }
+		3972 = { add_core = THIS secede_province = THIS }
+		FROM = { war = {
+			target = THIS
+			attacker_goal = { casus_belli = acquire_all_cores }
+			defender_goal = { casus_belli = humiliate_no_infamy }
+		} }
+		ai_chance = {
+			factor = 0.5
+		}
+    }
+    option = {
+        name = "Cede Banfora back to Gwiriko."
+		relation = {
+			who = FROM
+			value = 100
+		}
+		FROM = { country_event = 184825792 }
+		ai_chance = {
+			factor = 0.5
+		}
+    }
+}
+country_event = {
+    id = 184825792
+    title = "The Kong Refuse to Help the Tyefo"
+    desc = "The Kong have stopped any support to Tyefo and the revolt has downscalled to guerrilla warfare."
+    picture = "kong_map"
+
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "Great!"
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 1898
+					province_id = 3972
+				}
+			}
+			remove_country_modifier = nationalist_agitation
+			add_province_modifier = {
+				name = nationalist_agitation
+				duration = 390
+			}
+			any_pop = { militancy = 10 }
+		}
+    }
+}
+country_event = {
+    id = 184825793
+    title = "Banfora Joins Us"
+    desc = "BANFORAJOINSKONG"
+    picture = "kong_map"
+
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "Keep Banfora."
+		1898 = { add_core = THIS secede_province = THIS } 
+		3972 = { add_core = THIS secede_province = THIS } 
+		ai_chance = {
+			factor = 1
+		}
+    }
+    option = {
+        name = "Cede Banfora back to Gwiriko."
+		FROM = { country_event = 184825792 }
+		relation = {
+			who = FROM
+			value = 100
+		}
+		ai_chance = {
+			factor = 0
+		}
     }
 }
 
