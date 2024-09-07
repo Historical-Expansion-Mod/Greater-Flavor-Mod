@@ -1622,6 +1622,7 @@ province_event = {
             province_id = 2624
 			province_id = 2301
 			province_id = 3823
+			province_id = 3732
         }
         NOT = { trade_goods = rubber }
         NOT = { trade_goods = oil }
@@ -1742,8 +1743,6 @@ province_event = { # Sugar Prospected
     title = "EVTNAME2425353"
     desc = "EVTDESC2425353"
 	
-    allow_multiple_instances = no
-
     trigger = {
         owned_by = THIS
         controlled_by = THIS
@@ -1801,9 +1800,10 @@ province_event = { # Sugar Prospected
             }
             AND = {
                 year = 1850
-                #OR = {
+                OR = {
                     province_id = 2213  #Port Au Prince
-                #}
+                    province_id = 2004  #Mocamedes
+                }
             }
         }
         NOT = { trade_goods = sugar }
@@ -1863,15 +1863,66 @@ province_event = { # Sugar Prospected
         name = "EVTOPTA2425353"
         trade_goods = sugar
         add_province_modifier = { name = switched_production duration = 365 }
+        random_owned = {
+            limit = { owner = { province_id = 2004 } }
+            2004 = { add_province_modifier = { name = queen_sugar duration = 5000 } }
+        }
         ai_chance = { factor = 1 }
     }
     option = {
         name = "EVT199034OPTB"
-        add_province_modifier = { name = stop_asking_rgo duration = 2000 }
+        add_province_modifier = { name = queen_sugar duration = 2000 }
         ai_chance = { factor = 0 }
     }
 }
+province_event = {
+    id = 18482586
+    title = "The End of The Royal Monopoly"
+    desc = "ROYALMONOPOLY"
+	
+    trigger = {
+		province_id = 3723
+        owned_by = THIS
+        controlled_by = THIS
+        trade_goods = ivory
+        owner = {
+			war = no
+			OR = {
+				AND = {
+					has_global_flag = por_liberal_victory
+					year = 1835
+				}
+				AND = {
+					NOT = { has_global_flag = por_liberal_victory }
+					year = 1846
+				}
+			}
+			NOT = { year = 1850 }
+        }
+        NOT = { has_province_modifier = switched_production }
+        NOT = { has_province_modifier = stop_asking_rgo }
+    }
 
+    mean_time_to_happen = {
+        months = 1
+    }
+
+    option = {
+        name = "Great!"
+		remove_province_modifier = ivory_monopoly
+        add_province_modifier = { name = recovering_ivory_monopoly duration = 5110 }
+		owner = {
+			set_country_flag = hide_tooltip
+			random_owned = {
+				limit = { owner = { has_country_flag = hide_tooltip } }
+				owner = {
+					any_pop = { limit = { pop_type = clergymen location = { OR = { province_id = 3728 province_id = 3729 province_id = 2012 province_id = 3723 } } } reduce_pop = 2 money = 200 }
+				}
+			}
+			clr_country_flag = hide_tooltip
+		}
+    }
+}
 ############################
 #        OIL EVENT         #
 ############################
