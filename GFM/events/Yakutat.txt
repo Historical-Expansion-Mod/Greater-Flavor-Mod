@@ -26390,6 +26390,99 @@ country_event = {
 	}
 }
 country_event = {
+    id = 184821328
+    title = "Leave the Caliphate?"
+    desc = "Our state might deserve independence after all these years of oppression.."
+    picture = "adamawa_map"
+
+	is_triggered_only = yes
+	allow_multiple_instances = yes
+
+
+    option = {
+        name = "For the liberation of our lands!"
+		prestige = 3
+		set_global_flag = gwandu_left_us
+		any_country = {
+			limit = {
+				neighbour = THIS
+				OR = {
+					tag = SOK
+					AND = { owns = 1948 has_country_flag = i_am_flc }
+					AND = { owns = 1948 has_country_flag = i_became_tou }
+				}
+			}
+			relation = {
+				who = THIS
+				value = -100
+			}
+			country_event = 184821329
+		}
+		remove_country_modifier = puppet_gwandu
+		ai_chance = {
+			factor = 0.2
+		}
+    }
+
+    option = {
+        name = "This is not a good idea."
+		prestige = -5
+		any_country = {
+			limit = {
+				neighbour = THIS
+				OR = {
+					tag = SOK
+					AND = { owns = 1948 has_country_flag = i_am_flc }
+					AND = { owns = 1948 has_country_flag = i_became_tou }
+				}
+			}
+			relation = {
+				who = THIS
+				value = 100
+			}
+		}
+		ai_chance = {
+			factor = 0.8
+		}
+    }
+
+}
+country_event = {
+    id = 184821329
+    title = "Gwandu Leaves Us!"
+    desc = "$FROMCOUNTRY$ has decided to sail the Niger river alone."
+    picture = "adamawa_map"
+	
+	is_triggered_only = yes
+	allow_multiple_instances = yes
+
+    option = {
+        name = "We have to do it united! §RDeclare war on $FROMCOUNTRY$§W"
+		casus_belli = {
+            target = LEG
+            type = make_puppet
+            months = 12
+        }
+		war = {
+            target = LEG
+            attacker_goal = { casus_belli = make_puppet }
+            defender_goal = { casus_belli = become_independent }
+        }
+		LEG = { remove_country_modifier = puppet_gwandu }
+		ai_chance = {
+			factor = 0.2
+		}
+	}
+
+    option = {
+        name = "They shall do what they shall."
+		LEG = { remove_country_modifier = puppet_gwandu }
+		ai_chance = {
+			factor = 0.8
+		}
+	}
+}
+country_event = {
     id = 184824329
     title = "The Emirate Mechanic"
     desc = "EMIRATEMECHANIC"
@@ -26409,6 +26502,11 @@ country_event = {
 		tag = ILO } } owner = {
 		add_country_modifier = {
 			name = puppet_ilorin duration = -1
+		} } }
+		random_owned = { limit = { owner = {
+		tag = LEG } } owner = {
+		add_country_modifier = {
+			name = puppet_gwandu duration = -1
 		} } }
 		ai_chance = {
 			factor = 1
@@ -27579,13 +27677,15 @@ country_event = {
             name = national_instability
             duration = 200
         }
-		random_owned = { limit = { owner = { LEG = { exists = yes } } }
+		random_owned = { limit = { owner = { LEG = { alliance_with = THIS exists = yes } } }
 		owner = {
+			set_global_flag = gwandu_left_us
+			LEG = { remove_country_modifier = puppet_gwandu }
 			any_owned = {
 				limit = { is_core = DND is_core = LEG }
 				secede_province = LEG
 			}
-			release_vassal = LEG
+			leave_alliance = LEG
 			LEG = { war = {
 				target = SOK
 				attacker_goal = { casus_belli = become_independent }
@@ -27615,7 +27715,7 @@ country_event = {
 country_event = {
     id = 184824431
     title = "Gwandu Has Been Pacified"
-    desc = "Gwandu has been occupied successfully. What should we do?"
+    desc = "Gwandu has been occupied successfully and we have recovered our lands. What should we do?"
     picture = "adamawa_map"
 	fire_only_once = yes
 
@@ -27630,7 +27730,23 @@ country_event = {
 	mean_time_to_happen = { days = 1 }
 	
     option = {
-		name = "Recover our lands but let it survive."
+		name = "Return it to an Autonomous Emirate."
+		clr_global_flag = gwandu_left_us
+		relation = { who = LEG value = 400 }
+		create_alliance = LEG
+		LEG = { add_country_modifier = {
+			name = puppet_gwandu duration = -1
+		} }
+		LEG = { any_owned = { limit = { NOT = { province_id = 1946 province_id = 3761 } } secede_province = THIS } } 
+		any_owned = { limit = { OR = { province_id = 1946 province_id = 3761 } } secede_province = LEG }
+		ai_chance = {
+			factor = 1
+		}
+	}
+    option = {
+		name = "Make it our vassal."
+		3761 = { add_core = SOK }
+		1946 = { add_core = SOK }
 		LEG = { any_owned = { limit = { NOT = { province_id = 1946 province_id = 3761 } } secede_province = THIS } } 
 		any_owned = { limit = { OR = { province_id = 1946 province_id = 3761 } } secede_province = LEG }
 		ai_chance = {
@@ -27640,8 +27756,11 @@ country_event = {
     option = {
 		name = "Annex it. §RGain 3 infamy§W"
 		badboy = 3
+		LEG = { any_owned = { limit = { NOT = { province_id = 1946 province_id = 3761 } } secede_province = THIS } } 
 		inherit = LEG
 		inherit = LEG
+		3761 = { add_core = SOK }
+		1946 = { add_core = SOK }
 		LEG = { all_core = { remove_core = LEG } }
 		ai_chance = {
 			factor = 0
@@ -28193,6 +28312,18 @@ country_event = {
 		random_owned = { limit = { owner = { OR = { 3804 = { has_province_modifier = undi_kingdom } 3976 = { has_province_modifier = kanyenda_kingdom } } } } owner = {
 			3807 = { add_province_modifier = { name = undi_kingdom duration = -1 } }
 		}
+		}
+		define_general = {
+			name = "M'Mbelwa"
+			personality = defence_2.1
+			background = attack_3.1
+		}
+		NGO = {
+			3978 = {
+				sub_unit = { type = irregular value = current }
+				sub_unit = { type = irregular value = current }
+				sub_unit = { type = cavalry value = current }
+			}
 		}
 		ai_chance = {
 			factor = 1
@@ -36014,16 +36145,6 @@ country_event = {
 	
 	immediate = {
 		3967 = { secede_province = FROM }
-		random_owned = { limit = { owner = { 3820 = { empty = yes } } }
-			owner = {
-				3820 = {
-					secede_province = THIS
-					secede_province = FROM
-					any_pop = { literacy = -0.99 }
-					life_rating = 21
-				}
-			}
-		}
 	}
 
     option = {
@@ -49062,7 +49183,7 @@ country_event = {
 		prestige = -3
 		any_owned = { limit = { is_core = BNB NOT = { province_id = 3805 } } secede_province = BNB }
 		ai_chance = {
-			factor = 1
+			factor = 0
 		}
     }
     option = {
@@ -49088,6 +49209,15 @@ country_event = {
 		}
 		ai_chance = {
 			factor = 0
+		}
+    }
+    option = {
+        name = "Recognize their independence."
+		prestige = -5
+		any_owned = { limit = { is_core = BNB NOT = { province_id = 3805 } } secede_province = BNB }
+		all_core = { limit = { is_core = BNB } remove_core = THIS }
+		ai_chance = {
+			factor = 1
 		}
     }
 
@@ -49428,7 +49558,7 @@ country_event = {
 
     trigger = {
 		tag = NGO
-		owns = 2067
+		OR = { owns = 2067 owns = 3978 }
 		MRW = { owns = 2066 }
 		year = 1858
 		NOT = { year = 1862 }
@@ -49449,6 +49579,8 @@ country_event = {
 						province_id = 3977
 						province_id = 2066
 						province_id = 3976
+						province_id = 2067
+						province_id = 3978
 					}
 				}
 				secede_province = THIS
@@ -49531,6 +49663,8 @@ country_event = {
 					province_id = 3977
 					province_id = 2066
 					province_id = 3976
+					province_id = 2067
+					province_id = 3978
 				}
 			}
 			any_pop = { militancy = 10 }
@@ -49587,6 +49721,8 @@ country_event = {
 						province_id = 3977
 						province_id = 2066
 						province_id = 3976
+						province_id = 2067
+						province_id = 3978
 					}
 				}
 				secede_province = THIS
