@@ -31,10 +31,17 @@ political_decisions = {
         picture = apulo_convention
         potential = {
 			tag = GCO
-			exists = VNZ
-			exists = ECU
-			exists = PNM
+			OR = {
+				is_disarmed = yes
+				AND = {
+					war = no
+					exists = VNZ
+					exists = ECU
+					exists = PNM
+				}
+			}
 			has_global_flag = death_of_bolivar
+			has_global_flag = gc_full_collapse
 			NOT = { has_global_flag = apulo_conventioned }
         }
 
@@ -51,7 +58,7 @@ political_decisions = {
 			end_war = PNM
 			change_tag = CLM
 			CLM = {
-				add_country_modifier = { name = power_vacuum duration = 365 }
+				add_country_modifier = { name = power_vacuum duration = 373 }
 				government = prov_gov_conservative
 				political_reform = party_appointed
 				political_reform = none_voting
@@ -76,6 +83,8 @@ political_decisions = {
 					attacker_goal = { casus_belli = test_end_war }
 					call_ally = no
 				}
+				relation = { who = VNZ value = 170 }
+				relation = { who = ECU value = 170 }
 			}
 			ECU = {
 				war = {
@@ -88,15 +97,16 @@ political_decisions = {
 					attacker_goal = { casus_belli = test_end_war }
 					call_ally = no
 				}
+				relation = { who = VNZ value = 170 }
 			}
 			3564 = { remove_core = CLM }
 			2259 = { remove_core = CLM }
 			2258 = { remove_core = CLM }
 			2257 = { remove_core = CLM }
-			2256 = { remove_core = CLM }
 			2260 = { remove_core = CLM }
 			2263 = { remove_core = CLM }
 			2261 = { remove_core = CLM }
+			2262 = { remove_core = CLM }
 			3376 = { remove_core = CLM }
 			2289 = { remove_core = CLM }
 			3360 = { remove_core = CLM }
@@ -107,13 +117,28 @@ political_decisions = {
 			3359 = { remove_core = CLM }
 			PNM = { country_event = { id = 127837 days = 90 } }
 			PEU = { relation = { who = THIS value = 190 } }
-			define_general = { name = "Tom·s Cipriano de Mosquera" personality = defence_3.1 background = attack_4.1 }
-			define_general = { name = "Francisco JosÈ de Paula Santander OmaÒa" personality = defence_4.1 background = attack_2.1 }
+			define_general = { name = "Tom√°s Cipriano de Mosquera" personality = defence_3.1 background = attack_4.1 }
+			define_general = { name = "Francisco Jos√© de Paula Santander Oma√±a" personality = defence_4.1 background = attack_2.1 }
 			random_owned = {
-				limit = { owner = { 3567 = { owned_by = ECU } } }
+				limit = { owner = { 3567 = { OR = { owned_by = ECU owned_by = VNZ } } } }
 				owner = { 3567 = { secede_province = THIS } }
 			}
 			3567 = { secede_province = BRZ add_core = BRZ } # Rio Negro - Goes to Brazil and gives them a core
+			any_owned = {
+				limit = {
+					is_core = VNZ
+					NOT = { province_id = 2401 province_id = 3567 province_id = 3926 province_id = 3748 province_id = 2262 province_id = 3376 province_id = 2261 } # Marabitanas - Stays with Colombia
+				}
+				secede_province = VNZ
+			}
+			any_owned = {
+				limit = {
+					is_core = ECU
+					NOT = { province_id = 2256 } # Cali - Stays with Colombia
+				}
+				secede_province = ECU
+			}
+			any_owned = { limit = { is_core = PNM } secede_province = PNM }
         }
 
         ai_will_do = { factor = 1 }
@@ -129,7 +154,7 @@ political_decisions = {
         allow = {
 			war = no
 			year = 1832
-			month = 6
+			month = 1
         }
 
         effect = {
@@ -137,19 +162,15 @@ political_decisions = {
 			2259 = { add_core = THIS }
 			2258 = { add_core = THIS }
 			2257 = { add_core = THIS }
-			2256 = { add_core = THIS }
 			2260 = { add_core = THIS }
-			2263 = { add_core = THIS }
 			2261 = { add_core = THIS }
 			2262 = { add_core = THIS }
 			3376 = { add_core = THIS }
-			2289 = { add_core = THIS }
 			3360 = { add_core = THIS }
 			904 = { add_core = THIS }
 			696 = { add_core = THIS }
 			2401 = { add_core = THIS }
 			3567 = { add_core = THIS }
-			3359 = { add_core = THIS }
 			add_country_modifier = {
 				name = small_country_draft
 				duration = 365
@@ -168,25 +189,14 @@ political_decisions = {
 			war = {
 				target = ECU
 				attacker_goal = { casus_belli = cut_down_to_size_no_infamy }
-				defender_goal = { casus_belli = status_quo }
+				defender_goal = { casus_belli = acquire_core_state state_province_id = 2256 }
 			}
-			ECU = { country_event = 16051889 }
-			random_owned = {
-				limit = {
-					owner = {
-						VNZ = { ai = yes }
-						ECU = { ai = yes }
-						VNZ = { war_with = ECU }
-					}
+			ECU = {
+				any_owned = {
+					limit = { province_id = 2257 }
+					change_controller = THIS
 				}
-				ECU = { end_war = VNZ }
-				ECU = {
-					war = {
-						target = VNZ
-						attacker_goal = { casus_belli = test_end_war }
-						call_ally = no
-					}
-				}
+				country_event = 16051889
 			}
         }
 
