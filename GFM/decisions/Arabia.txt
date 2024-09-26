@@ -65,6 +65,7 @@ political_decisions = {
                 primary_culture = kurdish
                 tag = CYR
                 tag = ALD
+				AND = { tag = MGH primary_culture = bedouin }
 				AND = {
 					OR = {
 						primary_culture = kazak
@@ -80,6 +81,14 @@ political_decisions = {
 						war_with = ENG
 					}
 				}
+				AND = {
+					primary_culture = bedouin
+					OR = {
+						war_with = TUR
+						war_with = EGY
+					}
+					year = 1840
+				}
             }
             civilized = no
             NOT = { has_country_modifier = rally_tribesmen }
@@ -87,7 +96,10 @@ political_decisions = {
 
         allow = {
             war = yes
-            NOT = { total_pops = 400000 }
+            OR = {
+				NOT = { total_pops = 400000 }
+				AND = { tag = CYR NOT = { total_pops = 800000 } }
+			}
         }
 
         effect = {
@@ -208,7 +220,7 @@ political_decisions = {
         allow = {
             NEJ = {
                 exists = no
-                all_core = { OR = { owned_by = THIS empty = yes } }
+                all_core = { OR = { owned_by = THIS empty = yes province_id = 3916 province_id = 3688 } }
             }
         }
 
@@ -287,7 +299,7 @@ political_decisions = {
         allow = {
             HAL = {
                 exists = no
-                all_core = { OR = { owned_by = THIS empty = yes } }
+                all_core = { OR = { province_id = 2639 owned_by = THIS empty = yes } }
             }
         }
 
@@ -300,6 +312,8 @@ political_decisions = {
                     add_core = NEJ
                 }
             }
+			3404 = { add_core = NEJ }
+			1158 = { add_core = NEJ }
 			}}
             HAL = {
                 all_core = {
@@ -375,6 +389,7 @@ political_decisions = {
         effect = {
             prestige = 5
             HDJ_1151 = { add_core = NEJ } #Hedjaz
+            3858 = { add_core = NEJ } #Hedjaz
             random_country = {
                 limit = {
                     owns = 1151
@@ -664,13 +679,15 @@ political_decisions = {
         }
 
         allow = {
-            is_greater_power = yes
+            NOT = { has_country_modifier = recently_lost_war }
+			is_disarmed = no
             war = no
-            nationalism_n_imperialism = 1
-            romanticism = 1
+			is_vassal = no
+			all_core = { OR = { owned_by = THIS empty = yes } }
+			prestige = 15
             OR = {
-                government = fascist_dictatorship
-                AND = { government = absolute_monarchy war_policy = jingoism }
+                war_policy = jingoism
+				war_policy = pro_military
             }
         }
 
@@ -774,48 +791,6 @@ political_decisions = {
         ai_will_do = { factor = 1 }
     }
 
-    vassalize_trucial_states = {
-        picture = dubai_city
-        potential = {
-            is_sphere_leader_of = ABU
-            ABU = {
-                is_vassal = no
-                ai = yes
-            }
-            revolution_n_counterrevolution = 1
-            NOT = { has_global_flag = vassalized_trucials }
-            NOT = { tag = ENG }
-        }
-
-        allow = {
-            mass_politics = 1
-            war = no
-            ABU = {
-                war = no
-                in_sphere = THIS
-                relation = { who = THIS value = 150 }
-            }
-        }
-
-        effect = {
-            set_global_flag = vassalized_trucials
-            prestige = 5
-            create_vassal = ABU
-			ABU = { set_country_flag = colony_exemption }
-            create_alliance = ABU
-            ABU = { political_reform = no_slavery research_points = 3000 }
-
-            random_owned = { limit = { exists = NEJ } owner = { diplomatic_influence = { who = NEJ value = 25 } } }
-            random_owned = { limit = { exists = HAL } owner = { diplomatic_influence = { who = HAL value = 25 } } }
-            random_owned = { limit = { exists = BHR } owner = { diplomatic_influence = { who = BHR value = 25 } } }
-            random_owned = { limit = { exists = QAT } owner = { diplomatic_influence = { who = QAT value = 25 } } }
-            random_owned = { limit = { exists = ABU } owner = { diplomatic_influence = { who = ABU value = 25 } } }
-            random_owned = { limit = { exists = KWT } owner = { diplomatic_influence = { who = KWT value = 25 } } }
-            random_owned = { limit = { exists = OMA } owner = { diplomatic_influence = { who = OMA value = 25 } } }
-        }
-        ai_will_do = { factor = 1 }
-    }
-
     yemeni_sultanates_conquest = {
         picture = map_arabia
         alert = no
@@ -828,15 +803,16 @@ political_decisions = {
                         tag = KTH
                         tag = MHR
                         tag = RCH
-                        tag = KHA
+                        tag = MLN
                     }
+					NOT = { vassal_of = THIS }
                 }
-                is_sphere_leader_of = YEM
-                is_sphere_leader_of = FDL
-                is_sphere_leader_of = KTH
-                is_sphere_leader_of = MHR
-                is_sphere_leader_of = RCH
-                is_sphere_leader_of = KHA
+                AND = { is_sphere_leader_of = YEM YEM = { NOT = { vassal_of = THIS } } }
+                AND = { is_sphere_leader_of = FDL FDL = { NOT = { vassal_of = THIS } } }
+                AND = { is_sphere_leader_of = KTH KTH = { NOT = { vassal_of = THIS } } }
+                AND = { is_sphere_leader_of = MHR MHR = { NOT = { vassal_of = THIS } } }
+                AND = { is_sphere_leader_of = RCH RCH = { NOT = { vassal_of = THIS } } }
+                AND = { is_sphere_leader_of = MLN MLN = { NOT = { vassal_of = THIS } NOT = { primary_culture = kurdish } } }
             }
             civilized = yes
             NOT = { has_global_flag = claimed_yemen }
@@ -863,8 +839,13 @@ political_decisions = {
             diplomatic_influence = { who = MHR value = -400 }
             diplomatic_influence = { who = RCH value = -400 }
             diplomatic_influence = { who = NYE value = -400 }
-            diplomatic_influence = { who = KHA value = -400 }
 
+            random_owned = {
+                limit = { owner = { MLN = { NOT = { primary_culture = kurdish } } } }
+                owner = {
+                    diplomatic_influence = { who = MLN value = -400 }
+                }
+            }
             random_owned = {
                 limit = { owner = { ai = yes } }
                 owner = {
@@ -879,7 +860,7 @@ political_decisions = {
                         leave_alliance = FDL
                         leave_alliance = KTH
                         leave_alliance = RCH
-                        leave_alliance = KHA
+                        leave_alliance = MLN
                     }
                 }
             }
@@ -964,7 +945,7 @@ political_decisions = {
                 relation = { who = THIS value = -400 }
                 leave_alliance = THIS
                 end_military_access = THIS
-                add_casus_belli = { target = THIS type = establish_protectorate_NI_casus_belli months = 120 }
+                add_casus_belli = { target = THIS type = establish_protectorate_BC_casus_belli months = 120 }
                 THIS = {
                     war = {
                         target = YEM
@@ -973,19 +954,20 @@ political_decisions = {
                     }
                 }
             }
-			
+
             random_country = {
                 limit = {
                     exists = yes
-                    tag = KHA
+                    tag = MLN
+					NOT = { primary_culture = kurdish }
                 }
                 relation = { who = THIS value = -400 }
                 leave_alliance = THIS
                 end_military_access = THIS
-                add_casus_belli = { target = THIS type = establish_protectorate_NI_casus_belli months = 120 }
+                add_casus_belli = { target = THIS type = establish_protectorate_BC_casus_belli months = 120 }
                 THIS = {
                     war = {
-                        target = KHA
+                        target = MLN
                         attacker_goal = { casus_belli = establish_protectorate_BC_casus_belli }
                         call_ally = no
                     }

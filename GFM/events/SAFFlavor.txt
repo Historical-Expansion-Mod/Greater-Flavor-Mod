@@ -205,6 +205,7 @@ country_event = { #Transvaal wants to bring about a confederation with Oranje
         ORA = {
             country_event = 6005
         }
+        ai_chance = { factor = 1 }
     }
 
     option = {
@@ -217,6 +218,7 @@ country_event = { #Transvaal wants to bring about a confederation with Oranje
                 consciousness = 2
             }
         prestige = 3
+        ai_chance = { factor = 0 }
     }
 }
 
@@ -235,7 +237,7 @@ country_event = {
         }
         TRN = { inherit = THIS }
         ai_chance = {
-            factor = 80
+            factor = 0.01
             modifier = {
                 factor = 0.5
                 TRN = {
@@ -251,7 +253,7 @@ country_event = {
             country_event = 6006
         }
         ai_chance = {
-            factor = 20
+            factor = 99.99
         }
     }
 }
@@ -266,19 +268,14 @@ country_event = {
 
     option = {
         name = "EVT6006OPTA"
-        ORA = {
-            all_core = { add_core = TRN }
-        }
+		badboy = 5
 		leave_alliance = ORA
 		war = {
 			target = ORA
 			attacker_goal = {
-				casus_belli = conquest
+				casus_belli = conquest_any
 			}
-			defender_goal = {
-				casus_belli = status_quo
-			}
-		call_ally = no
+			call_ally = no
 		}
 		any_pop = {
 			limit = {
@@ -314,15 +311,23 @@ country_event = {
 		}
 		any_pop = {
 			limit = {
-				location = { province_id = 2110 } #Schoeman, leader in Zoutpansberg was opposed
-				location = { province_id = 2109 } #Joubert, leader in Lydenberg was opposed
+				location = {
+					OR = {
+						province_id = 3969 #Schoeman, leader in Zoutpansberg was opposed
+						province_id = 2074 #Schoeman, leader in Zoutpansberg was opposed
+						province_id = 3945 #Joubert, leader in Lydenberg was opposed
+						province_id = 3648 #Joubert, leader in Lydenberg was opposed
+						province_id = 3899 #Joubert, leader in Lydenberg was opposed
+						province_id = 3942 #Joubert, leader in Lydenberg was opposed
+					}
+					owned_by = THIS
+				}
 			}
-			consciousness = 2
-			militancy = 2
+			consciousness = 3
+			militancy = 4
 		}
-		badboy = 5
         ai_chance = {
-            factor = 50
+            factor = 2
         }
     }
 
@@ -359,7 +364,7 @@ country_event = {
                 }
             }
         ai_chance = {
-            factor = 50
+            factor = 98
         }
     }
 }
@@ -440,8 +445,10 @@ country_event = {
         3648 = { add_core = THIS }
         2108 = { add_core = THIS }
         2074 = { add_core = THIS }
+        3969 = { add_core = THIS }
         2110 = { add_core = THIS }
         2109 = { add_core = THIS }
+        3945 = { add_core = THIS }
         3713 = { add_core = THIS }
         2107 = { add_core = THIS }
         2106 = { add_core = THIS }
@@ -449,6 +456,8 @@ country_event = {
         2104 = { add_core = THIS }
         2111 = { add_core = THIS }
         2113 = { add_core = THIS }
+        3942 = { add_core = THIS }
+        3943 = { add_core = THIS }
         3897 = { add_core = THIS }
         3899 = { add_core = THIS }
         2112 = { add_core = THIS }
@@ -586,9 +595,9 @@ country_event = {
     option = {
         name = "EVT6011OPTA"
         set_country_flag = pioneer_column_boer
-        2070 = { secede_province = THIS life_rating = 25 add_core = SAF }
-        2635 = { secede_province = THIS life_rating = 25 add_core = SAF }
-        2068 = { secede_province = THIS life_rating = 25 add_core = SAF }
+        2070 = { secede_province = THIS add_core = SAF }
+        2635 = { secede_province = THIS add_core = SAF }
+        2068 = { secede_province = THIS add_core = SAF }
         2068 = { change_province_name = "Herculaastad" }
 		set_global_flag = colonizer_rename_2068
 		clr_global_flag = british_rename_2068
@@ -665,6 +674,18 @@ country_event = {
         name = "EVT6013OPTE"
         capital = 2106
         2106 = {
+            life_rating = 5
+            add_province_modifier = {
+                name = recently_built_city
+                duration = 365
+            }
+        }
+    }
+
+    option = {
+        name = "Greikwastad"
+        capital = 2094
+        2094 = {
             life_rating = 5
             add_province_modifier = {
                 name = recently_built_city
@@ -787,6 +808,13 @@ country_event = {
                 duration = 3650
             }
         }
+		remove_accepted_culture = zulu
+		remove_accepted_culture = xhosa
+		remove_accepted_culture = nguni
+		remove_accepted_culture = tswana
+		remove_accepted_culture = tonga
+		remove_accepted_culture = khoisan
+		remove_accepted_culture = shona
         set_country_flag = native_slaughter
         any_pop = {
             limit = {
@@ -823,6 +851,13 @@ country_event = {
             name = native_displacement
             duration = 1095
         }
+		remove_accepted_culture = zulu
+		remove_accepted_culture = xhosa
+		remove_accepted_culture = nguni
+		remove_accepted_culture = tswana
+		remove_accepted_culture = tonga
+		remove_accepted_culture = khoisan
+		remove_accepted_culture = shona
         remove_country_modifier = native_reintegration
         any_owned = {
             limit = {
@@ -963,99 +998,6 @@ country_event = {
 }
 
 country_event = {
-    id = 6020
-    title = "EVTNAME6020" #Transvaal Civil war Flavor
-    desc = "EVTDESC6020"
-    picture = "schoeman_rifles"
-    major = yes
-	
-    fire_only_once = yes
-    mean_time_to_happen = { months = 24 }
-
-    trigger = {
-        tag = TRN
-        exists = ORA
-        OR = {
-            government = democracy
-            government = hms_government
-            government = constitutional_empire
-        }
-        NOT = {
-            has_country_flag = transvaal_civil_war_happened
-        }
-        ORA = {
-            OR = {
-                government = democracy
-                government = hms_government
-                government = constitutional_empire
-            }
-        }
-        year = 1860
-    }
-
-    option = {
-        name = "EVT6020OPTA"
-        set_country_flag = transvaal_civil_war_happened
-        THIS = { election = yes }
-        add_country_modifier = {
-            name = transvaal_civil_war
-            duration = 720
-        }
-        any_pop = {
-            limit = {
-                culture = boer
-            }
-            militancy = 3
-            consciousness = 3
-            ideology = {
-                factor = 0.05
-                value = conservative
-            }
-        }
-        ai_chance = { factor = 90 }
-    }
-
-    option = {
-        name = "EVT6020OPTB"
-        set_country_flag = transvaal_civil_war_happened
-        add_country_modifier = {
-            name = transvaal_civil_war
-            duration = 720
-        }
-        government = presidential_dictatorship
-        political_reform = underground_parties
-        political_reform = none_voting
-        political_reform = appointed
-        upper_house = {
-                ideology = reactionary
-                value = 0.25
-        }
-        ruling_party_ideology = reactionary
-        any_pop = {
-            limit = {
-                culture = boer
-                OR = {
-                    strata = rich
-                    strata = middle
-                }
-            }
-            ideology = {
-                factor = 0.2
-                value = reactionary
-            }
-        }
-        any_pop = {
-            limit = { culture = boer }
-            dominant_issue = {
-                value = jingoism
-                factor = 0.2
-            }
-        }
-        ai_chance = { factor = 10 }
-    }
-}
-
-country_event = {
     id = 6021
     title = "EVTNAME6021" #Afrikaner Church and Nationalism
     desc = "EVTDESC6021"
@@ -1146,56 +1088,326 @@ country_event = {
     mean_time_to_happen = { days = 1 }
 
     trigger = {
-		owns = 2110
-		year = 1848
-		month = 3
+		owns = 3969
+		year = 1849
+		month = 1
+		NOT = { year = 1856 }
 		TRN = { exists = yes }
+		HLB = { exists = no }
+		NOT = { has_global_flag = zoutpansberg_founded }
+    }
+
+	immediate = {
+		set_global_flag = zoutpansberg_founded
+		random_owned = {
+			limit = {
+				owner = {
+					tag = TRN
+				}
+			}
+			owner = {
+				set_country_flag = you_already_know
+			}
+		}
+	}
+
+    option = {
+        name = "Cede the lands over the Drakensberg to Zoutpansberg."
+		3969 = {
+            any_pop = {
+                limit = {
+                    has_pop_culture = boer
+                }
+                literacy = 0.3
+				reduce_pop = 1.5
+            }
+            any_pop = {
+                limit = {
+                    NOT = { has_pop_culture = boer }
+                }
+                literacy = -0.075
+            }
+        }
+		HLB = { all_core = { remove_core = HLB } civilized = yes }
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 3969
+					province_id = 2074
+				}
+			}
+			remove_core = THIS add_core = HLB secede_province = HLB
+		}
+        3969 = { change_province_name = "Zoutpansberg" }
+		HLB = { government = presidential_dictatorship religion = reformed primary_culture = boer remove_accepted_culture = nguni remove_accepted_culture = zulu remove_accepted_culture = xhosa remove_accepted_culture = sotho }
+		random_country = { limit = { primary_culture = boer neighbour = HLB } create_alliance = HLB }
+        ai_chance = { factor = 100 }
+    }
+    option = {
+        name = "For Zoutpansberg! §BPlay as Zoutpansberg§W"
+		3969 = {
+            any_pop = {
+                limit = {
+                    has_pop_culture = boer
+                }
+                literacy = 0.3
+				reduce_pop = 1.5
+            }
+            any_pop = {
+                limit = {
+                    NOT = { has_pop_culture = boer }
+                }
+                literacy = -0.075
+            }
+        }
+		HLB = { all_core = { remove_core = HLB } civilized = yes }
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 3969
+					province_id = 2074
+				}
+			}
+			remove_core = THIS add_core = HLB secede_province = HLB
+		}
+        3969 = { change_province_name = "Zoutpansberg" }
+		HLB = { government = presidential_dictatorship religion = reformed primary_culture = boer remove_accepted_culture = nguni remove_accepted_culture = zulu remove_accepted_culture = xhosa remove_accepted_culture = sotho }
+		random_country = { limit = { primary_culture = boer neighbour = HLB } create_alliance = HLB }
+        change_tag_no_core_switch = HLB
+        ai_chance = { factor = 0 }
+    }
+    option = {
+        name = "We can't let this happen in our heartland. §RDeclare war on Zoutpansberg§W"
+		3969 = {
+            any_pop = {
+                limit = {
+                    has_pop_culture = boer
+                }
+                literacy = 0.3
+				reduce_pop = 1.5
+            }
+            any_pop = {
+                limit = {
+                    NOT = { has_pop_culture = boer }
+                }
+                literacy = -0.075
+            }
+        }
+		HLB = { all_core = { remove_core = HLB } civilized = yes }
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 3969
+					province_id = 2074
+				}
+			}
+			add_core = HLB secede_province = HLB
+		}
+        3969 = { change_province_name = "Zoutpansberg" }
+		HLB = { government = presidential_dictatorship religion = reformed primary_culture = boer remove_accepted_culture = nguni remove_accepted_culture = zulu remove_accepted_culture = xhosa remove_accepted_culture = sotho }
+		random_country = { limit = { primary_culture = boer neighbour = HLB } create_alliance = HLB }
+        war = {
+            target = HLB
+            attacker_goal = { casus_belli = conquest_any }
+            defender_goal = { casus_belli = humiliate_no_infamy }
+            call_ally = no
+        }
+        ai_chance = { factor = 0 }
+    }
+}
+country_event = {
+    id = 456343743
+    title = "EVTNAME6022" #Zoutpansberg Setup
+    desc = "EVTDESC6022"
+    picture = trekkers_under_mountain
+
+    fire_only_once = yes
+    mean_time_to_happen = { days = 1 }
+
+    trigger = {
+		owns = 3969
+		year = 1852
+		month = 1
+		NOT = { year = 1854 }
+		TRN = { exists = yes }
+		HLB = { exists = yes }
+		NOT = { tag = TRN }
+		NOT = { tag = HLB }
+		NOT = { has_global_flag = zoutpansberg_founded }
     }
 
 	immediate = { set_global_flag = zoutpansberg_founded }
 
     option = {
-        name = "EVT6022OPTA"
-		2110 = {
+        name = "Cede the lands over the Drakensberg to Transvaal."
+		3969 = {
             any_pop = {
                 limit = {
-                    culture = boer
+                    has_pop_culture = boer
                 }
                 literacy = 0.3
+				reduce_pop = 1.5
             }
             any_pop = {
                 limit = {
-                    NOT = { culture = boer }
+                    NOT = { has_pop_culture = boer }
                 }
                 literacy = -0.075
             }
         }
-        2110 = { change_province_name = "Zoutpansberg" secede_province = TRN }
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 3969
+					province_id = 2074
+				}
+			}
+			remove_core = THIS secede_province = TRN
+		}
+        3969 = { change_province_name = "Zoutpansberg" }
         ai_chance = { factor = 100 }
     }
     option = {
-        name = "We can't let this happen in our heartland..."
-		2110 = {
+        name = "For Transvaal! §BPlay as Transvaal§W"
+		3969 = {
             any_pop = {
                 limit = {
-                    culture = boer
+                    has_pop_culture = boer
                 }
                 literacy = 0.3
+				reduce_pop = 1.5
             }
             any_pop = {
                 limit = {
-                    NOT = { culture = boer }
+                    NOT = { has_pop_culture = boer }
                 }
                 literacy = -0.075
             }
         }
-        2110 = { change_province_name = "Zoutpansberg" secede_province = TRN }
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 3969
+					province_id = 2074
+				}
+			}
+			remove_core = THIS secede_province = TRN
+		}
+        3969 = { change_province_name = "Zoutpansberg" }
+        change_tag_no_core_switch = TRN
+        ai_chance = { factor = 0 }
+    }
+    option = {
+        name = "We can't let this happen in our heartland. §RDeclare war on Transvaal§W"
+		3969 = {
+            any_pop = {
+                limit = {
+                    has_pop_culture = boer
+                }
+                literacy = 0.3
+				reduce_pop = 1.5
+            }
+            any_pop = {
+                limit = {
+                    NOT = { has_pop_culture = boer }
+                }
+                literacy = -0.075
+            }
+        }
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 3969
+					province_id = 2074
+				}
+			}
+			secede_province = TRN
+		}
+        3969 = { change_province_name = "Zoutpansberg" }
         war = {
             target = TRN
-            attacker_goal = { casus_belli = conquest_any }
-            defender_goal = { casus_belli = humiliate_no_infamy }
+            attacker_goal = { casus_belli = acquire_all_cores }
             call_ally = no
         }
+        ai_chance = { factor = 0 }
+    }
+}
+country_event = {
+    id = 456343744
+    title = "EVTNAME6022" #Zoutpansberg Setup
+    desc = "EVTDESC6022"
+    picture = trekkers_under_mountain
+
+    fire_only_once = yes
+    mean_time_to_happen = { days = 1 }
+
+    trigger = {
+		tag = TRN
+		owns = 3969
+		year = 1849
+		month = 1
+		NOT = { year = 1853 }
+		TRN = { exists = yes }
+		HLB = { exists = yes }
+		NOT = { has_global_flag = zoutpansberg_founded }
+    }
+
+	immediate = { set_global_flag = zoutpansberg_founded }
+
+    option = {
+        name = "Great!"
+		3969 = {
+            any_pop = {
+                limit = {
+                    has_pop_culture = boer
+                }
+                literacy = 0.3
+				reduce_pop = 1.5
+            }
+            any_pop = {
+                limit = {
+                    NOT = { has_pop_culture = boer }
+                }
+                literacy = -0.075
+            }
+        }
+        3969 = { change_province_name = "Zoutpansberg" }
+        ai_chance = { factor = 100 }
+    }
+}
+country_event = {
+    id = 456343745
+    title = "EVTNAME6022" #Zoutpansberg Setup
+    desc = "EVTDESC6022"
+    picture = trekkers_under_mountain
+
+    fire_only_once = yes
+    mean_time_to_happen = { days = 1 }
+
+    trigger = {
+		tag = TRN
+		owns = 2108
+		year = 1849
+		month = 1
+		HLB = { exists = yes owns = 3969 }
+		has_global_flag = zoutpansberg_founded
+		NOT = { year = 1853 }
+		NOT = { has_country_flag = you_already_know }
+    }
+
+	immediate = { set_global_flag = zoutpansberg_founded }
+
+    option = {
+        name = "Great!"
+		any_pop = { consciousness = 1 }
+		prestige = 1
+        ai_chance = { factor = 100 }
+    }
+    option = {
+        name = "For Zoutpansberg! §BPlay as Zoutpansberg§W"
+		any_pop = { consciousness = 1 }
+		prestige = 1
+		change_tag_no_core_switch = HLB
         ai_chance = { factor = 0 }
     }
 }
@@ -1210,16 +1422,22 @@ country_event = {
     mean_time_to_happen = { days = 3 }
 
     trigger = {
-        tag = TRN
-		owns = 2110
-        NOT = { has_country_flag = zoutpansbergdorp }
+        OR = {
+			tag = HLB
+			tag = TRN
+			AND = { owns = 3969 civilized = no 3969 = { has_pop_culture = boer } }
+		}
+		owns = 3969
+		has_global_flag = zoutpansberg_founded
 		year = 1850
+        NOT = { year = 1856 }
+        NOT = { has_country_flag = zoutpansbergdorp }
     }
 
     option = {
         name = "EVT6049OPTA"
         set_country_flag = zoutpansbergdorp
-        2110 = {
+        3969 = {
             any_pop = { limit = { culture = boer } reduce_pop = 1.1 }
             add_province_modifier = { name = recently_built_city duration = 730 }
         }
@@ -1255,13 +1473,13 @@ country_event = {
         name = "EVT6025OPTA"
         set_country_flag = cattle_killing
         random_list = {
-            33 = {
+            30 = {
                 any_pop = { limit = { NOT = { culture = boer culture = kreol } } reduce_pop = 0.6 }
             }
-            33 = {
+            35 = {
                 any_pop = { limit = { NOT = { culture = boer culture = kreol } } reduce_pop = 0.7 }
             }
-            33 = {
+            35 = {
                 any_pop = { limit = { NOT = { culture = boer culture = kreol } } reduce_pop = 0.8 }
             }
         }
@@ -1553,7 +1771,7 @@ country_event = { #Petition Portugal for port access
     trigger = {
         tag = TRN #Event for Transvaal
         money = 10000 #This will cost money for the railroads
-		2110 = { #Transvaal owns Zotspanberg
+		3969 = { #Transvaal owns Zoutspanberg
 			owned_by = THIS
 		}
 		2105 = { #Transvaal owns Pretoria
@@ -1623,13 +1841,19 @@ country_event = { #Portugal Accepts
 
     option = { #Great!
         name = "EVT6033OPTA" #Railroad built to the port
-        2110 = {
+        3969 = {
+            infrastructure = 1
+        }
+        3713 = {
             infrastructure = 1
         }
         2105 = {
             infrastructure = 1
         }
         2109 = {
+            infrastructure = 1
+        }
+        3945 = {
             infrastructure = 1
         }
         money = -10000 #railroads cost money
@@ -1870,235 +2094,6 @@ country_event = { #We have a port of our own
         }
     }
 
-}
-#################################################################
-#                                                                #
-#                        Transvaal Bankruptcy                        #
-#                                                                #
-#################################################################
-country_event = { #Transvaal bankrupt
-    id = 6044
-    title = "EVTNAME6044"
-    desc = "EVTDESC6044"
-    picture = "stock_crash"
-
-    trigger = {
-        tag = ENG
-        THIS = {
-            nationalism_n_imperialism = 1
-        }
-        TRN = {
-            exists = yes
-            is_vassal = no
-            money = 0
-        }
-        NOT = { has_country_flag = transvaal_bankrupt }
-        year = 1890
-    }
-
-    mean_time_to_happen = {
-        days = 30
-    }
-
-    option = { #Transvaal bankrupt, time to take command
-        name = "EVT6044OPTA"
-        set_country_flag = transvaal_bankrupt
-        add_casus_belli = {
-            target = TRN
-            type = make_puppet_no_infamy
-            months = 12
-        }
-        ai_chance = {
-            factor = 100
-        }
-    }
-
-}
-
-country_event = { #Petition Britain for annexing Transvaal to the Oranje Free State
-    id = 6045
-    title = "EVTNAME6045"
-    desc = "EVTDESC6045"
-    picture = "volksraad"
-
-    fire_only_once = yes
-    mean_time_to_happen = { months = 6 }
-
-    trigger = {
-        tag = ORA
-        THIS = {
-            war = no
-            is_vassal = no
-            nationalism_n_imperialism = 1
-            prestige = 5
-            in_sphere = ENG
-            owns = 2101
-            owns = 2102
-            owns = 2103
-            owns = 3898
-            owns = 1883
-        }
-        TRN = {
-            exists = yes
-            vassal_of = ENG
-        }
-        NOT = { has_country_flag = ora_petition }
-        year = 1868
-    }
-
-    option = { #Ask the British
-        name = "EVT6045OPTA"
-        set_country_flag = ora_petition
-        ENG = { country_event = 6046 }
-        ai_chance = {
-            factor = 95
-        }
-    }
-
-    option = {#Not worth the trouble
-        name = "EVT6045OPTB"
-        prestige = 3
-        set_country_flag = ora_petition
-        ai_chance = {
-            factor = 5
-        }
-    }
-
-}
-
-country_event = { #Oranje Asks for the Transvaal
-    id = 6046
-    title = "EVTNAME6046"
-    desc = "EVTDESC6046"
-    picture = "boer_army"
-
-    is_triggered_only = yes
-
-    option = { #Turn over the Transvaal to Oranje
-        name = "EVT6046OPTA"
-        TRN = {
-            all_core = { add_core = ORA }
-        }
-        ORA = { inherit = TRN }
-        relation = { who = ORA value = 75 }
-        diplomatic_influence = { who = ORA value = 50 }
-        ai_chance = {
-            factor = 60
-        }
-    }
-
-    option = {#Transvaal is ours
-        name = "EVT6046OPTB"
-        prestige = 3
-        relation = { who = ORA value = -50 }
-        badboy = 2
-        ai_chance = {
-            factor = 40
-        }
-    }
-
-}
-
-#################################################################
-#                                                                #
-#                            First Boer War                            #
-#                                                                #
-#################################################################
-country_event = {
-    id = 6047
-    title = "EVTNAME6047"
-    desc = "EVTDESC6047"
-    picture = "boer_war"
-	
-    fire_only_once = yes
-    mean_time_to_happen = { months = 10 }
-
-    trigger = { #what triggers the event
-        tag = TRN
-        NOT = { has_global_flag = first_boer_war }
-        NOT = { relation = { who = ENG value = 150 } }
-        vassal_of = ENG
-        war = no
-        year = 1880
-    }
-
-    option = { #FREEEEDOM!
-        name = "EVT6047OPTA"
-        leave_alliance = ENG
-        relation = { who = ENG value = -200 }
-        war = {
-            target = ENG
-            attacker_goal = { casus_belli = become_independent }
-            call_ally = no
-        }
-        random_country = {
-            limit = {
-                tag = ORA
-                exists = yes
-                is_vassal = no
-            }
-            country_event = 6048
-        }
-        random_country = {
-            limit = {
-                tag = NAL
-                exists = yes
-                is_vassal = no
-            }
-            country_event = 6048
-        }
-        set_global_flag = first_boer_war
-        TRN = {
-            add_country_modifier = { name = small_country_draft duration = 1825 }
-        }
-        ai_chance = {
-            factor = 100
-        }
-    }
-
-    option = { #Chicken Out
-        name = "EVT6047OPTB"
-        set_global_flag = first_boer_war
-        prestige = -5
-        ai_chance = { factor = 0 }
-    }
-}
-
-country_event = {
-    id = 6048
-    title = "EVTNAME6048" #Support Transvaal
-    desc = "EVTDESC6048"
-    picture = "boer_war"
-
-    is_triggered_only = yes
-
-    option = {
-        name = "EVT6048OPTA"
-        relation = {
-            who = TRN
-            value = 200
-        }
-        create_alliance = TRN
-        add_country_modifier = {
-            name = small_country_draft
-            duration = 1825
-        }
-        ENG = {
-            war = {
-                target = THIS
-                attacker_goal = { casus_belli = conquest_any }
-                defender_goal = { casus_belli = humiliate_no_infamy }
-            }
-        }
-        ai_chance = { factor = 80 }
-    }
-
-    option = { #Stay Out!
-        name = "EVT98246OPTB"
-        leave_alliance = TRN
-        relation = { who = TRN value = -200 }
-        ai_chance = { factor = 20 }
-    }
 }
 
 #################################################################
@@ -2444,3 +2439,64 @@ country_event = {
 		}
 	}
 }
+#    Commented out for now, revise later
+#
+#country_event = {
+#	id = 1500000
+#	title = "EVTNAME1500000" #The Madagascar Purchase
+#	desc = "EVTDESC1500000"
+#	picture = "madagascar"
+#	
+#	is_triggered_only = yes
+#
+#	option = {
+#		name = "EVT1500000OPTA"
+#		any_owned = {
+#			limit = {
+#				is_core = MAD
+#			}
+#			secede_province = FROM
+#		}
+#		FROM = { country_event =  1500001 } 
+#		ai_chance = {
+#            factor = 20
+#        }
+#	}
+#	
+#	option = {
+#		name = "EVT1500000OPTB"
+#		FROM = { country_event =  1500002 } 
+#		ai_chance = {
+#            factor = 80
+#        }
+#	}
+#}
+#
+#country_event = {
+#	id = 1500001
+#	title = "EVTNAME1500001" #The Madagascar Purchase
+#	desc = "EVTDESC1500001"
+#	picture = "madagascar"
+#	
+#	is_triggered_only = yes
+#	
+#	option = {
+#		name = "EVT1500001OPTA"
+#		relation = { who = FRA value = 40 }
+#		money = -500000
+#	}
+#}
+#
+#country_event = {
+#	id = 1500002
+#	title = "EVTNAME1500002" #The Madagascar Purchase
+#	desc = "EVTDESC1500002"
+#	picture = "madagascar"
+#	
+#	is_triggered_only = yes
+#	
+#	option = {
+#		name = "EVT1500002OPTA"
+#		relation = { who = FRA value = -40 }
+#	}
+#}

@@ -120,7 +120,7 @@ country_event = {
     }
 
     option = {
-        name = "Assert our position. §RGain 2 infamy§W"
+        name = "Assert our position. §RGain 2 infamy§!"
         relation = {
             who = FROM
             value = -50
@@ -1317,10 +1317,7 @@ country_event = {
             who = FROM
             value = 100
         }
-        add_country_modifier = {
-            name = the_statue_of_liberty
-            duration = -1
-        }
+        set_global_flag = statue_of_liberty_has_been_built
         232 = { life_rating = 3 }
     }
 }
@@ -1336,7 +1333,7 @@ country_event = {
 
     trigger = {
 		tag = USA
-		has_country_modifier = the_statue_of_liberty
+		has_global_flag = statue_of_liberty_has_been_built
 		OR = {
 			NOT = { government = democracy }
 			AND = {
@@ -1351,7 +1348,7 @@ country_event = {
 
     option = {
         name = "EVTOPTA19301"
-        remove_country_modifier = the_statue_of_liberty
+        set_global_flag = statue_of_liberty_destroyed
     }
 }
 
@@ -2773,45 +2770,43 @@ country_event = {
 
     option = {
         name = "EVTOPTA810007"
+        set_country_flag = main_abolitionist_of_sound_dues
         relation = { who = FROM value = -300 }
         diplomatic_influence = { who = FROM value = -300 }
-        casus_belli = { target = FROM type = cut_down_to_size months = 36 }
-        war = {
-            target = FROM
-            attacker_goal = { casus_belli = cut_down_to_size }
-            call_ally = yes
-        }
+        #Don't just copy paste from below... do we really create alliances with ourselves? No!
+        casus_belli = { target = FROM type = abolish_sound_dues_cb months = 36 }
         any_country = {
             limit = {
                 is_vassal = no
                 exists = yes
-                NOT = { owns = 372 }
                 OR = {
-                    AND = {
-                        is_greater_power = yes
-                        capital_scope = { continent = europe }
-                        NOT = { tag = TUR }
-                    }
                     tag = SWE
                     tag = NOR
                     tag = RUS
                     AND = {
-                        primary_culture = north_german
                         is_greater_power = yes
+                        OR = {
+                            AND = {
+                                capital_scope = { continent = europe }
+                                NOT = { tag = TUR }
+                            }
+                            primary_culture = north_german
+                        }
                     }
                 }
+                NOT = { owns = 372 }
                 NOT = { alliance_with = FROM }
             }
             relation = { who = FROM value = -300 }
             diplomatic_influence = { who = FROM value = -300 }
-            casus_belli = { target = FROM type = cut_down_to_size months = 36 }
-            war = {
-                target = FROM
-                attacker_goal = { casus_belli = cut_down_to_size }
-                call_ally = yes
-            }
+            create_alliance = THIS
+            casus_belli = { target = FROM type = abolish_sound_dues_cb months = 36 }
         }
-
+        war = {
+            target = FROM
+            attacker_goal = { casus_belli = abolish_sound_dues_cb }
+            call_ally = yes
+        }
         ai_chance = { factor = 100 }
     }
 }

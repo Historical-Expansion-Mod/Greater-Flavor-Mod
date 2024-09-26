@@ -2,50 +2,47 @@
 
 country_event = {
     id = 54543342
-    title = "Secure Tilimsan?"
-    desc = "With the French raiding our ports, it might be adequate to give Morocco the right to secure and occupy Tilimsan."
-    picture = "tilimsan"
-	
+    title = "Morocco occupies Tilimsan"
+    desc = "Following the fall of Algiers and the ensuing power vaccuum, the inhabitants of Tilimsan have requested protection from Morocco, leading to the sultanate's forces taking the city."
+    picture = "abd_al-rahman"
+	is_triggered_only = yes
     fire_only_once = yes
-    mean_time_to_happen = { days = 2 }
-
-    trigger = {
-        tag = RGA
-		has_global_flag = algiers_french_war
-		MOR = { owns = 3838 }
-		owns = 1705
-		OR = {
-			RGA = { war_with = FRA }
-			RGA = { war_with = BOR }
-		}
-		NOT = { year = 1832 }
-    }
 
     option = {
-        name = "Of course! (Leads to revolt in Morocco)"
-		prestige = 5
-		MOR	= { country_event = 54543343 }
+        name = "An acceptable loss. France is, after all, our common foe."
+		prestige = -5
+		set_global_flag = you_can_help_ald
         ai_chance = { factor = 1 }
 	}
 
     option = {
-        name = "We can hold it! §RGain 2 infamy§W"
-		prestige = -5
-		badboy = 2
+        name = "This is an act of war!"
+		casus_belli = { target = MOR type = humiliate months = 36 }
+		casus_belli = { target = MOR type = cut_down_to_size months = 36 }
+		relation = { who = MOR value = -150 }
+		set_global_flag = ald_angry_mor
         ai_chance = { factor = 0 }
 	}
 }
 country_event = {
     id = 54543343
-    title = "Algiers Cedes Tilimsan to the Wadiya"
-    desc = "The Algerians cannot hold Tilimsan in their current position, and have ceded Tilimsan to the Wadiya, our regional army, for the time being."
+    title = "Tilimsan pleads for Protection"
+    desc = "TILIMSANPROTECT"
     picture = "tilimsan"
-	
     fire_only_once = yes
-	is_triggered_only = yes
+
+    trigger = {
+        tag = MOR
+		owns = 3838
+		has_global_flag = french_algerie
+		ALD = { owns = 1705 }
+		NOT = { year = 1832 war_with = ALD }
+    }
+
+    mean_time_to_happen = { days = 1 }
 
     option = {
-        name = "Great."
+        name = "We must protect our brethren in their time of need."
 		prestige = 5
 		# Audax Validator "." Ignore_NEXT
 		1705 = {
@@ -55,144 +52,71 @@ country_event = {
 			secede_province = DZD
 		}
 		create_vassal = DZD
+		DZD = {
+			government = presidential_dictatorship
+		}
+		relation = {
+			who = TUR
+			value = -35
+		}
+		relation = {
+			who = FRA
+			value = -35
+		}
+		relation = {
+			who = BOR
+			value = -35
+		}
 		relation = {
 			who = RGA
-			value = 100
+			value = -70
 		}
 		set_global_flag = tilimsanohno
-        ai_chance = { factor = 0.3 }
+		ALD = { country_event = 54543342 }
+        ai_chance = { factor = 0.2 }
 	}
     option = {
-        name = "No, NO! Nothing for the Wadiya. §RGain 2 infamy§W"
-		prestige = -20
-		badboy = 2
-		relation = {
-			who = RGA
-			value = -200
-		}
-        ai_chance = { factor = 0.7 }
+        name = "This is not in our interests."
+        random_owned = {
+            limit = {
+				owner = {
+					ai = no
+				}
+			}
+			owner = {
+				prestige = -20
+			}
+        }
+		set_global_flag = you_can_help_ald
+        ai_chance = { factor = 0.8 }
 	}
 }
 country_event = {
     id = 54543344
-    title = "Incident in Tilimsan!"
+    title = "Trouble in Tilimsan"
     desc = "TILIMSANINCIDENT"
     picture = "tilimsan"
 	
     fire_only_once = yes
-    mean_time_to_happen = { days = 3 }
 
     trigger = {
         tag = MOR
 		has_global_flag = tilimsanohno
 		DZD = { owns = 1705 }
 		owns = 3838
-		1707 = { owned_by = RGA }
+		owns = 1685
 		NOT = { year = 1832 }
+		year = 1831
+		month = 3
     }
 
+    mean_time_to_happen = { days = 1 }
+
     option = {
-        name = "Withdraw them, and fast!"
-		prestige = -5
+        name = "The Wadiya must be withdrawn, send a new governor."
 		release_vassal = DZD
-		RGA	= { country_event = 54543345 }
-        ai_chance = { factor = 1 }
-	}
-
-    option = {
-        name = "We can hold it! §RGain 2 infamy§W"
-		prestige = 5
-		badboy = 2
-		RGA	= { country_event = 54543346 }
-        ai_chance = { factor = 0 }
-	}
-}
-country_event = {
-    id = 54543345
-    title = "Morocco Withdraws From Tilimsan"
-    desc = "The Moroccans have withdrawn from Tilimsan after an incident involving Turkish remnants and the Wadiya, the regional army of Morocco."
-    picture = "tilimsan"
-	
-    fire_only_once = yes
-	is_triggered_only = yes
-
-    option = {
-        name = "Great."
-		prestige = 2
-		1705 = { secede_province = THIS }
-		set_global_flag = wadaya_not_happy
-	}
-}
-country_event = {
-    id = 54543346
-    title = "Incident in Tilimsan!"
-    desc = "The Moroccans have caused an incident involving Turkish remnants and the Wadiya, the regional army of Morocco, killing many of the inhabitants."
-    picture = "tilimsan"
-	
-    fire_only_once = yes
-	is_triggered_only = yes
-
-    option = {
-        name = "Make them return the city by force!"
-		prestige = 5
-		1705 = { secede_province = THIS }
-		MOR	= { country_event = 54543347 }
-        ai_chance = { factor = 0 }
-	}
-    option = {
-        name = "Alright, let them keep it!"
-		prestige = -5
-		MOR	= { country_event = 54543348 }
-        ai_chance = { factor = 1 }
-	}
-}
-country_event = {
-    id = 54543347
-    title = "Algeria Forces Us Out From Tilimsan!"
-    desc = "Algeria has taken Tilimsan by force when we rejected giving it back after it falling to bloodshed."
-    picture = "tilimsan"
-	
-    fire_only_once = yes
-	is_triggered_only = yes
-
-    option = {
-        name = "Great."
-		prestige = -5
-		release_vassal = DZD
-		set_global_flag = wadaya_not_happy
-	}
-}
-country_event = {
-    id = 54543348
-    title = "Algeria Gives Up Tilimsan!"
-    desc = "Algeria has withdrawn all claims to Tilimsan to focus on the French, even after the massacre in Tilimsan."
-    picture = "tilimsan"
-	
-    fire_only_once = yes
-	is_triggered_only = yes
-
-    option = {
-        name = "Annex it! §RGain 2 infamy§W"
-		prestige = 5
-		badboy = 2
-		1705 = { secede_province = THIS }
-		release_vassal = DZD
-		set_global_flag = wadaya_not_happy
-        ai_chance = { factor = 1 }
-	}
-    option = {
-        name = "It just isn't Moroccan!"
-		prestige = -5
-		# Audax Validator "." Ignore_NEXT
-		1705 = {
-			# Audax Validator "." Ignore_NEXT
-			secede_province = THIS
-			# Audax Validator "." Ignore_NEXT
-			secede_province = RGA
-		}
-		release_vassal = DZD
-		set_global_flag = wadaya_not_happy
-        ai_chance = { factor = 0 }
+		inherit = DZD
+		country_event = { id = 54543349 days = 30 }
 	}
 }
 country_event = {
@@ -200,17 +124,8 @@ country_event = {
     title = "The Wadiya Revolt"
     desc = "WADIYAREVOLT"
     picture = "bukhari"
-	
+	is_triggered_only = yes
     fire_only_once = yes
-    mean_time_to_happen = { days = 2 }
-
-    trigger = {
-        tag = MOR
-		has_global_flag = wadaya_not_happy
-		year = 1831
-		month = 3
-		NOT = { year = 1834 }
-    }
 	
 	immediate = { set_global_flag = wadaya_revolt release_vassal = DZD }
 
@@ -272,19 +187,20 @@ country_event = {
 			# Audax Validator "." Ignore_NEXT
 			secede_province = DZD
 		}
+        capital_scope = {
+            sub_unit = { type = infantry value = current }
+            sub_unit = { type = infantry value = current }
+            sub_unit = { type = cavalry value = current }
+            sub_unit = { type = irregular value = current }
+        }
 		release_vassal = DZD
         DZD = {
-            capital_scope = {
-                sub_unit = { type = infantry value = current }
-                sub_unit = { type = cavalry value = current }
-                sub_unit = { type = irregular value = current }
-            }
+			government = presidential_dictatorship
         }
         war = {
             target = DZD
             attacker_goal = { casus_belli = civil_war }
             defender_goal = { casus_belli = civil_war }
-            call_ally = no
         }
         ai_chance = { factor = 1 }
 	}
@@ -357,6 +273,7 @@ country_event = {
                 sub_unit = { type = cavalry value = current }
                 sub_unit = { type = irregular value = current }
             }
+			government = presidential_dictatorship
         }
         war = {
             target = DZD
@@ -383,7 +300,7 @@ country_event = {
 		has_global_flag = wadaya_revolt
 		war = no
 		DZD = { exists = no }
-		NOT = { year = 1837 }
+		NOT = { year = 1841 }
     }
 	
 	immediate = {
@@ -419,4 +336,101 @@ country_event = {
 	}
 }
 
+country_event = {
+    id = 64543344
+    title = "The Moroccan Occupation of Tlemcen"
+    desc = "FRATLEMCEN"
+    picture = "tilimsan"
+    fire_only_once = yes
+
+    trigger = {
+		primary_culture = french
+		capital = 425
+		owns = 1704
+        MOR = {
+			owns = 1705
+			NOT = { war_with = THIS }
+			NOT = { truce_with = THIS }
+			is_vassal = no
+		}
+		has_global_flag = tilimsanohno
+		year = 1832
+    }
+
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "Send Morocco an ultimatum!"
+		MOR = { country_event = 64543345 }
+		ai_chance = { factor = 1 }
+	}
+
+    option = {
+        name = "We do not have the capacity for another war right now."
+		prestige = -5
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+    id = 64543345
+    title = "The French Ultimatum"
+    desc = "MORTLEMCEN"
+    picture = "bugeaud"
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "We will not budge!"
+		FROM = { country_event = 64543346 }
+		ai_chance = { factor = 0 }
+	}
+
+    option = {
+        name = "There is nothing we can do."
+		prestige = -5
+		FROM = { country_event = 64543347 }
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+    id = 64543346
+    title = "Morocco refuses"
+    desc = "Sultan Abd al-Rahman has vehemently rejected our ultimatum, insisting on ruling Tlemcen in perpetuity and even reinforcing the city."
+    picture = "abd_al-rahman"
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "If it's a war he wants..."
+		war = {
+			target = MOR
+			attacker_goal = { casus_belli = demand_concession_casus_belli_no_infamy state_province_id = 1705 }
+			defender_goal = { casus_belli = humiliate_no_infamy }
+		}
+		ai_chance = { factor = 1 }
+	}
+
+    option = {
+        name = "We must back down..."
+		prestige = -5
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+    id = 64543347
+    title = "Morocco submits"
+    desc = "Sultan Abd al-Rahman has begrudgingly agreed to abandon Tlemcen. With his forces retreating to Oujdah, we have successfully taken control of the strategic city."
+    picture = "abd_al-rahman"
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "Excellent."
+		prestige = 5
+		1705 = { secede_province = THIS }
+	}
+}
 ######## END OF THE MOROCCO FILE ########

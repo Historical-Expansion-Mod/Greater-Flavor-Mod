@@ -2,22 +2,19 @@ political_decisions = {
     become_poland = {
 		picture = become_poland
         potential = {
+			NOT = { has_global_flag = sw_set }
 			OR = {
 				AND = {
 					primary_culture = polish
 					NOT = { exists = POL }
 					NOT = { has_country_flag = post_colonial_country }
 					NOT = { has_country_flag = i_am_wsf has_country_flag = i_am_phc }
-					NOT = { tag = PLR }
-					NOT = { has_global_flag = sw_set }
+					NOT = { tag = PLR tag = PLC }
 				}
 				AND = {
 					tag = POL
 					government = colonial_company
 					NOT = { has_country_flag = post_colonial_country }
-					NOT = { has_country_flag = i_am_wsf has_country_flag = i_am_phc }
-					NOT = { tag = PLR }
-					NOT = { has_global_flag = sw_set }
 				}
 			}
         }
@@ -30,14 +27,16 @@ political_decisions = {
                 AND = {
                     tag = POL
 					government = colonial_company
-                    exists = KRA KRA = { is_vassal = no }
-                    exists = PZN PZN = { is_vassal = no }
-                    exists = DZG DZG = { is_vassal = no }
+                    OR = {
+						exists = KRA KRA = { is_vassal = no }
+						exists = PZN PZN = { is_vassal = no }
+						exists = DZG DZG = { is_vassal = no }
+					}
                 }
                 AND = {
                     tag = POL
 					government = colonial_company
-                    year = 1900
+                    year = 1870
                 }
             }
             war = no
@@ -57,6 +56,9 @@ political_decisions = {
                 limit = { owner = { accepted_culture = czech } } owner = { remove_accepted_culture = czech }
             }
 			government = democracy
+            random_owned = {
+                limit = { owner = { NOT = { tag = POL } } } owner = { change_tag = POL }
+            }
             capital = 706
         }
         ai_will_do = { factor = 1 }
@@ -384,6 +386,16 @@ political_decisions = {
                 }
                 country_event = 60130
             }
+            random_country = {
+                limit = {
+                    tag = POL
+                    exists = yes
+                    owns = 706
+                    ai = yes
+                    THIS = { ai = no }
+                }
+                THIS = { inherit = POL change_tag = POL }
+            }
         }
         ai_will_do = { factor = 1 }
     }
@@ -506,37 +518,6 @@ political_decisions = {
             factor = 1
             modifier = { factor = 0 badboy = 0.5 }
         }
-    }
-
-    january_uprising_victory = {
-        picture = become_poland
-        potential = {
-            tag = POL
-            owns = 706
-            has_country_modifier = polish_uprising_mobilization
-			government = colonial_company
-            has_global_flag = january_uprising_happened
-            any_neighbor_country = { has_country_flag = through_january_uprising }
-        }
-        allow = {
-            any_neighbor_country = {
-                truce_with = THIS
-                has_country_modifier = recently_lost_war
-            }
-            war = no
-        }
-        effect = {
-            any_neighbor_country = { clr_country_flag = through_january_uprising }
-            set_country_flag = poland_is_free
-            remove_country_modifier = polish_uprising_mobilization
-            remove_country_modifier = unrecognized_country
-			government = democracy
-            any_owned = {
-                limit = { OR = { is_core = POL is_core = LIT } }
-                remove_core = RUS
-            }
-        }
-        ai_will_do = { factor = 1 }
     }
 
     revoke_germanization = {
@@ -711,7 +692,6 @@ political_decisions = {
             }
             ENG = {
                 owns = 1785
-                owns = 1890
             }
             NOT = {
                 has_country_flag = buy_gambia_polania
@@ -727,4 +707,41 @@ political_decisions = {
         }
         ai_will_do = { factor = 1 }
     }
+	
+	restore_jewish_autonomy = { 
+		picture = magen_david
+		potential = { 
+			OR = {
+				tag = PLC 
+				tag = PLR 
+			}
+			any_owned_province = {
+				is_core = THIS
+				OR = { 
+					any_pop = { has_pop_culture = ashkenazi } 
+					any_pop = { has_pop_culture = sephardic } 
+				} 
+			} 	
+			NOT = { accepted_culture = ashkenazi } 
+			NOT = { accepted_culture = sephardic } 
+		}
+	
+		allow = { 
+			citizens_rights = all_voting_pops
+			NOT = { religious_policy = moralism } 
+		}
+	
+		effect = {
+            random_owned = {
+                limit = { is_core = THIS any_pop = { has_pop_culture = ashkenazi } NOT = { owner = { accepted_culture = ashkenazi } } }
+                owner = { add_accepted_culture = ashkenazi }
+            }
+            random_owned = {
+                limit = { is_core = THIS any_pop = { has_pop_culture = sephardic } NOT = { owner = { accepted_culture = sephardic } } }
+                owner = { add_accepted_culture = sephardic }
+            }
+		}
+		ai_will_do = { factor = 1 } 
+	}	
+	
 }

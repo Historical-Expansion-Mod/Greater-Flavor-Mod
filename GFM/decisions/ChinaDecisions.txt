@@ -255,21 +255,27 @@ political_decisions = {
             civilized = yes
             1086 = { NOT = { is_core = THIS } }
             NOT = { has_global_flag = sakhalin_claimed_chinese }
-            NOT = { owns = 1086 }
-            NOT = { owns = 1087 }
         }
 
         allow = {
-            owns = 1496
-            is_greater_power = yes
-            nationalism_n_imperialism = 1
-            THIS = { all_core = { OR = { owned_by = THIS empty = yes } } }
-            war = no
+			OR = {
+				AND = {
+					owns = 1496
+					is_greater_power = yes
+					nationalism_n_imperialism = 1
+					THIS = { all_core = { OR = { owned_by = THIS empty = yes } } }
+					war = no
+				}
+				AND = {
+					owns = 1086
+					owns = 1087
+				}
+			}
         }
 
         effect = {
             set_global_flag = sakhalin_claimed_chinese
-            badboy = 5
+            badboy = 1
             1086 = { add_core = THIS }
             1087 = { add_core = THIS }
             CHI_1082 = { add_core = THIS }
@@ -406,7 +412,6 @@ political_decisions = {
 		picture = tsushima_japan
         potential = {
             tag = KOR
-            civilized = yes
             NOT = {
                 owns = 2589
                 has_country_flag = korean_irredentism
@@ -414,21 +419,13 @@ political_decisions = {
         }
 
         allow = {
-            is_greater_power = yes
             nationalism_n_imperialism = 1
             OR = {
                 war_policy = jingoism
                 war_policy = pro_military
             }
-            OR = {
-                government = absolute_monarchy
-                government = prussian_constitutionalism
-                government = hms_government
-                government = absolute_empire
-                government = semi_constitutional_empire
-                government = constitutional_empire
-                government = fascist_dictatorship
-            }
+			is_disarmed = no
+			NOT = { has_country_modifier = recently_lost_war }
             war = no
             is_disarmed = no
         }
@@ -697,7 +694,7 @@ political_decisions = {
             tag = ENG
             QNG = { truce_with = THIS }
             has_global_flag = second_opium_war
-            1538 = { owner = { has_country_modifier = negotiating_unequal_treaty tag = QNG } }
+            1538 = { owner = { OR = { has_country_modifier = negotiating_unequal_treaty has_country_modifier = negotiating_unequal_treaty_two } tag = QNG } }
             NOT = { owns = 1538 }
 			OR = {
 				has_country_modifier = negotiating_treaty
@@ -751,7 +748,28 @@ political_decisions = {
                     scaled_consciousness = { factor = 2 issue = moralism }
                     scaled_militancy = { factor = 5 issue = moralism }
                 }
-                remove_country_modifier = negotiating_unequal_treaty
+				random_owned = {
+					limit = {
+						owner = {
+							NOT = { has_country_modifier = negotiating_unequal_treaty_two }
+							has_country_modifier = negotiating_unequal_treaty
+						}
+					}
+					owner = {
+						remove_country_modifier = negotiating_treaty
+					}
+				}
+				random_owned = {
+					limit = {
+						owner = {
+							has_country_modifier = negotiating_unequal_treaty
+							has_country_modifier = negotiating_unequal_treaty_two
+						}
+					}
+					owner = {
+						remove_country_modifier = negotiating_unequal_treaty_two
+					}
+				}
                 plurality = -5
                 religion = protestant
                 set_country_flag = protestant_country
@@ -1074,6 +1092,7 @@ political_decisions = {
                     military_reform = yes_foreign_training
                     military_reform = yes_foreign_weapons
                     activate_technology = flintlock_rifles
+                    set_country_flag = using_foreign_weapons
                 }
             }
             any_pop = {
@@ -1097,17 +1116,11 @@ political_decisions = {
                 activate_technology = iron_muzzle_loaded_artillery
                 activate_technology = military_staff_system
             }
-            GMJ = {
+            NIA = {
 				political_reform = no_slavery
 				government = presidential_dictatorship
-				primary_culture = han_chinese
-				remove_accepted_culture = yoruba
-				remove_accepted_culture = nupoid
-				remove_accepted_culture = hausa
-				remove_accepted_culture = fulbe
 				religion = protestant
 				set_country_flag = protestant_country
-				clr_country_flag = sunni_country
 				ruling_party_ideology = socialist
 				civilized = yes
 				upper_house = {
@@ -1118,7 +1131,6 @@ political_decisions = {
 					ideology = communist
 					value = 0.1
 				}
-				capital = 1559
                 set_country_flag = the_new_army_established
                 activate_technology = flintlock_rifles
                 activate_technology = muzzle_loaded_rifles
@@ -1178,7 +1190,7 @@ political_decisions = {
             activate_technology = alphabetic_flag_signaling
             random_owned = {
                 limit = { owner = { civilized = no } }
-                owner = { military_reform = yes_foreign_navies }
+                owner = { military_reform = yes_foreign_navies activate_technology = clipper_design activate_technology = steamers set_country_flag = using_foreign_ships }
             }
             CHI = {
                 set_country_flag = beiyang_fleet_established
@@ -1282,7 +1294,7 @@ political_decisions = {
             treasury = -75000
             prestige = 5
             set_country_flag = hanyang_arsenal
-            random_owned = { limit = { owner = { civilized = no } } owner = { economic_reform = yes_firearms_production } }
+            random_owned = { limit = { owner = { civilized = no } } owner = { economic_reform = yes_firearms_production activate_technology = guild_based_production } }
             activate_technology = breech_loaded_rifles
             activate_technology = piston_steam_engine
             CHI = {
@@ -1420,7 +1432,9 @@ political_decisions = {
                 owner = {
                     military_reform = yes_foreign_weapons
                     military_reform = yes_foreign_officers
+                    activate_technology = military_staff_system
                     activate_technology = flintlock_rifles
+                    set_country_flag = using_foreign_weapons
                 }
             }
             CHI = {
@@ -1466,7 +1480,7 @@ political_decisions = {
             treasury = -75000
             random_owned = {
                 limit = { owner = { civilized = no } }
-                owner = { economic_reform = yes_transport_improv }
+                owner = { economic_reform = yes_transport_improv set_country_flag = activate_experimental_railroad activate_technology = experimental_railroad }
             }
             build_railway_in_capital = {
                 in_whole_capital_state = yes # no = just in main capital province.
@@ -1520,7 +1534,7 @@ political_decisions = {
             activate_technology = mechanized_mining
             random_owned = {
                 limit = { owner = { civilized = no } }
-                owner = { military_reform = yes_western_shipyards }
+                owner = { military_reform = yes_western_shipyards activate_technology = post_nelsonian_thought set_country_flag = using_foreign_shipyards }
             }
             CHI = {
                 set_country_flag = kiangnan_aresenal_established
@@ -1653,7 +1667,7 @@ political_decisions = {
         allow = {
             war = no
             OR = {
-                exists = LEG
+                NOT = { owns = 3249 }
                 year = 1900
                 civilized = yes
                 has_country_modifier = recently_lost_war
@@ -1666,7 +1680,7 @@ political_decisions = {
             add_country_modifier = { name = the_new_policies duration = 1825 }
             random_owned = {
                 limit = { owner = { civilized = no } }
-                owner = { economic_reform = yes_education_reform  }
+                owner = { economic_reform = yes_education_reform plurality = 5 }
             }
             random_owned = {
                 limit = { owner = { civilized = no ai = yes } }
@@ -1706,7 +1720,12 @@ political_decisions = {
             set_country_flag = abolish_the_imperial_examinations
             random_owned = {
                 limit = { owner = { civilized = no } }
-                owner = { economic_reform = yes_research_reform }
+                owner = {
+					economic_reform = yes_research_reform
+                    plurality = 5
+                    activate_technology = malthusian_thought
+                    activate_technology = late_enlightenment_philosophy
+				}
             }
             random_owned = {
                 limit = { owner = { school_reforms = no_schools } }
@@ -1741,7 +1760,7 @@ political_decisions = {
                 tag = QNG
                 tag = CHI
                 tag = KMT
-                tag = GMJ
+                tag = NIA
             }
             civilized = yes
             NOT = {

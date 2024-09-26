@@ -138,6 +138,7 @@ political_decisions = {
 
 	another_minister = {
 		picture = state_of_emergency
+		alert = no
 		potential = {
 			ai = no
 			has_country_flag = government_decisions_on
@@ -746,7 +747,7 @@ political_decisions = {
 	}
 
 	claim_panama_mex = {
-		picture = map_central_america
+	picture = map_central_america
 		potential = {
 			tag = MEX
 			has_country_flag = mexico_central_america
@@ -758,11 +759,19 @@ political_decisions = {
 			OR = {
 				is_greater_power = yes
 				2204 = { owned_by = THIS }
+				AND = {
+					2201 = { owned_by = THIS }
+					rank = 16
+					is_vassal = no
+					is_disarmed = no
+					OR = {
+						war_policy = jingoism
+						war_policy = pro_military
+					}
+				}
 			}
 			war = no
-			NOT = { alliance_with = CLM }
-			NOT = { alliance_with = GCO }
-			NOT = { alliance_with = PNM }
+			NOT = { 2204 = { owner = { alliance_with = THIS } } }
 		}
 
 		effect = {
@@ -786,15 +795,10 @@ political_decisions = {
 	}
 
 	accept_caribeno_mex = {
-		picture = claim_the_caribbean
+	picture = claim_the_caribbean
 		potential = {
 			tag = MEX
 			has_country_flag = mexico_caribbean
-			OR = {
-				owns = 2209
-				owns = 2214
-				owns = 2222
-			}
 			year = 1855
 			NOT = { has_country_flag = mex_accepted_caribeno }
 		}
@@ -802,42 +806,73 @@ political_decisions = {
 		allow = {
 			nationalism_n_imperialism = 1
 			war = no
+			OR = {
+				owns = 2209
+				owns = 2214
+			}
 		}
 
 		effect = {
 			set_country_flag = mex_accepted_caribeno
 			add_accepted_culture = caribeno
-			prestige = -5
+			prestige = -10
+			any_pop = {
+				limit = {
+					has_pop_culture = caribeno
+				}
+				militancy = -3
+				consciousness = -3
+			}
+			any_pop = {
+				limit = {
+					is_accepted_culture = no
+				}
+				militancy = 3
+				consciousness = 5
+			}
 		}
 		ai_will_do = { factor = 1 }
 	}
 
 	accept_centralamerican_mex = {
-		picture = map_central_america
+	picture = map_central_america
 		potential = {
 			tag = MEX
 			has_country_flag = mexico_central_america
+			NOT = { has_country_flag = mex_accepted_centralamerican }
+		}
+
+		allow = {
+			state_n_government = 1
+			war = no
 			NOT = {
 				exists = GUA
 				exists = COS
 				exists = LOS
 				exists = NIC
-				exists = PNM
 				exists = ELS
 				exists = HON
 			}
-			NOT = { has_country_flag = mex_accepted_centralamerican }
-		}
-
-		allow = {
-			nationalism_n_imperialism = 1
-			war = no
 		}
 
 		effect = {
 			set_country_flag = mex_accepted_centralamerican
 			add_accepted_culture = central_american
 			prestige = -5
+			any_pop = {
+				limit = {
+					has_pop_culture = central_american
+				}
+				militancy = -4
+				consciousness = -4
+			}
+			any_pop = {
+				limit = {
+					is_accepted_culture = no
+				}
+				militancy = 2
+				consciousness = 4
+			}
 		}
 		ai_will_do = { factor = 1 }
 	}
@@ -847,64 +882,35 @@ political_decisions = {
 		potential = {
 			primary_culture = mexican
 			year = 1860
+			NOT = { has_country_flag = mexican_frontier }
 			OR = {
-				owns = 92
-				owns = 93
-				owns = 112
-				owns = 3317
-				owns = 111
 				owns = 106
-				owns = 130
 				owns = 131
 				owns = 113
-				owns = 114
-				owns = 115
-				owns = 116
 				owns = 117
-				owns = 118
-				owns = 119
 				owns = 120
-				owns = 121
-				owns = 122
 				owns = 123
-				owns = 124
-				owns = 125
 				owns = 126
-				owns = 127
 				owns = 155
-				owns = 156
-				owns = 3321
-				owns = 157
+				owns = 3317
+				owns = 112
+				owns = 97
+				owns = 96
 			}
-			NOT = { has_country_flag = mexican_frontier }
 		}
 		allow = {
-			nationalism_n_imperialism = 1
-			the_historical_theory = 1
-			war = no
+            OR = {
+                year = 1865
+                AND = {
+                    invention = manifest_destiny_invention
+                    nationalism_n_imperialism = 1
+                    central_bank_money_bill_printing = 1
+                }
+            }
+            war = no
 		}
 		effect = {
 			set_country_flag = mexican_frontier
-			any_owned = {
-                limit = {
-                    OR = {
-                        province_id = 132
-                        province_id = 136
-                        province_id = 3297
-                        province_id = 137
-						province_id = 43
-						province_id = 2140
-						province_id = 2142
-						province_id = 2150
-						province_id = 3451
-						province_id = 3566
-						province_id = 133
-						province_id = 2149
-						province_id = 112
-                    }
-                }
-                life_rating = 5
-            }
 			any_owned = {
 				limit = {
 					OR = {
@@ -917,6 +923,7 @@ political_decisions = {
 						province_id = 126
 						province_id = 155
 						province_id = 3317
+						province_id = 112
 						province_id = 97
 						province_id = 96
 					}
@@ -1113,6 +1120,17 @@ political_decisions = {
 					literacy = 0.3
 				}
 			}
+			3975 = {
+				any_pop = {
+					limit = {
+						NOT = {
+							is_culture_group = native_american
+							literacy = 0.3
+						}
+					}
+					literacy = 0.3
+				}
+			}
 			2178 = {
 				any_pop = {
 					limit = {
@@ -1211,10 +1229,9 @@ political_decisions = {
 				tag = MEX
 				has_country_flag = i_am_hsa
 			}
-			exists = USA
 			has_global_flag = mexican_victory
 			any_owned_province = { is_core = THIS is_core = USA }
-			NOT = { has_country_flag = mex_proposes_treaty }
+			NOT = { has_country_flag = usa_accepted_mex_treaty }
 		}
 
 		allow = {
@@ -1226,6 +1243,7 @@ political_decisions = {
 			set_country_flag = mex_proposes_treaty
 			USA = { country_event = 4207052 }
 		}
+		ai_will_do = { factor = 1 }
 	}
 
 	mex_buy_weapons = {
@@ -1257,7 +1275,7 @@ political_decisions = {
 	}
 
 	accept_afrolatino_mex = {
-		picture = guerrero_ily
+	picture = guerrero_ily
 		potential = {
 			OR = {
 				tag = MEX
@@ -1272,23 +1290,29 @@ political_decisions = {
 		}
 
 		allow = {
-			year = 1860
 			nationalism_n_imperialism = 1
-			biologism = 1
 			war = no
 			NOT = { citizenship_policy = residency }
+			slavery = no_slavery
 		}
 
 		effect = {
 			set_country_flag = accepted_afros_mex
 			add_accepted_culture = afro_latino
-			prestige = -10
+			prestige = -5
 			any_pop = {
 				limit = {
 					has_pop_culture = afro_latino
 				}
 				militancy = -5
 				consciousness = -5
+			}
+			any_pop = {
+				limit = {
+					is_accepted_culture = no
+				}
+				militancy = 1
+				consciousness = 2
 			}
 		}
 		ai_will_do = { factor = 1 }
@@ -1481,55 +1505,384 @@ political_decisions = {
 	}
 
 	claim_tierra_firme = {
-		picture = venezuela
+	picture = venezuela
 		potential = {
 			tag = MEX
 			has_country_flag = mexico_caribbean
-			is_greater_power = yes
-			OR = {
-				owns = 2222
-				owns = 2214
-				owns = 2213
-				owns = 2209
-			}
 			NOT = { has_country_flag = claimed_vnz_mex }
 		}
 
 		allow = {
 			nationalism_n_imperialism = 1
-			owns = 2222
-			owns = 2214
-			owns = 2213
-			owns = 2209
-			NOT = { ruling_party_ideology = liberal }
 			OR = {
-				VNZ = {
+				AND = {
+					is_greater_power = yes
 					OR = {
-						NOT = { alliance_with = MEX }
-						exists = no
+						war_policy = jingoism
+						war_policy = pro_military
 					}
+					war = no
 				}
-				GCO = {
-					OR = {
-						NOT = { alliance_with = MEX }
-						exists = no
-					}
+				AND = {
+					rank = 10
+					is_vassal = no
+					is_disarmed = no
+					war_policy = jingoism
+					owns = 2222
+					owns = 2214
+					owns = 2213
+					owns = 2209
+					owns = 2204
+					owns = 2186
+					owns = 2201
+					NOT = { ruling_party_ideology = liberal }
+					war = no
+				}
+				VNZ = { all_core = { owned_by = MEX } }
+			}
+			VNZ = {
+				OR = {
+					NOT = { alliance_with = MEX }
+					exists = no
 				}
 			}
-			war = no
+			GCO = {
+				OR = {
+					NOT = { alliance_with = MEX }
+					exists = no
+				}
+			}
 		}
 
 		effect = {
 			set_country_flag = claimed_vnz_mex
-			badboy = 12
+			random_owned = { limit = { owner = { VNZ = { all_core = { owned_by = MEX } } } } owner = { badboy = 5 } }
+			random_owned = { limit = { owner = { VNZ = { all_core = { NOT = { owned_by = MEX } } } } } owner = { badboy = 12 } }
 			VNZ = { all_core = { add_core = MEX } }
+			904 = { add_core = VNZ add_core = MEX }
+			1977 = { add_core = VNZ add_core = MEX }
+			2235 = { add_core = VNZ add_core = MEX }
+			2237 = { add_core = VNZ add_core = MEX }
+			2238 = { add_core = VNZ add_core = MEX }
+			2261 = { add_core = VNZ add_core = MEX }
+			2262 = { add_core = VNZ add_core = MEX }
+			2401 = { add_core = VNZ add_core = MEX }
+			2532 = { add_core = VNZ add_core = MEX }
+			3360 = { add_core = VNZ add_core = MEX }
+			3376 = { add_core = VNZ add_core = MEX }
+			3567 = { add_core = VNZ add_core = MEX }
+			3748 = { add_core = VNZ add_core = MEX }
+			3750 = { add_core = VNZ add_core = MEX }
+			3926 = { add_core = VNZ add_core = MEX }
 		}
 		ai_will_do = {
 			factor = 1
 			modifier = {
-			 	factor = 0
+				factor = 0
 				exists = GCO
 			}
 		}
 	}
+	
+	we_surrender_to_player = {
+		potential = {
+			ai = no
+			any_land_province = {
+				owner = {
+					ai = no
+					war_with = THIS
+				}
+			}
+		}
+
+		allow = { }
+
+		effect = {
+			random_country = {
+				limit = { ai = no war_with = THIS }
+				country_event = 4207082
+			}
+		}
+	}
+	
+	vnz_integration_mex = {
+	picture = miraflores
+		potential = {
+			OR = {
+				tag = MEX
+				has_country_flag = i_am_cum
+			}
+			has_country_flag = claimed_vnz_mex
+			NOT = { exists = VNZ }
+			NOT = { has_global_flag = global_mc_setup_complete }
+			NOT = { has_country_flag = yoyoyomrwhitesoyjesseyjoy }
+		}
+
+		allow = {
+			empiricism = 1
+			war = no
+			owns = 2243
+			owns = 2264
+			owns = 2270
+			owns = 2276
+		}
+
+		effect = {
+			set_country_flag = yoyoyomrwhitesoyjesseyjoy
+			prestige = -15
+			add_accepted_culture = north_andean
+			any_owned = {
+				limit = { is_core = VNZ }
+				any_pop = {
+					limit = { has_pop_culture = north_andean }
+					militancy = -2
+					consciousness = -2
+				}
+			}
+			any_pop = {
+				limit = {
+					is_accepted_culture = no
+				}
+				militancy = 4
+				consciousness = 6
+			}
+		}
+	}
+	
+	philippines_n_cuba = {
+	picture = map_philippines
+		potential = {
+			tag = MEX
+			has_country_flag = mexico_central_america
+			has_country_flag = mexico_caribbean
+			has_country_flag = claimed_vnz_mex
+			NOT = { has_country_flag = philippines_n_cuba }
+		}
+		allow = {
+			nationalism_n_imperialism = 1
+			OR = {
+				AND = {
+					is_greater_power = yes
+					owns = 2264
+					owns = 2270
+					owns = 2276
+					owns = 2214
+					owns = 2215
+					owns = 2209
+					war_policy = jingoism
+				}
+				AND = {
+					owns = 1455
+					owns = 1460
+					owns = 1462
+				}
+			}
+		}
+		effect = {
+			set_country_flag = philippines_n_cuba
+			random_owned = { limit = { owner = { tag = MEX owns = 1455 owns = 1460 owns = 1462 } } owner = { badboy = 7 } }
+			random_owned = { limit = { owner = { tag = MEX NOT = { AND = { owns = 1455 owns = 1460 owns = 1462 } } } } owner = { badboy = 12 } }
+			PHL = { all_core = { add_core = MEX } }
+			2517 = { add_core = MEX }
+			2518 = { add_core = MEX }
+		}
+	}
+	
+	constancia_mexicana = {
+		picture = constancia_mexicana
+		potential = {
+			tag = MEX
+			NOT = { has_country_flag = constancia_mexicana }
+			has_global_flag = eighteenthirty_startdate
+			2176 = { state_scope = { NOT = { has_building = fabric_factory } } }
+		}
+
+		allow = {
+			war = no
+			money = 10000
+			year = 1835
+		}
+
+		effect = {
+			set_country_flag = constancia_mexicana
+			treasury = -10000
+			prestige = 2.5
+			random_owned = {
+                limit = {
+                    province_id = 2176
+                    state_scope = { NOT = { has_building = fabric_factory } }
+				}
+
+				owner = {
+					capital = 2176
+					build_factory_in_capital_state = fabric_factory
+				}
+            }
+            random_owned = {
+				limit = { province_id = 2172 }
+				THIS = { capital = 2172 }
+            }
+			2176 = {
+				any_pop = {
+					militancy = -0.5
+					consciousness = -0.1
+				}
+			}
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	monterrey_boom = {
+		picture = banque_belgique
+		potential = {
+			OR = {
+				AND = { has_country_flag = i_am_hsa owns = 2172 }
+				tag = MEX
+			}
+			NOT = { has_global_flag = monterrey_boom }
+			year = 1842
+		}
+
+		allow = {
+			war = no
+			electricity = 1
+			2149 = { owned_by = THIS }
+		}
+
+		effect = {
+			set_global_flag = monterrey_boom
+			prestige = 2.5
+			random_owned = { limit = { owner = { owns = 133 } } owner = { 2149 = { add_province_modifier = { name = city_boom duration = 750 } } } }
+			random_owned = { limit = { owner = { NOT = { owns = 133 } } } owner = { 2149 = { add_province_modifier = { name = city_boom duration = 1200 } } } }
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	teatro_nacional = {
+		picture = teatro_nacional
+		potential = {
+			OR = {
+				tag = MEX
+				AND = {
+					has_country_flag = i_am_hsa
+					capital = 2172
+					owns = 2172
+				}
+			}
+			NOT = { has_country_flag = teatro_nacional }
+		}
+
+		allow = {
+			war = no
+			money = 50000
+			year = 1840
+		}
+
+		effect = {
+			set_country_flag = teatro_nacional
+			treasury = -50000
+			prestige = 5
+			2172 = {
+			    rich_strata = { militancy = -5 }
+			    middle_strata = { consciousness = 3 }
+			    poor_strata = { consciousness = 3 }
+                add_province_modifier = { name = opera_house duration = -1 }
+			}
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	puerto_vallarta_foundation = {
+		picture = puerto_vallarta
+		potential = {
+			OR = {
+				tag = MEX
+				AND = {
+					2172 = { is_core = THIS }
+					2168 = { is_core = THIS }
+				}
+			}
+			owns = 2168
+			owns = 2169
+			NOT = { has_global_flag = puerto_vallarta_done }
+			year = 1848
+		}
+
+		allow = {
+			war = no
+			money = 100000
+			year = 1852
+			battleship_column_doctrine = 1
+		}
+
+		effect = {
+			set_global_flag = puerto_vallarta_done
+			activate_technology = raider_group_doctrine
+			prestige = 2.5
+			2169 = { naval_base = -6 }
+			2168 = {
+				naval_base = 3
+				change_province_name = "Puerto Vallarta"
+				add_province_modifier = {
+					name = city_boom
+					duration = 90
+				}
+			}
+		}
+		ai_will_do = { factor = 1 }
+	}
+
+    rancho = {
+        picture = MEX_rancho
+        potential = {
+            OR = {
+                tag = MEX
+                tag = CAL
+                tag = PAC
+				has_country_flag = i_am_hsa
+            }
+			owns = 89
+			owns = 104
+            NOT = { has_global_flag = rancho }
+            year = 1836
+        }
+
+        allow = {
+            romanticism = 1
+            money = 5000
+        }
+
+        effect = {
+            set_global_flag = rancho
+            treasury = -5000
+            any_owned = {
+                limit = {
+                    OR = {
+						province_id = 84
+						province_id = 85
+						province_id = 3340
+						province_id = 86
+						province_id = 87
+						province_id = 88
+						province_id = 89
+						province_id = 3566
+						province_id = 90
+						province_id = 3448
+						province_id = 3449
+						province_id = 3450
+						province_id = 3451
+						province_id = 3452
+						province_id = 3453
+						province_id = 3454
+						province_id = 3455
+                    }
+                }
+				add_province_modifier = {
+					name = rancho
+					duration = 1825
+                }
+            }
+        }
+        ai_will_do = { factor = 1 }
+    }
 }
