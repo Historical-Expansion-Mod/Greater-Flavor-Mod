@@ -8,21 +8,21 @@ country_event = {
     fire_only_once = yes
 
     trigger = {
-        primary_culture = french
-        is_greater_power = yes
         capital = 425
         owns = 1700
+        primary_culture = french
+        is_greater_power = yes
 		OR = {
 			owns = 1708 #Constantine
 			1708 = { owned_by = ALD }
 		}
-        NOT = { year = 1870 }
-        NOT = { any_greater_power = { war_with = THIS } }
         ALD = {
             exists = yes
             civilized = no
             NOT = { truce_with = THIS war_with = THIS }
         }
+        NOT = { year = 1870 }
+        NOT = { any_greater_power = { war_with = THIS } }
     }
 
     mean_time_to_happen = { days = 14 }
@@ -75,12 +75,12 @@ country_event = {
     fire_only_once = yes
 
     trigger = {
-        primary_culture = french
-        is_greater_power = yes
-        capital = 425
-        owns = 1700
         owns = 1708 #Constantine
         owns = 1713 #Laghwat
+        owns = 1700
+        primary_culture = french
+        capital = 425
+        is_greater_power = yes
         ALD = { exists = no }
     }
 
@@ -181,14 +181,23 @@ country_event = {
 	mean_time_to_happen = { months = 1 }
 	fire_only_once = yes
     trigger = {
+		owns = 1705
+		owns = 1715
+		owns = 1684
+		OR = {
+			tag = FRA
+			tag = BOR
+		}
+		OR = {
+			1720 = { owned_by = MOR }
+			AND = { 1720 = { owned_by = CNR } OR = { CNR = { vassal_of = MOR } CNR = { substate_of = MOR } } }
+		}
 	    NOT = {
 			colonial_policy = no_colonies
 			truce_with = MOR
 		}
-		owns = 1713
-		1720 = { owned_by = MOR }
 		NOT = { has_global_flag = morocco_supports_france }
-		NOT = { year = 1850 }
+		NOT = { year = 1870 }
 	}
 
     option = {
@@ -216,35 +225,26 @@ country_event = {
     option = {
         name = "We refuse to abandon Béchar! ($FROMCOUNTRY$ declares war)"
 		FROM = { country_event = 100945 }
+		1684 = { add_core = MOR add_core = CNR add_core = ALD add_core = RGA }
         ai_chance = {
-			factor = 0.6
-			modifier = {
-				factor = 0
-				relation = { who = FROM value = 100 }
-			}
-			modifier = {
-				factor = 1
-				relation = { who = FROM value = -100 }
-			}
+			factor = 0
 		}
     }
 
     option = {
         name = "We're not prepared to defend it. Abandon Béchar!"
-		1720 = { secede_province = FROM }
-		1720 = { remove_core = THIS }
+		# Audax Validator "." Ignore_NEXT
+		1720 = { secede_province = THIS secede_province = FROM }
+		# Audax Validator "." Ignore_NEXT
+		1684 = { secede_province = THIS secede_province = CNR }
+		1720 = { remove_core = MOR remove_core = CNR add_core = ALD add_core = RGA }
 		prestige = -3
         relation = { who = FROM value = 100 }
+		random_owned = { limit = { owner = { ai = yes } } owner = {
+			FROM = { diplomatic_influence = { who = MOR value = 600 } }
+		} }
         ai_chance = {
-			factor = 0.4
-			modifier = {
-				factor = 1
-				relation = { who = FROM value = 100 }
-			}
-			modifier = {
-				factor = 0
-				relation = { who = FROM value = -100 }
-			}
+			factor = 1
 		}
 	}
 }
@@ -258,9 +258,14 @@ country_event = {
 
     option = {
         name = "They've left us with no choice!"
+		casus_belli = {
+	        target = MOR
+	        type = acquire_substate_region
+	        months = 12
+		}
 		war = {
 			target = MOR
-			attacker_goal = { casus_belli = demand_concession_casus_belli_no_infamy state_province_id = 1720 }
+			attacker_goal = { casus_belli = acquire_substate_region state_province_id = 1720 tag = CNR }
 			defender_goal = { casus_belli = humiliate_no_infamy }
 			call_ally = no
 		}
@@ -274,14 +279,24 @@ country_event = {
     desc = "MOR_SUPPORT_ALD_DESC"
     picture = "french_fight_algeria"
 	fire_only_once = yes
-    trigger = { tag = MOR }
+
+    trigger = {
+		tag = MOR
+		OR = {
+			NOT = { has_global_flag = eighteenthirty_startdate }
+			has_global_flag = you_can_help_ald
+		}
+	}
+
 	mean_time_to_happen = { months = 1 }
 
     option = {
-        name = "We must come to the aid of our Algerian brothers-in-arms."
+        name = "We shall go above and beyond to aid our brethren!"
 		end_military_access = FRA
+		end_military_access = BOR
 		military_access = ALD
 		relation = { who = FRA value = -200 }
+		relation = { who = BOR value = -200 }
 		prestige = 5
 		treasury = -10000
 		ALD = { treasury = 10000 }
@@ -289,10 +304,12 @@ country_event = {
     }
 
 	option = {
-        name = "A French presence in Africa would be catastrophic! (Historical)"
+        name = "We must come to the aid of our Algerian brothers-in-arms."
 		end_military_access = FRA
+		end_military_access = BOR
 		military_access = ALD
 		relation = { who = FRA value = -200 }
+		relation = { who = BOR value = -200 }
 		prestige = 5
 		ai_chance = { factor = 1 }
     }
@@ -302,6 +319,8 @@ country_event = {
 		end_military_access = ALD
 		military_access = FRA
         relation = { who = FRA value = 200 }
+		military_access = BOR
+        relation = { who = BOR value = 200 }
 		relation = { who = ALD value = -200 }
 		prestige = -2
 		ALD = {
@@ -325,20 +344,20 @@ country_event = {
     fire_only_once = yes
 
     trigger = {
-		year = 1836
-		OR = {
-			NOT = { has_global_flag = eighteenthirty_startdate }
-			has_country_flag = battle_of_macta
-		}
-        primary_culture = french
-        is_greater_power = yes
-        capital = 425
         owns = 1700
-        NOT = { year = 1870 }
+        primary_culture = french
+        capital = 425
+        is_greater_power = yes
         ALD = {
             exists = yes
             war_with = THIS
         }
+		OR = {
+			NOT = { has_global_flag = eighteenthirty_startdate }
+			has_country_flag = battle_of_macta
+		}
+        NOT = { year = 1870 }
+		year = 1836
     }
 
     mean_time_to_happen = { days = 15 }
@@ -377,11 +396,10 @@ country_event = {
     fire_only_once = yes
 
     trigger = {
-        primary_culture = french
-        is_greater_power = yes
-        capital = 425
         owns = 1700
-        NOT = { year = 1870 }
+        primary_culture = french
+        capital = 425
+        is_greater_power = yes
         NOT = { any_greater_power = { war_with = THIS } }
         RGA = {
             OR = {
@@ -392,6 +410,7 @@ country_event = {
             NOT = { war_with = THIS }
             NOT = { truce_with = THIS }
         }
+        NOT = { year = 1870 }
     }
 
     mean_time_to_happen = {
@@ -454,14 +473,14 @@ country_event = {
             owns = 1713
             owns = 1715
         }
-        ALD = { exists = no }
-        RGA = { exists = no }
+        capital_scope = { continent = europe }
         ABA = {
             exists = yes
             vassal_of = THIS
             NOT = { truce_with = THIS }
         }
-        capital_scope = { continent = europe }
+        ALD = { exists = no }
+        RGA = { exists = no }
         nationalism_n_imperialism = 1
         OR = {
             war = yes
@@ -543,37 +562,51 @@ country_event = {
             owns = 1713
             owns = 1715
         }
+        NOT = { capital_scope = { continent = africa } }
         ALD = { exists = no }
         NOT = { truce_with = ALD }
         NOT = { has_global_flag = algeria_claimed_sahara }
         #has_global_flag = berlin_conference
-        NOT = { capital_scope = { continent = africa } }
-        year = 1871
         war = no
         1711 = { empty = yes }
+        3683 = { empty = yes }
+        3685 = { empty = yes }
+        year = 1871
     }
 
     mean_time_to_happen = { months = 6 }
 
     immediate = {
-        ALD_1718 = { secede_province = THIS add_core = ALD add_core = RGA }
-        random_country = {
-            limit = {
-                tag = TUG
-                ai = yes
-                exists = yes
-            }
-            annex_to = THIS
-            TUG = { all_core = { remove_core = TUG } }
+        ALD_1718 = { add_core = ALD add_core = RGA }
+        random_owned = {
+            limit = { owner = {
+                TUG = {
+					OR = {
+						ai = yes
+						exists = no
+					}
+				}
+            } }
+			owner = { 
+				TUG = { annex_to = THIS }
+				TUG = { all_core = { remove_core = TUG 
+				add_core = ALD
+				add_core = RGA } }
+			}
         }
-        random_country = {
-            limit = {
-                tag = ABA
-                ai = yes
-                exists = yes
-            }
-            annex_to = THIS
-            ABA = { all_core = { remove_core = ABA } }
+        random_owned = {
+            limit = { owner = {
+				ABA = {
+					OR = {
+						ai = yes
+						exists = no
+					}
+				}
+            } }
+			owner = { 
+				ABA = { annex_to = THIS }
+				ABA = { all_core = { remove_core = ABA add_core = ALD add_core = RGA } }
+			}
         }
     }
 
@@ -589,19 +622,29 @@ country_event = {
             }
             remove_core = TUG
             remove_core = ABA
+			add_core = ALD
+			add_core = RGA
         }
-        ALD_1718 = { secede_province = ALD any_pop = { literacy = -0.99 } }
         any_owned = {
             limit = {
                 OR = {
-                    province_id = 1713
-                    province_id = 1712
-                    province_id = 1702
-                    province_id = 1813
-                    province_id = 1717
-                    province_id = 1721
                     province_id = 1720
+                    province_id = 1684
                     province_id = 1715
+                    province_id = 1707
+                    province_id = 1700
+                    province_id = 1813
+                    province_id = 1702
+                    province_id = 1701
+                    province_id = 1717
+                    province_id = 3826
+                    province_id = 1721
+                    province_id = 1708
+                    province_id = 3825
+                    province_id = 1712
+                    province_id = 1711
+                    province_id = 3683
+                    province_id = 3685
                 }
             }
             secede_province = ALD
@@ -640,10 +683,10 @@ country_event = {
         ALD = { exists = yes }
 		OR = { truce_with = FRA truce_with = BOR }
         capital_scope = { continent = africa }
-        year = 1871
-        NOT = { year = 1875 }
-		has_global_flag = mokrani_revolt
         war = no
+		has_global_flag = mokrani_revolt
+        NOT = { year = 1880 }
+        year = 1871
     }
 
     mean_time_to_happen = { days = 1 }
@@ -726,6 +769,9 @@ country_event = {
     picture = "french_fight_algeria"
 
     trigger = {
+        any_owned_province = {
+            region = ALD_1713
+        }
         primary_culture = french
         NOT = {
             OR = {
@@ -739,14 +785,12 @@ country_event = {
                 owns = 1704
                 owns = 1705
                 owns = 1694
+                owns = 3834
                 owns = 1684
                 owns = 1727
                 owns = 1718
                 owns = 1719
             }
-        }
-        any_owned_province = {
-            region = ALD_1713
         }
     }
 
@@ -754,7 +798,7 @@ country_event = {
 
     immediate = {
         any_owned = { limit = { region = ALD_1713 } secede_province = ALD }
-		any_owned = { limit = { province_id = 1702 } secede_province = ALD }
+		any_owned = { limit = { province_id = 3828 } secede_province = ALD }
     }
 
     option = {
