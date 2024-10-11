@@ -2,36 +2,45 @@ political_decisions = {
     become_poland = {
 		picture = become_poland
         potential = {
-            primary_culture = polish
-            NOT = {
-				tag = PLC
-				tag = PLR
-				exists = POL
-				has_country_flag = i_am_phc
-				has_country_flag = i_am_wsf
-				has_country_flag = post_colonial_country
-				has_global_flag = sw_set
+			NOT = { has_global_flag = sw_set }
+			OR = {
+				AND = {
+					primary_culture = polish
+					NOT = { exists = POL }
+					NOT = { has_country_flag = post_colonial_country }
+					NOT = { has_country_flag = i_am_wsf has_country_flag = i_am_phc }
+					NOT = { tag = PLR tag = PLC }
+				}
+				AND = {
+					tag = POL
+					government = colonial_company
+					NOT = { has_country_flag = post_colonial_country }
+				}
 			}
         }
 
         allow = {
+            owns = 706
             OR = {
                 prestige = 45
                 is_secondary_power = yes
                 AND = {
-                    tag = CPL
-                    exists = KRA KRA = { is_vassal = no }
-                    exists = PZN PZN = { is_vassal = no }
-                    exists = DZG DZG = { is_vassal = no }
+                    tag = POL
+					government = colonial_company
+                    OR = {
+						exists = KRA KRA = { is_vassal = no }
+						exists = PZN PZN = { is_vassal = no }
+						exists = DZG DZG = { is_vassal = no }
+					}
                 }
                 AND = {
-                    tag = CPL
-                    year = 1900
+                    tag = POL
+					government = colonial_company
+                    year = 1870
                 }
             }
             war = no
             is_vassal = no
-            owns = 706
         }
 
         effect = {
@@ -46,8 +55,10 @@ political_decisions = {
             random_owned = {
                 limit = { owner = { accepted_culture = czech } } owner = { remove_accepted_culture = czech }
             }
-            all_core = { remove_core = CPL remove_core = THIS }
-            change_tag = POL
+			government = democracy
+            random_owned = {
+                limit = { owner = { NOT = { tag = POL } } } owner = { change_tag = POL }
+            }
             capital = 706
         }
         ai_will_do = { factor = 1 }
@@ -62,13 +73,12 @@ political_decisions = {
 				has_country_flag = i_am_phc
             }
             NOT = { exists = PLC }
+            NOT = { tag = PLR }
             NOT = { has_country_flag = post_colonial_country }
             NOT = { has_country_flag = i_am_wsf }
-            NOT = { tag = PLR }
         }
 
         allow = {
-            war = no
             LIT = {
                 all_core = {
                     OR = {
@@ -181,6 +191,7 @@ political_decisions = {
 			689 = { remove_core = PLC }
 			2584 = { remove_core = PLC }
 			3318 = { remove_core = PLC }
+			3861 = { remove_core = PLC }
             any_country = {
                 limit = {
                     OR = {
@@ -196,6 +207,7 @@ political_decisions = {
             change_tag = PLC
 			#to prevent assimilation
 			684 = { add_core = POL }
+			3861 = { add_core = POL }
 			685 = { add_core = POL }
 			3329 = { add_core = POL }
 			3327 = { add_core = POL }
@@ -226,8 +238,6 @@ political_decisions = {
         }
 
         allow = {
-            war = no
-            is_greater_power = no
             has_country_modifier = recently_lost_war
             OR = {
                 AND = {
@@ -244,6 +254,8 @@ political_decisions = {
                     has_country_flag = create_PLC_FRA
                 }
             }
+            war = no
+            is_greater_power = no
         }
 
         effect = {
@@ -259,6 +271,7 @@ political_decisions = {
             953 = { add_core = POL }
             2584 = { add_core = POL }
             684 = { add_core = POL }
+            3861 = { add_core = POL }
             685 = { add_core = POL }
             690 = { add_core = POL }
             691 = { add_core = POL }
@@ -307,22 +320,18 @@ political_decisions = {
 		picture = unite_with_poland
         potential = {
             primary_culture = polish
-            NOT = { owns = 706 }
-            NOT = { tag = PLC }
             any_neighbor_country = {
                 owns = 706
-                OR = {
-                    tag = POL
-                    tag = CPL
-                }
+                tag = POL
             }
+            NOT = { owns = 706 }
+            NOT = { tag = PLC }
             NOT = { has_country_flag = unite_with_poland }
             NOT = { has_country_flag = post_colonial_country }
             NOT = { has_global_flag = sw_set }
         }
 
         allow = {
-            war = no
             OR = {
                 is_vassal = no
                 overlord = { primary_culture = polish owns = 706 }
@@ -330,7 +339,7 @@ political_decisions = {
             OR = {
                 AND = {
                     OR = {
-						sphere_owner = { is_sphere_leader_of = POL }
+					   sphere_owner = { is_sphere_leader_of = POL }
                        in_sphere = POL
                        part_of_sphere = no
                     }
@@ -342,21 +351,8 @@ political_decisions = {
                         is_vassal = no
                     }
                 }
-                AND = {
-                    OR = {
-						in_sphere = CPL
-                        sphere_owner = { is_sphere_leader_of = CPL }
-                        part_of_sphere = no
-                    }
-                    CPL = {
-                        exists = yes
-                        owns = 706
-                        neighbour = THIS
-                        war = no
-                        is_vassal = no
-                    }
-                }
             }
+            war = no
         }
 
         effect = {
@@ -373,10 +369,7 @@ political_decisions = {
             }
             random_country = {
                 limit = {
-                    OR = {
-                        tag = POL
-                        tag = CPL
-                    }
+					tag = POL
                     exists = yes
                     owns = 706
                     ai = yes
@@ -389,46 +382,19 @@ political_decisions = {
                     tag = POL
                     exists = yes
                     owns = 706
-                    ai = yes
-                    THIS = { ai = no }
-                }
-                THIS = {
-                    inherit = POL
-                    random_owned = {
-                        limit = { province_id = 706 }
-                        owner = { capital = 706 }
-                    }
-                    change_tag = POL
-                }
-            }
-            random_country = {
-                limit = {
-                    tag = CPL
-                    exists = yes
-                    owns = 706
-                    ai = yes
-                    THIS = { ai = no }
-                }
-                THIS = {
-                    inherit = CPL
-                    random_owned = {
-                        limit = { province_id = 706 }
-                        owner = { capital = 706 }
-                    }
-                    change_tag = CPL
-                }
-            }
-            random_country = {
-                limit = {
-                    OR = {
-                        tag = POL
-                        tag = CPL
-                    }
-                    exists = yes
-                    owns = 706
                     ai = no
                 }
                 country_event = 60130
+            }
+            random_country = {
+                limit = {
+                    tag = POL
+                    exists = yes
+                    owns = 706
+                    ai = yes
+                    THIS = { ai = no }
+                }
+                THIS = { inherit = POL change_tag = POL }
             }
         }
         ai_will_do = { factor = 1 }
@@ -444,15 +410,15 @@ political_decisions = {
         }
 
         allow = {
-            war = no
             OR = {
                 part_of_sphere = no
                 sphere_owner = { is_sphere_leader_of = GLM }
             }
             GLM = {
-                war = no
                 neighbour = THIS
+                war = no
             }
+            war = no
         }
 
         effect = {
@@ -503,7 +469,6 @@ political_decisions = {
         }
 
         allow = {
-            war = no
             owns = 702 # Lvow
             owns = 704 # Novy Sacz
             owns = 705 # Przemsyl
@@ -511,6 +476,7 @@ political_decisions = {
             owns = 951 # Styri
             owns = 952 # Ternopil
             owns = 953 # Stanislavov
+            war = no
         }
 
         effect = {
@@ -530,13 +496,10 @@ political_decisions = {
         }
         allow = {
             nationalism_n_imperialism = 1
+            rank = 16
             war_policy = jingoism
             war = no
             is_vassal = no
-            OR = {
-                is_greater_power = yes
-                is_secondary_power = yes
-            }
         }
         effect = {
             set_country_flag = claimed_eastern_poland
@@ -557,42 +520,13 @@ political_decisions = {
         }
     }
 
-    january_uprising_victory = {
-        picture = become_poland
-        potential = {
-            tag = CPL
-            owns = 706
-            has_global_flag = january_uprising_happened
-            any_neighbor_country = { has_country_flag = through_january_uprising }
-            has_country_modifier = polish_uprising_mobilization
-        }
-        allow = {
-            war = no
-            any_neighbor_country = {
-                truce_with = THIS
-                has_country_modifier = recently_lost_war
-            }
-        }
-        effect = {
-            any_neighbor_country = { clr_country_flag = through_january_uprising }
-            set_country_flag = poland_is_free
-            remove_country_modifier = polish_uprising_mobilization
-            remove_country_modifier = unrecognized_country
-            any_owned = {
-                limit = { OR = { is_core = CPL is_core = POL is_core = LIT } }
-                remove_core = RUS
-            }
-        }
-        ai_will_do = { factor = 1 }
-    }
-
     revoke_germanization = {
         picture = become_poland
         potential = {
-            primary_culture = polish
             owns = 685
             owns = 699
             owns = 690
+            primary_culture = polish
             has_global_flag = germanization
             NOT = { has_country_flag = revoke_germanization }
         }
@@ -729,12 +663,12 @@ political_decisions = {
                 tag = PLR
 				#this really shouldn't have PHC or WSF since it's about Polish-Lithuanian history
             }
-            NOT = {
-                has_country_flag = trinidad_tobago_purchase
-            }
             ENG = {
                 owns = 2237
                 owns = 2238
+            }
+            NOT = {
+                has_country_flag = trinidad_tobago_purchase
             }
         }
         allow = {
@@ -756,11 +690,11 @@ political_decisions = {
                 tag = PLR
 				#this really shouldn't have PHC or WSF since it's about Polish-Lithuanian history
             }
-            NOT = {
-                has_country_flag = buy_gambia_polania
-            }
             ENG = {
                 owns = 1785
+            }
+            NOT = {
+                has_country_flag = buy_gambia_polania
             }
         }
         allow = {
@@ -773,4 +707,41 @@ political_decisions = {
         }
         ai_will_do = { factor = 1 }
     }
+	
+	restore_jewish_autonomy = { 
+		picture = magen_david
+		potential = { 
+			OR = {
+				tag = PLC 
+				tag = PLR 
+			}
+			any_owned_province = {
+				is_core = THIS
+				OR = { 
+					any_pop = { has_pop_culture = ashkenazi } 
+					any_pop = { has_pop_culture = sephardic } 
+				} 
+			} 	
+			NOT = { accepted_culture = ashkenazi } 
+			NOT = { accepted_culture = sephardic } 
+		}
+	
+		allow = { 
+			citizens_rights = all_voting_pops
+			NOT = { religious_policy = moralism } 
+		}
+	
+		effect = {
+            random_owned = {
+                limit = { is_core = THIS any_pop = { has_pop_culture = ashkenazi } NOT = { owner = { accepted_culture = ashkenazi } } }
+                owner = { add_accepted_culture = ashkenazi }
+            }
+            random_owned = {
+                limit = { is_core = THIS any_pop = { has_pop_culture = sephardic } NOT = { owner = { accepted_culture = sephardic } } }
+                owner = { add_accepted_culture = sephardic }
+            }
+		}
+		ai_will_do = { factor = 1 } 
+	}	
+	
 }

@@ -1,9 +1,9 @@
 ### Events 96000-96081 used
 
 #########################################################
-#                                                        #
-#           "Great War" Set-up Events                    #
-#                                                        #
+#                                                       #
+#           "Great War" Set-up Events                   #
+#                                                       #
 #########################################################
 
 #Initiation (GP with Mass Politics declares war on another GP)
@@ -15,7 +15,6 @@ country_event = {
     picture = "greatwar"
 
     trigger = {
-        war = yes
         OR = {
             has_country_flag = dismantle_declared
             is_greater_power = yes
@@ -30,6 +29,7 @@ country_event = {
                 }
             }
         }
+        war = yes
         OR = {
             has_country_flag = coalition_member
             mass_politics = 1
@@ -38,12 +38,12 @@ country_event = {
                 war_with = THIS
             }
         }
-        NOT = { has_country_modifier = great_war }
-        NOT = { has_country_flag = in_great_war }
         any_greater_power = {
             war_with = THIS
             has_country_flag = in_great_war
         }
+        NOT = { has_country_modifier = great_war }
+        NOT = { has_country_flag = in_great_war }
     }
 
     mean_time_to_happen = {
@@ -88,12 +88,8 @@ country_event = {
     desc = "EVTDESC96001"
 
     trigger = {
-        ai = yes
-        war = yes
-        NOT = { has_country_flag = calling_all_allies }
         OR = {
-            is_greater_power = yes
-            is_secondary_power = yes
+            rank = 16
             has_country_flag = dismantle_declared
         }
         OR = {
@@ -116,6 +112,9 @@ country_event = {
                 }
             }
         }
+        war = yes
+        NOT = { has_country_flag = calling_all_allies }
+        ai = yes
     }
 
     mean_time_to_happen = {
@@ -153,9 +152,9 @@ country_event = {
     desc = "EVTDESC96003"
 
     trigger = {
-        ai = yes
-        war = yes
         has_country_flag = calling_all_allies
+        war = yes
+        ai = yes
     }
 
     mean_time_to_happen = {
@@ -186,8 +185,8 @@ country_event = {
     picture = "food_shortage"
 
     trigger = {
-        war = yes
         has_country_modifier = great_war
+        war = yes
         NOT = { has_country_modifier = great_war2 }
     }
 
@@ -266,8 +265,8 @@ country_event = {
     picture = "demonstration"
 
     trigger = {
-        war = yes
         has_country_modifier = great_war2
+        war = yes
         NOT = { has_country_modifier = great_war3 }
     }
 
@@ -351,12 +350,12 @@ country_event = {
     picture = "rebellion"
 
     trigger = {
-        war = yes
         OR = {
             has_country_modifier = great_war
             has_country_modifier = great_war2
             has_country_modifier = great_war3
         }
+        war = yes
         OR = {
             AND = {
                 any_owned_province = {
@@ -420,7 +419,10 @@ country_event = {
     major = yes
 
     trigger = {
-        war = no
+        OR = {
+            rank = 16
+            colonial_nation = yes
+        }
         OR = {
             has_country_modifier = great_war
             has_country_modifier = great_war2
@@ -429,11 +431,7 @@ country_event = {
             has_country_flag = ultimatum_accepted
             has_country_flag = dismantling_treaty
         }
-        OR = {
-            is_greater_power = yes
-            is_secondary_power = yes
-            colonial_nation = yes
-        }
+        war = no
         NOT = {
             tag = GCF
             tag = GER
@@ -526,6 +524,7 @@ country_event = {
                     region = PRU_690
                     region = PRU_701
                     province_id = 684
+                    province_id = 3861
                     province_id = 685
                 }
                 NOT = { is_core = GER }
@@ -547,6 +546,7 @@ country_event = {
                     region = PRU_690
                     region = PRU_701
                     province_id = 684
+                    province_id = 3861
                     province_id = 685
                 }
                 NOT = { is_core = GCF }
@@ -610,9 +610,93 @@ country_event = {
 
         #release all vassals
         any_country = {
-            limit = { vassal_of = THIS }
+            limit = { vassal_of = THIS NOT = { vassal_of = TUR } }
             leave_alliance = THIS
             country_event = 96015
+        }
+        any_country = {
+            limit = { vassal_of = TUR overlord = { tag = THIS } NOT = { AND = { primary_culture = kurdish NOT = { tag = KDS } } } }
+            leave_alliance = THIS
+            country_event = 96015
+        }
+        random_country = {
+            limit = { vassal_of = THIS vassal_of = TUR NOT = { tag = KDS } primary_culture = kurdish ai = no KDS = { exists = no } }
+            change_tag = KDS
+            BHT = { all_core = {
+                remove_core = BHT add_core = KDS
+			} }
+            SRN = { all_core = {
+                remove_core = SRN add_core = KDS
+			} }
+            BNB = { all_core = {
+                remove_core = BNB add_core = KDS
+			} }
+            BDN = { all_core = {
+                remove_core = BDN add_core = KDS
+			} }
+            BTL = { all_core = {
+                remove_core = BTL add_core = KDS
+			} }
+            MLN = { all_core = {
+				remove_core = MLN add_core = KDS
+			} }
+            TSI = { all_core = {
+				remove_core = TSI add_core = KDS
+			} }
+            KHL = { all_core = {
+				remove_core = KHL add_core = KDS
+			} }
+            BZD = { all_core = {
+				remove_core = BZD add_core = KDS
+			} }
+        }
+        any_country = {
+            limit = { vassal_of = TUR overlord = { tag = THIS } NOT = { tag = KDS } primary_culture = kurdish ai = no KDS = { exists = yes } }
+			country_event = 18482556
+        }
+        random_country = {
+            limit = { vassal_of = TUR overlord = { tag = THIS } NOT = { tag = KDS } primary_culture = kurdish ai = yes KDS = { exists = no } }
+            change_tag = KDS
+            BHT = { all_core = {
+                remove_core = BHT add_core = KDS
+			} }
+            SRN = { all_core = {
+                remove_core = SRN add_core = KDS
+			} }
+            BNB = { all_core = {
+                remove_core = BNB add_core = KDS
+			} }
+            BDN = { all_core = {
+                remove_core = BDN add_core = KDS
+			} }
+            BTL = { all_core = {
+                remove_core = BTL add_core = KDS
+			} }
+            MLN = { all_core = {
+				remove_core = MLN add_core = KDS
+			} }
+            TSI = { all_core = {
+				remove_core = TSI add_core = KDS
+			} }
+            KHL = { all_core = {
+				remove_core = KHL add_core = KDS
+			} }
+            BZD = { all_core = {
+				remove_core = BZD add_core = KDS
+			} }
+        }
+        any_country = {
+            limit = { vassal_of = TUR overlord = { tag = THIS } NOT = { tag = KDS } primary_culture = kurdish ai = yes KDS = { exists = yes } }
+			any_owned = { secede_province = THIS secede_province = KDS }
+        }
+        any_country = {
+            limit = { government = colonial_company tag = KDS exists = yes is_vassal = yes vassal_of = TUR }
+			KDS = { government = absolute_monarchy }
+			TUR = { release_vassal = KDS }
+        }
+        any_country = {
+            limit = { government = colonial_company tag = KDS exists = yes is_vassal = no }
+			KDS = { government = absolute_monarchy }
         }
 
         #release Czechoslovakia, if possible
@@ -929,11 +1013,7 @@ country_event = {
                 truce_with = THIS
                 NOT = { has_country_modifier = recently_lost_war }
                 is_vassal = no
-                any_owned_province = { has_building = naval_base }
-                OR = {
-                    is_secondary_power = yes
-                    is_greater_power = yes
-                }
+                any_owned_province = { has_building = naval_base }rank = 16
             }
             add_country_modifier = { name = dismantling_country duration = 385 }
         }
@@ -949,7 +1029,7 @@ country_event = {
                     tag = INO
                     tag = BUR
                     tag = SIA
-                    tag = XAN
+                    tag = LUA
                     tag = NYE
                 }
                 OR = {
@@ -1939,13 +2019,13 @@ country_event = {
     picture = "war_ended"
 
     trigger = {
-        war = no
         OR = {
             has_country_modifier = great_war
             has_country_modifier = great_war2
             has_country_modifier = great_war3
             has_country_flag = in_great_war
         }
+        war = no
         NOT = { has_country_flag = dismantling_treaty }
         NOT = { has_country_flag = ultimatum_accepted }
     }
@@ -1988,7 +2068,10 @@ country_event = {
     picture = "war_ended"
 
     trigger = {
-        war = no
+        OR = {
+            has_country_flag = ultimatum_accepted
+            has_country_flag = dismantling_treaty
+        }
         OR = {
             has_country_modifier = great_war
             has_country_modifier = great_war2
@@ -1997,10 +2080,7 @@ country_event = {
             has_country_flag = ultimatum_accepted
             has_country_flag = dismantling_treaty
         }
-        OR = {
-            has_country_flag = ultimatum_accepted
-            has_country_flag = dismantling_treaty
-        }
+        war = no
         NOT = {
             tag = GER
             tag = NGF
@@ -2017,8 +2097,7 @@ country_event = {
             tag = TUR
             tag = JAP
         }
-        is_greater_power = no
-        is_secondary_power = no
+        NOT = { rank = 16 }
         colonial_nation = no
     }
 
@@ -2174,10 +2253,7 @@ country_event = {
                     }
                     AND = {
                         any_neighbor_country = { war_with = FROM }
-                        OR = {
-                            is_greater_power = yes
-                            is_secondary_power = yes
-                        }
+                        rank = 16
                         relation = {
                             who = THIS
                             value = 0
@@ -2370,8 +2446,7 @@ country_event = {
             }
             modifier = {
                 factor = 0.5
-                is_greater_power = no
-                is_secondary_power = no
+                NOT = { rank = 16 }
             }
             modifier = {
                 factor = 0.5
@@ -2587,7 +2662,13 @@ country_event = {
     major = yes
 
     trigger = {
-        war = no
+        OR = {
+            tag = GER
+            tag = GCF
+            tag = NGF
+            tag = SGF
+            tag = PRU
+        }
         OR = {
             has_country_modifier = great_war
             has_country_modifier = great_war2
@@ -2596,13 +2677,7 @@ country_event = {
             has_country_flag = ultimatum_accepted
             has_country_flag = dismantling_treaty
         }
-        OR = {
-            tag = GER
-            tag = GCF
-            tag = NGF
-            tag = SGF
-            tag = PRU
-        }
+        war = no
         OR = {
             has_country_flag = ultimatum_accepted
             has_country_flag = dismantling_treaty
@@ -2662,6 +2737,7 @@ country_event = {
                 OR = {
                     province_id = 370
                     province_id = 371
+					province_id = 3862
                 }
             }
             add_core = DEN
@@ -2674,6 +2750,14 @@ country_event = {
                 NOT = { is_core = DZG }
             }
             add_core = DZG
+        }
+        random_owned = {
+            limit = {
+                province_id = 691
+                is_core = DZG
+            }
+            remove_core = DZG
+			add_core = POL
         }
 
         #remove cores from Polish provinces if any owned
@@ -2690,6 +2774,7 @@ country_event = {
                 add_core = PZN
             }
             684 = { remove_core = THIS }
+            3861 = { remove_core = THIS }
             685 = { remove_core = THIS }
         }
 
@@ -2706,7 +2791,6 @@ country_event = {
                 NOT = { is_core = RUS }
                 owner = { truce_with = RUS }
             }
-            add_core = CPL
             add_core = RUS
         }
 
@@ -3019,6 +3103,7 @@ country_event = {
             683 = { add_core = POL }
             682 = { add_core = POL }
             684 = { add_core = POL }
+            3861 = { add_core = POL }
             685 = { add_core = POL }
             2584 = { add_core = POL }
         }
@@ -3033,6 +3118,7 @@ country_event = {
             683 = { add_core = PLC }
             682 = { add_core = PLC }
             684 = { add_core = PLC }
+            3861 = { add_core = PLC }
             685 = { add_core = PLC }
             2584 = { add_core = PLC }
         }
@@ -3100,6 +3186,7 @@ country_event = {
                     OR = {
                         owns = 370
                         owns = 371
+						owns = 3862
                     }
                 }
             }
@@ -3109,6 +3196,11 @@ country_event = {
                 remove_core = GCF
             }
             371 = {
+                add_core = DEN
+                remove_core = GER
+                remove_core = GCF
+            }
+            3862 = {
                 add_core = DEN
                 remove_core = GER
                 remove_core = GCF
@@ -3510,11 +3602,7 @@ country_event = {
                 truce_with = THIS
                 NOT = { has_country_modifier = recently_lost_war }
                 is_vassal = no
-                any_owned_province = { has_building = naval_base }
-                OR = {
-                    is_secondary_power = yes
-                    is_greater_power = yes
-                }
+                any_owned_province = { has_building = naval_base }rank = 16
             }
             add_country_modifier = { name = dismantling_country duration = 385 }
         }
@@ -3530,7 +3618,7 @@ country_event = {
                     tag = INO
                     tag = BUR
                     tag = SIA
-                    tag = XAN
+                    tag = LUA
                     tag = NYE
                 }
                 OR = {
@@ -3703,7 +3791,7 @@ country_event = {
     major = yes
 
     trigger = {
-        war = no
+        tag = RUS
         OR = {
             has_country_modifier = great_war
             has_country_modifier = great_war2
@@ -3712,7 +3800,7 @@ country_event = {
             has_country_flag = ultimatum_accepted
             has_country_flag = dismantling_treaty
         }
-        tag = RUS
+        war = no
         OR = {
             has_country_flag = ultimatum_accepted
             has_country_flag = dismantling_treaty
@@ -3850,23 +3938,19 @@ country_event = {
                     is_core = POL
                     is_core = PLC
                 }
-                POL = { exists = no }
+                OR = { POL = { exists = no } POL = { government = colonial_company } }
             }
             RUS_706 = {
                 remove_core = RUS
-                add_core = CPL
             }
             RUS_715 = {
                 remove_core = RUS
-                add_core = CPL
             }
             707 = {
                 remove_core = RUS
-                add_core = CPL
             }
             719 = {
                 remove_core = RUS
-                add_core = CPL
             }
         }
 
@@ -3900,6 +3984,7 @@ country_event = {
                     region = PRU_690
                     region = PRU_701
                     province_id = 684
+                    province_id = 3861
                     province_id = 685
                 }
                 NOT = { is_core = GER }
@@ -3921,6 +4006,7 @@ country_event = {
                     region = PRU_690
                     region = PRU_701
                     province_id = 684
+                    province_id = 3861
                     province_id = 685
                 }
                 NOT = { is_core = GCF }
@@ -4171,7 +4257,6 @@ country_event = {
             limit = {
                 tag = KOK
                 exists = no
-                NOT = { has_global_flag = kyrgyzstan_created }
                 any_core = {
                     owned_by = THIS
                     is_colonial = no
@@ -4204,7 +4289,6 @@ country_event = {
                     tag = CHY
                     tag = KRL
                     tag = ABK
-                    tag = VLG
                 }
                 any_core = { owned_by = THIS }
                 exists = no
@@ -4329,7 +4413,7 @@ country_event = {
         #If Tajikistan does not exist, release it
         any_country = {
             limit = {
-                tag = TAJ
+                tag = DRV
                 exists = no
                 any_core = { owned_by = THIS }
             }
@@ -4369,7 +4453,7 @@ country_event = {
         #If Uzbekistan does not exist, release it
         any_country = {
             limit = {
-                tag = UZB
+                tag = KHI
                 exists = no
                 any_core = { owned_by = THIS }
             }
@@ -4870,11 +4954,7 @@ country_event = {
                 truce_with = THIS
                 NOT = { has_country_modifier = recently_lost_war }
                 is_vassal = no
-                any_owned_province = { has_building = naval_base }
-                OR = {
-                    is_secondary_power = yes
-                    is_greater_power = yes
-                }
+                any_owned_province = { has_building = naval_base }rank = 16
             }
             add_country_modifier = { name = dismantling_country duration = 385 }
         }
@@ -4890,7 +4970,7 @@ country_event = {
                     tag = INO
                     tag = BUR
                     tag = SIA
-                    tag = XAN
+                    tag = LUA
                     tag = NYE
                 }
                 OR = {
@@ -5062,7 +5142,7 @@ country_event = {
     major = yes
 
     trigger = {
-        war = no
+        tag = USA
         OR = {
             has_country_modifier = great_war
             has_country_modifier = great_war2
@@ -5071,7 +5151,7 @@ country_event = {
             has_country_flag = ultimatum_accepted
             has_country_flag = dismantling_treaty
         }
-        tag = USA
+        war = no
         OR = {
             has_country_flag = ultimatum_accepted
             has_country_flag = dismantling_treaty
@@ -5174,6 +5254,7 @@ country_event = {
                     region = PRU_690
                     region = PRU_701
                     province_id = 684
+                    province_id = 3861
                     province_id = 685
                 }
                 NOT = { is_core = GER }
@@ -5195,6 +5276,7 @@ country_event = {
                     region = PRU_690
                     region = PRU_701
                     province_id = 684
+                    province_id = 3861
                     province_id = 685
                 }
                 NOT = { is_core = GCF }
@@ -5611,11 +5693,7 @@ country_event = {
                 truce_with = THIS
                 NOT = { has_country_modifier = recently_lost_war }
                 is_vassal = no
-                any_owned_province = { has_building = naval_base }
-                OR = {
-                    is_secondary_power = yes
-                    is_greater_power = yes
-                }
+                any_owned_province = { has_building = naval_base }rank = 16
             }
             add_country_modifier = { name = dismantling_country duration = 385 }
         }
@@ -5631,7 +5709,7 @@ country_event = {
                     tag = INO
                     tag = BUR
                     tag = SIA
-                    tag = XAN
+                    tag = LUA
                     tag = NYE
                 }
                 OR = {
@@ -5804,7 +5882,7 @@ country_event = {
     major = yes
 
     trigger = {
-        war = no
+        tag = ENG
         OR = {
             has_country_modifier = great_war
             has_country_modifier = great_war2
@@ -5813,7 +5891,7 @@ country_event = {
             has_country_flag = ultimatum_accepted
             has_country_flag = dismantling_treaty
         }
-        tag = ENG
+        war = no
         OR = {
             has_country_flag = ultimatum_accepted
             has_country_flag = dismantling_treaty
@@ -5930,6 +6008,7 @@ country_event = {
                     region = PRU_690
                     region = PRU_701
                     province_id = 684
+                    province_id = 3861
                     province_id = 685
                 }
                 NOT = { is_core = GER }
@@ -5951,6 +6030,7 @@ country_event = {
                     region = PRU_690
                     region = PRU_701
                     province_id = 684
+                    province_id = 3861
                     province_id = 685
                 }
                 NOT = { is_core = GCF }
@@ -6062,6 +6142,7 @@ country_event = {
                 is_core = ZBW
                 OR = {
                     region = ENG_2014
+                    region = ENG_2013
                     region = ENG_2016
                     region = ENG_2068
                     region = ENG_2071
@@ -6347,11 +6428,7 @@ country_event = {
                 truce_with = THIS
                 NOT = { has_country_modifier = recently_lost_war }
                 is_vassal = no
-                any_owned_province = { has_building = naval_base }
-                OR = {
-                    is_secondary_power = yes
-                    is_greater_power = yes
-                }
+                any_owned_province = { has_building = naval_base }rank = 16
             }
             add_country_modifier = { name = dismantling_country duration = 385 }
         }
@@ -6367,7 +6444,7 @@ country_event = {
                     tag = INO
                     tag = BUR
                     tag = SIA
-                    tag = XAN
+                    tag = LUA
                     tag = NYE
                 }
                 OR = {
@@ -6540,7 +6617,10 @@ country_event = {
     major = yes
 
     trigger = {
-        war = no
+        OR = {
+            tag = JAP
+            tag = TKG
+        }
         OR = {
             has_country_modifier = great_war
             has_country_modifier = great_war2
@@ -6549,10 +6629,7 @@ country_event = {
             has_country_flag = ultimatum_accepted
             has_country_flag = dismantling_treaty
         }
-        OR = {
-            tag = JAP
-            tag = TKG
-        }
+        war = no
         OR = {
             has_country_flag = ultimatum_accepted
             has_country_flag = dismantling_treaty
@@ -6648,6 +6725,7 @@ country_event = {
                     region = PRU_690
                     region = PRU_701
                     province_id = 684
+                    province_id = 3861
                     province_id = 685
                 }
                 NOT = { is_core = GER }
@@ -6669,6 +6747,7 @@ country_event = {
                     region = PRU_690
                     region = PRU_701
                     province_id = 684
+                    province_id = 3861
                     province_id = 685
                 }
                 NOT = { is_core = GCF }
@@ -7004,10 +7083,7 @@ country_event = {
                 NOT = { has_country_modifier = recently_lost_war }
                 is_vassal = no
                 any_owned_province = { has_building = naval_base }
-                OR = {
-                    is_secondary_power = yes
-                    is_greater_power = yes
-                }
+                rank = 16
             }
             add_country_modifier = { name = dismantling_country duration = 385 }
         }
@@ -7023,7 +7099,7 @@ country_event = {
                     tag = INO
                     tag = BUR
                     tag = SIA
-                    tag = XAN
+                    tag = LUA
                     tag = NYE
                 }
                 OR = {
@@ -7196,7 +7272,10 @@ country_event = {
     major = yes
 
     trigger = {
-        war = no
+        OR = {
+            tag = FRA
+            tag = BOR
+        }
         OR = {
             has_country_modifier = great_war
             has_country_modifier = great_war2
@@ -7205,10 +7284,7 @@ country_event = {
             has_country_flag = ultimatum_accepted
             has_country_flag = dismantling_treaty
         }
-        OR = {
-            tag = FRA
-            tag = BOR
-        }
+        war = no
         OR = {
             has_country_flag = ultimatum_accepted
             has_country_flag = dismantling_treaty
@@ -7396,7 +7472,6 @@ country_event = {
             limit = {
                 tag = SAR
                 NOT = { exists = ITA }
-				NOT = { exists = ITS }
                 truce_with = THIS
             }
             SAR_466 = { add_core = SAR secede_province = SAR }
@@ -7473,6 +7548,7 @@ country_event = {
                     region = PRU_690
                     region = PRU_701
                     province_id = 684
+                    province_id = 3861
                     province_id = 685
                 }
                 NOT = { is_core = GER }
@@ -7494,6 +7570,7 @@ country_event = {
                     region = PRU_690
                     region = PRU_701
                     province_id = 684
+                    province_id = 3861
                     province_id = 685
                 }
                 NOT = { is_core = GCF }
@@ -7840,10 +7917,7 @@ country_event = {
                 NOT = { has_country_modifier = recently_lost_war }
                 is_vassal = no
                 any_owned_province = { has_building = naval_base }
-                OR = {
-                    is_secondary_power = yes
-                    is_greater_power = yes
-                }
+                rank = 16
             }
             add_country_modifier = { name = dismantling_country duration = 385 }
         }
@@ -7859,7 +7933,7 @@ country_event = {
                     tag = INO
                     tag = BUR
                     tag = SIA
-                    tag = XAN
+                    tag = LUA
                     tag = NYE
                 }
                 OR = {
@@ -8032,7 +8106,11 @@ country_event = {
     major = yes
 
     trigger = {
-        war = no
+        OR = {
+            tag = AUS
+            tag = KUK
+            tag = DNB
+        }
         OR = {
             has_country_modifier = great_war
             has_country_modifier = great_war2
@@ -8041,11 +8119,7 @@ country_event = {
             has_country_flag = ultimatum_accepted
             has_country_flag = dismantling_treaty
         }
-        OR = {
-            tag = AUS
-            tag = KUK
-            tag = DNB
-        }
+        war = no
         OR = {
             has_country_flag = ultimatum_accepted
             has_country_flag = dismantling_treaty
@@ -8119,6 +8193,7 @@ country_event = {
                 OR = {
                     province_id = 370
                     province_id = 371
+					province_id = 3862
                 }
             }
             add_core = DEN
@@ -8197,6 +8272,7 @@ country_event = {
                     region = PRU_690
                     region = PRU_701
                     province_id = 684
+                    province_id = 3861
                     province_id = 685
                 }
                 NOT = { is_core = GER }
@@ -8218,6 +8294,7 @@ country_event = {
                     region = PRU_690
                     region = PRU_701
                     province_id = 684
+                    province_id = 3861
                     province_id = 685
                 }
                 NOT = { is_core = GCF }
@@ -8635,10 +8712,7 @@ country_event = {
                 NOT = { has_country_modifier = recently_lost_war }
                 is_vassal = no
                 any_owned_province = { has_building = naval_base }
-                OR = {
-                    is_secondary_power = yes
-                    is_greater_power = yes
-                }
+                rank = 16
             }
             add_country_modifier = { name = dismantling_country duration = 385 }
         }
@@ -8654,7 +8728,7 @@ country_event = {
                     tag = INO
                     tag = BUR
                     tag = SIA
-                    tag = XAN
+                    tag = LUA
                     tag = NYE
                 }
                 OR = {
@@ -8827,7 +8901,7 @@ country_event = {
     major = yes
 
     trigger = {
-        war = no
+        tag = TUR
         OR = {
             has_country_modifier = great_war
             has_country_modifier = great_war2
@@ -8836,7 +8910,7 @@ country_event = {
             has_country_flag = ultimatum_accepted
             has_country_flag = dismantling_treaty
         }
-        tag = TUR
+        war = no
         OR = {
             has_country_flag = ultimatum_accepted
             has_country_flag = dismantling_treaty
@@ -8904,6 +8978,7 @@ country_event = {
                     secede_province = RUM
                 }
             }
+            TUR = { create_vassal = RUM }
         }
 
         ANT = {
@@ -8920,27 +8995,17 @@ country_event = {
             TUR = { release_vassal = RUM }
         }
 
-        #replace Libyan cores, if owned
-        random_owned = {
-            limit = {
-                province_id = 1731
-                NOT = { is_core = LBY }
-                NOT = { exists = TRI }
-            }
-            TRI = { all_core = { remove_core = TRI } }
-            TRI_1731 = { add_core = LBY }
-        }
-
         random_owned = {
             limit = {
                 province_id = 1735
-                NOT = { is_core = LBY }
+                NOT = { is_core = TRI }
                 NOT = { exists = CYR }
             }
             CYR = {
                 all_core = { remove_core = CYR }
             }
-            TRI_1735 = { add_core = LBY }
+            TRI_1735 = { add_core = TRI }
+			TRI = { government = democracy }
         }
 
         #if any Congress Poland cores owned, re-add cores to Russia
@@ -8966,6 +9031,7 @@ country_event = {
                     region = PRU_690
                     region = PRU_701
                     province_id = 684
+                    province_id = 3861
                     province_id = 685
                 }
                 NOT = { is_core = GER }
@@ -8987,6 +9053,7 @@ country_event = {
                     region = PRU_690
                     region = PRU_701
                     province_id = 684
+                    province_id = 3861
                     province_id = 685
                 }
                 NOT = { is_core = GCF }
@@ -9229,7 +9296,7 @@ country_event = {
                     tag = PLS
                     tag = JOR
                     tag = IRQ
-                    tag = LBY
+                    tag = TRI
                     tag = HTY
                     is_culture_group = west_african
                     is_culture_group = east_african
@@ -9342,7 +9409,7 @@ country_event = {
         #release Libya as a vassal to a European GP if it's not a colony
         any_country = {
             limit = {
-                tag = LBY
+                tag = TRI
                 exists = no
                 any_core = {
                     owned_by = THIS
@@ -9632,10 +9699,7 @@ country_event = {
                 NOT = { has_country_modifier = recently_lost_war }
                 is_vassal = no
                 any_owned_province = { has_building = naval_base }
-                OR = {
-                    is_secondary_power = yes
-                    is_greater_power = yes
-                }
+                rank = 16
             }
             add_country_modifier = { name = dismantling_country duration = 385 }
         }
@@ -9651,7 +9715,7 @@ country_event = {
                     tag = INO
                     tag = BUR
                     tag = SIA
-                    tag = XAN
+                    tag = LUA
                     tag = NYE
                 }
                 OR = {
@@ -10028,7 +10092,6 @@ country_event = {
     picture = "Demonstration"
 
     trigger = {
-        war = no
         is_greater_power = yes
         is_disarmed = no
         mass_politics = 1
@@ -10038,6 +10101,7 @@ country_event = {
             NOT = { has_country_modifier = neutrality }
             NOT = { tag = THIS }
         }
+        war = no
         NOT = {
             has_country_modifier = no_more_war
             has_country_modifier = neutrality
@@ -10159,7 +10223,6 @@ country_event = {
     picture = "ferdinand"
 
     trigger = {
-        war = no
         is_greater_power = yes
         is_disarmed = no
         mass_politics = 1
@@ -10169,6 +10232,7 @@ country_event = {
             NOT = { has_country_modifier = neutrality }
             NOT = { tag = THIS }
         }
+        war = no
         NOT = {
             has_country_modifier = no_more_war
             has_country_modifier = neutrality
@@ -10298,7 +10362,6 @@ country_event = {
     picture = "treaty"
 
     trigger = {
-        war = no
         has_country_modifier = punitive_effects
         any_owned_province = {
             OR = {
@@ -10310,10 +10373,7 @@ country_event = {
             NOT = {
                 any_neighbor_province = {
                     owner = {
-                        OR = {
-                            is_greater_power = yes
-                            is_secondary_power = yes
-                        }
+                        rank = 16
                         OR = {
                             truce_with = THIS
                             AND = {
@@ -10326,6 +10386,7 @@ country_event = {
                 }
             }
         }
+        war = no
         any_greater_power = {
             OR = {
                 truce_with = THIS
@@ -10346,10 +10407,7 @@ country_event = {
         name = "EVTOPTA96070" #Time to carve up our empire.
         random_country = {
             limit = {
-                OR = {
-                    is_greater_power = yes
-                    is_secondary_power = yes
-                }
+                rank = 16
                 OR = {
                     truce_with = THIS
                     AND = {
@@ -10385,10 +10443,7 @@ country_event = {
                     NOT = {
                         any_neighbor_province = {
                             owner = {
-                                OR = {
-                                    is_greater_power = yes
-                                    is_secondary_power = yes
-                                }
+                                rank = 16
                                 OR = {
                                     truce_with = FROM
                                     AND = {
@@ -10415,10 +10470,7 @@ country_event = {
                     NOT = {
                         any_neighbor_province = {
                             owner = {
-                                OR = {
-                                    is_greater_power = yes
-                                    is_secondary_power = yes
-                                }
+                                rank = 16
                                 OR = {
                                     truce_with = FROM
                                     AND = {
@@ -10464,7 +10516,6 @@ country_event = {
     picture = "treaty"
 
     trigger = {
-        war = no
         has_country_modifier = punitive_effects
         NOT = {
             any_owned_province = {
@@ -10477,10 +10528,7 @@ country_event = {
                 NOT = {
                     any_neighbor_province = {
                         owner = {
-                            OR = {
-                                is_greater_power = yes
-                                is_secondary_power = yes
-                            }
+                            rank = 16
                             OR = {
                                 truce_with = THIS
                                 AND = {
@@ -10494,6 +10542,7 @@ country_event = {
                 }
             }
         }
+        war = no
         any_owned_province = {
             OR = {
                 is_colonial = yes
@@ -10501,11 +10550,7 @@ country_event = {
             }
             NOT = { is_core = THIS }
             any_neighbor_province = {
-                owner = {
-                    OR = {
-                        is_greater_power = yes
-                        is_secondary_power = yes
-                    }
+                owner = {rank = 16
                     OR = {
                         truce_with = THIS
                         AND = {
@@ -10537,10 +10582,7 @@ country_event = {
         name = "EVTOPTA96070" #Time to carve up our empire.
         random_country = {
             limit = {
-                OR = {
-                    is_greater_power = yes
-                    is_secondary_power = yes
-                }
+                rank = 16
                 OR = {
                     truce_with = THIS
                     AND = {
@@ -10622,7 +10664,6 @@ country_event = {
     picture = "treaty"
 
     trigger = {
-        war = no
         has_country_modifier = punitive_effects
         NOT = {
             any_owned_province = {
@@ -10635,10 +10676,7 @@ country_event = {
                 NOT = {
                     any_neighbor_province = {
                         owner = {
-                            OR = {
-                                is_greater_power = yes
-                                is_secondary_power = yes
-                            }
+                            rank = 16
                             OR = {
                                 truce_with = THIS
                                 AND = {
@@ -10652,6 +10690,7 @@ country_event = {
                 }
             }
         }
+        war = no
         NOT = {
             any_owned_province = {
                 OR = {
@@ -10661,10 +10700,7 @@ country_event = {
                 NOT = { is_core = THIS }
                 any_neighbor_province = {
                     owner = {
-                        OR = {
-                            is_greater_power = yes
-                            is_secondary_power = yes
-                        }
+                        rank = 16
                         OR = {
                             truce_with = THIS
                             AND = {
@@ -11245,10 +11281,7 @@ country_event = {
             # owner = { all_core = { remove_core = FROM } }
         # }
 
-        random_owned = {
-            limit = { owner = { is_vassal = no } }
-            owner = { FROM = { create_vassal = THIS } }
-        }
+        create_vassal = THIS
 
         random_list = {
             10 = { add_country_modifier = { name = considering_colonial_offer duration = 30 } }
@@ -11275,10 +11308,7 @@ country_event = {
                         num_of_ports = 1
                     }
                 }
-                OR = {
-                    is_greater_power = yes
-                    is_secondary_power = yes
-                }
+                rank = 16
                 OR = {
                     AND = {
                         truce_with = FROM
@@ -11737,17 +11767,6 @@ country_event = {
             }
             any_owned = {
                 limit = { is_core = NGR }
-                remove_core = NIG
-                remove_core = SOK
-                remove_core = DND
-				remove_core = BGU
-                remove_core = TOU
-                remove_core = OYO
-                remove_core = BEN
-                remove_core = ARO
-                remove_core = CLA
-                remove_core = WRI
-                remove_core = KBO
                 secede_province = THIS
             }
         }
@@ -11760,9 +11779,6 @@ country_event = {
             }
             any_owned = {
                 limit = { is_core = IVC }
-                remove_core = KNG
-                remove_core = ASH
-                remove_core = MOS
                 secede_province = THIS
             }
         }
@@ -11775,7 +11791,6 @@ country_event = {
             }
             any_owned = {
                 limit = { is_core = GNE }
-                remove_core = JAL
                 secede_province = THIS
             }
         }
@@ -11788,10 +11803,6 @@ country_event = {
             }
             any_owned = {
                 limit = { is_core = SNG }
-                remove_core = TOO
-                remove_core = WOL
-                remove_core = SEG
-                remove_core = TOU
                 secede_province = THIS
             }
         }
@@ -11804,11 +11815,6 @@ country_event = {
             }
             any_owned = {
                 limit = { is_core = NIG }
-                remove_core = DND
-                remove_core = TOU
-                remove_core = MAS
-                remove_core = DAM
-                remove_core = KBO
                 secede_province = THIS
             }
         }
@@ -11869,11 +11875,6 @@ country_event = {
             }
             any_owned = {
                 limit = { is_core = CNG }
-                remove_core = LOA
-                remove_core = LUA
-                remove_core = AZA
-                remove_core = KZB
-                remove_core = KON
                 secede_province = THIS
             }
         }
@@ -11886,8 +11887,6 @@ country_event = {
             }
             any_owned = {
                 limit = { is_core = ZAM }
-                remove_core = KZB
-                remove_core = LUA
                 secede_province = THIS
             }
         }
@@ -11900,7 +11899,6 @@ country_event = {
             }
             any_owned = {
                 limit = { is_core = KNY }
-                remove_core = ZAN
                 secede_province = THIS
             }
         }
@@ -11925,12 +11923,6 @@ country_event = {
             }
             any_owned = {
                 limit = { is_core = MLI }
-                remove_core = TOU
-                remove_core = SEG
-                remove_core = MAS
-                remove_core = MOS
-                remove_core = DND
-                remove_core = BKF
                 secede_province = THIS
             }
         }
@@ -11943,7 +11935,6 @@ country_event = {
             }
             any_owned = {
                 limit = { is_core = ANG }
-                remove_core = KON
                 secede_province = THIS
             }
         }
