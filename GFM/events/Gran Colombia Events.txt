@@ -653,11 +653,11 @@ country_event = {
 		PEU = { exists = no } 
 		has_global_flag = argentinian-bolivian_war
 		OR = { 
-				BOL = { war_with = LPL } 
-				BOL = { war_with = ARC } 
-				BOL = { war_with = ARG } }
-		2295 = { owned_by = GCO 
-				 is_core = GCO }
+			BOL = { war_with = LPL } 
+			BOL = { war_with = ARC } 
+			BOL = { war_with = ARG }
+		}
+		2295 = { owned_by = GCO is_core = GCO }
 	}
 
 	mean_time_to_happen = { days = 10 }
@@ -666,24 +666,40 @@ country_event = {
 		name = "Save them from the Platine cluthes!"
 		prestige = 5
 		set_global_flag = Saving_Bolivia
-			BOL = { military_access = GCO create_alliance = GCO } 
-			random_owned = { 
-							limit = { owner = { exists = ARG } }
-							owner = { war = { target = ARG 
-							attacker_goal = { casus_belli = cut_down_to_size_no_infamy } 
-							defender_goal = cut_down_to_size_no_infamy } } }
-			random_owned = { 
-							limit = { owner = { exists = LPL } }
-							owner = { war = { target = LPL
-							attacker_goal = { casus_belli = cut_down_to_size_no_infamy } 
-							defender_goal = cut_down_to_size_no_infamy } } }		
-			random_owned = { 
-							limit = { owner = { exists = ARC } }
-							owner = { war = { target = ARC 
-							attacker_goal = { casus_belli = cut_down_to_size_no_infamy } 
-							defender_goal = cut_down_to_size_no_infamy } } }		
-        ai_chance = { factor = 95 }
+		BOL = { military_access = GCO create_alliance = GCO relation = { who = GCO value = 400 } }
+		diplomatic_influence = { who = BOL value = 400 }
+		random_owned = { 
+			limit = { owner = { exists = ARG } }
+			owner = {
+				war = {
+					target = ARG 
+					attacker_goal = { casus_belli = cut_down_to_size_no_infamy }
+					defender_goal = { cut_down_to_size_no_infamy }
+				}
+			}
 		}
+		random_owned = { 
+			limit = { owner = { exists = LPL } }
+			owner = {
+				war = {
+					target = LPL
+					attacker_goal = { casus_belli = cut_down_to_size_no_infamy } 
+					defender_goal = { cut_down_to_size_no_infamy }
+				}
+			}
+		}		
+		random_owned = { 
+			limit = { owner = { exists = ARC } }
+			owner = {
+				war = {
+					target = ARC 
+					attacker_goal = { casus_belli = cut_down_to_size_no_infamy } 
+					defender_goal = { cut_down_to_size_no_infamy }
+				}
+			}
+		}
+        ai_chance = { factor = 95 }
+	}
 	option = { 
 		name = "We cannot intervene. Bolivia is Charcas."
 		prestige = -5
@@ -700,14 +716,13 @@ country_event = {
 	fire_only_once = yes
 	
 	trigger = {
-		tag= GCO }
+		tag = GCO
 		has_global_flag = argentinian-bolivian_war
-		2295 = { owned_by = GCO 
-				 is_core = GCO }
+		2295 = { owned_by = GCO is_core = GCO }
 		BOL = { exists = yes war = no }
-		war = no 
+		NOT = { war_with = ARC war_with = ARG war_with = LPL }
 		is_disarmed = no
-		OR = { ARG = { is_disarmed = yes } ARC = { is_disarmed = yes } LPL = { is_disarmed = yes }
+		OR = { ARG = { is_disarmed = yes } ARC = { is_disarmed = yes } LPL = { is_disarmed = yes } }
 	}
 	
 	mean_time_to_happen = { days = 1 }
@@ -731,6 +746,113 @@ country_event = {
             militancy = 5
             consciousness = -2 
 		}
+		ai_chance = { factor = 9 }
+	}
+	
+	option = {
+		name = "Bolivia is a fully independent country."
+		prestige = 10
+		badboy = -5
+        any_pop = {
+            limit = { has_pop_culture = south_andean }
+            militancy = -3
+            consciousness = 3
+		}
+		any_pop = {
+            limit = { has_pop_culture = quechua }
+            militancy = 5
+            consciousness = -2 
+		}
+		any_pop = {
+            limit = { has_pop_culture = aimara }
+            militancy = 5
+            consciousness = -2 
+		}
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+    id = 62045
+    title = "Bolivia pushes for independence"
+    desc = "62045_desc"
+    picture = "araucania_antonnie"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = GCO
+		BOL = { exists = yes vassal_of = THIS }
+		year = 1878
+		war = no 
+		is_disarmed = no
+	}
+	
+	mean_time_to_happen = { days = 1 }
+	
+	option = {
+		name = "Let them go."
+		prestige = -5
+		badboy = -3
+		GCO = { release_vassal = BOL }
+        any_pop = {
+            limit = { has_pop_culture = south_andean }
+            militancy = 3
+            consciousness = 3
+		}
+		any_pop = {
+            limit = { has_pop_culture = quechua }
+            militancy = -5
+            consciousness = 2 
+		}
+		any_pop = {
+            limit = { has_pop_culture = aimara }
+            militancy = -5
+            consciousness = 2 
+		}
+		ai_chance = { factor = 9 }
+	}
+	
+	option = {
+		name = "Bolivia is a integral part of Bolivar's project."
+		prestige = 10
+		badboy = 8
+		GCO = { release_vassal = BOL }
+		war = {
+			target = BOL
+			attacker_goal = { casus_belli = conquest_low }
+			defender_goal = { casus_belli = humiliate_no_infamy }
+			call_ally = no
+		}
+		BOL = { country_event = 62046 }
+        any_pop = {
+            limit = { has_pop_culture = south_andean }
+            militancy = -3
+            consciousness = 3
+		}
+		any_pop = {
+            limit = { has_pop_culture = quechua }
+            militancy = 5
+            consciousness = -2 
+		}
+		any_pop = {
+            limit = { has_pop_culture = aimara }
+            militancy = 5
+            consciousness = -2 
+		}
+	}
+}
+country_event = {
+    id = 62046
+    title = "Colombia invades."
+    desc = "After years of pushing for direct independence from Colombia, it seems they want us to form part of their nation and now they have launched a full invasion on our lands."
+    picture = "araucania_antonnie"
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "NOT AGAIN!!!!"
+		add_country_modifier = { name = small_country_draft duration = 730 }
 	}
 }
 country_event = {
