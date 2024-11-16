@@ -600,6 +600,10 @@ country_event = {
 	trigger = {
 		tag = MEX
 		war_with = TEX
+		OR = {
+			has_country_modifier = bustamante_rule
+			has_country_modifier = santa_ana_rule
+		}
 		NOT = { has_country_flag = goliad_massacre }
 		137 = { controlled_by = MEX }
 		year = 1836
@@ -672,15 +676,7 @@ country_event = {
 			militancy = 5
 			consciousness = 4
 		}
-		TEX = {
-			any_pop = {
-				limit = {
-					type = soldiers
-				}
-				reduce_pop = 0.92
-			}
-			country_event = 4206991
-		}
+		TEX = { country_event = 4206991 }
 	}
 }
 
@@ -696,6 +692,26 @@ country_event = {
 	option = {
 		name = "We will never forget."
 		prestige = -5
+		random_owned = {
+			limit = {
+				owner = {
+					MEX = {
+						OR = {
+							has_country_modifier = bustamante_rule
+							has_country_modifier = santa_ana_rule
+						}
+					}
+				}
+			}
+			owner = {
+				any_pop = {
+					limit = {
+						type = soldiers
+					}
+					reduce_pop = 0.92
+				}
+			}
+		}
 		any_pop = {
 			limit = {
 				has_pop_culture = dixie
@@ -2400,10 +2416,13 @@ country_event = {
 
 	trigger = {
 		tag = MEX
-		NOT = { centralization = federalism }
-		NOT = { exists = MEE }
+		OR = {
+			has_country_modifier = santa_ana_rule
+			has_country_modifier = bustamante_rule
+			NOT = { centralization = federalism }
+		}
 		year = 1838
-		NOT = { year = 1860 }
+		NOT = { year = 1855 }
 	}
 
 	mean_time_to_happen = {
@@ -2414,14 +2433,7 @@ country_event = {
 		name = "Fight off the rebels."
 		war_exhaustion = 10
 		set_global_flag = sonora_rebellion_urrea
-		random_owned = {
-			limit = {
-				owner = {
-					MEX = { has_country_modifier = bustamante_rule }
-				}
-			}
-			owner = { MEX = { remove_country_modifier = bustamante_rule add_country_modifier = { name = santa_ana_rule duration = -1 } } }
-		}
+		random_owned = { limit = { owner = { MEX = { has_country_modifier = bustamante_rule } } } owner = { MEX = { remove_country_modifier = bustamante_rule add_country_modifier = { name = santa_ana_rule duration = -1 } } } }
 		any_owned = {
 			limit = {
 				OR = {
@@ -2450,11 +2462,20 @@ country_event = {
 				sub_unit = { type = cavalry value = current }
 			}
 		}
-		MEE = {
-			war = {
-				target = MEX
-				attacker_goal = { casus_belli = conquest_any }
-				defender_goal = { casus_belli = conquest_any }
+		random_owned = {
+			limit = {
+				owner = {
+					MEX = {
+						NOT = { war_with = MEE }
+					}
+				}
+			}
+			owner = {
+				war = {
+					target = MEE
+					attacker_goal = { casus_belli = annex_core_country }
+					defender_goal = { casus_belli = conquest_any }
+				}
 			}
 		}
 		ai_chance = { factor = 100 }
@@ -2464,8 +2485,7 @@ country_event = {
 		name = "Federalism or Death! §BPlay as revolt."
 		war_exhaustion = 10
 		set_global_flag = sonora_rebellion_urrea
-		remove_country_modifier = bustamante_rule
-		add_country_modifier = { name = santa_ana_rule duration = -1 }
+		random_owned = { limit = { owner = { MEX = { has_country_modifier = bustamante_rule } } } owner = { MEX = { remove_country_modifier = bustamante_rule add_country_modifier = { name = santa_ana_rule duration = -1 } } } }
 		any_owned = {
 			limit = {
 				OR = {
@@ -2494,11 +2514,20 @@ country_event = {
 				sub_unit = { type = cavalry value = current }
 			}
 		}
-		MEE = {
-			war = {
-				target = MEX
-				attacker_goal = { casus_belli = conquest_any }
-				defender_goal = { casus_belli = conquest_any }
+		random_owned = {
+			limit = {
+				owner = {
+					MEX = {
+						NOT = { war_with = MEE }
+					}
+				}
+			}
+			owner = {
+				war = {
+					target = MEE
+					attacker_goal = { casus_belli = annex_core_country }
+					defender_goal = { casus_belli = conquest_any }
+				}
 			}
 		}
 		change_tag_no_core_switch = MEE
@@ -3625,5 +3654,133 @@ country_event = {
 	
 	option = {
 		name = "We don't accept their surrender"
+	}
+}
+
+country_event = {
+	id = 4207089
+	title = "A compromise with the central government" # IF MEE IS NOT AI
+	desc = "EVTDESC4207089"
+	picture = "treaty"
+	
+	trigger = {
+		tag = MEE
+		war = no
+		exists = MEX
+		NOT = { year = 1854 }
+		NOT = { has_global_flag = guerrero_rebellion }
+		NOT = { government = colonial_company_4 }
+	}
+
+	option = {
+		name = "Not what we wanted, but it is at least one step closer to our demands."
+		inherit = MEX
+		change_tag = MEX
+		prestige = 10
+		add_country_modifier = { name = america_new_world duration = 10950 }
+		add_country_modifier = { name = global_baby_boom_big duration = 1095 }
+		MEE = { remove_accepted_culture = afro_latino }
+		remove_country_modifier = bustamante_rule
+		remove_country_modifier = santa_ana_rule
+		government = democracy
+		capital = 2172
+		ruling_party_ideology = reactionary
+		add_accepted_culture = afro_latino
+		remove_country_modifier = military_fueros
+		define_general = { name = "Francisco García Salinas" personality = defence_1.1 background = attack_1.1 }
+		define_general = { name = "Mariano Arista" personality = no_personality background = no_background }
+		define_general = { name = "Antonio Canales Rosillo" personality = defence_minus_1.51 background = attack_1.1 }
+		define_general = { name = "Vicente Filísola" personality = defence_2.76 background = attack_1.1 }
+		define_general = { name = "Pedro de Ampudia" personality = defence_2.76 background = attack_2.76 }
+		define_general = { name = "José María Flores" personality = defence_1.1 background = attack_minus_1.51 }
+		define_general = { name = "José de Urrea" personality = defence_1.1 background = attack_2.76 }
+		define_general = { name = "Martín Perfecto de Cos" personality = defence_minus_1.101 background = no_background }
+		political_reform = federalism
+		random_owned = { limit = { owner = { school_reforms = no_schools } } owner = { social_reform = low_schools } }
+		political_reform = no_slavery
+		political_reform = culture_voting_only
+		political_reform = open_borders
+		political_reform = censored_press
+		political_reform = yes_meeting
+		political_reform = wealth_voting
+		political_reform = gerrymandering
+		political_reform = state_equal_weight
+		political_reform = state_controlled
+		MEE = { all_core = { remove_core = MEE } }
+	}
+}
+
+country_event = {
+	id = 4207090
+	title = "Federal Revolt Crumbles" # IF MEE AND MEX ARE BOTH AI
+	desc = "EVTDESC4207090"
+	picture = "treaty"
+	
+	trigger = {
+		tag = MEX
+		war = no
+		exists = MEX
+		NOT = { year = 1854 }
+		NOT = { has_global_flag = guerrero_rebellion }
+		NOT = { government = colonial_company_4 }
+	}
+
+	option = {
+		name = "Not what we wanted, but it is at least one step closer to our demands."
+		inherit = MEE
+		MEE = { remove_accepted_culture = afro_latino }
+		MEE = { all_core = { remove_core = MEE } }
+	}
+}
+
+country_event = {
+	id = 4207091
+	title = "Victory against the central government!" # IF MEE IS NOT AI
+	desc = "EVTDESC4207091"
+	picture = "treaty"
+	
+	trigger = {
+		tag = MEE
+		war = no
+		NOT = { exists = MEX }
+		NOT = { year = 1854 }
+		NOT = { has_global_flag = guerrero_rebellion }
+		NOT = { government = colonial_company_4 }
+	}
+
+	option = {
+		name = "Long live the Federal Republic of Mexico!"
+		prestige = 10
+		change_tag = MEX
+		government = democracy
+		capital = 2172
+		add_accepted_culture = afro_latino
+		remove_country_modifier = military_fueros
+		any_pop = { scaled_militancy = { ideology = conservative factor = 5 } scaled_militancy = { ideology = reactionary factor = 8 } }
+		add_country_modifier = { name = america_new_world duration = 10950 }
+		add_country_modifier = { name = global_baby_boom_big duration = 1095 }
+		remove_country_modifier = bustamante_rule
+		political_reform = free_press
+		political_reform = yes_meeting
+		political_reform = universal_voting
+		political_reform = federalism
+		political_reform = secret_ballots
+		political_reform = population_equal_weight
+		political_reform = all_trade_unions
+		political_reform = all_voting_pops
+		political_reform = settlement
+		political_reform = open_borders
+		random_owned = { limit = { owner = { school_reforms = no_schools } } owner = { social_reform = low_schools } }
+		ruling_party_ideology = liberal
+		define_general = { name = "Francisco García Salinas" personality = defence_1.1 background = attack_1.1 }
+		define_general = { name = "Mariano Arista" personality = no_personality background = no_background }
+		define_general = { name = "Antonio Canales Rosillo" personality = defence_minus_1.51 background = attack_1.1 }
+		define_general = { name = "Vicente Filísola" personality = defence_2.76 background = attack_1.1 }
+		define_general = { name = "Pedro de Ampudia" personality = defence_2.76 background = attack_2.76 }
+		define_general = { name = "José María Flores" personality = defence_1.1 background = attack_minus_1.51 }
+		define_general = { name = "José de Urrea" personality = defence_1.1 background = attack_2.76 }
+		define_general = { name = "Martín Perfecto de Cos" personality = defence_minus_1.101 background = no_background }
+		nationalvalue = nv_equality
+		MEE = { all_core = { remove_core = MEE } }
 	}
 }
