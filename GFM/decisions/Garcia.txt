@@ -1953,7 +1953,10 @@ political_decisions = {
 		}
 
 		allow = {
-			rank = 16
+			OR = {
+				rank = 16
+				ai = no
+			}
 			war = no
 			is_vassal = no
 			prestige = 35
@@ -2251,9 +2254,15 @@ political_decisions = {
 			factor = 0
 			modifier = {
 				factor = 1
-				has_global_flag = rgr_wants_mexico
-				has_global_flag = gaveuplaredo
-				NOT = { war_with = MEX }
+				OR = {
+					AND = {
+						has_global_flag = rgr_wants_mexico
+						NOT = { war_with = MEX }
+						has_global_flag = gaveuplaredo
+					}
+					in_sphere = USA
+					vassal_of = USA
+				}
 			}
 		}
 	}
@@ -2299,5 +2308,205 @@ political_decisions = {
 			}
 		}
 		ai_will_do = { factor = 1 }
+	}
+	
+	claim_mayan_lands = {
+	picture = mayan_lands
+		potential = {
+			tag = YUC
+			has_global_flag = yuc_stays_alive
+			NOT = { has_country_flag = yuc_claims_mayans }
+		}
+		
+		allow = {
+			war = no
+			OR = {
+				rank = 16
+				ai = no
+			}
+			is_vassal = no
+			prestige = 35
+			nationalism_n_imperialism = 1
+			empiricism = 1
+			YUC = { all_core = { OR = { owned_by = THIS empty = yes } } }
+			OR = {
+				government = fascist_dictatorship
+				government = proletarian_dictatorship
+				government = presidential_dictatorship
+				war_policy = jingoism
+				war_policy = pro_military
+			}
+		}
+		
+		effect = {
+			set_country_flag = yuc_claims_mayans
+			badboy = 4
+			UCA_2186 = { add_core = YUC }
+			MEX_2181 = { add_core = YUC }
+			2193 = { add_core = YUC }
+		}
+	}
+	
+	yuc_wanna_conquer_mex = {
+	picture = mexico_map
+		potential = {
+			tag = YUC
+			NOT = { has_global_flag = yuc_leads_mexico }
+			NOT = { war_with = MEX }
+			exists = MEX
+			OR = {
+				ai = no
+				MEX = { NOT = { centralization = federalism } }
+			}
+		}
+		
+		allow = {
+			war = no
+			OR = {
+				rank = 16
+				ai = no
+			}
+			exists = MEX
+			is_disarmed = no
+			NOT = {
+				badboy = 0.6
+				OR = {
+					truce_with = MEX
+					in_sphere = MEX
+					vassal_of = MEX
+				}
+			}
+		}
+		
+		effect = {
+			set_global_flag = yuc_wants_mexico
+			badboy = 10
+			any_pop = { consciousness = 4 militancy = -2 }
+			war = {
+				target = MEX
+				attacker_goal = { casus_belli = conquest_any }
+				defender_goal = { casus_belli = conquest_any }
+				call_ally = yes
+			}
+		}
+		ai_will_do = {
+			factor = 0
+			modifier = {
+				factor = 1
+				NOT = { MEX = { brigade_compare = 1.2 } }
+			}
+		}
+	}
+	
+	yuc_rejoin_fed_mexico = {
+	picture = mex_1824_const
+		potential = {
+			tag = YUC
+			exists = MEX
+			MEX = { centralization = federalism government = democracy }
+			NOT = { ai = yes has_country_flag = yuc_rejoined_mex }
+			
+		}
+		
+		allow = {
+			war = no
+			OR = {
+				is_vassal = no
+				vassal_of = MEX
+			}
+		}
+		
+		effect = {
+			set_country_flag = yuc_rejoined_mex
+			MEX = { country_event = { id = 4207096 days = 3 } }
+			all_core = { add_core = MEX }
+			any_pop = { militancy = -1 consciousness = 6 }
+			change_tag_no_core_switch = MEX
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	yuc_apply_statehood = {
+	picture = manifest_destiny
+		potential = {
+			tag = YUC
+			neighbor = USA
+			has_global_flag = yuc_stays_alive
+			NOT = { ai = yes MEX = { centralization = federalism } }
+			NOT = { has_global_flag = yuc_applied_statehood }
+		}
+		
+		allow = {
+			NOT = { exists = UCA }
+			war = no
+			NOT = { truce_with = USA }
+			relation = { who = USA value = 150 }
+			nationalism_n_imperialism = 1
+		}
+		
+		effect = {
+			set_global_flag = yuc_applied_statehood
+			USA = { country_event = { id = 16400 days = 3 } }
+			change_tag_no_core_switch = USA
+		}
+		
+		ai_will_do = {
+			factor = 0
+			modifier = {
+				factor = 1
+				OR = {
+					AND = {
+						has_global_flag = yuc_wants_mexico
+						NOT = { war_with = MEX }
+					}
+					in_sphere = USA
+					vassal_of = USA
+				}
+			}
+		}
+	}
+	
+	yuc_join_uca = {
+	picture = map_central_america
+		potential = {
+			tag = YUC
+			exists = UCA
+			neighbor = UCA
+			has_global_flag = yuc_stays_alive
+			NOT = { ai = yes MEX = { centralization = federalism } }
+			NOT = { has_global_flag = yuc_applied_statehood }
+		}
+		
+		allow = {
+			NOT = { exists = UCA }
+			war = no
+			NOT = { truce_with = UCA }
+			relation = { who = UCA value = 150 }
+			nationalism_n_imperialism = 1
+		}
+		
+		effect = {
+			set_global_flag = yuc_joined_uca
+			YUC = { all_core = { add_core = UCA } }
+			change_tag_no_core_switch = UCA
+			inherit = YUC
+		}
+		
+		ai_will_do = {
+			factor = 0
+			modifier = {
+				factor = 1
+				OR = {
+					AND = {
+						has_global_flag = yuc_wants_mexico
+						NOT = { war_with = MEX }
+					}
+					has_global_flag = mex_took_texas_maw
+					has_global_flag = mex_took_oregon_maw
+					has_global_flag = mex_took_mississippi_maw
+					has_global_flag = mex_took_florida_maw
+				}
+			}
+		}
 	}
 }
