@@ -1936,4 +1936,575 @@ political_decisions = {
         }
         ai_will_do = { factor = 1 }
     }
+	
+	rio_grande_borders = {
+	picture = Rio_Grande_flag
+		potential = {
+			OR = {
+				tag = RGR
+				AND = {
+					tag = TEX
+					RGR = { any_core = { owned_by = TEX } }
+				}
+			}
+			NOT = { has_country_flag = RGR_jingo_borders }
+			NOT = { has_global_flag = rgr_leads_mexico }
+		}
+
+		allow = {
+			OR = {
+				rank = 16
+				ai = no
+			}
+			war = no
+			is_vassal = no
+			prestige = 35
+			nationalism_n_imperialism = 1
+			empiricism = 1
+			RGR = { all_core = { OR = { owned_by = THIS empty = yes } } }
+			OR = {
+				government = fascist_dictatorship
+				government = proletarian_dictatorship
+				government = presidential_dictatorship
+				war_policy = jingoism
+				war_policy = pro_military
+			}
+		}
+
+		effect = {
+			set_country_flag = RGR_jingo_borders
+			2158 = { add_core = RGR }
+			2160 = { add_core = RGR }
+			2153 = { add_core = RGR }
+			2154 = { add_core = RGR }
+			2145 = { add_core = RGR }
+			2144 = { add_core = RGR }
+			2142 = { add_core = RGR }
+			2143 = { add_core = RGR }
+			2662 = { add_core = RGR }
+			2148 = { add_core = RGR }
+			3589 = { add_core = RGR }
+			3560 = { add_core = RGR }
+			2158 = { add_core = RGR }
+			2160 = { add_core = RGR }
+			2153 = { add_core = RGR }
+			2154 = { add_core = RGR }
+			3973 = { add_core = RGR }
+			2145 = { add_core = RGR }
+			2144 = { add_core = RGR }
+			2142 = { add_core = RGR }
+			2143 = { add_core = RGR }
+			2662 = { add_core = RGR }
+			2148 = { add_core = RGR }
+			3589 = { add_core = RGR }
+			3560 = { add_core = RGR }
+			badboy = 7
+			relation = { who = MEX value = -100 }
+			relation = { who = USA value = -100 }
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	rgr_wanna_conquer_mex = {
+	picture = mexico_map
+		potential = {
+			tag = RGR
+			NOT = { has_global_flag = rgr_leads_mexico }
+			NOT = { war_with = MEX }
+			exists = MEX
+			OR = {
+				ai = no
+				MEX = { NOT = { centralization = federalism } }
+			}
+		}
+		
+		allow = {
+			war = no
+			OR = {
+				rank = 16
+				ai = no
+			}
+			exists = MEX
+			is_disarmed = no
+			NOT = {
+				badboy = 0.6
+				OR = {
+					truce_with = MEX
+					in_sphere = MEX
+					vassal_of = MEX
+				}
+			}
+		}
+		
+		effect = {
+			set_global_flag = rgr_wants_mexico
+			badboy = 10
+			any_pop = { consciousness = 4 militancy = -2 }
+			war = {
+				target = MEX
+				attacker_goal = { casus_belli = conquest_any }
+				defender_goal = { casus_belli = conquest_any }
+				call_ally = yes
+			}
+		}
+		ai_will_do = {
+			factor = 0
+			modifier = {
+				factor = 1
+				NOT = { MEX = { brigades_compare = 1.2 } }
+			}
+		}
+	}
+	
+	rgr_rejoin_fed_mexico = {
+	picture = mex_1824_const
+		potential = {
+			tag = RGR
+			exists = MEX
+			MEX = { centralization = federalism government = democracy }
+			NOT = { ai = yes has_country_flag = rgr_rejoined_mex }
+			
+		}
+		
+		allow = {
+			war = no
+			OR = {
+				is_vassal = no
+				vassal_of = MEX
+			}
+		}
+		
+		effect = {
+			set_country_flag = rgr_rejoined_mex
+			MEX = { country_event = { id = 4207096 days = 3 } }
+			all_core = { add_core = MEX }
+			any_pop = { militancy = -1 consciousness = 6 }
+			change_tag_no_core_switch = MEX
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	tex_claim_rio_grande = {
+        picture = manifest_destiny
+        potential = {
+            tag = TEX
+            exists = MEX
+            OR = {
+                NOT = { exists = RGR }
+                AND = {
+                    exists = RGR
+                    NOT = {
+                        relation = {
+                            who = RGR
+                            value = 0
+                        }
+                    }
+                }
+            }
+            NOT = { has_country_flag = rgr_claimed }
+            NOT = { has_global_flag = texanborders }
+        }
+        allow = {
+            nationalism_n_imperialism = 1
+            prestige = 100
+            is_greater_power = yes
+            is_disarmed = no
+            NOT = { alliance_with = MEX }
+            NOT = { alliance_with = RGR }
+            NOT = {
+                relation = {
+                    who = MEX
+                    value = 0
+                }
+            }
+            war = no
+        }
+        effect = {
+            set_country_flag = rgr_claimed
+            badboy = 8
+            RGR = { all_core = { add_core = TEX } }
+            any_pop = {
+                limit = {
+                    OR = {
+                        is_accepted_culture = yes
+                        is_primary_culture = yes
+                    }
+                }
+                dominant_issue = {
+                    factor = 0.05
+                    value = jingoism
+                }
+                consciousness = 1
+            }
+            any_country = {
+                limit = {
+                    NOT = { tag = THIS }
+                    any_owned_province = { is_core = RGR }
+                }
+                relation = {
+                    who = THIS
+                    value = -100
+                }
+                leave_alliance = THIS
+            }
+        }
+    }
+	
+	rio_grande_treaty = {
+	picture = rio_grande_treaty
+        potential = {
+            tag = USA
+            neighbor = RGR
+			NOT = { exists = TEX }
+			any_owned_province = { is_core = TEX }
+            RGR = {
+                exists = yes
+                any_owned_province = { is_core = USA }
+            }
+            NOT = { has_country_flag = rio_grande_treaty }
+			NOT = { has_global_flag = laredo_dispute_settled }
+        }
+		
+        allow = {
+            war = no
+            money = 100000
+            RGR = {
+                war = no
+                NOT = { truce_with = THIS }
+            }
+        }
+        effect = {
+            USA = { set_country_flag = rio_grande_treaty }
+			RGR = { country_event = 62025 }
+        }
+        ai_will_do = { factor = 1 }
+    }
+	
+	texan_volunteers_rgr = {
+	picture = mexfil
+		potential = {
+			tag = TEX
+			exists = RGR
+			RGR = { war_with = MEX }
+			NOT = { has_global_flag = rgr_stays_alive }
+		}
+		
+		allow = {
+			war = no
+			money = 1000
+		}
+		
+		effect = {
+			RGR = {
+				relation = { who = THIS value = 50 }
+				military_access = THIS
+				country_event = 62011
+			}
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	laredo_dispute = {
+	picture = treaty_signing
+		potential = {
+			tag = RGR
+			owns = 138
+			has_global_flag = rgr_stays_alive
+			exists = TEX
+			NOT = { has_global_flag = laredo_dispute_settled }
+		}
+	
+		allow = {
+			war = no
+		}
+	
+		effect = {
+			set_global_flag = laredo_dispute_settled
+			prestige = 5
+			country_event = 62017
+		}
+	}
+	
+	rgr_apply_statehood = {
+	picture = manifest_destiny
+		potential = {
+			tag = RGR
+			neighbor = USA
+			NOT = { exists = TEX }
+			has_global_flag = rgr_stays_alive
+			NOT = { ai = yes MEX = { centralization = federalism } }
+			NOT = { has_global_flag = rgr_applied_statehood }
+		}
+		
+		allow = {
+			war = no
+			NOT = { truce_with = USA }
+			relation = { who = USA value = 150 }
+			nationalism_n_imperialism = 1
+		}
+		
+		effect = {
+			set_global_flag = rgr_applied_statehood
+			USA = { country_event = { id = 16400 days = 3 } }
+			change_tag_no_core_switch = USA
+		}
+		
+		ai_will_do = {
+			factor = 0
+			modifier = {
+				factor = 1
+				OR = {
+					AND = {
+						has_global_flag = rgr_wants_mexico
+						NOT = { war_with = MEX }
+						has_global_flag = gaveuplaredo
+					}
+					in_sphere = USA
+					vassal_of = USA
+				}
+			}
+		}
+	}
+	
+	rgr_claim_tex = {
+	picture = all_texas
+		potential = {
+			tag = RGR
+			has_country_flag = RGR_jingo_borders
+			owns = 138
+			NOT = { has_country_flag = rgr_claimed_tex }
+		}
+		
+		allow = {
+			war = no
+			is_disarmed = no
+			is_vassal = no
+			NOT = { 132 = { owner = { truce_with = THIS } } }
+			OR = {
+				AND = {
+					132 = { owned_by = THIS }
+					137 = { owned_by = THIS }
+				}
+				all_core = { owned_by = THIS }
+			}
+		}
+		
+		effect = {
+			set_country_flag = rgr_claimed_tex
+			badboy = 5
+			TEX_132 = { add_core = RGR }
+			MEX_103 = { add_core = RGR }
+			any_land_province = {
+				limit = {
+					OR = {
+						province_id = 109
+						province_id = 103
+						province_id = 128
+						province_id = 129
+					}
+				}
+				add_core = RGR
+			}
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	claim_mayan_lands = {
+	picture = mayan_lands
+		potential = {
+			tag = YUC
+			has_global_flag = yuc_stays_alive
+			NOT = { has_country_flag = yuc_claims_mayans }
+		}
+		
+		allow = {
+			war = no
+			OR = {
+				rank = 16
+				ai = no
+			}
+			is_vassal = no
+			prestige = 35
+			nationalism_n_imperialism = 1
+			empiricism = 1
+			YUC = { all_core = { OR = { owned_by = THIS empty = yes } } }
+			OR = {
+				government = fascist_dictatorship
+				government = proletarian_dictatorship
+				government = presidential_dictatorship
+				war_policy = jingoism
+				war_policy = pro_military
+			}
+		}
+		
+		effect = {
+			set_country_flag = yuc_claims_mayans
+			badboy = 4
+			UCA_2186 = { add_core = YUC }
+			MEX_2181 = { add_core = YUC }
+			2193 = { add_core = YUC }
+		}
+	}
+	
+	yuc_wanna_conquer_mex = {
+	picture = mexico_map
+		potential = {
+			tag = YUC
+			NOT = { has_global_flag = yuc_leads_mexico }
+			NOT = { war_with = MEX }
+			exists = MEX
+			OR = {
+				ai = no
+				MEX = { NOT = { centralization = federalism } }
+			}
+		}
+		
+		allow = {
+			war = no
+			OR = {
+				rank = 16
+				ai = no
+			}
+			exists = MEX
+			is_disarmed = no
+			NOT = {
+				badboy = 0.6
+				OR = {
+					truce_with = MEX
+					in_sphere = MEX
+					vassal_of = MEX
+				}
+			}
+		}
+		
+		effect = {
+			set_global_flag = yuc_wants_mexico
+			badboy = 10
+			any_pop = { consciousness = 4 militancy = -2 }
+			war = {
+				target = MEX
+				attacker_goal = { casus_belli = conquest_any }
+				defender_goal = { casus_belli = conquest_any }
+				call_ally = yes
+			}
+		}
+		ai_will_do = {
+			factor = 0
+			modifier = {
+				factor = 1
+				NOT = { MEX = { brigades_compare = 1.2 } }
+			}
+		}
+	}
+	
+	yuc_rejoin_fed_mexico = {
+	picture = mex_1824_const
+		potential = {
+			tag = YUC
+			exists = MEX
+			MEX = { centralization = federalism government = democracy }
+			NOT = { ai = yes has_country_flag = yuc_rejoined_mex }
+			
+		}
+		
+		allow = {
+			war = no
+			OR = {
+				is_vassal = no
+				vassal_of = MEX
+			}
+		}
+		
+		effect = {
+			set_country_flag = yuc_rejoined_mex
+			MEX = { country_event = { id = 4207096 days = 3 } }
+			all_core = { add_core = MEX }
+			any_pop = { militancy = -1 consciousness = 6 }
+			change_tag_no_core_switch = MEX
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	yuc_apply_statehood = {
+	picture = manifest_destiny
+		potential = {
+			tag = YUC
+			has_global_flag = yuc_stays_alive
+			NOT = { ai = yes MEX = { centralization = federalism } }
+			NOT = { has_global_flag = yuc_applied_statehood }
+		}
+		
+		allow = {
+			NOT = { exists = UCA }
+			war = no
+			NOT = { truce_with = USA }
+			relation = { who = USA value = 150 }
+			nationalism_n_imperialism = 1
+		}
+		
+		effect = {
+			set_global_flag = yuc_applied_statehood
+			USA = { country_event = { id = 16400 days = 3 } }
+			change_tag_no_core_switch = USA
+		}
+		
+		ai_will_do = {
+			factor = 0
+			modifier = {
+				factor = 1
+				OR = {
+					AND = {
+						has_global_flag = yuc_wants_mexico
+						NOT = { war_with = MEX }
+					}
+					in_sphere = USA
+					vassal_of = USA
+				}
+			}
+		}
+	}
+	
+	yuc_join_uca = {
+	picture = map_central_america
+		potential = {
+			tag = YUC
+			exists = UCA
+			neighbor = UCA
+			has_global_flag = yuc_stays_alive
+			NOT = { ai = yes MEX = { centralization = federalism } }
+			NOT = { has_global_flag = yuc_applied_statehood }
+		}
+		
+		allow = {
+			NOT = { exists = UCA }
+			war = no
+			NOT = { truce_with = UCA }
+			relation = { who = UCA value = 150 }
+			nationalism_n_imperialism = 1
+		}
+		
+		effect = {
+			set_global_flag = yuc_joined_uca
+			YUC = { all_core = { add_core = UCA } }
+			change_tag_no_core_switch = UCA
+			inherit = YUC
+		}
+		
+		ai_will_do = {
+			factor = 0
+			modifier = {
+				factor = 1
+				OR = {
+					AND = {
+						has_global_flag = yuc_wants_mexico
+						NOT = { war_with = MEX }
+					}
+					has_global_flag = mex_took_texas_maw
+					has_global_flag = mex_took_oregon_maw
+					has_global_flag = mex_took_mississippi_maw
+					has_global_flag = mex_took_florida_maw
+				}
+			}
+		}
+	}
 }
