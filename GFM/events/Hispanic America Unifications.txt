@@ -70,50 +70,15 @@ country_event = {
 	desc = "Chile_joins_Peru_against_GCO_desc"
 	picture = "sinking_of_the_esmeralda"
 	fire_only_once =  yes
+	is_triggered_only = yes
 	
-	trigger = {
-        tag = GCO
-        war_with = PEU
-        war_with = BOL
-		OR = {
-			PEU = { national_provinces_occupied = 0.10 }
-			BOL = { national_provinces_occupied = 0.10 } 
-		}
-		GCO = { has_country_flag = andean_civil_war }
-		PEU = { has_country_flag = andean_civil_war }
-		BOL = { has_country_flag = andean_civil_war }
-        CHL = { exists = yes }
-    }
-
-	mean_time_to_happen = { days = 1 }
-	
-	option = { 
+	option = {
 		name = "Chile will regret this interference!"
-		random_owned = {
-			limit = { owner = { GCO = { alliance_with = CHL } } }
-			owner = {
-				relation = { who = CHL value = -100 }
-				diplomatic_influence = { who = CHL value = -400 }
-				leave_alliance = CHL
-			}
-		}
 		prestige = -1
 		GCO = { set_country_flag = Chile_joins_Andean_Civil_War war_exhaustion = 10 }
-		BOL = { military_access = CHL }
-		PEU = { military_access = CHL }
-		CHL = { 
-			military_access = PEU create_alliance = PEU
-			military_access = BOL create_alliance = BOL
-			set_country_flag = andean_civil_war
-			add_country_modifier = { name = small_country_draft duration = 2737 }
-			war = {
-				target = GCO
-				attacker_goal = { casus_belli = cut_down_to_size_no_infamy country = GCO }
-				defender_goal = { casus_belli = cut_down_to_size_no_infamy country = CHL }
-			}
-		}
     }
 }
+
 #Gran Colombia is victorous
 country_event = { 
 	id = 61002
@@ -124,26 +89,31 @@ country_event = {
 	
 	trigger = {
 		tag = GCO
-			is_disarmed = no
-		    PEU = { exists = no }
-		    BOL = { exists = no }
-			CHL = { OR = { AND = { truce_with = THIS is_disarmed = yes } exists = no } }
-		    has_country_flag = andean_civil_war
-
+		is_disarmed = no
+		PEU = { exists = no }
+		BOL = { exists = no }
+		CHL = { OR = { AND = { truce_with = THIS is_disarmed = yes has_country_flag = andean_civil_war } NOT = { has_country_flag = andean_civil_war } } }
+		has_country_flag = andean_civil_war
 	}
-
-	mean_time_to_happen = { days = 1 }
 	
 	option = { 
 		name = "We have acheived our Colombian Empire!"
 		prestige = 25
-		2322 = { add_core = GCO }
-		2322 = { add_core = BOL }
-		CHL = {
-			any_owned = {
-				limit = { is_core = GCO }
-				secede_province = GCO 
-			} 
+		random_owned = {
+			limit = {
+				CHL = { has_country_flag = andean_civil_war }
+			}
+			owner = {
+				2322 = { add_core = GCO }
+				2322 = { add_core = BOL }
+				any_land_province = {
+					limit = {
+						owned_by = CHL
+						is_core = GCO
+					}
+					secede_province = GCO
+				}
+			}
 		}
 		GCO = {
 			relation = { who = BRZ value = -200 }
