@@ -15,7 +15,6 @@ country_event = {
     title = "EVTNAME99903" #The California Gold Rush
     desc = "EVTDESC99903"
     picture = "california_gold_rush"
-	
 	fire_only_once = yes #don't change this wtf
 
     trigger = {
@@ -41,21 +40,11 @@ country_event = {
 		3453 = { trade_goods = gold add_province_modifier = { name = gold_rush duration = -1 } }
 		86 = { trade_goods = gold add_province_modifier = { name = gold_rush duration = -1 } }
 		3452 = { trade_goods = gold add_province_modifier = { name = gold_rush duration = -1 } }
-		random_owned = { limit = { province_id = 104 NOT = { life_rating = 39 } } life_rating = 10 }
-        random_owned = { limit = { province_id = 89 NOT = { life_rating = 39 } } life_rating = 10 }
-        random_owned = { limit = { province_id = 84 NOT = { life_rating = 39 } } life_rating = 5 }
-        random_owned = { limit = { province_id = 87 NOT = { life_rating = 39 } } life_rating = 5 }
+		104 = { life_rating = 10 }
+        89 = { life_rating = 10 }
+		84 = { life_rating = 5 }
+        87 = { life_rating = 5 }
 		87 = { naval_base = -6 }
-		3454 = { naval_base = -6 }
-		3455 = { naval_base = -6 }
-		3340 = { naval_base = -6 }
-		85 = { naval_base = -6 }
-		104 = { naval_base = -6 }
-		3448 = { naval_base = -6 }
-		3450 = { naval_base = -6 }
-		90 = { naval_base = -6 }
-		3566 = { naval_base = -6 }
-		89 = { naval_base = 2 }
 		104 = { add_province_modifier = { name = california_gold_rush duration = 2190 } } #San Francisco
 		84 = { add_province_modifier = { name = california_gold_rush duration = 1825 } } #Sacramento
 		89 = { add_province_modifier = { name = california_gold_rush duration = 1460 } } #Los Angeles
@@ -69,6 +58,16 @@ country_event = {
 		2198 = { add_province_modifier = { name = transisthmian_trade duration = 1460 } }
 		#Mexico
 		2162 = { add_province_modifier = { name = transisthmian_trade duration = 1460 } }
+		3454 = { naval_base = -6 }
+		3455 = { naval_base = -6 }
+		3340 = { naval_base = -6 }
+		85 = { naval_base = -6 }
+		104 = { naval_base = -6 }
+		3448 = { naval_base = -6 }
+		3450 = { naval_base = -6 }
+		90 = { naval_base = -6 }
+		3566 = { naval_base = -6 }
+		89 = { naval_base = 2 }
 		CLN = { add_country_modifier = { name = national_instability duration = 2555 } }
 	}
 }
@@ -85,7 +84,17 @@ country_event = {
     trigger = {
 		owns = 104
 		has_global_flag = cal_gen_ready
-		year = 1855
+		OR = {
+			AND = {
+				year = 1855
+				OR = {
+					has_country_flag = hasmanifestdestiny
+					has_country_flag = manifest_destiny_refuted
+					has_global_flag = no_mexican_american_war
+				}
+			}
+			year = 1862
+		}
 		NOT = { CLN = { has_country_modifier = national_instability } }
     }
 
@@ -109,26 +118,25 @@ country_event = {
         tag = MEX
         owns = 104
         war_with = USA
-		USA = { has_country_flag = hasmanifestdestiny }
+		NOT = { centralization = federalism }
         NOT = { has_global_flag = bear_flag_revolt }
 		NOT = { exists = CAL }
     }
 
-    mean_time_to_happen = { days = 1 }
-
     option = {
         name = "EVT110060OPTA"
+		CAL = { all_core = { remove_core = CAL } }
+		MEX_85 = { add_core = CAL }
         any_owned = {
 			limit = {
 				OR = { province_id = 85 province_id = 3340 }
 			}
 			secede_province = CAL
-			add_province_modifier = { name = war_torn duration = 720 }
 		}
         war = {
             target = CAL
             attacker_goal = { casus_belli = annex_core_country }
-            defender_goal = { casus_belli = status_quo }
+            defender_goal = { casus_belli = acquire_all_cores }
         }
         USA = {
             relation = {
@@ -142,18 +150,8 @@ country_event = {
             military_access = CAL
             create_alliance = CAL
         }
-        any_country = {
-            limit = {
-                tag = USA
-                ai = yes
-            }
-            treasury = 20000
-        }
-		MEX_94 = { remove_core = CAL }
-		MEX_97 = { remove_core = CAL }
-		MEX_100 = { remove_core = CAL }
         set_global_flag = bear_flag_revolt
-		CAL = { add_country_modifier = { name = unrecognized_country duration = 1095 } political_reform = closed_borders }
+		CAL = { primary_culture = yankee add_accepted_culture = mexican add_country_modifier = { name = unrecognized_country duration = 1095 } political_reform = closed_borders }
         ai_chance = { factor = 100 }
     }
 
@@ -161,12 +159,10 @@ country_event = {
         name = "EVT110060OPTB"
 		set_global_flag = bear_flag_revolt
 		prestige = -5
-		MEX_94 = { remove_core = CAL }
-		MEX_97 = { remove_core = CAL }
-		MEX_100 = { remove_core = CAL }
+		CAL = { all_core = { remove_core = CAL } }
+		MEX_85 = { add_core = CAL }
 		release = CAL
-		CAL = { any_owned = { remove_core = MEX } }
-		CAL = { add_country_modifier = { name = unrecognized_country duration = 1095 } }
+		CAL = { any_owned = { remove_core = MEX } primary_culture = yankee add_accepted_culture = mexican }
         ai_chance = { factor = 0 }
     }
 }
@@ -239,7 +235,6 @@ country_event = {
 
     trigger = {
         tag = USA
-        is_greater_power = yes
         slavery = no_slavery
         war = no
         is_disarmed = no
@@ -348,7 +343,7 @@ country_event = {
 			}
 			life_rating = 5
 		}
-        any_owned = {
+        any_land_province = {
             limit = {
                 OR = {
                     #Illinois
@@ -364,7 +359,7 @@ country_event = {
                 duration = 1095
             }
         }
-        any_owned = {
+        any_land_province = {
             limit = {
                 OR = {
                     #New York
@@ -377,7 +372,7 @@ country_event = {
                 duration = 720
             }
         }
-        any_owned = {
+        any_land_province = {
             limit = {
                 OR = {
                     #Iowa
@@ -390,7 +385,7 @@ country_event = {
                 duration = 720
             }
         }
-        any_owned = {
+        any_land_province = {
             limit = {
                 OR = {
                     #Michigan
@@ -406,7 +401,7 @@ country_event = {
                 duration = 1460
             }
         }
-        any_owned = {
+        any_land_province = {
             limit = {
                 OR = {
                     #Washington
@@ -437,7 +432,7 @@ country_event = {
                 duration = 730
             }
         }
-        any_owned = {
+        any_land_province = {
             limit = {
                 OR = {
                     #Michigan
@@ -458,7 +453,7 @@ country_event = {
                 duration = 365
             }
         }
-        any_owned = {
+        any_land_province = {
             limit = {
                 OR = {
                     #Maryland
@@ -2841,7 +2836,7 @@ country_event = {
 	trigger = {
 		tag = USA
 		slavery = yes_slavery
-		has_country_flag = treaty_of_guadalupe_hidalgo
+		has_country_flag = treaty_of_guadalupe_hidalgo #Angel will check this later
 		MEX = {
 			owns = 2138
 			owns = 2139
