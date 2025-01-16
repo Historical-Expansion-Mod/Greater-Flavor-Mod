@@ -2355,6 +2355,7 @@ country_event = {
                     owns = 2632
                     owns = 1499
 					owns = 3364
+					owns = 1961
                 }
             }
 
@@ -2742,6 +2743,7 @@ country_event = {
                     province_id = 1569
                     province_id = 1606
 					province_id = 3364
+					province_id = 1961
                     province_id = 1499
                     province_id = 2632
                 }
@@ -2823,6 +2825,7 @@ country_event = {
                             province_id = 1569
                             province_id = 1606
 							province_id = 3364
+							province_id = 1961
                             province_id = 2632
                         }
                     }
@@ -2855,6 +2858,7 @@ country_event = {
                             province_id = 1569
                             province_id = 1606
 							province_id = 3364
+							province_id = 1961
                             province_id = 1496
                         }
                     }
@@ -2888,6 +2892,7 @@ country_event = {
                             province_id = 1481
                             province_id = 1496
 							province_id = 3364
+							province_id = 1961
                             province_id = 2632
                         }
                     }
@@ -2914,6 +2919,7 @@ country_event = {
                     province_id = 3924
                     province_id = 2562
 					province_id = 3364
+					province_id = 1961
                     province_id = 1499
                     province_id = 2632
                 }
@@ -7501,6 +7507,7 @@ country_event = {
             owns = 1569 #Weihaiwei
             owns = 1606 #Jiaxing
 			owns = 3364 #Sanmen
+			owns = 1961 #Chusan
             owns = 2562 #Tainan
             owns = 1499 #Hainan
             owns = 2632 #Kwangchowan
@@ -7580,6 +7587,7 @@ country_event = {
 					owns = 1569 #Weihaiwei
 					owns = 1606 #Jiaxing
 					owns = 3364 #Sanmen
+					owns = 1961 #Chusan
 					owns = 2562 #Tainan
 					owns = 1499 #Hainan
 					owns = 2632 #Kwangchowan
@@ -7599,6 +7607,7 @@ country_event = {
 					owns = 1481 #Lushun - Port Arthur
 					owns = 1569 #Weihaiwei
 					owns = 3364 #Sanmen
+					owns = 1961 #Chusan
 					owns = 1606 #Jiaxing
 					owns = 2562 #Tainan
 					owns = 1499 #Hainan
@@ -7651,6 +7660,7 @@ country_event = {
                 owns = 1569 #Weihaiwei
                 owns = 1606 #Jiaxing
 				owns = 3364 #Sanmen
+				owns = 1961 #Chusan
                 owns = 2562 #Tainan
                 owns = 1499 #Hainan
                 owns = 2632 #Kwangchowan
@@ -8778,9 +8788,7 @@ country_event = {
     title = "EVTNAME13067"
     desc = "EVTDESC13067"
     picture = "signing_unequal_treaty"
-
     major = yes
-
     is_triggered_only = yes
 
     option = {
@@ -8832,7 +8840,97 @@ country_event = {
 				remove_country_modifier = negotiating_unequal_treaty_two
 			}
 		}
+		random_owned = {
+			limit = {
+				owner = {
+					owns = 1961
+				}
+			}
+			owner = {
+				set_global_flag
+				any_owned = {
+					limit = { province_id = 1961 }
+					secede_province = FROM
+					trade_goods = precious_goods
+					add_province_modifier = { name = treaty_port duration = 1825 }
+					FROM = { set_country_flag = rented_chusan }
+				}
+			}
+		}
 	}
+}
+
+country_event = {
+    id = 130671
+    title = "Returning the Chusan Islands"
+    desc = "EVTDESC130671"
+    picture = "chusan"
+	fire_only_once = yes
+
+    trigger = {
+        has_country_flag = rented_chusan
+        owns = 1961
+		NOT = { 1961 = { has_province_modifier = treaty_port } }
+        exists = QNG
+        NOT = {
+			war_with = QNG
+			truce_with = QNG
+		}
+		QNG = {
+			is_vassal = no
+			owns = 1608
+		}
+    }
+
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "Uphold the treaty."
+		1961 = { secede_province = QNG trade_goods = fish }
+		QNG = { country_event = 130672 }
+    }
+    option = {
+        name = "We will keep the islands! §RGain 1.5 infamy§!"
+		add_province_modifier = { name = treaty_port duration = -1 }
+		badboy = 1.5
+		QNG = { country_event = 130673 }
+    }
+}
+country_event = {
+    id = 130672
+    title = "The Handover of the Chusan Islands"
+    desc = "EVTDESC130672"
+    picture = "chusan"
+	fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "Excellent!"
+		prestige = 5
+    }
+}
+country_event = {
+    id = 130673
+    title = "$FROMCOUNTRY$ refuses to hand over the Chusan Islands"
+    desc = "EVTDESC130673"
+    picture = "chusan"
+	fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "This means war! §RDeclare war on $FROMCOUNTRY$§W"
+		war = {
+			target = FROM
+			attacker_goal = { casus_belli = china_acquire_state state_province_id = 1961 }
+			call_ally = yes
+		}
+		ai_chance = { factor = 1 }
+    }
+    option = {
+        name = "Though it stings, there is nothing we can do."
+		prestige = -5
+		ai_chance = { factor = 1 }
+    }
 }
 
 #The Black Flag Army
@@ -8915,7 +9013,6 @@ country_event = {
     title = "EVTNAME999952"
     desc = "EVTDESC999952"
     picture = "black_flag_army"
-
     is_triggered_only = yes
 
     option = {
@@ -8945,16 +9042,13 @@ country_event = {
     title = "The Willow Palisade"
     desc = "The Willow Palisade has prevented Han migration into Manchuria for generations, and although old and falling apart, it still manages to stop the boats."
     picture = "Willow_palisade"
-
     fire_only_once = yes
 
     trigger = {
         tag = QNG
     }
 
-    mean_time_to_happen = {
-        days = 15
-    }
+    mean_time_to_happen = { days = 1 }
 
     option = {
         name = "What an accomplishment."
@@ -8969,7 +9063,6 @@ country_event = {
             }
         }
     }
-
 }
 
 ##merged from FlavourMod_Qing.txt
