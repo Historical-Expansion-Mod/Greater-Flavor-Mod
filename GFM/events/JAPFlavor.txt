@@ -1535,7 +1535,7 @@ country_event = {
 		USA = {
 			relation = { who = THIS value = 50 }
 			diplomatic_influence = {
-				who = TKG
+				who = JAP
 				value = 10
 			}
 		}
@@ -1846,10 +1846,10 @@ province_event = {
             has_country_flag = sonno_joi
             war = no
         }
-        is_core = TKG
+        is_core = JAP
         controlled_by = THIS
         owner = { any_neighbor_country = { primary_culture = japanese } }
-        TKG = { exists = yes }
+        JAP = { exists = yes }
         OR = {
             has_province_modifier = western_presence
             has_province_modifier = foreign_smugglers
@@ -1892,7 +1892,7 @@ province_event = {
         }
         random_country = {
             limit = { is_greater_power = yes }
-            relation = { who = TKG value = -20 }
+            relation = { who = JAP value = -20 }
         }
     }
 }
@@ -1906,13 +1906,50 @@ country_event = {
     news_desc_medium = "EVTDESC97617_NEWS_MEDIUM"
     news_desc_short = "EVTDESC97617_NEWS_SHORT"
     picture = "sonno_joi"
+	fire_only_once = yes
+    
+	trigger = {
+		tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
+		NOT = { has_global_flag = order_to_expel_barbarians }
+		NOT = { has_global_flag = boshin_war }
+		NOT = { has_global_flag = boshin_war_has_happened }
+		OR = {
+			AND = {
+				year = 1863
+				month = 3
+				civilization_progress = 0.4
+				has_country_flag = sonno_joi
+			}
+			civilized = yes
+		}
+		war = no
+	}
 
-    is_triggered_only = yes
+	mean_time_to_happen = { days = 1 }
 
     option = {
         name = "EVT97617OPTA"
-        relation = { who = FROM value = -100 }
         prestige = -5
+		set_global_flag = order_to_expel_barbarians
+		any_country = {
+			limit = {
+				primary_culture = japanese
+				OR = {
+					substate_of = JAP
+					vassal_of = JAP
+				}
+			}
+			country_event = 97618
+		}
+		any_pop = {
+			limit = { is_primary_culture = yes }
+			consciousness = 1
+		}
     }
 }
 
@@ -1921,8 +1958,7 @@ country_event = {
     title = "EVTNAME97617" #Order to Expel the Barbarians - Response from Substates
     desc = "EVTDESC97618"
     picture = "sonno_joi"
-
-    is_triggered_only = yes
+	is_triggered_only = yes
 
     option = {
         name = "EVT97618OPTA"
