@@ -324,28 +324,14 @@ country_event = {
 
 	option = {
 		name = "EVT21138OPTA"
-		relation = { who = JAP value = -100 }
-		JAP = { country_event = 21139 }
-		set_country_flag = formed_shinsengumi
-	}
-}
-
-country_event = {
-	id = 21139
-	title = "EVTNAME21139" #Imperial Japan receives Shinsengumi
-	desc = "EVTDESC21139"
-	picture = "shinsengumi_patrol"
-
-	is_triggered_only = yes
-
-	option = {
-		name = "EVT21139OPTA"
-		any_owned = {
+		1657 = {
 			add_province_modifier = {
 				name = shinsengumi_policing
 				duration = -1
 			}
 		}
+		set_country_flag = formed_shinsengumi
+		
 	}
 }
 
@@ -354,30 +340,31 @@ country_event = {
 	title = "EVTNAME899089" #Formation of the Shishi
 	desc = "EVTDESC899089"
 	picture = "shishi_warriors"
+	fire_only_once = yes
+
+	trigger = {
+		has_global_flag = order_to_expel_barbarians
+		OR = { tag = CHO tag = SAT tag = TOS }
+		has_country_flag = sonno_joi
+		NOT = { has_global_flag = ikedaya_incident }
+		NOT = { has_global_flag = boshin_war }
+		NOT = { has_global_flag = boshin_war_has_happened }
+		NOT = { has_global_flag = shishi_formed }
+	}
 	
 	mean_time_to_happen = {
 		months = 2
 		modifier = {
 			civilized = yes
-			TKG = { civilized = no }
+			JAP = { civilized = no }
 			factor = 0.5
 		}
-	}
-
-	trigger = {
-		has_global_flag = order_to_expel_barbarians
-		tag = JAP
-		has_country_flag = sonno_joi
-		any_owned_province = { has_province_modifier = shinsengumi_policing }
-		NOT = { has_country_flag = ikedaya_incident }
-		NOT = { has_global_flag = boshin_war }
-		NOT = { has_global_flag = boshin_war_has_happened }
-		NOT = { has_global_flag = shishi_formed }
 	}
 
 	option = {
 		name = "EVT899089OPTA"
 		any_pop = {
+			limit = { is_primary_culture = yes }
 			consciousness = 0.3
 		}
 		any_country = {
@@ -396,8 +383,8 @@ country_event = {
 	title = "EVTNAME899090" #Shishi Formation, popup for rest of Japan
 	desc = "EVTDESC899090"
 	picture = "shishi_warriors"
-
 	is_triggered_only = yes
+	allow_multiple_instances = yes
 
 	option = {
 		name = "EVT899090OPTA"
@@ -413,6 +400,18 @@ country_event = {
 	title = "EVTNAME899091" #The Ikedaya Incident
 	desc = "EVTDESC899091"
 	picture = "ikedaya_incident"
+	fire_only_once = yes
+
+	trigger = {
+		has_global_flag = order_to_expel_barbarians
+		has_global_flag = shishi_formed
+		tag = JAP
+		has_country_flag = sonno_joi
+		any_owned_province = { has_province_modifier = shinsengumi_policing }
+		NOT = { has_global_flag = boshin_war }
+		NOT = { has_global_flag = boshin_war_has_happened }
+		NOT = { has_country_modifier = ikedaya_aftermath }
+	}
 
 	mean_time_to_happen = {
 		months = 4
@@ -425,18 +424,6 @@ country_event = {
 			has_country_modifier = protest_dances
 			factor = 1.5
 		}
-	}
-
-	trigger = {
-		has_global_flag = order_to_expel_barbarians
-		has_global_flag = shishi_formed
-		tag = JAP
-		has_country_flag = sonno_joi
-		any_owned_province = { has_province_modifier = shinsengumi_policing }
-		NOT = { has_global_flag = boshin_war }
-		NOT = { has_global_flag = boshin_war_has_happened }
-		NOT = { has_country_flag = ikedaya_incident }
-		NOT = { has_country_modifier = ikedaya_aftermath }
 	}
 
 	option = {
@@ -462,7 +449,7 @@ country_event = {
 			}
 			country_event = 899093
 		}
-		set_country_flag = ikedaya_incident
+		set_global_flag = ikedaya_incident
 	}
 }
 
@@ -1777,24 +1764,19 @@ country_event = {
     title = "EVTNAME97615" #Sonno Joi
     desc = "EVTDESC97615"
     picture = "sonno_joi"
+	fire_only_once = yes
+	allow_multiple_instances = yes
 
     mean_time_to_happen = {
         months = 1
     }
 	
     trigger = {
-        primary_culture = japanese
-        OR = {
-            tag = JAP
-            substate_of = JAP
-            vassal_of = JAP
-        }
-        JAP = {
-            OR = {
-                has_country_modifier = western_influences
-                civilized = yes
-            }
-        }
+		tag = JAP
+		OR = {
+			has_country_modifier = western_influences
+			civilized = yes
+		}
         NOT = { has_country_flag = sonno_joi }
         NOT = { has_global_flag = boshin_war }
         NOT = { has_global_flag = boshin_war_has_happened }
@@ -1815,6 +1797,12 @@ country_event = {
         any_pop = {
             militancy = 2
         }
+		any_country = {
+			limit = {
+				substate_of = THIS
+			}
+			country_event = 97615
+		}
     }
 }
 
@@ -2369,7 +2357,7 @@ country_event = {
     picture = "komei"
 
     trigger = {
-        tag = TKG
+        tag = JAP
         year = 1867
         has_country_flag = monarchy_government
         OR = {
@@ -2421,7 +2409,6 @@ country_event = {
     title = "EVTNAME97630" #The Death of Emperor Komei
     desc = "EVTDESC97630"
     picture = "komei"
-
     is_triggered_only = yes
 
     option = {
@@ -5483,73 +5470,6 @@ country_event = {
     option = {
         name = "EVT97684OPTA"
         EZO = { all_core = { remove_core = EZO } }
-    }
-}
-
-#The Death of Komei
-country_event = {
-    id = 69002
-    title = "EVTNAME97630" #The Death of Emperor Komei
-    desc = "EVTDESC97630"
-    news = yes
-    news_desc_long = "EVTDESC97630_NEWS_LONG"
-    news_desc_medium = "EVTDESC97630_NEWS_MEDIUM"
-    news_desc_short = "EVTDESC97630_NEWS_SHORT"
-    picture = "komei"
-
-    trigger = {
-        year = 1860
-        tag = JAP
-        has_country_flag = monarchy_government
-        OR = {
-            has_country_modifier = kobu_gattai
-            has_country_flag = sakuradamon_incident
-            has_global_flag = order_to_expel_barbarians
-            JAP = { is_vassal = no }
-            KAG = { is_vassal = no }
-            OBM = { is_vassal = no }
-            YZW = { is_vassal = no }
-            SEN = { is_vassal = no }
-            EZO = { is_vassal = no }
-            CHO = { is_vassal = no }
-            TOS = { is_vassal = no }
-			SOC = { is_vassal = no }
-            SAT = { is_vassal = no }
-        }
-        TKG = { exists = no }
-        NOT = { has_country_flag = emperor_meiji }
-		NOT = { has_country_flag = dead_komei }
-        NOT = { has_global_flag = boshin_war }
-        NOT = { has_global_flag = boshin_war_has_happened }
-    }
-
-    mean_time_to_happen = {
-        months = 12
-        modifier = {
-            factor = 0.5
-            year = 1864
-        }
-        modifier = {
-            factor = 0.1
-            year = 1868
-        }
-    }
-
-    option = {
-        name = "EVT97630OPTA"
-        set_country_flag = emperor_meiji
-		set_country_flag = dead_komei
-        remove_country_modifier = kobu_gattai
-        TKG = { all_core = { add_core = JAP } }
-		SOC = { all_core = { add_core = JAP } }
-        SAT = { all_core = { add_core = JAP } }
-        CHO = { all_core = { add_core = JAP } }
-        SEN = { all_core = { add_core = JAP } }
-        EZO = { all_core = { add_core = JAP } }
-        YZW = { all_core = { add_core = JAP } }
-        TOS = { all_core = { add_core = JAP } }
-        KAG = { all_core = { add_core = JAP } }
-        OBM = { all_core = { add_core = JAP } }
     }
 }
 
