@@ -1,0 +1,973 @@
+#110060: The Bear Flag Revolt
+#111025: Benito Juárez
+#4207052, 4207054: Mexico asks US to remove cores, 4207053 in Garcia_FF.txt
+#4207015, 111011: Plan Definitivo Restaurador after constitution_of_eighteenfiftyseven in MEX_Events.txt, leading to Reform War if refused
+#4207016: Underground Railroad to Mexico
+#4207014: Mexico invades Soconusco
+#4206996, 4206997, 4206998: Event chain for Spain to recognize Mexico
+#4207006: Californio Sentiments Disappear
+#4207005: California declares Independence (1836)
+#4207002: La Rebelión Chatina
+
+#Singular flavor events without further impact:
+#4206995: Las Grutas de Cacahuamilpa
+#4206992: El Periquillo Sarniento
+#4206993: México a través de los siglos
+#4206994: Clemencia
+#4207003: Tequila Herradura
+#4207000: Puente de Panzacola
+#4206999: Ciudad Juárez
+
+
+#La Rebelión Chatina in 1896, makes native pops in Oaxaca angry
+country_event = {
+	id = 4207002
+	title = "La Rebelión Chatina"
+	desc = "EVTDESC4207002"
+	picture = "chatinos"
+	fire_only_once = yes
+
+	trigger = {
+		year = 1896
+		capital = 2172
+		owns = 2177
+		owns = 3975
+		owns = 2178
+		OR = {
+			accepted_culture = mexican
+			primary_culture = mexican
+		}
+		NOT = { accepted_culture = nahua }
+		NOT = { has_country_flag = native_protection_act_enacted }
+	}
+
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = "Burn the court files."
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 3975
+					province_id = 2177
+					province_id = 2178
+				}
+			}
+			any_pop = {
+				limit = {
+					has_pop_culture = nahua
+				}
+				militancy = 4.5
+				consciousness = 5
+			}
+		}
+		any_pop = {
+			limit = {
+				has_pop_culture = nahua
+			}
+			militancy = 0.5
+			consciousness = 1
+		}
+	}
+}
+
+#California declares Independence in 1836 unitary Mexico, decision to either fight, autonomize or play as
+country_event = {
+	id = 4207005
+	title = "California declares Independence!"
+	desc = "EVTDESC4207005"
+	picture = "california_secedes"
+	fire_only_once = yes
+
+	trigger = {
+        year = 1836
+		tag = MEX
+		owns = 87
+        is_vassal = no
+        NOT = { exists = CAL }
+		NOT = { centralization = federalism }
+		month = 9
+		NOT = { year = 1838 }
+	}
+
+	option = {
+		name = "We will not allow it!" #War
+		any_pop = {
+			limit = {
+				location = {
+					is_core = CAL
+				}
+			}
+			militancy = 5
+			consciousness = 5
+		}
+		87 = { secede_province = CAL }
+		MEX_94 = { add_core = CAL }
+		MEX_97 = { add_core = CAL }
+		MEX_100 = { add_core = CAL }
+		110 = { add_core = CAL }
+		108 = { add_core = CAL }
+		102 = { remove_core = CAL }
+		war = {
+			target = CAL
+			attacker_goal = { casus_belli = annex_core_country }
+			defender_goal = { casus_belli = acquire_all_cores }
+		}
+		CAL = { add_country_modifier = { name = unrecognized_country duration = 1095 } }
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "We must negotiate with them." #Historical Outcome
+		prestige = -5
+		MEX_94 = { add_core = CAL }
+		MEX_97 = { add_core = CAL }
+		MEX_100 = { add_core = CAL }
+		110 = { add_core = CAL }
+		108 = { add_core = CAL }
+		102 = { remove_core = CAL }
+		any_owned = {
+			limit = {
+				is_core = CAL
+			}
+			any_pop = {
+				militancy = -5
+			}
+			add_province_modifier = {
+				name = special_administrative_zone
+				duration = -1
+			}
+		}
+		ai_chance = { factor = 4 }
+	}
+
+	option = {
+		name = "Viva California! §BPlay as California" #Play as CAL
+		any_pop = {
+			limit = {
+				location = {
+					is_core = CAL
+				}
+			}
+			militancy = 5
+			consciousness = 5
+		}
+		87 = { secede_province = CAL }
+		MEX_94 = { add_core = CAL }
+		MEX_97 = { add_core = CAL }
+		MEX_100 = { add_core = CAL }
+		110 = { add_core = CAL }
+		108 = { add_core = CAL }
+		102 = { remove_core = CAL }
+		war = {
+			target = CAL
+			attacker_goal = { casus_belli = annex_core_country }
+			defender_goal = { casus_belli = acquire_all_cores }
+		}
+		CAL = { add_country_modifier = { name = unrecognized_country duration = 1095 } }
+		change_tag_no_core_switch = CAL
+		ai_chance = { factor = 0 }
+	}
+}
+
+#El Paso del Norte renamed to Ciudad Juárez if Mexico won French Expedition (Prestige Event)
+country_event = {
+	id = 4206999
+	title = "Ciudad Juárez"
+	desc = "EVTDESC4206999"
+	picture = "ciudadjuarezevt"
+	fire_only_once = yes
+
+	trigger = {
+		year = 1888
+		capital = 2172
+		OR = {
+			primary_culture = mexican
+			accepted_culture = mexican
+		}
+		NOT = { has_country_flag = monarchy_government }
+		has_global_flag = french_intervention_in_mexico
+	}
+
+	option = {
+		name = "A heroic city indeed."
+		prestige = 2.5
+		2143 = {
+			any_pop = { militancy = -1 }
+			change_province_name = "Ciudad Juárez"
+		}
+	}
+}
+
+#Puente de Panzacola (Prestige Event)
+country_event = {
+	id = 4207000
+	title = "Puente de Panzacola"
+	desc = "EVTDESC4207000"
+	picture = "puente_de_panzacola"
+	fire_only_once = yes
+
+	trigger = {
+		year = 1861
+		capital = 2172
+		OR = {
+			primary_culture = mexican
+			accepted_culture = mexican
+		}
+	}
+
+	option = {
+		name = "Such a beautiful piece of art."
+		prestige = 2.5
+	}
+}
+
+#Federal Mexico in 1850 that owns California changes it to Mexican culture, removes admin debuff
+country_event = {
+	id = 4207006
+	title = "Californio Sentiments Disappear"
+	desc = "EVTDESC4207006"
+	picture = "california_secedes"
+	fire_only_once = yes
+
+	trigger = {
+		year = 1850
+		OR = {
+			tag = MEX
+			has_country_flag = i_am_hsa
+			AND = {
+				has_country_flag = i_am_cum
+				primary_culture = mexican
+			}
+		}
+		CAL = {
+			all_core = { owned_by = THIS }
+			exists = no
+		}
+		centralization = federalism
+	}
+
+	mean_time_to_happen = { months = 12 }
+
+	option = {
+		name = "Good news, indeed." #Annex/Remove modifier
+		any_owned = {
+			limit = {
+				OR = {
+					is_core = CAL
+					has_province_modifier = special_administrative_zone
+				}
+			}
+			any_pop = {
+				militancy = -0.5
+				consciousness = 1
+			}
+			remove_province_modifier = special_administrative_zone
+		}
+		CAL = { primary_culture = mexican remove_accepted_culture = yankee remove_accepted_culture = dixie }
+	}
+}
+
+#Tequila Herradura spawns a liquor factory in Guadalajara
+country_event = {
+	id = 4207003
+	title = "Tequila Herradura"
+	desc = "EVTDESC4207003"
+	picture = "tequilaherradura"
+	fire_only_once = yes
+
+	trigger = {
+		year = 1870
+		NOT = { year = 1872 }
+		capital = 2172
+		OR = {
+			primary_culture = mexican
+			accepted_culture = mexican
+		}
+		2166 = { state_scope = { NOT = { has_building = liquor_distillery } }
+	}
+
+	mean_time_to_happen = {
+		months = 3
+	}
+
+	option = {
+		name = "Mexican industry shall be a priority."
+		random_owned = {
+			limit = {
+				province_id = 2166
+				state_scope = { NOT = { has_building = liquor_distillery } }
+			}
+			owner = {
+				capital = 2166
+				build_factory_in_capital_state = liquor_distillery
+			}
+		}
+		random_owned = {
+			limit = { province_id = 2172 }
+			THIS = { capital = 2172 }
+		}
+	}
+}
+
+#México a través de los siglos (Prestige Event)
+country_event = {
+	id = 4206993
+	title = "México a través de los siglos"
+	desc = "EVTDESC4206993"
+	picture = "mexicanhistory"
+	fire_only_once = yes
+
+	trigger = {
+		year = 1884
+		OR = {
+			tag = MEX
+			AND = {
+				has_country_flag = i_am_hsa
+				owns = 2172
+			}
+		}
+	}
+
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = "Our legacy, rich and unique."
+		prestige = 2.5
+	}
+}
+
+#Clemencia (Prestige Event)
+country_event = {
+	id = 4206994
+	title = "Clemencia"
+	desc = "EVTDESC4206994"
+	picture = "clemencia"
+	fire_only_once = yes
+
+	trigger = {
+		year = 1869
+		OR = {
+			tag = MEX
+			AND = {
+				has_country_flag = i_am_hsa
+				owns = 2172
+			}
+		}
+	}
+
+	mean_time_to_happen = { months = 4 }
+
+	option = {
+		name = "Interesting, for sure."
+		prestige = 2.5
+	}
+}
+
+#Spain is asked to recognize Mexico, triggered by treaty_of_peace_and_friendship_spain_mex in MEX_Decisions.txt
+country_event = {
+	id = 4206996
+	title = "$FROMCOUNTRY$ proposes treaty of Friendship and Peace"
+	desc = "EVTDESC4206996"
+	picture = "tenochtitlan"
+	is_triggered_only = yes
+
+	option = {
+		name = "We agree to the treaty."
+		diplomatic_influence = {
+			who = MEX
+			value = 20
+		}
+		relation = {
+			who = FROM
+			value = 50
+		}
+		MEX = { country_event = 4206997 }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				tag = SPC
+			}
+		}
+	}
+
+	option = {
+		name = "Spain shall not forgive these kind of 'nations'."
+		prestige = 5
+		relation = {
+			who = FROM
+			value = -50
+		}
+		diplomatic_influence = {
+			who = FROM
+			value = -20
+		}
+		FROM = { country_event = 4206998 }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				tag = SPA
+			}
+		}
+	}
+}
+
+#Event informing Mexico that Spain recognizes it, triggered by event above
+country_event = {
+	id = 4206997
+	title = "$FROMCOUNTRY$ accepts the Treaty"
+	desc = "EVTDESC4206997"
+	picture = "tenochtitlan"
+	is_triggered_only = yes
+
+	option = {
+		name = "Great news."
+		prestige = 5
+		relation = {
+			who = FROM
+			value = 50
+		}
+		diplomatic_influence = {
+			who = FROM
+			value = 20
+		}
+	}
+}
+
+#Event informing Mexico that Spain doesn't recognize it, triggered by event above
+country_event = {
+	id = 4206998
+	title = "$FROMCOUNTRY$ rejects the Treaty"
+	desc = "EVTDESC4206998"
+	picture = "tenochtitlan"
+	is_triggered_only = yes
+
+	option = {
+		name = "They will regret it."
+		relation = {
+			who = FROM
+			value = -50
+		}
+		diplomatic_influence = {
+			who = FROM
+			value = -20
+		}
+	}
+}
+
+#Las Grutas de Cacahuamilpa (Prestige Event)
+country_event = {
+	id = 4206995
+	title = "Las Grutas de Cacahuamilpa"
+	desc = "EVTDESC4206995"
+	picture = "grutas"
+	fire_only_once = yes
+
+	trigger = {
+		tag = MEX
+		year = 1835
+		NOT = { year = 1836 }
+	}
+
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "A fine piece of art."
+		prestige = 2.5
+	}
+}
+
+#El Periquillo Sarniento (Prestige Event)
+country_event = {
+	id = 4206992
+	title = "El Periquillo Sarniento"
+	desc = "EVTDESC4206992"
+	picture = "periquillo"
+	fire_only_once = yes
+
+	trigger = {
+		tag = MEX
+		year = 1831
+		NOT = { year = 1832 }
+	}
+
+	mean_time_to_happen = { months = 7 }
+
+	option = {
+		name = "Definitely something to be proud of."
+		prestige = 2.5
+		any_pop = {
+			limit = {
+				has_pop_culture = mexican
+			}
+			militancy = -0.1
+		}
+	}
+}
+
+
+#Fires for owner of Soconusco when Mexico demands it in soconusco_joins_mexico, MEX_Decisions.txt
+country_event = {
+	id = 4207014
+	title = "Mexico invades Soconusco"
+	desc = "EVTDESC4207014"
+	picture = "treaty"
+	is_triggered_only = yes
+
+	option = {
+		name = "There's nothing we can do."
+		2182 = { secede_province = MEX }
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "This means war!"
+		MEX = {
+			war = {
+				target = THIS
+				attacker_goal = { casus_belli = acquire_core_state state_province_id = 2182 }
+				defender_goal = { casus_belli = humiliate_no_infamy }
+			}
+		}
+		ai_chance = { factor = 0 }
+	}
+}
+
+#Underground Railroad to Mexico fires if Mexico outlaws slavery and US has it in 1840s
+country_event = {
+	id = 4207016
+	title = "The Underground Railroad to Mexico"
+	desc = "EVTDESC4207016"
+	picture = "slaves_escape_mex"
+	fire_only_once = yes
+
+	trigger = {
+		year = 1840
+		tag = MEX
+		slavery = no_slavery
+		OR = {
+			USA = { slavery = yes_slavery exists = yes }
+			USA = { slavery = freedom_of_womb exists = yes }
+		}
+	}
+
+	mean_time_to_happen = { months = 8 }
+
+	option = {
+		name = "A heroic cause for freedom."
+		prestige = 2.5
+		3116 = { any_pop = { limit = { has_pop_culture = afro_american } move_pop = 2151 } }
+		3115 = { any_pop = { limit = { has_pop_culture = afro_american } move_pop = 2149 } }
+		3114 = { any_pop = { limit = { has_pop_culture = afro_american } move_pop = 2147 } }
+		3113 = { any_pop = { limit = { has_pop_culture = afro_american } move_pop = 2144 } }
+		3117 = { any_pop = { limit = { has_pop_culture = afro_american } move_pop = 2143 } }
+		3112 = { any_pop = { limit = { has_pop_culture = afro_american } move_pop = 2137 } }
+		any_pop = {
+			limit = {
+				has_pop_culture = afro_american
+			}
+			militancy = -3
+			consciousness = -1
+		}
+	}
+}
+
+#Plan Definitivo Restaurador allows reintroduction of Iturbide after Constitution of 1857, constitution_of_eighteenfiftyseven in MEX_Events.txt
+country_event = {
+	id = 4207015
+	title = "Plan Definitivo Restaurador"
+	desc = "EVTDESC4207015"
+	picture = "iturbide"
+	is_triggered_only = yes
+	fire_only_once = yes
+
+	option = {
+		name = "What is this nonsense?!"
+		country_event = { id = 111011 days = 150 }
+		any_pop = {
+			scaled_militancy = {
+				ideology = conservative
+				factor = 2
+			}
+			scaled_militancy = {
+				ideology = reactionary
+				factor = 4
+			}
+		}
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "Glory to the Mexican Emperor!"
+		government = constitutional_empire
+		political_reform = wealth_voting
+		political_reform = harassment
+		political_reform = censored_press
+		political_reform = restricted_meeting
+		define_general = { name = "Ignacio Zaragoza" personality = defence_3.9 background = attack_5.1 }
+		election = yes
+		add_country_modifier = {
+			name = iturbide_house
+			duration = -1
+		}
+		remove_country_modifier = santa_ana_rule
+		any_pop = {
+			scaled_militancy = {
+				ideology = liberal
+				factor = 8
+			}
+			scaled_militancy = {
+				ideology = radical
+				factor = 10
+			}
+			scaled_militancy = {
+				ideology = socialist
+				factor = 8
+			}
+			scaled_militancy = {
+				ideology = conservative
+				factor = -2
+			}
+			scaled_militancy = {
+				ideology = reactionary
+				factor = 8
+			}
+			consciousness = 5
+		}
+		ai_chance = { factor = 0 }
+	}
+}
+
+#The Reform War fires if the Plan Definitivo Restaurador is refused, triggered by event above
+country_event = {
+    id = 111011
+    title = "The Reform War"
+    desc = "Our recent reforms have caused outrage among the conservative and religious populace, with the pope excommunicating anyone who accepts the constitution. This has led to a conservative uprising."
+    picture = "reformist_war"
+    is_triggered_only = yes
+    fire_only_once = yes
+	
+    option = {
+        name = "We shall defend the constitution!"
+		war_exhaustion = 30
+		all_core = { add_core = MEE }
+		set_global_flag = reform_war
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 3456
+					province_id = 2140
+					province_id = 2137
+					province_id = 2141
+					province_id = 2157
+					province_id = 2156
+					province_id = 2143
+					province_id = 2144
+					province_id = 2142
+					province_id = 2145
+					province_id = 2154
+					province_id = 3973
+					province_id = 2153
+					province_id = 2183
+					province_id = 2185
+					province_id = 2184
+					province_id = 2165
+					province_id = 2181
+					province_id = 3402
+					province_id = 3615
+					province_id = 2182
+					province_id = 2177
+					province_id = 3975
+					province_id = 2178
+					province_id = 2159
+					province_id = 2173
+					province_id = 2176
+					province_id = 2174
+					province_id = 2175
+					province_id = 2172
+					province_id = 2662
+					province_id = 102
+				}
+			}
+			secede_province = MEE
+		}
+		MEE = { capital = 2172 }
+		define_general = { name = "Ignacio Zaragoza" personality = defence_3.9 background = attack_5.1 }
+		war = {
+			target = MEE
+			attacker_goal = { casus_belli = civil_war }
+			defender_goal = { casus_belli = civil_war }
+			call_ally = no
+		}
+		MEE = {
+			remove_accepted_culture = afro_latino
+			government = prov_gov_conservative
+		}
+		ai_chance = { factor = 1 }
+    }
+	option = {
+        name = "Depose these heathens! §BPlay as the Conservatives§W"
+		war_exhaustion = 30
+		all_core = { add_core = MEE }
+		set_global_flag = reform_war
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 3456
+					province_id = 2140
+					province_id = 2137
+					province_id = 2141
+					province_id = 2157
+					province_id = 2156
+					province_id = 2143
+					province_id = 2144
+					province_id = 2142
+					province_id = 2145
+					province_id = 3973
+					province_id = 2154
+					province_id = 2153
+					province_id = 2183
+					province_id = 2185
+					province_id = 2184
+					province_id = 2165
+					province_id = 2181
+					province_id = 3402
+					province_id = 3615
+					province_id = 2182
+					province_id = 2177
+					province_id = 3975
+					province_id = 2178
+					province_id = 2159
+					province_id = 2173
+					province_id = 2176
+					province_id = 2174
+					province_id = 2175
+					province_id = 2172
+					province_id = 2662
+					province_id = 102
+				}
+			}
+			secede_province = MEE
+		}
+		MEE = { capital = 2172 }
+		define_general = { name = "Ignacio Zaragoza" personality = defence_3.9 background = attack_5.1 }
+		war = {
+			target = MEE
+			attacker_goal = { casus_belli = civil_war }
+			defender_goal = { casus_belli = civil_war }
+			call_ally = no
+		}
+		MEE = {
+			remove_accepted_culture = afro_latino
+			government = prov_gov_conservative
+		}
+		change_tag_no_core_switch = MEE
+		ai_chance = { factor = 1 }
+    }
+}
+
+#California Revolt for Mexico during war with the US (if not federalized)
+country_event = {
+    id = 110060
+    title = "EVTNAME110060" #The Bear Flag Revolt
+    desc = "EVTDESC110060"
+    picture = "MEX_Bear_Flag_Revolt"
+
+    trigger = {
+        tag = MEX
+        war_with = USA
+        owns = 104
+		NOT = { centralization = federalism }
+        NOT = { has_global_flag = bear_flag_revolt }
+		NOT = { exists = CAL }
+    }
+
+    option = {
+        name = "EVT110060OPTA"
+		CAL = { all_core = { remove_core = CAL } }
+		MEX_85 = { add_core = CAL }
+        any_owned = {
+			limit = {
+				OR = { province_id = 85 province_id = 3340 }
+			}
+			secede_province = CAL
+		}
+        war = {
+            target = CAL
+            attacker_goal = { casus_belli = annex_core_country }
+            defender_goal = { casus_belli = acquire_all_cores }
+        }
+        USA = {
+            relation = {
+                who = CAL
+                value = 200
+            }
+            diplomatic_influence = {
+                who = CAL
+                value = 400
+            }
+            military_access = CAL
+            create_alliance = CAL
+        }
+        set_global_flag = bear_flag_revolt
+		CAL = { primary_culture = yankee add_accepted_culture = mexican add_country_modifier = { name = unrecognized_country duration = 1095 } political_reform = closed_borders }
+        ai_chance = { factor = 100 }
+    }
+
+    option = {
+        name = "EVT110060OPTB"
+		set_global_flag = bear_flag_revolt
+		prestige = -5
+		CAL = { all_core = { remove_core = CAL } }
+		MEX_85 = { add_core = CAL }
+		release = CAL
+		CAL = { any_owned = { remove_core = MEX } primary_culture = yankee add_accepted_culture = mexican }
+        ai_chance = { factor = 0 }
+    }
+}
+
+#Benito Juárez for democratic Mexico in 1858
+country_event = {
+	id = 111025
+	title = "Benito Juárez"
+	desc = "EVTDESC111025"
+	picture = "benito_juarez"
+	fire_only_once = yes
+
+	trigger = {
+		year = 1858
+		tag = MEX
+		government = democracy
+		NOT = { year = 1859 }
+	}
+
+	mean_time_to_happen = { days = 1 }
+
+	option = {
+		name = "EVTOPTA111025"
+		add_country_modifier = {
+			name = benito_juarez
+			duration = 5110
+		}
+		any_pop = {
+			limit = {
+				is_culture_group = native_american
+			}
+			militancy = -1
+			consciousness = 1
+		}
+		any_pop = {
+			limit = {
+				has_pop_religion = catholic
+			}
+			militancy = 3
+			consciousness = 6
+		}
+		2177 = {
+			any_pop = {
+				limit = {
+					NOT = {
+						is_culture_group = native_american
+						literacy = 0.3
+					}
+				}
+				literacy = 0.3
+			}
+		}
+		3975 = {
+			any_pop = {
+				limit = {
+					NOT = {
+						is_culture_group = native_american
+						literacy = 0.3
+					}
+				}
+				literacy = 0.3
+			}
+		}
+		2178 = {
+			any_pop = {
+				limit = {
+					NOT = {
+						is_culture_group = native_american
+						literacy = 0.3
+					}
+				}
+				literacy = 0.3
+			}
+		}
+	}
+}
+
+#Event for US when Mexico sends treaty to remove cores
+country_event = {
+	id = 4207052
+	title = "The Mexican Proposal"
+	desc = "EVTDESC4207052"
+	picture = "treaty"
+	is_triggered_only = yes
+
+	option = {
+		name = "We have to accept."
+		set_country_flag = usa_accepted_mex_treaty
+		prestige = -5
+		treasury = 100000
+		relation = {
+			who = FROM
+			value = 7.5
+		}
+		#In Garcia_FF.txt due to needing to differentiate with removing NAF cores
+		FROM = { country_event = 4207053 }
+		any_pop = {
+			limit = {
+				OR = {
+					is_accepted_culture = yes
+					is_primary_culture = yes
+				}
+			}
+			militancy = 3
+			consciousness = 5
+		}
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "Never!"
+		relation = {
+			who = FROM
+			value = -25
+		}
+		FROM = { country_event = 4207054 }
+		any_pop = {
+			limit = {
+				OR = {
+					is_accepted_culture = yes
+					is_primary_culture = yes
+				}
+			}
+			militancy = -1
+			consciousness = -1
+		}
+		ai_chance = { factor = 0 }
+	}
+}
+
+#US refuses Mexico's request to remove cores, triggered by event above
+country_event = {
+	id = 4207054
+	title = "The American Refusal"
+	desc = "EVTDESC4207054"
+	picture = "treaty"
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "They will regret it."
+		relation = {
+			who = FROM
+			value = -25
+		}
+	}
+}
