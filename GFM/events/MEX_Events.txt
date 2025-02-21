@@ -38,6 +38,11 @@
 #42070494: Santa Anna's supreme Victory
 #4207050: The Plan of Hospicio
 #111010: The Revolution of Ayutla
+#42070891: A Compromise with the Central Government (Zacatecas/Urrea/Tabasco)
+#4207090: The Federalist Revolt crumbles (Zacatecas/Urrea/Tabasco)
+#4207104, 4207091: The Central Government surrenders and Victory against the Central Government (Zacatecas/Urrea/Tabasco)
+#4207094: A Rio Grandese-led Mexico (RGR)
+#4207095: We have achieved Independence! (RGR)
 
 #Singular flavor events without further impact:
 #4206993: México a través de los siglos
@@ -906,6 +911,314 @@ country_event = {
 		ruling_party_ideology = liberal
 		set_country_flag = do_1857_constitution
     }
+}
+
+
+#A Compromise with the Central Government occurs if MEE manages to white peace (Zacatecas/Urrea/Tabasco)
+country_event = {
+	id = 42070891
+	title = "A Compromise with the Central Government"
+	desc = "EVTDESC4207089"
+	picture = "treaty"
+	
+	trigger = {
+		has_global_flag = mex_fedrevolt
+		tag = MEE
+		war = no
+		exists = MEX
+		NOT = { has_global_flag = reform_war }
+		NOT = { has_global_flag = guerrero_rebellion }
+		NOT = { government = colonial_company_4 } #sanity check
+	}
+
+	option = {
+		name = "Not what we wanted, but it is at least one step closer to our demands."
+		clr_global_flag = mex_fedrevolt
+		MEE = {
+			remove_accepted_culture = afro_latino
+			all_core = { remove_core = MEE }
+		}
+		inherit = MEX
+		prestige = 10
+		change_tag = MEX
+		nationalvalue = nv_liberty
+		government = democracy
+		remove_country_modifier = military_fueros
+		ruling_party_ideology = conservative
+		any_pop = { scaled_militancy = { ideology = conservative factor = 2 } scaled_militancy = { ideology = reactionary factor = 4 } scaled_consciousness = { ideology = liberal factor = 2 } scaled_consciousness = { ideology = conservative factor = 4 } scaled_consciousness = { ideology = reactionary factor = 6 } }
+		add_country_modifier = { name = america_new_world duration = 10950 }
+		remove_country_modifier = bustamante_rule
+		remove_country_modifier = santa_ana_rule
+		political_reform = federalism
+		political_reform = no_slavery
+		political_reform = wealth_weighted_voting
+		political_reform = proportional_representation
+		political_reform = gerrymandering
+		political_reform = censored_press
+		political_reform = restricted_meeting
+		political_reform = state_equal_weight
+		political_reform = culture_voting_only
+		political_reform = settlement
+		political_reform = open_borders
+		political_reform = no_trade_unions
+		random_owned = { limit = { owner = { school_reforms = no_schools } } owner = { social_reform = low_schools } }
+		define_general = { name = "Francisco García Salinas" personality = defence_1.1 background = attack_1.1 }
+		define_general = { name = "Mariano Arista" personality = no_personality background = no_background }
+		define_general = { name = "Antonio Canales Rosillo" personality = defence_minus_1.51 background = attack_1.1 }
+		define_general = { name = "Vicente Filísola" personality = defence_2.76 background = attack_1.1 }
+		define_general = { name = "Pedro de Ampudia" personality = defence_2.76 background = attack_2.76 }
+		define_general = { name = "José María Flores" personality = defence_1.1 background = attack_minus_1.51 }
+		define_general = { name = "José de Urrea" personality = defence_1.1 background = attack_2.76 }
+		define_general = { name = "Martín Perfecto de Cos" personality = defence_minus_1.101 background = no_background }
+		capital = 2172
+		add_country_modifier = { name = national_instability duration = 730 }
+		add_country_modifier = { name = national_confusion duration = 730 }
+	}
+}
+
+#The Federalist Revolt crumbles if MEX annexes MEE (Zacatecas/Urrea/Tabasco)
+country_event = {
+	id = 4207090
+	title = "The Federalist Revolt crumbles"
+	desc = "EVTDESC4207090"
+	picture = "treaty"
+	
+	trigger = {
+		has_global_flag = mex_fedrevolt
+		tag = MEX
+		war = no
+		MEE = { exists = no }
+		NOT = { has_global_flag = guerrero_rebellion }
+		NOT = { has_global_flag = reform_war }
+	}
+
+	option = {
+		name = "A weak federal government is as good as no government at all."
+		clr_global_flag = mex_fedrevolt
+		inherit = MEE
+		MEE = {
+			remove_accepted_culture = afro_latino
+			all_core = { remove_core = MEE }
+		}
+	}
+}
+
+#The Central Government surrenders if MEE controls Mexico City and MEX has no troops left (Zacatecas/Urrea/Tabasco)
+country_event = {
+	id = 4207104
+	title = "The Central Government surrenders!"
+	desc = "EVTDESC4207104"
+	picture = "mex_city"
+	fire_only_once = yes
+
+	trigger = {
+		tag = MEE
+		has_global_flag = mex_fedrevolt
+		2172 = { OR = { owned_by = THIS controlled_by = THIS } }
+		NOT = { MEX = { total_amount_of_divisions = 1 } }
+	}
+
+	option = {
+		name = "Hurrah!"
+		inherit = MEX
+	}
+}
+
+#Victory against the Central Government occurs if MEE annexes MEX (Zacatecas/Urrea/Tabasco)
+country_event = {
+	id = 4207091
+	title = "Victory against the Central Government!"
+	desc = "EVTDESC4207091"
+	picture = "treaty"
+	fire_only_once = yes
+	
+	trigger = {
+		has_global_flag = mex_fedrevolt
+		tag = MEE
+		war = no
+		NOT = { exists = MEX }
+		NOT = { has_global_flag = reform_war }
+		NOT = { has_global_flag = guerrero_rebellion }
+		NOT = { government = colonial_company_4 } #sanity check
+	}
+
+	option = {
+		name = "Long live the Federal Republic of Mexico!"
+		clr_global_flag = mex_fedrevolt
+		MEE = {
+			remove_accepted_culture = afro_latino
+			all_core = { remove_core = MEE }
+		}
+		prestige = 10
+		change_tag = MEX
+		nationalvalue = nv_liberty
+		government = democracy
+		remove_country_modifier = military_fueros
+		ruling_party_ideology = liberal
+		any_pop = { scaled_militancy = { ideology = conservative factor = 4 } scaled_militancy = { ideology = reactionary factor = 6 } scaled_consciousness = { ideology = liberal factor = 4 } scaled_consciousness = { ideology = conservative factor = 6 } scaled_consciousness = { ideology = reactionary factor = 8 } }
+		add_country_modifier = { name = america_new_world duration = 10950 }
+		remove_country_modifier = bustamante_rule
+		remove_country_modifier = santa_ana_rule
+		random_owned = { limit = { owner = { school_reforms = no_schools } } owner = { social_reform = low_schools } }
+		political_reform = no_slavery
+		political_reform = free_press
+		political_reform = yes_meeting
+		political_reform = wealth_voting
+		political_reform = federalism
+		political_reform = non_secret_ballots
+		political_reform = population_equal_weight
+		political_reform = culture_voting_only
+		political_reform = settlement
+		political_reform = open_borders
+		political_reform = proportional_representation
+		define_general = { name = "Francisco García Salinas" personality = defence_1.1 background = attack_1.1 }
+		define_general = { name = "Mariano Arista" personality = no_personality background = no_background }
+		define_general = { name = "Antonio Canales Rosillo" personality = defence_minus_1.51 background = attack_1.1 }
+		define_general = { name = "Vicente Filísola" personality = defence_2.76 background = attack_1.1 }
+		define_general = { name = "Pedro de Ampudia" personality = defence_2.76 background = attack_2.76 }
+		define_general = { name = "José María Flores" personality = defence_1.1 background = attack_minus_1.51 }
+		define_general = { name = "José de Urrea" personality = defence_1.1 background = attack_2.76 }
+		define_general = { name = "Martín Perfecto de Cos" personality = defence_minus_1.101 background = no_background }
+		capital = 2172
+	}
+}
+
+country_event = {
+	id = 4207094
+	title = "A Rio Grandese-led Mexico"
+	desc = "EVTDESC4207094"
+	picture = "RGR_flag_big"
+	major = yes
+	fire_only_once = yes
+
+	trigger = {
+		owns = 2172
+		tag = RGR
+		NOT = { exists = MEX }
+		NOT = { has_global_flag = rgr_leads_mexico }
+		OR = {
+			NOT = { year = 1860 }
+			has_global_flag = rgr_wants_mexico
+		}
+	}
+
+	option = {
+		name = "Mexico's identity IS the Rio Grande."
+		set_global_flag = rgr_stays_alive
+		set_global_flag = rgr_leads_mexico
+		change_tag = MEX
+		2149 = { life_rating = 5 }
+		prestige = 25
+		government = democracy
+		add_country_modifier = { name = america_new_world duration = 10950 }
+		political_reform = free_press
+		political_reform = yes_meeting
+		political_reform = universal_voting
+		political_reform = federalism
+		political_reform = secret_ballots
+		political_reform = population_equal_weight
+		political_reform = all_trade_unions
+		political_reform = all_voting_pops
+		political_reform = settlement
+		political_reform = open_borders
+		random_owned = { limit = { owner = { school_reforms = no_schools } } owner = { social_reform = low_schools } }
+		nationalvalue = nv_liberty
+		2158 = { add_core = RGR }
+		2160 = { add_core = RGR }
+		2153 = { add_core = RGR }
+		2154 = { add_core = RGR }
+		2145 = { add_core = RGR }
+		2144 = { add_core = RGR }
+		2142 = { add_core = RGR }
+		2143 = { add_core = RGR }
+		2662 = { add_core = RGR }
+		2148 = { add_core = RGR }
+		3589 = { add_core = RGR }
+		3560 = { add_core = RGR }
+		2158 = { add_core = RGR }
+		2160 = { add_core = RGR }
+		2153 = { add_core = RGR }
+		2154 = { add_core = RGR }
+		3973 = { add_core = RGR }
+		2145 = { add_core = RGR }
+		2144 = { add_core = RGR }
+		2142 = { add_core = RGR }
+		2143 = { add_core = RGR }
+		2662 = { add_core = RGR }
+		2148 = { add_core = RGR }
+		3589 = { add_core = RGR }
+		3560 = { add_core = RGR }
+		TEX_132 = { add_core = RGR }
+		MEX_103 = { add_core = RGR }
+		any_land_province = {
+			limit = {
+				OR = {
+					province_id = 109
+					province_id = 103
+					province_id = 128
+					province_id = 129
+				}
+			}
+			add_core = RGR
+		}
+		MEX_2149 = { add_province_modifier = { name = baby_boom duration = 3650 } }
+		RGR = { all_core = { add_core = MEX } }
+		capital = 2149 #Just in case
+	}
+}
+
+country_event = {
+	id = 4207095
+	title = "We have achieved Independence!"
+	desc = "EVTDESC4207095"
+	picture = "mexican_soldiers"
+	major = yes
+	fire_only_once = yes
+
+	trigger = {
+		tag = RGR
+		exists = MEX
+		NOT = { war_with = MEX }
+		war = no
+		NOT = { year = 1860 }
+	}
+
+	option = {
+		name = "The Rio Grandese struggle for federalism is not over."
+		set_global_flag = rgr_stays_alive
+		prestige = 15
+		government = democracy
+		add_country_modifier = { name = america_new_world duration = 10950 }
+		add_country_modifier = { name = global_baby_boom duration = 365 }
+		nationalvalue = nv_liberty
+		years_of_research = 5
+		political_reform = free_press
+		political_reform = yes_meeting
+		political_reform = universal_voting
+		political_reform = federalism
+		political_reform = secret_ballots
+		political_reform = population_equal_weight
+		political_reform = all_trade_unions
+		political_reform = all_voting_pops
+		political_reform = settlement
+		political_reform = open_borders
+		random_owned = { limit = { owner = { school_reforms = no_schools } } owner = { social_reform = low_schools } }
+		remove_country_modifier = unrecognized_country
+	}
+}
+
+country_event = {
+	id = 4207096
+	title = "EVTTITLE4207096"
+	desc = "EVTDESC4207096"
+	picture = "treaty"
+	is_triggered_only = yes
+	
+	option = {
+		name = "We shall welcome our fellow federalist fighters!"
+		prestige = 5
+		inherit = FROM
+	}
 }
 
 #Los Rurales fires for Mexico in 1861 after the liberals win the Reform War, adding or expanding the modifier to all core provinces with certain RGOs
