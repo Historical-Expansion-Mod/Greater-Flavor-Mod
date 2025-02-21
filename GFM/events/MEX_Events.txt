@@ -5,7 +5,9 @@
 #4207016: Underground Railroad to Mexico
 #4207014: Mexico invades Soconusco
 #4206996, 4206997, 4206998: Event chain for Spain to recognize Mexico
-#4207006: Californio Sentiments Disappear
+#4207006: Californio Sentiments disappear
+#4207038: Texano Sentiments disappear
+#111027: Rio Grandese Sentiments disappear
 #4207093: British Columbian Ambitions vanish
 #4207092: Mexican-Oregonian Identity
 #4207005: California declares Independence (1836)
@@ -1048,6 +1050,82 @@ country_event = {
 			remove_province_modifier = special_administrative_zone
 		}
 		CAL = { primary_culture = mexican remove_accepted_culture = yankee remove_accepted_culture = dixie }
+	}
+}
+
+#Texano Sentiments disappear in 1860 if TEX doesn't exist and is owned by Mexico
+country_event = {
+	id = 4207038
+	title = "Texano Sentiments disappear"
+	desc = "EVTDESC4207038"
+	picture = "texan_sentiments"
+	fire_only_once = yes
+
+	trigger = {
+		year = 1860
+		TEX = { all_core = { owned_by = THIS } }
+		OR = {
+			tag = MEX
+			has_country_flag = i_am_hsa
+			AND = {
+				has_country_flag = i_am_cum
+				primary_culture = mexican
+			}
+		}
+		war = no
+		OR = {
+			government = democracy
+			government = hms_government
+			government = constitutional_empire
+		}
+		centralization = federalism
+	}
+
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = "Peace in the Mexican North!"
+		TEX = { primary_culture = mexican remove_accepted_culture = dixie }
+		prestige = 2.5
+		any_pop = {
+			limit = {
+				has_pop_culture = dixie
+			}
+			militancy = 1
+			consciousness = 3
+		}
+	}
+}
+
+#Rio Grandese Sentiments disappear in 1860 if RGR doesn't exist and is owned by Mexico
+country_event = {
+	id = 111027
+	title = "Rio Grandese Sentiments disappear"
+	desc = "EVTDESC111027"
+	picture = "mexican_soldiers"
+	fire_only_once = yes
+
+	trigger = {
+		tag = MEX
+		year = 1860
+		NOT = { exists = RGR }
+		RGR = { all_core = { owned_by = MEX } }
+		NOT = { has_global_flag = bye_rgr }
+	}
+
+	mean_time_to_happen = {
+		months = 9
+	}
+
+	option = {
+		name = "There is no room for rebellion in $COUNTRY$."
+		set_global_flag = bye_rgr
+		RGR = {
+			primary_culture = mexican remove_accepted_culture = dixie
+			all_core = { #for Cristero War
+				remove_core = RGR
+			}
+		}
 	}
 }
 
