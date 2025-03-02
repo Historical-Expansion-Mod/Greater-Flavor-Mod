@@ -299,14 +299,7 @@ country_event = {
 	title = "The All-Kazakh Kurultay"
 	desc = "KENESARY3"
 	picture = "kenesary_kasimov"
-	fire_only_once = yes
-	
-	trigger = {
-		tag = KAZ
-		has_country_flag = kenesary_rebellion
-		year = 1841
-		is_vassal = no
-	}
+	is_triggered_only = yes
 
 	option = {
 		name = "Rise, Kenesary Qasimuly, Sultan of all-Kazakhs. §RGain 5 infamy§W"
@@ -393,6 +386,13 @@ country_event = {
 	picture = "kazakh"
 	is_triggered_only = yes
     
+	trigger = {
+		tag = KAZ
+		has_country_flag = kenesary_rebellion
+		year = 1841
+		is_vassal = no
+	}
+	
 	option = {
         name = "The old capital has been reclaimed! §RGain 3 infamy§W"
 		prestige = 3
@@ -407,6 +407,7 @@ country_event = {
 			who = KOK
 			value = -100
 		}
+		KAZ = { country_event = 52013 }
     }
 }
 
@@ -531,6 +532,7 @@ country_event = {
 		exists = KYR
 		KAZ = { is_vassal = no }
 		year = 1844
+		has_country_flag = kenesary_rebellion
 		war_with = RUS
 	}
 
@@ -538,7 +540,8 @@ country_event = {
         name = "Even so... We must continue on!"
 		prestige = -5
 		add_country_modifier = { name = dead_kenesary duration = 1825 }
-		remove_country_flag = kenesary_rebellion
+		set_country_flag = khanless_kazakhs 
+		clr_country_flag = kenesary_rebellion
 		remove_country_modifier = kenesary_khan
 		release_vassal = KSJ
 		ai_chance = { factor = .1 }
@@ -589,6 +592,14 @@ country_event = {
 			who = KAZ
 			value = -400
 		}
+		diplomatic_influence = {
+				who = KYR
+				value = 100
+			}
+			relation = {
+				who = KYR
+				value = 50
+			}
 	}
 	
 	mean_time_to_happen = { months = 6 }
@@ -612,9 +623,35 @@ country_event = {
 				defender_goal = { target = RUS casus_belli = acquire_core_state state_province_id = 2611 }
 				defender_goal = { target = RUS casus_belli = acquire_core_state state_province_id = 2610 }
 				defender_goal = { target = RUS casus_belli = acquire_core_state state_province_id = 1036 }
+				defender_goal = { target = RUS casus_belli = acquire_core_state state_province_id = 1194 }
 				call_ally = no
 			}
+			relation = {
+				who = KYR
+				value = -100
+			}
+			relation = {
+				who = QNG
+				value = -25
+			}
 		}
+		QNG = { country_event = 52031 }
+	}
+}
+
+country_event = {
+	id = 52031
+	title = "Shifting allegiances in the west"
+	desc = "QINGNAYMAN"
+	picture = "kazakh"
+	is_triggered_only = yes
+	
+	option = {
+		name = "The Middle Kingdom's influence grows."
+		relation = {
+				who = KAZ
+				value = -25
+			}
 		1188 = { secede_province = QNG }
 	}
 }
@@ -634,4 +671,323 @@ country_event = {
 	}
 }
 
-#Add event to annex Bukey horde if KAZ wins and give Kokand Ak-Mechet and Turkistan back if they lose
+country_event = {
+	id = 52024
+	title = "A Khanate Reborn"
+	desc = "KENESARY10"
+	picture = "kenesary_kasimov"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = KAZ
+		is_vassal = no
+		has_country_flag = kenesary_rebellion
+		NOT = { has_country_flag = khanless_kazakhs }
+		war = no
+		OR = {
+			owns = 1184
+			owns = 2611
+			owns = 2610
+			owns = 1036
+			owns = 1194
+		}
+	}
+	
+	option = {
+		name = "Long live Kenesary Khan! Long live Kazakhstan!"
+		prestige = 25
+		remove_country_flag = kenesary_rebellion
+		set_country_flag = kenesary_victorious
+		RUS = {
+			any_owned_province = {
+					limit = { is_core = KAZ }
+					secede_province = KAZ
+			}
+		}
+		inherit = BKY
+		inherit = KSJ
+		BKY = { 
+			any_core = { secede_province = KAZ }
+			government = absolute_monarchy
+		}
+		RUS = {
+			diplomatic_influence = {
+				who = KAZ
+				value = -400
+			}
+		}
+		remove_country_modifier = all_or_nothing
+	}
+	
+	mean_time_to_happen = { days = 1 }
+}
+
+country_event = {
+	id = 52030
+	title = "The Khanate Endures"
+	desc = "KENESARY16"
+	picture = "kazakh"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = KAZ
+		is_vassal = no
+		has_country_flag = kenesary_rebellion
+		NOT = { has_country_flag = khanless_kazakhs }
+		war = no
+		NOT = {
+			OR = {
+				owns = 1184
+				owns = 2611
+				owns = 2610
+				owns = 1036
+				owns = 1194
+			}
+		}
+	}
+	
+	option = {
+		name = "Kazakhstan remains free! Long live Kenesary Khan!"
+		prestige = 15
+		remove_country_flag = kenesary_rebellion
+		set_country_flag = kenesary_whitepeace
+		inherit = KSJ
+		RUS = {
+			diplomatic_influence = {
+				who = KAZ
+				value = -400
+			}
+		}
+		remove_country_modifier = all_or_nothing
+	}
+	
+	mean_time_to_happen = { days = 1 }
+}
+
+country_event = {
+	id = 52025
+	title = "Reclamation of the Syr Darya"
+	desc = "KENESARY11"
+	picture = "kenesary_kasimov"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = KOK
+		owns = 1195
+		is_vassal = no
+		KAZ = { exists = no }
+		RUS = {
+			owns = 1193
+			owns = 1197
+			}
+	}
+	
+	option = {
+		name = "Finally, some good news!"
+		prestige = 2
+		1193 = { secede_province = KOK }
+		1197 = { secede_province = KOK }
+	}
+	
+	mean_time_to_happen = { months = 1 }
+}
+
+country_event = {
+	id = 52026
+	title = "A Miraculous Victory"
+	desc = "KENESARY12"
+	picture = "kenesary_kasimov"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = KAZ
+		is_vassal = no
+		NOT = { has_country_flag = kenesary_rebellion }
+		NOT = { has_country_flag = kenesary_victorious }
+		has_country_flag = khanless_kazakhs 
+		war = no
+		NOT = { has_country_modifier = recently_lost_war }
+		OR = {
+			owns = 1184
+			owns = 2611
+			owns = 2610
+			owns = 1036
+			owns = 1194
+		}
+	}
+	
+	option = {
+		name = "Liberation despite the odds! Long live Kazakhstan!"
+		prestige = 40
+		all_core = {
+					limit = { owned_by = RUS }
+					secede_province = KAZ
+			}
+		inherit = BKY
+		inherit = KSJ
+		BKY = {
+			government = absolute_monarchy
+			any_core = { secede_province = KAZ }
+		}
+		RUS = {
+			diplomatic_influence = {
+				who = KAZ
+				value = -400
+			}
+		}
+		remove_country_modifier = all_or_nothing
+	}
+	
+	mean_time_to_happen = { days = 1 }
+}
+
+country_event = {
+	id = 52029
+	title = "The Kazakhs Endure"
+	desc = "KENESARY15"
+	picture = "kenesary_kasimov"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = KAZ
+		is_vassal = no
+		NOT = { has_country_flag = kenesary_rebellion }
+		NOT = { has_country_flag = kenesary_victorious }
+		NOT = { has_country_flag = kenesary_whitepeace }
+		has_country_flag = khanless_kazakhs 
+		war = no
+		NOT = { has_country_modifier = recently_lost_war }
+		NOT = { 
+			OR = {
+				owns = 1184
+				owns = 2611
+				owns = 2610
+				owns = 1036
+				owns = 1194
+			}
+		}
+	}
+	
+	option = {
+		name = "Our independence is secured! Long live Kazakhstan!"
+		prestige = 30
+		inherit = KSJ
+		inherit = BKY
+		2610 = { secede_province = KAZ }
+		RUS = { 
+			diplomatic_influence = {
+				who = KAZ
+				value = -400
+			}
+		}
+		remove_country_modifier = all_or_nothing
+	}
+	
+	mean_time_to_happen = { days = 1 }
+}
+
+country_event = {
+	id = 52027
+	title = "The Khanate Crumbles"
+	desc = "KENESARY13"
+	picture = "kenesary_kasimov"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = KAZ
+		is_vassal = no
+		owns = 1182
+		owns = 1186
+		has_country_flag = khanless_kazakhs
+		war = no
+	}
+	
+	option = {
+		name = "It all comes tumbling down..."
+		KAZ = {
+			prestige = -15
+			any_owned = {
+					limit = { is_core = BKY }
+					secede_province = BKY
+					remove_core = KAZ
+			}
+			any_owned = {
+					limit = { is_core = KSJ }
+					secede_province = KSJ
+					remove_core = KAZ
+			}
+			capital = 1193
+			government = absolute_monarchy
+		}
+		KSJ = {
+			capital = 1197
+			government = absolute_monarchy
+		}
+		BKY = {
+			capital = 4140
+			government = absolute_monarchy
+		}
+		1036 = { secede_province = RUS }
+		KAZ = { country_event = 52028 }
+	}
+
+	mean_time_to_happen = { days = 5 }
+}
+
+country_event = {
+	id = 52028
+	title = "What does the future hold?"
+	desc = "KENESARY14"
+	picture = "kazakh"
+	is_triggered_only = yes
+	
+	option = {
+		name = "The Middle Jüz shall rise once more! §BContinue as the Middle Jüz§W"
+		diplomatic_influence = {
+			who = KSJ
+			value = -400
+		}
+		diplomatic_influence = {
+			who = KAZ
+			value = -400
+		}
+		diplomatic_influence = {
+			who = BKY
+			value = -400
+		}
+	}
+	
+	option = {
+		name = "Perhaps it is time for the Senior Jüz to make a move? §BPlay as the Senior Jüz§W"
+		change_tag_no_core_switch = KSJ
+		diplomatic_influence = {
+			who = KSJ
+			value = -400
+		}
+		diplomatic_influence = {
+			who = KAZ
+			value = -400
+		}
+		diplomatic_influence = {
+			who = BKY
+			value = -400
+		}
+	}
+	
+	option = {
+		name = "The Junior Jüz Kazakhs shall never be slaves again! §BPlay as the Junior Jüz§W"
+		change_tag_no_core_switch = BKY
+		diplomatic_influence = {
+			who = KSJ
+			value = -400
+		}
+		diplomatic_influence = {
+			who = KAZ
+			value = -400
+		}
+		diplomatic_influence = {
+			who = BKY
+			value = -400
+		}
+	}
+}
