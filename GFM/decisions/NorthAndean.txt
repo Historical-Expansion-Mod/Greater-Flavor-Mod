@@ -21,6 +21,7 @@ political_decisions = {
         ai_will_do = { factor = 1 }
     }
 	icaza_pritchett_convenio = {
+        picture = icaza_pritchett_convenio
 		potential = {
 			tag = ECM
 			2288 = { owned_by = THIS is_core = THIS }
@@ -42,12 +43,10 @@ political_decisions = {
 			relation = { who = PEU value = -50 }
 			set_global_flag = icaza_pritchett_convenio
 			any_pop = {
-				limit = {
-					ideology = reactionary
-					ideology = conservative
-				}
-				militancy = 3
-				consciousness = 4
+				scaled_militancy = { factor = 0.3 ideology = conservative }
+				scaled_consciousness = { factor = 0.4 ideology = conservative }
+				scaled_militancy = { factor = 0.3 ideology = reactionary }
+				scaled_consciousness = { factor = 0.4 ideology = reactionary }
 			}
 		}
 		ai_will_do = { factor = 1 }
@@ -95,11 +94,11 @@ political_decisions = {
 	}
 
     treaty_of_mapasingue = {
-        picture = treaty_of_mapasingue
+        picture = peu_ecm_war
         potential = {
 			OR = {
 				AND = { tag = PEU truce_with = ECM ECM = { is_disarmed = yes } }
-				AND = { tag = ECM is_disarmed = no truce_with = PEU 2291 = { owned_by THIS } }
+				AND = { tag = ECM is_disarmed = no truce_with = PEU 2291 = { owned_by = THIS } }
 			}
 			exists = ECM
 			has_global_flag = peru_ecuador_war
@@ -127,7 +126,7 @@ political_decisions = {
 	}
 
 	the_colombian_ecuadorian_union = {
-        picture = clm_ecu_war
+        picture = tomas_cipriano_de_mosquera
         potential = {
 			tag = CLM
 			OR = {
@@ -278,7 +277,7 @@ political_decisions = {
 	}
 	
 	the_colombian_peruvian_war = {
-        picture = clm_peu_war
+        picture = colombia_peru_war
         potential = {
 			OR = {
 				AND = { tag = PEU 2263 = { NOT = { owned_by = THIS } } 2286 = { owned_by = THIS } }
@@ -793,7 +792,7 @@ political_decisions = {
 					AND = { owned_by = PEU PEU = { NOT = { centralization = unitary } } }
 					AND = { owned_by = PBC PBC = { NOT = { centralization = unitary } } }
 				}
-				owner = { NOT = { centralization = totalitarianism } }
+				owner = { NOT = { has_country_modifier = totalitarian_system } }
 			}
 			OR = {
 				2280 = { NOT = { has_province_modifier = guayaquil_city_grown } }
@@ -844,7 +843,7 @@ political_decisions = {
 								}
 							}
 						}
-						owner = { centralization = totalitarianism }
+						owner = { has_country_modifier = totalitarian_system }
 					}
 				}
 			}
@@ -862,63 +861,40 @@ political_decisions = {
     }
 	
 	the_panamanian_question = {
+		picture = map_central_america
         potential = {
 			OR = {
 				tag = GCO
-				AND = { tag = CLM year = 1912 }
+				tag = CLM
 			}
-			PNM = { exists = no }
-			2204 = { is_core = THIS is_core = PNM }
+			2204 = { is_core = THIS }
 			NOT = { has_country_flag = the_panaminian_question }
         }
 		
 		allow = {
+			OR = {
+				tag = GCO
+				AND = {
+					tag = CLM
+					OR = {
+						AND = {
+							rank = 10
+							ruling_party_ideology = liberal
+						}
+						year = 1912
+					}
+				}
+			}
 		    owns = 2204
-			owns = 2208
-			owns = 2206
-			owns = 2205
-			owns = 3564
-			revolution_n_counterrevolution = 1
+			PNM = { exists = no }
+			empiricism = 1
 			war = no
 		}
   
         effect = {
-		    country_event = 3459011
+		    add_accepted_culture = central_american
+			PNM = { all_core = { add_core = THIS remove_core = PNM } }
 			set_country_flag = the_panaminian_question
-		}
-
-        ai_will_do = {
-            factor = 1
-        }
-    }
-
-	panamanian_integration_failed = {
-        potential = {
-			tag = CLN
-			OR = {
-				CLM = { has_country_flag = panamanian_integration has_country_modifier = panamanian_integration }
-				GCO = { has_country_flag = panamanian_integration has_country_modifier = panamanian_integration }
-			}
-			OR = {
-				PNM = { exists = yes }
-				AND = {
-					CLM = { has_country_flag = panamanian_integration }
-					NOT = { 2204 = { owned_by = CLM } }
-				}
-				AND = {
-					GCO = { has_country_flag = panamanian_integration }
-					NOT = { 2204 = { owned_by = GCO } }
-				}
-			}
-			2204 = { is_core = PNM }
-        }
-		
-		allow = {
-		}
-  
-        effect = {
-			CLM = { clr_country_flag = panamanian_integration remove_country_modifier = panamanian_integration }
-			GCO = { clr_country_flag = panamanian_integration remove_country_modifier = panamanian_integration }
 		}
 
         ai_will_do = {
@@ -1044,6 +1020,126 @@ political_decisions = {
 			VNZ = {
 				country_event = 298080
 			}
+        }
+
+        ai_will_do = { factor = 1 }	
+	}
+
+	ai_reform = {
+        potential = {
+			year = 1900
+			OR = { ruling_party_ideology = liberal ruling_party_ideology = socialist }
+			has_country_flag = new_world_nation
+			ai = yes
+			OR = { NOT = { trade_unions = all_trade_unions } NOT = { voting_system = proportional_representation } NOT = { upper_house_composition = population_equal_weight } }
+        }
+        
+        allow = {
+			slavery = no_slavery
+        	vote_franschise = universal_voting
+        	public_meetings = yes_meeting
+        	press_rights = free_press
+        	political_parties = secret_ballots
+        	border_policy = open_borders
+			OR = {
+				debt_law = debtors_prisons
+				debt_law = bankruptcy
+			}
+        	citizens_rights = all_voting_pops
+			OR = {
+                upper_house = {
+                    ideology = liberal
+                    value = 0.5
+                }
+                upper_house = {
+                    ideology = socialist
+                    value = 0.5
+                }
+				AND = {
+					upper_house = {
+						ideology = liberal
+						value = 0.3
+					}
+					upper_house = {
+						ideology = socialist
+						value = 0.2
+					}
+				}
+				AND = {
+					upper_house = {
+						ideology = liberal
+						value = 0.2
+					}
+					upper_house = {
+						ideology = socialist
+						value = 0.3
+					}
+				}
+				average_militancy = 3
+				average_consciousness = 5
+            }
+        }
+
+        effect = {
+			random_owned = {
+				limit = {
+					owner = {
+						voting_system = proportional_representation
+						upper_house_composition = population_equal_weight
+						trade_unions = non_socialist
+					}
+				}
+				owner = { political_reform = all_trade_unions }
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						voting_system = proportional_representation
+						upper_house_composition = population_equal_weight
+						trade_unions = state_controlled
+					}
+				}
+				owner = { political_reform = non_socialist }
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						voting_system = proportional_representation
+						upper_house_composition = population_equal_weight
+						trade_unions = no_trade_unions
+					}
+				}
+				owner = { political_reform = state_controlled }
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						voting_system = proportional_representation
+						NOT = { upper_house_composition = population_equal_weight }
+					}
+				}
+				owner = { political_reform = population_equal_weight }
+			}
+			random_owned = {
+				limit = {
+					owner = { voting_system = jefferson_method }
+				}
+				owner = { political_reform = proportional_representation }
+			}
+			random_owned = {
+				limit = {
+					owner = { voting_system = first_past_the_post }
+				}
+				owner = { political_reform = jefferson_method }
+			}
+			any_pop = {
+				militancy = -2
+				consciousness = -3
+			}
+			upper_house = {
+				ideology = conservative
+				value = 0.2
+        	}
         }
 
         ai_will_do = { factor = 1 }	

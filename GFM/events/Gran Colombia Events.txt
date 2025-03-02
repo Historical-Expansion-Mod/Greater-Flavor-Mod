@@ -1,0 +1,1558 @@
+country_event = {
+    id = 62026
+    title = "Choosing a New Capital"
+    desc = "62026_desc"
+    picture = "bolivar_is_happy"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "The capital will change to Bogota."
+        capital = 2247
+        prestige = 10
+		2247 = {
+			any_pop = {
+				limit = { culture = north_andean }
+				militancy = -5
+			}
+			add_province_modifier = { name = new_capital_modifier duration = 1825 }
+		}
+		ai_chance = { factor = 30 }
+	}
+
+    option = {
+        name = "Relocate the capital to Caracas."
+        capital = 2264
+        prestige = 10
+        any_pop = { limit = { culture = caribeno } militancy = -2 }
+        2264 = {
+			any_pop = {
+				limit = { culture = north_andean }
+				militancy = -5
+			}
+			add_province_modifier = { name = new_capital_modifier duration = 1825 }
+		}
+		ai_chance = { factor = 5 }
+	}
+
+    option = {
+        name = "Give Ecuadorians a chance."
+        capital = 2279
+        prestige = 10
+        2279 = {
+			any_pop = {
+				limit = { culture = north_andean }
+				militancy = -5
+			}
+			add_province_modifier = { name = new_capital_modifier duration = 1825 }
+		}
+		ai_chance = { factor = 0 }
+	}
+
+    option = {
+        name = "We need a new, refurbished capital city."
+		prestige = 10
+		capital = 2270
+		random_owned = {
+			limit = { owner = { 2270 = { has_building = naval_base } } }
+			owner = { 2270 = { naval_base = 5 } }
+		}
+		random_owned = {
+			limit = { owner = { 2270 = { NOT = { has_building = naval_base } } } }
+			owner = { 2270 = { naval_base = 4 } }
+		}
+		2270 = {
+		    add_province_modifier = { name = new_capital_modifier duration = 1825 }
+		    any_pop = {
+				limit = { culture = north_andean }
+				militancy = -5
+			}
+		}
+		ai_chance = { factor = 50 }
+	}
+
+    option = {
+        name = "Build a city so magnificent that others will be humbled."
+		set_country_flag = GCO_capital
+		treasury = -50000
+		capital = 2254
+		prestige = 10
+		random_owned = {
+			limit = { owner = { 2254 = { has_building = naval_base } } }
+			owner = { 2254 = { naval_base = 5 } }
+		}
+		random_owned = {
+			limit = { owner = { 2254 = { NOT = { has_building = naval_base } } } }
+			owner = { 2254 = { naval_base = 4 } }
+		}
+        2254 = { 
+			add_province_modifier = { name = new_capital_modifier duration = 1825 }
+			add_province_modifier = { name = recently_built_city duration = 730 } 
+			change_province_name = "Bolivar" 
+		}
+		any_pop = {
+			limit = { culture = north_andean }
+			militancy = -1
+		}
+		ai_chance = {
+			factor = 15
+			modifier = {
+				factor = 0
+				NOT = { money = 50000 }
+			}
+		}
+	}
+
+    option = {
+        name = "Our current capital is fine as is, no need to change it."
+		capital_scope = {
+		    add_province_modifier = { name = new_capital_modifier duration = 1825 }
+		    any_pop = {
+				limit = { culture = north_andean }
+				militancy = -5
+			}
+		}
+		ai_chance = { factor = 1 }
+	}
+}
+#Gran Colombia can DESTROY the PBC >:D
+country_event = {
+    id = 62027
+    title = "The Peru-Bolivian dilemma!"
+    desc = "62027_desc"
+    picture = "perubolivian_confederation"
+	fire_only_once = yes
+
+    trigger = {
+		tag = GCO
+		owns = 2279 #Quito
+		PBC = { exists = yes is_vassal = no }
+		OR = {
+			CHL = { has_country_flag = fight_the_PBC }
+			CHL = { war_with = PBC }
+			PBC = { war = yes }
+		}
+        war = no
+        NOT = {
+            truce_with = PBC
+            has_country_flag = fight_the_PBC
+            has_country_flag = peace_with_the_PBC
+            PBC = { has_country_flag = the_confederation_is_legitime }
+        }
+    }
+
+    mean_time_to_happen = { months = 1 }
+
+    option = {
+        name = "Peru will exist no longer!"
+        set_country_flag = fight_the_PBC
+		badboy = 10
+        leave_alliance = PBC
+        any_pop = {
+            dominant_issue = {
+                factor = 0.05
+                value = jingoism
+            }
+        }
+		GCO = { 
+			war = {
+				target = PBC
+				attacker_goal = { casus_belli = cut_down_to_size_no_infamy country = GCO }
+				defender_goal = { casus_belli = cut_down_to_size_no_infamy country = PBC }
+				call_ally = no
+			}
+		}
+        ai_chance = { factor = 1 }
+    }
+  
+    option = {
+        name = "We can't afford to intervene. Argentina and Chile will deal with them, surely."
+        set_country_flag = peace_with_the_PBC
+        prestige = -5
+        GCO = { 
+	    	relation = {
+	    		who = PBC
+	    		value = 100
+            } 
+	    }
+        any_pop = {
+            dominant_issue = {
+                factor = 0.05
+                value = jingoism
+            }
+            scaled_militancy = {
+            	issue = jingoism
+            	factor = 4
+			}
+		}
+        ai_chance = { factor = 0 }
+	}
+}
+#Coalition defeat - PBC defeats Gran Colombia
+country_event = {
+    id = 62028
+    title = "The treaty of Quito"
+    desc = "62028_desc"
+    picture = "peu_civil_seven"
+	fire_only_once = yes 
+
+    trigger = {
+		tag = GCO
+		GCO = { is_disarmed = yes has_country_flag = fight_the_PBC }
+		PBC = { truce_with = GCO }
+        NOT = { war_with = PBC war_with = PEU war_with = SPU } 
+    }
+
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "Unthinkable! Santa Cruz has defeated us."
+		clr_country_flag = fight_the_PBC
+		prestige = -20
+		PBC = { prestige = 20 }
+        any_pop = {
+            limit = { has_pop_culture = north_andean }
+            militancy = 3
+            consciousness = 3 
+		}
+		PEU_2289 = { add_core = PEU }
+		ECU_2279 = { add_core = PEU }
+		3359 = { add_core = PEU }
+		2287 = { add_core = PEU }
+		2291 = { add_core = PEU }
+		2259 = { add_core = PEU }
+		random_owned = {
+			limit = { owner = { 2295 = { is_core = PBC } } }
+			PEU_2289 = { add_core = PBC }
+			ECU_2279 = { add_core = PBC }
+			3359 = { add_core = PBC }
+			2287 = { add_core = PBC }
+			2291 = { add_core = PBC }
+			2259 = { add_core = PBC }
+		}
+		random_owned = {
+			limit = { owner = { 2290 = { owned_by = PEU } } }
+			owner = {
+				any_owned = {
+					limit = { OR = { is_core = PEU is_core = PBC } }
+					secede_province = PEU
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { 2290 = { owned_by = PBC } } }
+			owner = {
+				any_owned = {
+					limit = { OR = { is_core = PEU is_core = PBC } }
+					secede_province = PBC
+				}
+			}
+		}
+		PBC = { all_core = { remove_core = GCO } }
+		PEU = { all_core = { remove_core = GCO } }
+		SPU = { all_core = { remove_core = GCO } }
+		BOL = { all_core = { remove_core = GCO } }
+		PBC = { all_core = { remove_core = GCO } }
+        ai_chance = { factor = 1 }
+	}
+}
+#Coalition victory - the Partition of Peru!
+country_event = {
+    id = 62029
+    title = "The treaty of Cuzco"
+    desc = "62029_desc"
+    picture = "peu_civil_seven"
+	major = yes
+	fire_only_once = yes
+
+    trigger = {
+		tag = GCO
+		has_country_flag = fight_the_PBC
+		PBC = { OR = { is_disarmed = yes exists = no } }
+		GCO = { OR = { truce_with = PBC truce_with = BOL truce_with = SPU } }
+		NOT = { has_country_modifier = recently_lost_war }
+        NOT = { war_with = PBC war_with = BOL war_with = PEU war_with = SPU } 
+    }
+
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "The Viceroyalty of Peru is truly dead now!"
+		prestige = 10
+		set_country_flag = PEU_partition 
+		inherit = PEU
+		PEU = { all_core = { add_core = GCO }}
+		SPU = { all_core = { add_core = GCO }}
+		2319 = { remove_core = THIS }
+		2404 = { remove_core = THIS }
+		3651 = { remove_core = THIS }
+		3652 = { remove_core = THIS }
+		random_owned = {
+			limit = { SPU = { exists = yes } }
+			GCO = { inherit = SPU } 
+		}
+		random_owned = { 
+		    limit = { BOL = { exists = yes } }
+			BOL = { any_owned = { limit = { is_core = THIS } secede_province = THIS } }
+		}
+		random_owned = { 
+		    limit = { PBC = { exists = yes } }
+			PBC = { any_owned = { limit = { is_core = THIS } secede_province = THIS } }
+		}
+		CHL = { country_event = 62030 }
+		BRZ = { country_event = 62031 }
+		random_owned = {
+			limit = { ARC = { exists = yes } }
+			ARC = { country_event = 62032 } 
+		}
+		random_owned = {
+			limit = { ARG = { exists = yes } }
+			ARG = { country_event = 62032 }
+		}
+		random_owned = { 
+			limit = { LPL = { exists = yes } }
+			LPL = { country_event = 6208832 }
+		}
+        any_pop = {
+            limit = { has_pop_culture = south_andean }
+            militancy = 3
+            consciousness = -3 
+		}
+		any_pop = {
+            limit = { has_pop_culture = quechua }
+            militancy = 5
+            consciousness = -2 
+		}
+		any_pop = {
+            limit = { has_pop_culture = aimara }
+            militancy = 5
+            consciousness = -2 
+		}
+        ai_chance = { factor = 1 }
+	}
+}
+#Chile's Partition event
+country_event = {
+    id = 62030
+    title = "The treaty of Cuzco"
+    desc = "62030_desc"
+    picture = "peu_civil_seven"
+	is_triggered_only = yes
+	
+   option = {
+        name = "The Atacama and her resources are ours for the exploiting!"
+		prestige = 10 
+		set_country_flag = PEU_partition 
+		badboy = 5
+		BOL_2309 = { add_core = CHL remove_core = GCO }
+		3554 = { remove_core = CHL }
+		any_country = {
+			limit = { OR = { tag = GCO tag = PBC tag = BOL } }
+			any_owned = {
+				limit = { is_core = CHL }
+				secede_province = THIS
+			}
+		}
+        random_owned = {
+            limit = { owner = { GCO = { exists = yes } } }
+            owner = { relation = { who = GCO value = 100 } }
+        }
+        ai_chance = { factor = 1 }
+	}
+}
+#Brazil's Partition event
+country_event = {
+    id = 62031
+    title = "The treaty of Cuzco"
+    desc = "62031_desc"
+    picture = "peu_civil_seven"
+	is_triggered_only = yes
+	option = {
+		name = "Accept the arbitration."
+        random_owned = {
+            limit = { owner = { GCO = { exists = yes } } }
+            owner = { relation = { who = GCO value = 50 } } 
+		}
+        random_owned = {
+            limit = { owner = { CHL = { exists = yes } } }
+            owner = { relation = { who = CHL value = 50 } } 
+		}
+        random_owned = {
+            limit = { owner = { ARC = { exists = yes } } }
+            owner = { relation = { who = ARC value = 50 } }
+		}
+        random_owned = {
+            limit = { owner = { ARG = { exists = yes } } }
+            owner = { relation = { who = ARG value = 50 } }
+		}
+        random_owned = {
+            limit = { owner = { LPL  = { exists = yes } } }
+            owner = { relation = { who = LPL value = 50 } } 
+		}
+		3380 = { add_core = BRZ remove_core = GCO }
+		3381 = { add_core = BRZ remove_core = GCO }
+		3435 = { add_core = BRZ remove_core = GCO }
+		3382 = { add_core = BRZ remove_core = GCO }
+		any_country = {
+			limit = { OR = { tag = GCO tag = PBC tag = BOL } }
+			any_owned = {
+				limit = {
+					OR = {
+						province_id = 3380
+						province_id = 3381
+						province_id = 3435
+						province_id = 3382
+					}
+				}
+				secede_province = THIS
+			}
+		}
+        ai_chance = { factor = 1 }
+	}
+}
+#Argentina's Partition event
+country_event = {
+    id = 62032
+    title = "The treaty of Cuzco"
+    desc = "62032_desc"
+    picture = "peu_civil_seven"
+	is_triggered_only = yes
+	option = {
+		name = "Alto Peru is returned to us at last."
+		prestige = 10 
+		set_country_flag = PEU_partition
+		badboy = 5
+		random_owned = {
+			limit = { owner = { BOL = { exists = yes } } }
+			owner = {
+				create_vassal = BOL
+				BOL = {
+					any_owned = {
+						limit = {
+							OR = {
+								province_id = 2370
+								province_id = 2371
+								province_id = 2375
+								province_id = 2315
+								province_id = 1714
+								province_id = 3554
+							}
+						}
+						add_core = THIS secede_province = THIS remove_core = GCO
+					}
+					country_event = 6208831
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { PBC = { exists = yes } } }
+			owner = {
+				create_vassal = PBC
+				PBC = {
+					any_owned = {
+						limit = {
+							OR = {
+								province_id = 2370
+								province_id = 2371
+								province_id = 2375
+								province_id = 2315
+								province_id = 1714
+								province_id = 3554
+							}
+						}
+						add_core = THIS secede_province = THIS remove_core = GCO
+					}
+					country_event = 6208831
+				}
+			}
+		}
+        random_owned = {
+            limit = { owner = { GCO = { exists = yes } } }
+            owner = { relation = { who = GCO value = 100 } }
+        }
+        ai_chance = { factor = 1 } 
+	}
+}
+
+country_event = {
+    id = 6208831
+    title = "The treaty of Cuzco"
+    desc = "6208831_desc"
+    picture = "peu_civil_seven"
+	is_triggered_only = yes
+
+	option = {
+		name = "We are now subjugated to be Argentina's substate."
+		prestige = -10
+		random_owned = { limit = { owner = { tag = PBC } } owner = { change_tag = BOL } }
+		any_country = {
+			limit = {
+				war_with = THIS
+			}
+			end_war = THIS
+		}
+		any_country = { diplomatic_influence = { who = THIS value = -400 } }
+        FROM = { create_vassal = THIS relation = { who = THIS value = 400 } }
+        ai_chance = { factor = 1 } 
+	}
+}
+
+country_event = {
+    id = 6208851
+    title = "The treaty of Cuzco"
+    desc = "6208851_desc"
+    picture = "peu_civil_seven"
+	is_triggered_only = yes
+
+	option = {
+		name = "The dream of an united Peru-Bolivian state is over."
+		prestige = -10
+		random_owned = { limit = { owner = { tag = PBC } } owner = { change_tag = BOL } }
+		any_country = {
+			limit = {
+				war_with = THIS
+			}
+			end_war = THIS
+		}
+        ai_chance = { factor = 1 } 
+	}
+}
+
+country_event = {
+    id = 6208832
+    title = "The treaty of Cuzco"
+    desc = "6208832_desc"
+    picture = "peu_civil_seven"
+	is_triggered_only = yes
+	option = {
+		name = "Yavi is ours once again, Bolivia shall remain as a buffer state."
+		prestige = 5
+		set_country_flag = PEU_partition
+		random_owned = {
+			limit = { owner = { BOL = { exists = yes } } }
+			owner = {
+				BOL = {
+					any_owned = {
+						limit = {
+							OR = {
+								province_id = 2370
+								province_id = 2371
+								province_id = 2375
+								province_id = 2315
+								province_id = 1714
+								province_id = 3554
+							}
+						}
+						add_core = THIS secede_province = THIS remove_core = GCO
+					}
+					country_event = 6208851
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { PBC = { exists = yes } } }
+			owner = {
+				PBC = {
+					any_owned = {
+						limit = {
+							OR = {
+								province_id = 2370
+								province_id = 2371
+								province_id = 2375
+								province_id = 2315
+								province_id = 1714
+								province_id = 3554
+							}
+						}
+						add_core = THIS secede_province = THIS remove_core = GCO
+					}
+					country_event = 6208851
+				}
+			}
+		}
+        random_owned = {
+            limit = { owner = { GCO = { exists = yes } } }
+            owner = { relation = { who = GCO value = 100 } }
+        }
+        ai_chance = { factor = 1 } 
+	}
+}
+country_event = {
+    id = 6208833
+    title = "Autonomous status revoked"
+    desc = "6208833_desc"
+    picture = "peu_civil_seven"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = BOL
+		ARG = { exists = yes has_country_flag = PEU_partition }
+		vassal_of = ARG
+		war = no
+	}
+
+	mean_time_to_happen = { days = 1 }
+
+	option = {
+		name = "Bolivia is for Bolivians!!!"
+		prestige = 5
+		ARG = { release_vassal = THIS country_event = { id = 6208834 days = 30 } }
+	}
+}
+
+country_event = {
+    id = 6208834
+    title = "Bolivia secedes"
+    desc = "6208834_desc"
+    picture = "peu_civil_seven"
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Let them go."
+		badboy = -5
+		prestige = -10
+		relation = { who = BOL value = 200 }
+		any_pop = {
+			limit = {
+				is_primary_culture = yes
+				is_accepted_culture = yes
+			}
+			militancy = 2
+			consciousness = 3
+		}
+		ai_chance = { factor = 0 }
+	}
+	
+	option = {
+		name = "The Charcas is rightfully platinean!"
+		set_global_flag = argentinian-bolivian_war
+		badboy = 5
+		prestige = 10
+		war = {
+			target = BOL
+            attacker_goal = { casus_belli = conquest_low }
+            defender_goal = { casus_belli = humiliate_no_infamy }
+		}
+		any_pop = {
+			limit = {
+				is_primary_culture = yes
+				is_accepted_culture = yes
+			}
+			militancy = -2
+			consciousness = 1
+		}
+		ai_chance = { factor = 1 }
+	}
+}
+
+#GCO joins the Bolivia revolt!
+country_event = {
+	id = 62043
+	title = "TITLE62043"
+	desc = "62043_desc"
+	picture = "araucania_antonnie"
+	fire_only_once =  yes
+	
+	trigger = {
+		tag = GCO
+		PEU = { exists = no } 
+		has_global_flag = argentinian-bolivian_war
+		OR = { 
+			BOL = { war_with = LPL } 
+			BOL = { war_with = ARC } 
+			BOL = { war_with = ARG }
+		}
+		2295 = { owned_by = GCO is_core = GCO }
+	}
+
+	mean_time_to_happen = { days = 10 }
+	
+	option = {
+		name = "Negotiate with Argentina."
+		set_global_flag = Saving_Bolivia
+		BOL = { create_alliance = GCO relation = { who = GCO value = 400 } }
+		diplomatic_influence = { who = BOL value = 400 }
+		random_owned = { 
+			limit = { owner = { ARG = { war_with = BOL } } }
+			owner = {
+				ARG = { country_event = 623443 }
+			}
+		}
+		random_owned = { 
+			limit = { owner = { LPL = { war_with = BOL } } }
+			owner = {
+				LPL = { country_event = 623443 }
+			}
+		}
+		random_owned = { 
+			limit = { owner = { ARC = { war_with = BOL } } }
+			owner = {
+				ARC = { country_event = 623443 }
+			}
+		}
+        ai_chance = { factor = 94 }
+	}
+	option = {
+		name = "Save them from the Platine cluthes!"
+		prestige = 5
+		set_global_flag = Saving_Bolivia
+		BOL = { military_access = GCO create_alliance = GCO relation = { who = GCO value = 400 } }
+		diplomatic_influence = { who = BOL value = 400 }
+		random_owned = { 
+			limit = { owner = { exists = ARG } }
+			owner = {
+				war = {
+					target = ARG 
+					attacker_goal = { casus_belli = cut_down_to_size_no_infamy }
+					defender_goal = { casus_belli = cut_down_to_size_no_infamy }
+					call_ally = no
+				}
+			}
+		}
+		random_owned = { 
+			limit = { owner = { exists = LPL } }
+			owner = {
+				war = {
+					target = LPL
+					attacker_goal = { casus_belli = cut_down_to_size_no_infamy } 
+					defender_goal = { casus_belli = cut_down_to_size_no_infamy }
+					call_ally = no
+				}
+			}
+		}		
+		random_owned = { 
+			limit = { owner = { exists = ARC } }
+			owner = {
+				war = {
+					target = ARC 
+					attacker_goal = { casus_belli = cut_down_to_size_no_infamy } 
+					defender_goal = { casus_belli = cut_down_to_size_no_infamy }
+					call_ally = no
+				}
+			}
+		}
+        ai_chance = { factor = 5 }
+	}
+	option = { 
+		name = "We cannot intervene. Bolivia is Charcas."
+		prestige = -5
+		ai_chance = { factor = 1 } 
+	}
+}
+country_event = {
+	id = 623443
+	title = "Colombia wants to negotiate"
+	desc = "623443_desc"
+	picture = "araucania_antonnie"
+	fire_only_once =  yes
+	is_triggered_only = yes
+	
+	option = {
+		name = "Bolivia will exists as a buffer state."
+		badboy = -3
+		prestige = -5
+		relation = { who = GCO value = 100 }
+		relation = { who = BOL value = 100 }
+		end_war = BOL
+		GCO = { country_event = 623444 }
+		BOL = { country_event = 623446 }
+        ai_chance = {
+			factor = 9
+			modifier = {
+				factor = 0
+				NOT = { GCO = { brigades_compare = 1.5 } }
+			}
+		}
+	}
+	option = {
+		name = "We will not cede anything, Charcas is ours!"
+		prestige = 5
+		GCO = { country_event = 623445 }
+        ai_chance = { factor = 1 }
+	}
+}
+country_event = {
+	id = 623444
+	title = "$FROMCOUNTRY$ has accepted the terms"
+	desc = "623444_desc"
+	picture = "araucania_antonnie"
+	fire_only_once =  yes
+	is_triggered_only = yes
+	
+	option = {
+		name = "This means peace for South America."
+		badboy = -2
+		prestige = 5
+		set_country_flag = peace_with_bolivia
+	}
+}
+country_event = {
+	id = 623445
+	title = "$FROMCOUNTRY$ has rejected the terms"
+	desc = "623445_desc"
+	picture = "araucania_antonnie"
+	fire_only_once =  yes
+	is_triggered_only = yes
+
+	option = {
+		name = "Save them from the Platine cluthes!"
+		BOL = { military_access = GCO }
+		random_owned = { 
+			limit = { owner = { exists = ARG } }
+			owner = {
+				war = {
+					target = ARG 
+					attacker_goal = { casus_belli = cut_down_to_size_no_infamy }
+					defender_goal = { casus_belli = cut_down_to_size_no_infamy }
+					call_ally = no
+				}
+			}
+		}
+		random_owned = { 
+			limit = { owner = { exists = LPL } }
+			owner = {
+				war = {
+					target = LPL
+					attacker_goal = { casus_belli = cut_down_to_size_no_infamy } 
+					defender_goal = { casus_belli = cut_down_to_size_no_infamy }
+					call_ally = no
+				}
+			}
+		}		
+		random_owned = { 
+			limit = { owner = { exists = ARC } }
+			owner = {
+				war = {
+					target = ARC 
+					attacker_goal = { casus_belli = cut_down_to_size_no_infamy } 
+					defender_goal = { casus_belli = cut_down_to_size_no_infamy }
+					call_ally = no
+				}
+			}
+		}
+        ai_chance = { factor = 95 }
+	}
+	option = { 
+		name = "We cannot intervene. Bolivia is Charcas."
+		prestige = -10
+		ai_chance = { factor = 5 } 
+	}
+}
+country_event = {
+	id = 623446
+	title = "Colombia and Argentina's meeting at Guayaquil"
+	desc = "623446_desc"
+	picture = "araucania_antonnie"
+	fire_only_once =  yes
+	is_triggered_only = yes
+	
+	option = {
+		name = "Better than being wiped out..."
+		GCO = { all_core = { remove_core = THIS } }
+		random_owned = {
+			limit = { owner = { 2369 = { is_core = ARG } } }
+			2315 = { add_core = ARG }
+			3554 = { add_core = ARG }
+			ARG = { all_core = { remove_core = THIS } }
+		}
+		random_owned = {
+			limit = { owner = { 2369 = { is_core = ARC } } }
+			2315 = { add_core = ARC }
+			3554 = { add_core = ARC }
+			ARC = { all_core = { remove_core = THIS } }
+		}
+		random_owned = {
+			limit = { owner = { 2369 = { is_core = LPL } } }
+			2315 = { add_core = LPL }
+			3554 = { add_core = LPL }
+		}
+		any_owned = {
+			limit = { is_core = GCO }
+			secede_province = GCO
+		}
+		any_owned = {
+			limit = { is_core = FROM }
+			secede_province = FROM
+		}
+	}
+}
+
+#GCO beats off (gone wrong) Argentina 
+country_event = {
+    id = 62044
+    title = "Supremacy of the Andes!"
+    desc = "62044_desc"
+    picture = "bolivar_is_happy"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = GCO
+		has_global_flag = argentinian-bolivian_war
+		2295 = { owned_by = GCO is_core = GCO }
+		BOL = { exists = yes war = no }
+		NOT = { war_with = ARC war_with = ARG war_with = LPL }
+		is_disarmed = no
+		OR = { ARG = { is_disarmed = yes } ARC = { is_disarmed = yes } LPL = { is_disarmed = yes } }
+	}
+	
+	mean_time_to_happen = { days = 1 }
+	
+	option = {
+		name = "If only Bolivar could see us now."
+		prestige = 10
+		GCO = { create_vassal = BOL }
+        any_pop = {
+            limit = { has_pop_culture = south_andean }
+            militancy = -3
+            consciousness = 3
+		}
+		any_pop = {
+            limit = { has_pop_culture = quechua }
+            militancy = 5
+            consciousness = -2 
+		}
+		any_pop = {
+            limit = { has_pop_culture = aimara }
+            militancy = 5
+            consciousness = -2 
+		}
+		ai_chance = { factor = 9 }
+	}
+	
+	option = {
+		name = "Bolivia is a fully independent country."
+		prestige = 10
+		badboy = -5
+        any_pop = {
+            limit = { has_pop_culture = south_andean }
+            militancy = -3
+            consciousness = 3
+		}
+		any_pop = {
+            limit = { has_pop_culture = quechua }
+            militancy = 5
+            consciousness = -2 
+		}
+		any_pop = {
+            limit = { has_pop_culture = aimara }
+            militancy = 5
+            consciousness = -2 
+		}
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+    id = 62045
+    title = "Bolivia pushes for independence"
+    desc = "62045_desc"
+    picture = "araucania_antonnie"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = GCO
+		BOL = { exists = yes vassal_of = THIS }
+		year = 1870
+		war = no 
+		is_disarmed = no
+	}
+	
+	mean_time_to_happen = { days = 1 }
+	
+	option = {
+		name = "Let them go."
+		set_country_flag = peace_with_bolivia
+		prestige = -5
+		badboy = -3
+		all_core = { remove_core = BOL }
+		GCO = { release_vassal = BOL }
+		any_owned = { limit = { is_core = BOL NOT = { is_core = GCO } } secede_province = BOL }
+        any_pop = {
+            limit = { has_pop_culture = south_andean }
+            militancy = 3
+            consciousness = 3
+		}
+		any_pop = {
+            limit = { has_pop_culture = quechua }
+            militancy = -5
+            consciousness = 2 
+		}
+		any_pop = {
+            limit = { has_pop_culture = aimara }
+            militancy = -5
+            consciousness = 2 
+		}
+		ai_chance = { factor = 9 }
+	}
+	
+	option = {
+		name = "Bolivia is a integral part of Bolivar's project."
+		prestige = 10
+		badboy = 8
+		GCO = { release_vassal = BOL }
+		war = {
+			target = BOL
+			attacker_goal = { casus_belli = conquest_low }
+			defender_goal = { casus_belli = humiliate_no_infamy }
+			call_ally = no
+		}
+		BOL = { country_event = 62046 }
+        any_pop = {
+            limit = { has_pop_culture = south_andean }
+            militancy = -3
+            consciousness = 3
+		}
+		any_pop = {
+            limit = { has_pop_culture = quechua }
+            militancy = 5
+            consciousness = -2 
+		}
+		any_pop = {
+            limit = { has_pop_culture = aimara }
+            militancy = 5
+            consciousness = -2 
+		}
+		ai_chance = { factor = 1 }
+	}
+}
+country_event = {
+    id = 62046
+    title = "Colombia invades."
+    desc = "After years of pushing for direct independence from Colombia, it seems they want us to form part of their nation and now they have launched a full invasion on our lands."
+    picture = "araucania_antonnie"
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "NOT AGAIN!!!!"
+		add_country_modifier = { name = small_country_draft duration = 730 }
+	}
+}
+country_event = {
+    id = 6208835
+    title = "Bolivia has been reintegrated."
+    desc = "6208835_desc"
+    picture = "peu_civil_seven"
+	fire_only_once = yes
+	
+	trigger = {
+		OR = { tag = ARG tag = LPL }
+		has_global_flag = argentinian-bolivian_war
+		owns = 2313
+		owns = 2310
+		BOL = { exists = no }
+	}
+	
+	mean_time_to_happen = { days = 1 }
+	
+	option = {
+		name = "Alto peru is finally under our control."
+		prestige = 10
+		BOL = { all_core = { limit = { NOT = { is_core = CHL is_core = GCO is_core = BRZ } } add_core = THIS } }
+        any_pop = {
+            limit = { has_pop_culture = south_andean }
+            militancy = 3
+            consciousness = -3 
+		}
+		any_pop = {
+            limit = { has_pop_culture = quechua }
+            militancy = 5
+            consciousness = -2 
+		}
+		any_pop = {
+            limit = { has_pop_culture = aimara }
+            militancy = 5
+            consciousness = -2 
+		}
+	}
+}
+
+
+#Gran Colombia and Brazil get pissed at each other
+country_event = {
+    id = 62033
+    title = "Tensions in the Amazonas"
+    desc = "62033_desc"
+    picture = "CLM_BRZ_border"
+	fire_only_once = yes 
+    trigger = { 
+		tag = GCO
+		year = 1936
+		2295 = { owned_by = GCO is_core = GCO } #Lima
+		PEU = { exists = no }
+		BRZ = { exists = yes }
+	}
+
+    mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "Sooner or later, this will be decided."
+    	random_owned = {
+        	limit = { owner = { BRZ  = { exists = yes } } }
+        	owner = { relation = { who = BRZ value = -100 } }
+		}
+		any_country = {
+			limit = { is_greater_power = yes }
+			relation = { who = BRZ value = -200 }
+			leave_alliance = BRZ
+		}
+        add_country_modifier = { name = andean_military_reforms duration = 5475 }
+		any_pop = { limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } } militancy = 2 }
+	}
+}
+#Start of the Brazil-Colombian war! GCO initial
+country_event = { 
+	id = 62034
+	title = "Brazil has seized Acre!"
+	desc = "62034_desc"
+	picture = "CLM_BRZ_border"
+	major = yes
+	fire_only_once =  yes
+	is_triggered_only = yes
+	
+	option = { 
+		name = "Acre is ours!"
+		prestige = -5
+		add_country_modifier = { name = andean_military_reforms duration = 5475 }
+		random_owned = { limit = { owner = { ai = yes NOT = { conscription = mandatory_service } } } owner = { add_country_modifier = { name = fanatic_army duration = 750 } } }
+		GCO = { set_country_flag = Acre_seized }
+		BRZ = { country_event = 62035 }		
+		war = {
+			target = BRZ
+			attacker_goal = { casus_belli = cut_down_to_size_no_infamy country = BRZ }
+			defender_goal = { casus_belli = cut_down_to_size_no_infamy country = GCO }
+			call_ally = no
+		}
+        relation = { who = BRZ value = -150 }
+		ai_chance = { factor = 90 }
+	}
+	
+	option = {
+		name = "Leave it be, for now."
+		prestige = -30
+		add_country_modifier = { name = andean_military_reforms duration = 5475 }
+		ai_chance = { factor = 10 }
+	}
+}
+	
+#Brazil fucked around and now has to find out! 
+country_event = { 
+	id = 62035
+	title = "The War of the Amazonas"
+	desc = "62035_desc"
+	picture = "GCO_BRZ_WAR"
+	is_triggered_only = yes
+	
+	option = { 
+		name = "Ou ficar a Pátria livre, ou morrer pelo Brasil."
+		any_pop = { consciousness = 1 }
+	}
+}
+
+#Pedro II coping - Colombia has an Amazon River border
+country_event = {
+	id = 62036
+	title = "Treaty of Manaus" 
+	desc = "62036_desc"
+	picture = "treaty_of_petropolis"
+	fire_only_once =  yes
+	trigger = { 
+		tag = GCO 
+		BRZ = { is_disarmed = yes has_country_flag = Acre_seized truce_with = GCO }
+		GCO = { is_disarmed = no has_country_flag = Acre_seized truce_with = BRZ } 
+	}
+	
+	mean_time_to_happen = { days = 1 }
+	
+	option = { 
+		name = "¡Gloria a Colombia! Our forefathers would be proud!" 
+		prestige = 25
+		set_country_flag = GCO_DESTROYED_BRZ
+		BRZ = { set_country_flag = GCO_DESTROYED_BRZ }
+		BRZ = { country_event = 62037 }
+		add_country_modifier = { name = the_homestead_act duration = -1 }
+		2415 = { add_core = GCO }
+		2407 = { add_core = GCO }
+		2412 = { add_core = GCO }
+		2408 = { add_core = GCO }
+		2402 = { add_core = GCO }
+		2404 = { add_core = GCO }
+		3651 = { add_core = GCO }
+		3652 = { add_core = GCO }
+		3567 = { add_core = GCO }
+		2403 = { add_core = GCO }
+		3435 = { add_core = GCO }
+		3381 = { add_core = GCO }
+		3382 = { add_core = GCO }
+		3380 = { remove_core = BRZ secede_province = BOL }
+		BRZ = { 
+			any_owned = {
+				limit = { is_core = GCO }
+				secede_province = GCO 
+			} 
+		}
+		GCO = { 
+			any_owned = {
+				limit = { is_core = GCO is_core = BRZ }
+				remove_core = BRZ
+			} 
+		}
+		ACE = { primary_culture = north_andean }
+		BRZ_2401 = { 
+			any_owned = {
+				limit = { is_core = GCO }
+				add_core = ACE 
+			} 
+		} 
+		BRZ_2401 = { 
+			any_owned = {
+				limit = { is_core = GCO }
+				remove_core = PAA
+			} 
+		} 
+		BRZ_2408 = { 
+			any_owned = {
+				limit = { is_core = GCO }
+				add_core = ACE 
+			}
+		}
+		BRZ_2408 = { 
+			any_owned = {
+				limit = { is_core = GCO }
+				remove_core = PAA
+			}
+		}
+		3380 = { 
+			any_owned = {
+			limit = { 
+				BOL = { exists = yes} } secede_province = BOL remove_core = BRZ } }
+			any_owned = { 
+			limit = { 
+				BOL = { all_core = GCO } } secede_province = GCO remove_core = BRZ } }
+		ai_chance = { factor = 1 }
+	}
+}
+#GCO victory - BRZ popup
+country_event = {
+	id = 62037
+	title = "Treaty of Manaus" 
+	desc = "62037_desc"
+	picture = "treaty_of_petropolis"
+	is_triggered_only = yes
+	option = { 
+		name = "How humiliating! Purge the military!" 
+		prestige = -15
+		any_pop = {
+			limit = { culture = brazilian }
+			militancy = 2
+			consciousness = 2
+		}
+		BRZ = { add_country_modifier = { name = peasant_revolt duration = 364 } }
+		ai_chance = { factor = 1 }
+	}
+}
+#Colombian defeat - Brazilmax cringe
+country_event = {
+	id = 62038
+	title = "Treaty of Manaus" 
+	desc = "62038_desc"
+	picture = "treaty_of_petropolis"
+	fire_only_once = yes 
+	trigger = { 
+		tag = BRZ 
+		BRZ = { is_disarmed = no has_country_flag = Acre_seized truce_with = GCO }
+		GCO = { is_disarmed = yes has_country_flag = Acre_seized truce_with = BRZ } 
+	}
+
+	mean_time_to_happen = { days = 1 }
+	
+	option = { 
+		name = "The Colombians have been put in their place!" 
+		prestige = 15 
+		set_country_flag = BRZ_DESTROYED_GCO
+		GCO = { set_country_flag = BRZ_DESTROYED_GCO }
+		GCO = { country_event = 62039 }
+		BRZ_2408 = { add_core = BRZ }
+		BRZ_2408 = { add_core = PAA }
+		2289 = { add_core = BRZ } 
+		2278 = { add_core = BRZ }
+		696 = { add_core = BRZ }
+		2260 = { add_core = BRZ }
+		2263 = { add_core = BRZ }
+		2261 = { add_core = BRZ }
+		3376 = { add_core = BRZ }
+		904 = { add_core = BRZ }
+		2288 = { add_core = BRZ }
+		2286 = { add_core = BRZ }
+		278 = { add_core = BRZ }
+		3557 = { add_core = BRZ }
+		3823 = { add_core = BRZ }
+		2301 = { add_core = BRZ }
+		ENG_1979 = {
+			any_owned = {
+				limit = { is_core = GCO } add_core = BRZ } }
+		GCO = { 
+			any_owned = {
+				limit = { is_core = BRZ }
+				secede_province = BRZ
+				remove_core = GCO
+			} 
+		}
+		ai_chance = { factor = 1 } 
+	}
+}
+#Colombian Defeat - GCO popup
+country_event = {
+	id = 62039
+	title = "Treaty of Manaus" 
+	desc = "62039_desc"
+	picture = "treaty_of_petropolis"
+	is_triggered_only = yes
+	option = { 
+		name = "This major setback will not be easily forgotten." 
+		prestige = -15
+		any_pop = {
+			limit = { culture = north_andean }
+			militancy = 2
+			consciousness = 2
+		}
+		GCO = { add_country_modifier = { name = nationalist_agitation duration = 364 } }
+		ai_chance = { factor = 1 }
+	}
+}
+
+#Colombian Intervention in the Dominican Revolution - Time to get the Dominicans!
+country_event = { 
+	id = 62040
+	title = "The Dominican Revolution" 
+	desc = "62040_desc"
+	picture = "dominican_revolution"
+	is_triggered_only = yes 
+	option = { 
+		name = "Pedro Santana is a liability, but one we must exploit to bring the Caribbean into our fold."
+		set_country_flag = Colombian_Intervention_in_Santo_Domingo
+		prestige = 5 
+		badboy = 1
+		USA = { diplomatic_influence = { who = HAI value = -200 } leave_alliance = HAI }
+    	war = {
+        	target = HAI
+            attacker_goal = { casus_belli = cut_down_to_size_no_infamy }
+            defender_goal = { casus_belli = cut_down_to_size_no_infamy }
+        }
+		DOM = { military_access = THIS }
+		GCO = { military_access = DOM }
+		DOM = { treasury = 1000 }
+		GCO = { treasury = 1000 } 
+		HAI = { war_exhaustion = 1.0 }
+		ai_chance = { factor = 1 } 
+	}
+	
+	option = {
+		name = "We can not directly intervene. Let us hope the revolution prevails."
+		prestige = -5
+		GCO = { relation = { who = DOM value = -100 } diplomatic_influence = { who = DOM value = -400 } }
+		ai_chance = { factor = 0 } 
+	}
+}
+#Victory - and time for a royalist crackdown 
+country_event = { 
+	id = 62041
+	title = "Colombian Hispanola" 
+	desc = "62041_desc" 
+	picture = "dominican_revolution"
+	fire_only_once = yes 
+	
+	trigger = {
+		tag = GCO
+		HAI = { is_disarmed = yes truce_with = GCO has_country_flag = DOM_revolt }
+		GCO = { has_country_flag = Colombian_Intervention_in_Santo_Domingo } 
+	}
+	
+	option = {
+		name = "We are righting yet another wrong and realizing Bolivar's vision! Vive Colombian Hispanola!" 
+		HAI = { prestige = -20 }
+		ENG = { relation = { who = GCO value = 50 } }
+		USA = { relation = { who = GCO value = 50 } }
+		DOM = { all_core = { add_core = GCO } }
+		GCO = { 
+			set_country_flag = GCO_DOM_UNION
+			inherit = DOM
+			add_country_modifier = { name = Colombian_Caribbean_Ambitions duration = 2912 } 
+		}
+		HAI = {
+			any_owned = {
+				limit = { region = HAI_2214 }
+				secede_province = THIS
+			}
+		}
+		HAI_2214 = { remove_core = HAI }
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = { 
+	id = 62042
+	title = "US President Jackson and Colombia"
+	desc = "62042_desc"
+	picture = "andrew_jackson_attack"
+	major = yes
+	fire_only_once = yes
+	
+	trigger = { 
+		tag = USA
+		year = 1832
+		VNZ = { exists = yes }
+		ECU = { exists = yes }
+		OR = {
+			has_global_flag = apulo_conventioned
+			AND = {
+				has_global_flag = gc_full_collapse
+				OR = { GCO = { war_with = VNZ } GCO = { war_with = ECU } }
+			}
+		}
+	}
+	
+	option = {
+		name = "The Northern Andes will be treated with a cautious but pragmatic hand."
+		USA = {
+			relation = { who = GCO value = 100 }
+			diplomatic_influence = { who = GCO value = 100 }
+			relation = { who = VNZ value = -100 } 
+			diplomatic_influence = { who = VNZ value = -100 }
+			relation = { who = ECU value = -100 } 
+			diplomatic_influence = { who = ECU value = -100 }
+		}
+		ENG = {
+			relation = { who = VNZ value = -100 }
+			diplomatic_influence = { who = VNZ value = -100 }
+			relation = { who = ECU value = -100 } 
+			diplomatic_influence = { who = ECU value = -100 }
+		}
+		VNZ = { add_country_modifier = { name = unrecognized_country duration = 728 } }
+		ECU = { add_country_modifier = { name = unrecognized_country duration = 728 } }
+	}
+}
+
+country_event = { 
+	id = 62047
+	title = "The Guantanamo Incident"
+	desc = "62047_desc"
+	picture = "us_cuba"
+	fire_only_once = yes
+	major = yes
+	
+	trigger = { 
+		tag = GCO
+		year = 1875 
+		is_greater_power = yes
+		has_country_flag = cub_claimed
+		2209 = { OR = { owned_by = SPA owned_by = SPC owned_by = IBR } }
+		44 = { OR = { owned_by = SPA owned_by = SPC owned_by = IBR } }
+		NOT = { truce_with = SPA truce_with = SPC truce_with = IBR }
+	}
+	
+	option = {
+		name = "Spain must be kicked out of the Americas!"
+		any_country = {
+			limit = { OR = { in_sphere = SPA in_sphere = SPC in_sphere = IBR } }
+			diplomatic_influence = { who = SPA value = -100 }
+			diplomatic_influence = { who = SPC value = -100 }
+			diplomatic_influence = { who = IBR value = -100 }
+		}
+		any_country = { limit = { OR = { alliance_with = SPA alliance_with = SPC alliance_with = IBR  } } leave_alliance = SPA leave_alliance = SPC leave_alliance = IBR }
+		random_owned = {
+			limit = { owner = { 2209 = { owned_by = SPA } } }
+			owner = {
+				war = {
+					target = SPA
+					attacker_goal = { casus_belli = acquire_all_cores country = GCO }
+					defender_goal = { casus_belli = cut_down_to_size }
+					call_ally = no
+				}
+				SPA = { country_event = 62048 }
+			}
+		}
+		random_owned = {
+			limit = { owner = { 2209 = { owned_by = SPC } } }
+			owner = {
+				war = {
+					target = SPC
+					attacker_goal = { casus_belli = acquire_all_cores country = GCO }
+					defender_goal = { casus_belli = cut_down_to_size }
+					call_ally = no
+				}
+				SPC = { country_event = 62048 }
+			}
+		}
+		random_owned = {
+			limit = { owner = { 2209 = { owned_by = IBR } } }
+			owner = {
+				war = {
+					target = IBR
+					attacker_goal = { casus_belli = acquire_all_cores country = GCO }
+					defender_goal = { casus_belli = cut_down_to_size }
+					call_ally = no
+				}
+				IBR = { country_event = 62048 }
+			}
+		}
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "We cannot go to war over this, apologize quickly!"
+		prestige = -20
+		random_owned = {
+			limit = { owner = { SPA = { exists = yes } } }
+			relation = { who = SPA value = 100 }
+		}
+		random_owned = {
+			limit = { owner = { SPC = { exists = yes } } }
+			relation = { who = SPC value = 100 }
+		}
+		random_owned = {
+			limit = { owner = { IBR = { exists = yes } } }
+			relation = { who = IBR value = 100 }
+		}
+        any_pop = {
+            limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+            militancy = 2
+            consciousness = 3 
+		}
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = { 
+	id = 62048
+	title = "Colombia declares war!"
+	desc = "62048_desc"
+	picture = "us_cuba"
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "We must defend our last New World possessions!"
+	}
+}
+
+country_event = { 
+	id = 62049
+	title = "Colombia's Caribbean ambitions."
+	desc = "620489_desc"
+	picture = "us_cuba"
+	fire_only_once = yes
+	
+	trigger = { 
+		OR =  { tag = SPA tag = SPC tag = IBR }
+		GCO = { has_country_flag = cub_claimed }
+	}
+	option = { 
+		name = "Our former viceroyalty may prove to be our undoing in the New World!"	
+	GCO = { country_event = { id = 62047 months = 2 }
+	}
+}
