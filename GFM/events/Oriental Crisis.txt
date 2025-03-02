@@ -14,12 +14,12 @@ country_event = {
 	fire_only_once = yes
 
     trigger = {
+        year = 1837
         tag = EGY
 		owns = 917
         vassal_of = TUR
         NOT = { war_with = TUR }
         NOT = { truce_with = TUR }
-        year = 1837
     }
 
     mean_time_to_happen = {
@@ -324,9 +324,9 @@ country_event = {
     picture = "cairo"
 
     trigger = {
+        has_global_flag = oriental_crisis
         is_greater_power = yes
         capital_scope = { continent = europe }
-        has_global_flag = oriental_crisis
         TUR = { war_with = EGY }
         OR = {
             alliance_with = TUR
@@ -478,9 +478,9 @@ country_event = {
     picture = "egy_independence"
 
     trigger = {
+        has_global_flag = oriental_crisis
         is_greater_power = yes
         capital_scope = { continent = europe }
-        has_global_flag = oriental_crisis
         TUR = { war_with = EGY }
         OR = {
             alliance_with = EGY
@@ -786,8 +786,8 @@ country_event = {
     fire_only_once = yes
 
     trigger = {
-        tag = EGY
         has_global_flag = oriental_crisis
+        tag = EGY
         war = no
         is_vassal = no
         OR = {
@@ -877,7 +877,11 @@ country_event = {
     trigger = {
         tag = TUR
         is_our_vassal = EGY
-		has_global_flag = oriental_crisis
+		OR = {
+			has_global_flag = oriental_crisis
+			AND = { has_global_flag = invade_syria_egypt NOT = { has_global_flag = ottos_cry_to_russia } NOT = { has_global_flag = youwonfirstwartur } }
+			AND = { has_global_flag = egyptno_defeating has_global_flag = ottos_cry_to_russia NOT = { has_global_flag = youwonfirstwartur } }
+		}
         war = no
         NOT = { has_country_flag = egypt_rule_restored }
         NOT = { has_country_flag = egypt_restricted }
@@ -885,6 +889,25 @@ country_event = {
     }
 
     mean_time_to_happen = { days = 1 }
+	
+	immediate = {
+		set_country_flag = hide_tooltip
+		random_owned = {
+			limit = {
+				owner = {
+					has_country_flag = hide_tooltip
+					OR = {
+						AND = { has_global_flag = invade_syria_egypt NOT = { has_global_flag = ottos_cry_to_russia } NOT = { has_global_flag = youwonfirstwartur } }
+						AND = { has_global_flag = egyptno_defeating has_global_flag = ottos_cry_to_russia NOT = { has_global_flag = youwonfirstwartur } }
+					}
+				}
+			}
+			owner = {
+				set_global_flag = youwonfirstwartur
+			}
+		}
+		clr_country_flag = hide_tooltip
+	}
 
     option = {
         name = "EVT90081OPTA"
@@ -939,9 +962,20 @@ country_event = {
         diplomatic_influence = { who = EGY value = 350 }
         relation = { who = RUS value = -200 }
         leave_alliance = RUS
+		random_owned = {
+			limit = {
+				owner = {
+					has_global_flag = oriental_crisis
+				}
+			}
+			owner = {
+				EGY = {
+					remove_country_modifier = muhammad_alis_reforms
+					economic_reform = no_pre_indust
+				}
+			}
+		}
         EGY = {
-            remove_country_modifier = muhammad_alis_reforms
-			economic_reform = no_pre_indust
             plurality = -10
             set_country_flag = surrendered_to_OE
             all_core = { limit = { is_core = TUR } remove_core = EGY }
@@ -988,7 +1022,7 @@ country_event = {
 		# Audax Validator "." Ignore_NEXT
 		922 = { secede_province = THIS secede_province = TUR }
 		# Audax Validator "." Ignore_NEXT
-		1154 = { secede_province = THIS secede_province = EGY }
+		1154 = { secede_province = THIS secede_province = EGY add_core = EGY }
 
         ai_chance = { factor = 1 }
     }
@@ -1000,7 +1034,7 @@ country_event = {
         prestige = 20
         EGY = {
             tech_school = developing_tech_school
-            all_core = { limit = { is_core = TUR } remove_core = EGY }
+            all_core = { limit = { is_core = TUR NOT = { province_id = 922 province_id = 1154 } } remove_core = EGY }
         }
         inherit = EGY
         random_country = {
