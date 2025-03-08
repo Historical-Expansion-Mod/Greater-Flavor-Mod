@@ -477,8 +477,8 @@ diplomacy = {
 
 	DISARMAMENT_ARMY_HIT = 0.5,
 	REPARATIONS_TAX_HIT = 0.2,
-	PRESTIGE_REDUCTION_BASE = 25,
-	PRESTIGE_REDUCTION = 0.1, -- Base value + % of recipient's prestige
+	PRESTIGE_REDUCTION_BASE = 0, -- Abe edit: Used to be 25
+	PRESTIGE_REDUCTION = 0, -- Base value + % of recipient's prestige   Abe edit: Used to be 0.1
 	REPARATIONS_YEARS = 5,
 
 	-- No longer used:
