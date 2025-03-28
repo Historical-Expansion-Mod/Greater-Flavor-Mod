@@ -182,10 +182,17 @@ country_event = {
 	    diplomatic_influence = { who = CLM value = -400 }
 	    diplomatic_influence = { who = VNZ value = -400 }
 		random_owned = {
-		limit = { owner = { ECU= { exists = yes } } }
+			limit = { owner = { ECU = { exists = yes } } }
 			PBC = {
 				relation = { who = ECU value = -100 }
 				diplomatic_influence = { who = ECU value = -400 }
+			}
+		}
+		random_owned = {
+			limit = { owner = { ECM = { exists = yes } } }
+			PBC = {
+				relation = { who = ECM value = -100 }
+				diplomatic_influence = { who = ECM value = -400 }
 			}
 		}
 	}
@@ -201,51 +208,81 @@ country_event = {
 		release_vassal = VNZ
 		random_owned = {
 			limit = { owner = { ECU = { exists = yes } } }
-			PBC = {
+			owner = {
 				relation = { who = ECU value = -100 }
 				diplomatic_influence = { who = ECU value = -400 }
 			}
 		}
 		ECU = { 
-				limit = {OR = { exists = yes vassal_of = PBC } }
-				release_vassal = ECU 
+			limit = { exists = yes vassal_of = PBC }
+			release_vassal = ECU 
+		}
+		random_owned = {
+			limit = { owner = { ECM = { exists = yes } } }
+			owner = {
+				relation = { who = ECM value = -100 }
+				diplomatic_influence = { who = ECM value = -400 }
 			}
-			PBC = { 
-				limit = { OR = { alliance_with = CLM alliance_with = VNZ } }
-				leave_alliance = CLM leave_alliance = VNZ
-			}
-			set_country_flag = andean_civil_war
+		}
+		ECM = { 
+			limit = { exists = yes vassal_of = PBC }
+			release_vassal = ECM
+		}
+		PBC = { 
+			limit = { OR = { alliance_with = CLM alliance_with = VNZ } }
+			leave_alliance = CLM leave_alliance = VNZ
+		}
+		set_country_flag = andean_civil_war
 		CLM = {
 			all_core = { add_core = PBC }
 			set_country_flag = andean_civil_war
         	add_country_modifier = { name = small_country_draft duration = 2737 }
-			create_alliance = VNZ create_alliance = ECU
-			war = {
-				target = PBC
-				attacker_goal = { casus_belli = cut_down_to_size_no_infamy country = CLM }
-				defender_goal = { casus_belli = conquest_any country = PBC }
-			}
+			create_alliance = VNZ
+			create_alliance = ECU
+			create_alliance = ECM
+		}
+		war = {
+			target = CLM
+			attacker_goal = { casus_belli = conquest_any country = PBC }
+			defender_goal = { casus_belli = cut_down_to_size_no_infamy country = CLM }
 		}
 		VNZ = {
 			all_core = { add_core = PBC }
 			set_country_flag = andean_civil_war
        	 	add_country_modifier = { name = small_country_draft duration = 2737 }
-			war = {
-				target = PBC
-				attacker_goal = { casus_belli = cut_down_to_size_no_infamy country = VNZ }
-				defender_goal = { casus_belli = conquest_any country = PBC }
-			}
+		}
+		war = {
+			target = VNZ
+			attacker_goal = { casus_belli = conquest_any country = PBC }
+			defender_goal = { casus_belli = cut_down_to_size_no_infamy country = VNZ }
 		}
 		random_owned = {
 			limit = { owner = { ECU = { exists = yes } } }
-			ECU = {
-				all_core = { add_core = PBC }
-				set_country_flag = andean_civil_war
-    	   	 	add_country_modifier = { name = small_country_draft duration = 2737 }
+			owner = {
+				ECU = {
+					all_core = { add_core = PBC }
+					set_country_flag = andean_civil_war
+    	   	 		add_country_modifier = { name = small_country_draft duration = 2737 }
+				}
 				war = {
-					target = PBC
-					attacker_goal = { casus_belli = cut_down_to_size_no_infamy country = ECU }
-					defender_goal = { casus_belli = conquest_any country = PBC }
+					target = ECU
+					attacker_goal = { casus_belli = conquest_any country = PBC }
+					defender_goal = { casus_belli = cut_down_to_size_no_infamy country = ECU }
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { ECM = { exists = yes } } }
+			owner = {
+				ECM = {
+					all_core = { add_core = PBC }
+					set_country_flag = andean_civil_war
+    	   	 		add_country_modifier = { name = small_country_draft duration = 2737 }
+				}
+				war = {
+					target = ECM
+					attacker_goal = { casus_belli = conquest_any country = PBC }
+					defender_goal = { casus_belli = cut_down_to_size_no_infamy country = ECM }
 				}
 			}
 		}
@@ -263,14 +300,14 @@ country_event = {
         tag = PBC
         war_with = CLM
         war_with = VNZ
-			OR = {
-				CLM = { national_provinces_occupied = 0.10 }
-				VNZ = { national_provinces_occupied = 0.10 } 
+		OR = {
+			CLM = { national_provinces_occupied = 0.10 }
+			VNZ = { national_provinces_occupied = 0.10 } 
         }
-			AND = {
-				PBC = { has_country_flag = andean_civil_war }
-				CLM = { has_country_flag = andean_civil_war }
-				VNZ = { has_country_flag = andean_civil_war }
+		AND = {
+			PBC = { has_country_flag = andean_civil_war }
+			CLM = { has_country_flag = andean_civil_war }
+			VNZ = { has_country_flag = andean_civil_war }
         }
         CHL = { exists = yes } 
     }
@@ -311,12 +348,13 @@ country_event = {
 	
 	trigger = {
 		tag = PBC
-			is_disarmed = no
-		    CLM = { exists = no }
-		    VNZ = { exists = no }
-		    ECU = { exists = no }
-			CHL = { OR = { AND = { truce_with = THIS is_disarmed = yes } exists = no } }
-		    has_country_flag = andean_civil_war
+		is_disarmed = no
+		CLM = { exists = no }
+		VNZ = { exists = no }
+		ECU = { exists = no }
+		ECM = { exists = no }
+		CHL = { OR = { AND = { truce_with = THIS is_disarmed = yes } exists = no } }
+		has_country_flag = andean_civil_war
 	}
 
 	mean_time_to_happen = { days = 1 }
@@ -329,20 +367,23 @@ country_event = {
 		CHL = { 
 			any_owned = {
 				limit = { is_core = PBC } 
-					secede_province = PBC } }
-		PBC = { relation = { who = BRZ value = -200 } 
-				diplomatic_influence = { who = BRZ value = -400 }
-		relation = { who = USA value = -50 }
-		relation = { who = FRA value = -50 }
-		relation = { who = NET value = -50 }
-		relation = { who = ENG value = -50 }
-		set_country_flag = greater_colombia
-		clr_country_flag = andean_civil_war
-		add_country_modifier = { 
-			name = nationalist_agitation 
-			duration = 360
+				secede_province = PBC
+			}
 		}
-					} 
+		PBC = {
+			relation = { who = BRZ value = -200 } 
+			diplomatic_influence = { who = BRZ value = -400 }
+			relation = { who = USA value = -50 }
+			relation = { who = FRA value = -50 }
+			relation = { who = NET value = -50 }
+			relation = { who = ENG value = -50 }
+			set_country_flag = greater_colombia
+			clr_country_flag = andean_civil_war
+			add_country_modifier = { 
+				name = nationalist_agitation 
+				duration = 360
+			}
+		} 
         random_owned = {
             limit = { owner = { ARG = { exists = yes } } }
             owner = { relation = { who = ARG value = -200 } diplomatic_influence = { who = ARG value = -400 } }
@@ -363,19 +404,17 @@ country_event = {
             limit = { owner = { URU = { exists = yes } } }
             owner = { relation = { who = URU value = -50 } }
         }
-		BRZ = { 
-			random_owned = {
-				limit = { owner = { ARG = { exists = yes } } }
-				owner = { create_alliance = ARG relation = { who = ARG value = 400 } }
-				}
-			random_owned = {
-				limit = { owner = { LPL = { exists = yes } } }
-				owner = {create_alliance = LPL relation = { who = LPL value = 400 } }
-				}
-			random_owned = {
-				limit = { owner = { ARC = { exists = yes } } }
-				owner = {create_alliance = ARC relation = { who = ARC value = 400 } }
-			}
+		random_owned = {
+			limit = { owner = { ARG = { exists = yes } } }
+			owner = { BRZ = { create_alliance = ARG relation = { who = ARG value = 400 } } }
+		}
+		random_owned = {
+			limit = { owner = { LPL = { exists = yes } } }
+			owner = { BRZ = { create_alliance = LPL relation = { who = LPL value = 400 } } }
+		}
+		random_owned = {
+			limit = { owner = { ARC = { exists = yes } } }
+			owner = { BRZ = { create_alliance = ARC relation = { who = ARC value = 400 } } }
 		}
 	}
 }
@@ -404,10 +443,11 @@ country_event = {
 		CLM = { leave_alliance = LPL }
 		VNZ = {leave_alliance = LPL }
 		ECU = { leave_alliance = LPL }
+		ECM = { leave_alliance = LPL }
 		release_vassal = CHL
 		release_vassal = PEU
 		diplomatic_influence = { who = PEU value = -400 }
-		diplomatic_influence = {who = CHL value = -400 }
+		diplomatic_influence = { who = CHL value = -400 }
 		LPL = { 
 			limit = { OR = { alliance_with = BOL alliance_with = PEU } }
 			leave_alliance = PEU leave_alliance = CHL
@@ -417,21 +457,21 @@ country_event = {
 			all_core = { add_core = LPL }
 			set_country_flag = andean_civil_war
         	add_country_modifier = { name = small_country_draft duration = 2737 }
-			war = {
-				target = LPL
-				attacker_goal = { casus_belli = cut_down_to_size_no_infamy country = PEU }
-				defender_goal = { casus_belli = conquest_any country = LPL }
-			}
+		}
+		war = {
+			target = PEU
+			attacker_goal = { casus_belli = conquest_any country = LPL }
+			defender_goal = { casus_belli = cut_down_to_size_no_infamy country = PEU }
 		}
 		CHL = {
 			all_core = { add_core = LPL }
 			set_country_flag = andean_civil_war
         	add_country_modifier = { name = small_country_draft duration = 2737 }
-			war = {
-				target = LPL
-				attacker_goal = { casus_belli = cut_down_to_size_no_infamy country = CHL }
-				defender_goal = { casus_belli = conquest_any country = LPL }
-			}
+		}
+		war = {
+			target = CHL
+			attacker_goal = { casus_belli = conquest_any country = LPL }
+			defender_goal = { casus_belli = cut_down_to_size_no_infamy country = CHL }
 		}
 	}
 }	
@@ -461,16 +501,16 @@ country_event = {
 	option = { 
 		name = "We will crush them as part of our plan to dominate the Andes!"
 		random_owned = {
-			LPL = { 
-				limit = { OR = { alliance_with = VNZ } }
-				relation = { who = VNZ value = -100 }
+			limit = { owner = { alliance_with = VNZ } }
+			owner = {
+				relation = { who = VNZ value = - 100 }
 				diplomatic_influence = { who = VNZ value = -400 }
 				leave_alliance = VNZ
 			}
 		}
 		random_owned = {
-			LPL = { 
-				limit = { OR = { alliance_with = CLM } }
+			limit = { owner = { alliance_with = CLM } }
+			owner = {
 				relation = { who = CLM value = -100 }
 				diplomatic_influence = { who = CLM value = -400 }
 				leave_alliance = CLM
@@ -479,41 +519,74 @@ country_event = {
 		prestige = -1
 		LPL = { set_country_flag = GCO_joins_Andean_Civil_War war_exhaustion = 10 }
 		random_owned = {
-			CLM = { 
-				limit = { OR = { exists = yes } }
-				military_access = PEU military_access = CHL create_alliance = PEU create_alliance = CHL
-				set_country_flag = andean_civil_war
-        		add_country_modifier = { name = small_country_draft duration = 2737 }
+			limit = { CLM = { exists = yes } }
+			owner = {
+				CLM = {
+					military_access = PEU
+					military_access = CHL
+					create_alliance = PEU
+					create_alliance = CHL
+					set_country_flag = andean_civil_war
+        			add_country_modifier = { name = small_country_draft duration = 2737 }
+				}
 				war = {
-					target = LPL
+					target = CLM
 					attacker_goal = { casus_belli = cut_down_to_size_no_infamy country = LPL }
 					defender_goal = { casus_belli = cut_down_to_size_no_infamy country = CLM }
 				}
 			}
 		}
 		random_owned = {
-			VNZ = { 
-				limit = { OR = { exists = yes } }
-				military_access = PEU military_access = CHL create_alliance = PEU create_alliance = CHL
-				set_country_flag = andean_civil_war
-        		add_country_modifier = { name = small_country_draft duration = 2737 }
+			limit = { VNZ = { exists = yes } }
+			owner = {
+				VNZ = {
+					military_access = PEU
+					military_access = CHL
+					create_alliance = PEU
+					create_alliance = CHL
+					set_country_flag = andean_civil_war
+        			add_country_modifier = { name = small_country_draft duration = 2737 }
+				}
 				war = {
-					target = LPL
+					target = VNZ
 					attacker_goal = { casus_belli = cut_down_to_size_no_infamy country = LPL }
-					defender_goal = { casus_belli = cut_down_to_size_no_infamy country = VNZ }
+					defender_goal = { casus_belli = cut_down_to_size_no_infamy country = CLM }
 				}
 			}
 		}
 		random_owned = {
-			ECU = { 
-				limit = { OR = { exists = yes } }
-				military_access = PEU military_access = CHL create_alliance = PEU create_alliance = CHL
-				set_country_flag = andean_civil_war
-     	  		add_country_modifier = { name = small_country_draft duration = 2737 }
+			limit = { ECU = { exists = yes } }
+			owner = {
+				ECU = {
+					military_access = PEU
+					military_access = CHL
+					create_alliance = PEU
+					create_alliance = CHL
+					set_country_flag = andean_civil_war
+     	  			add_country_modifier = { name = small_country_draft duration = 2737 }
+				}
 				war = {
-					target = LPL
+					target = ECU
 					attacker_goal = { casus_belli = cut_down_to_size_no_infamy country = LPL }
 					defender_goal = { casus_belli = cut_down_to_size_no_infamy country = ECU }
+				}
+			}
+		}
+		random_owned = {
+			limit = { ECM = { exists = yes } }
+			owner = {
+				ECM = {
+					military_access = PEU
+					military_access = CHL
+					create_alliance = PEU
+					create_alliance = CHL
+					set_country_flag = andean_civil_war
+     	  			add_country_modifier = { name = small_country_draft duration = 2737 }
+				}
+				war = {
+					target = ECM
+					attacker_goal = { casus_belli = cut_down_to_size_no_infamy country = LPL }
+					defender_goal = { casus_belli = cut_down_to_size_no_infamy country = ECM }
 				}
 			}
 		}
@@ -533,9 +606,10 @@ country_event = {
 		    PEU = { exists = no }
 		    CHL = { exists = no }
 		    has_country_flag = andean_civil_war
-			CLM = { OR = { AND = { truce_with = THIS is_disarmed = yes has_country_flag = andean_civil_war } exists = yes } }
-			VNZ = { OR = { AND = { truce_with = THIS is_disarmed = yes has_country_flag = andean_civil_war } exists = yes } }
-			ECU = { OR = { AND = { truce_with = THIS is_disarmed = yes has_country_flag = andean_civil_war } exists = yes } }
+			CLM = { OR = { AND = { truce_with = THIS is_disarmed = yes has_country_flag = andean_civil_war } exists = no } }
+			VNZ = { OR = { AND = { truce_with = THIS is_disarmed = yes has_country_flag = andean_civil_war } exists = no } }
+			ECU = { OR = { AND = { truce_with = THIS is_disarmed = yes has_country_flag = andean_civil_war } exists = no } }
+			ECU = { OR = { AND = { truce_with = THIS is_disarmed = yes has_country_flag = andean_civil_war } exists = no } }
 	}
 
 	mean_time_to_happen = { days = 1 }
@@ -571,6 +645,12 @@ country_event = {
 				secede_province = LPL
 			}
 		}
+		ECM = {
+			any_owned = {
+				limit = { is_core = LPL }
+				secede_province = LPL
+			}
+		}
 		LPL = { create_vassal = PNM }
 		2328  = { secede_province = LPL }
 		2329  = { secede_province = LPL }
@@ -598,19 +678,17 @@ country_event = {
             limit = { owner = { URU = { exists = yes } } }
             owner = { relation = { who = URU value = -50 } }
         }
-		BRZ = { 
-			random_owned = {
-				limit = { owner = { GCO = { exists = yes } } }
-				owner = { create_alliance = GCO relation = { who = GCO value = 400 } }
-				}
-			random_owned = {
-				limit = { owner = { CLM = { exists = yes } } }
-				owner = {create_alliance = CLM relation = { who = CLM value = 400 } }
-				}
-			random_owned = {
-				limit = { owner = { VNZ = { exists = yes } } }
-				owner = {create_alliance = VNZ relation = { who = VNZ value = 400 } }
-			}
+		random_owned = {
+			limit = { owner = { GCO = { exists = yes } } }
+			owner = { BRZ = { create_alliance = GCO relation = { who = GCO value = 400 } } }
+		}
+		random_owned = {
+			limit = { owner = { CLM = { exists = yes } } }
+			owner = { BRZ = { create_alliance = CLM relation = { who = CLM value = 400 } } }
+		}
+		random_owned = {
+			limit = { owner = { VNZ = { exists = yes } } }
+			owner = { BRZ = { create_alliance = VNZ relation = { who = VNZ value = 400 } } }
 		}
 	}
 }
