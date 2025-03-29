@@ -75,6 +75,8 @@ anglo_persian_cb
 colonial_competition
 acquire_all_cores
 acquire_core_state
+free_acquire_all_cores
+free_acquire_core_state
 restore_austrian_empire
 colonial_reconquest_cb
 restore_america
@@ -171,6 +173,11 @@ cut_down_to_size_no_add_wargoal
 cut_down_to_size_no_infamy
 liberate_puppet_no_infamy
 humiliate_no_infamy
+scripted_war_minuscule
+scripted_war_small
+scripted_war
+scripted_war_big
+scripted_war_huge
 }
 
 # Great War CB's
@@ -310,13 +317,12 @@ acquire_core_state = {
     is_triggered_only = yes
     months = 12
 
-    construction_speed = 0.8
+    construction_speed = 5.0
 
     badboy_factor = 0
     prestige_factor = 2
     peace_cost_factor = 0.7
     penalty_factor = 1
-    always = yes
 
     break_truce_prestige_factor = 5
     break_truce_infamy_factor = 2
@@ -349,15 +355,7 @@ acquire_core_state = {
             THIS = { NOT = { has_country_flag = in_great_war } }
             THIS = { ai = no }
         }
-        NOT = {
-            AND = {
-                #THIS = { ai = yes }
-                has_global_flag = sw_set
-                NOT = { year = 1834 }
-                NOT = { has_country_flag = battle_royale_set }
-            }
-        }
-		is_substate = no
+        NOT = { has_global_flag = sw_set }
         NOT = { is_our_vassal = THIS }
         NOT = { has_country_modifier = neutrality_modifier }
         THIS = { NOT = { has_country_modifier = neutrality_modifier } }
@@ -402,14 +400,14 @@ acquire_all_cores = {
     sprite_index = 5
     is_triggered_only = yes
     months = 12
-    constructing_cb = no
     crisis = no
+
+    construction_speed = 2.5
 
     badboy_factor = 0
     prestige_factor = 2
     peace_cost_factor = 0.7
     penalty_factor = 1
-    always = yes
 
     break_truce_prestige_factor = 5
     break_truce_infamy_factor = 2
@@ -421,30 +419,32 @@ acquire_all_cores = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        civilized = yes
 		THIS = { NOT = { has_unclaimed_cores = no } }
         any_owned_province = { is_core = THIS }
+        civilized = yes
         number_of_states = 2 # annex if you want their last state
-        any_owned_province = { NOT = { is_core = THIS } }
         OR = {
-            THIS = { NOT = { has_country_modifier = punitive_effects } }
             war_with = THIS
+            THIS = { NOT = { has_country_modifier = punitive_effects } }
         }
         OR = {
             NOT = { has_country_flag = dismantle_declared }
             THIS = { NOT = { has_country_flag = in_great_war } }
             THIS = { ai = no }
         }
-        NOT = {
-            AND = {
-                has_global_flag = sw_set
-                NOT = { year = 1834 }
-                NOT = { has_country_flag = battle_royale_set }
+        THIS = {
+            NOT = {
+                has_country_modifier = neutrality_modifier
+                AND = {
+                    war_policy = pacifism
+                    war = no
+                }
             }
         }
+        any_owned_province = { NOT = { is_core = THIS } }
+        NOT = { has_global_flag = sw_set }
         NOT = { is_our_vassal = THIS }
         NOT = { has_country_modifier = neutrality_modifier }
-        THIS = { NOT = { has_country_modifier = neutrality_modifier } }
     }
 
     allowed_countries = {
@@ -14354,6 +14354,401 @@ demand_concession_casus_belli_no_infamy = {
 	}
 }
 
+# Free Acquire Core State
+free_acquire_core_state = {
+    sprite_index = 5
+    is_triggered_only = yes
+    months = 12
+
+    construction_speed = 1.7
+
+    badboy_factor = 0
+    prestige_factor = 2
+    peace_cost_factor = 0.7
+    penalty_factor = 1
+	always = yes
+
+    break_truce_prestige_factor = 5
+    break_truce_infamy_factor = 2
+    break_truce_militancy_factor = 2
+    truce_months = 48
+
+    good_relation_prestige_factor = 1
+    good_relation_infamy_factor = 1
+    good_relation_militancy_factor = 1
+
+    can_use = {
+        OR = {
+            capital_scope = { continent = west_africa }
+            capital_scope = { continent = central_africa }
+            capital_scope = { continent = east_africa }
+            capital_scope = { continent = south_africa }
+            AND = { has_global_flag = sw_set year = 1840 has_country_flag = battle_royale_set }
+		}
+		OR = { civilized = no AND = { has_global_flag = sw_set year = 1834 has_country_flag = battle_royale_set } }
+		THIS = { NOT = { has_unclaimed_cores = no } }
+		any_owned_province = { is_core = THIS }
+        number_of_states = 1 # annex if you want their last state
+		is_substate = no
+        OR = {
+			any_owned_province = {
+				any_neighbor_province = {
+					owner = { tag = THIS }
+				}
+			}
+            AND = {
+                THIS = { total_amount_of_ships = 5 }
+                any_owned_province = { port = yes }
+            }
+            war_with = THIS
+            any_neighbor_country = { substate_of = THIS }
+        }
+        OR = {
+            war_with = THIS
+            THIS = { NOT = { has_country_modifier = punitive_effects } }
+        }
+        OR = {
+            NOT = { has_country_flag = dismantle_declared }
+            THIS = { NOT = { has_country_flag = in_great_war } }
+            THIS = { ai = no }
+        }
+        NOT = {
+            AND = {
+                #THIS = { ai = yes }
+                has_global_flag = sw_set
+                NOT = { year = 1834 }
+                NOT = { has_country_flag = battle_royale_set }
+            }
+        }
+		is_substate = no
+        NOT = { is_our_vassal = THIS }
+        NOT = { has_country_modifier = neutrality_modifier }
+        THIS = { NOT = { has_country_modifier = neutrality_modifier } }
+    }
+
+    allowed_states = {
+        any_owned_province = { is_core = THIS }
+        OR = {
+			any_owned_province = {
+				any_neighbor_province = {
+					owner = { tag = THIS }
+				}
+			}
+            AND = {
+                THIS = { total_amount_of_ships = 5 }
+                any_owned_province = { port = yes }
+            }
+            THIS = { ai = no }
+        }
+    }
+
+    po_demand_state = yes
+
+    war_name = WAR_TAKE_CORE_NAME
+
+    on_add = {
+        move_issue_percentage = {
+            from = jingoism
+            to = pro_military
+            value = 0.25
+        }
+    }
+
+    on_po_accepted = {
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+        country_event = 2650    # Territorial Loss event
+    }
+}
+
+# Free Acquire All Core States
+free_acquire_all_cores = {
+    sprite_index = 5
+    is_triggered_only = yes
+    months = 12
+    constructing_cb = no
+    crisis = no
+
+    badboy_factor = 0
+    prestige_factor = 2
+    peace_cost_factor = 0.7
+    penalty_factor = 1
+    always = yes
+
+    break_truce_prestige_factor = 5
+    break_truce_infamy_factor = 2
+    break_truce_militancy_factor = 2
+    truce_months = 48
+
+    good_relation_prestige_factor = 1
+    good_relation_infamy_factor = 1
+    good_relation_militancy_factor = 1
+
+    can_use = {
+        civilized = yes
+        AND = { has_global_flag = sw_set year = 1834 has_country_flag = battle_royale_set }
+		THIS = { NOT = { has_unclaimed_cores = no } }
+        any_owned_province = { is_core = THIS }
+        number_of_states = 2 # annex if you want their last state
+        any_owned_province = { NOT = { is_core = THIS } }
+        OR = {
+            THIS = { NOT = { has_country_modifier = punitive_effects } }
+            war_with = THIS
+        }
+        OR = {
+            NOT = { has_country_flag = dismantle_declared }
+            THIS = { NOT = { has_country_flag = in_great_war } }
+            THIS = { ai = no }
+        }
+        NOT = {
+            AND = {
+                has_global_flag = sw_set
+                NOT = { year = 1834 }
+                NOT = { has_country_flag = battle_royale_set }
+            }
+        }
+        NOT = { is_our_vassal = THIS }
+        NOT = { has_country_modifier = neutrality_modifier }
+        THIS = { NOT = { has_country_modifier = neutrality_modifier } }
+    }
+
+    allowed_countries = {
+        FROM = { tag = THIS }
+    }
+
+    allowed_states = {
+        any_owned_province = { is_core = THIS }
+        OR = {
+			any_owned_province = {
+				any_neighbor_province = {
+					owner = { tag = THIS }
+				}
+			}
+            AND = {
+                THIS = { any_owned_province = { port = yes } }
+                any_owned_province = { port = yes }
+            }
+            THIS = { ai = no }
+        }
+    }
+
+    all_allowed_states = yes
+    po_transfer_provinces = yes
+
+    war_name = WAR_ALL_CORES_NAME
+
+    on_add = {
+        move_issue_percentage = {
+            from = jingoism
+            to = pro_military
+            value = 0.25
+        }
+    }
+
+    on_po_accepted = {
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+        country_event = 2650    # Territorial Loss event
+    }
+}
+
+scripted_war_minuscule = {
+    sprite_index = 32
+    is_triggered_only = yes
+    months = 12
+
+    badboy_factor = 0
+    prestige_factor = 1
+    peace_cost_factor = 8
+    penalty_factor = 0
+    constructing_cb = no
+    crisis = no
+
+    break_truce_prestige_factor = 0
+    break_truce_infamy_factor = 0
+    break_truce_militancy_factor = 0
+    truce_months = 48
+
+    good_relation_prestige_factor = 0
+    good_relation_infamy_factor = 0
+    good_relation_militancy_factor = 0
+
+    po_reparations = yes
+	po_status_quo = yes
+
+    war_name = CUT_DOWN_TO_SIZE_NO_INFAMY_WAR_NAME
+
+    can_use = {
+    }
+
+    on_add = {
+    }
+
+
+	on_po_accepted = {
+		THIS = { clr_country_flag = lost_the_war }
+		set_country_flag = lost_the_war
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+	}
+}
+
+scripted_war_small = {
+    sprite_index = 32
+    is_triggered_only = yes
+    months = 12
+
+    badboy_factor = 0
+    prestige_factor = 1
+    peace_cost_factor = 15
+    penalty_factor = 0
+    constructing_cb = no
+    crisis = no
+
+    break_truce_prestige_factor = 0
+    break_truce_infamy_factor = 0
+    break_truce_militancy_factor = 0
+    truce_months = 48
+
+    good_relation_prestige_factor = 0
+    good_relation_infamy_factor = 0
+    good_relation_militancy_factor = 0
+
+    po_reparations = yes
+	po_status_quo = yes
+
+    war_name = CUT_DOWN_TO_SIZE_NO_INFAMY_WAR_NAME
+
+    can_use = {
+    }
+
+    on_add = {
+    }
+
+
+	on_po_accepted = {
+		THIS = { clr_country_flag = lost_the_war }
+		set_country_flag = lost_the_war
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+	}
+}
+
+scripted_war = {
+    sprite_index = 32
+    is_triggered_only = yes
+    months = 12
+
+    badboy_factor = 0
+    prestige_factor = 1
+    peace_cost_factor = 25
+    penalty_factor = 0
+    constructing_cb = no
+    crisis = no
+
+    break_truce_prestige_factor = 0
+    break_truce_infamy_factor = 0
+    break_truce_militancy_factor = 0
+    truce_months = 48
+
+    good_relation_prestige_factor = 0
+    good_relation_infamy_factor = 0
+    good_relation_militancy_factor = 0
+
+    po_reparations = yes
+	po_status_quo = yes
+
+    war_name = CUT_DOWN_TO_SIZE_NO_INFAMY_WAR_NAME
+
+    can_use = {
+    }
+
+    on_add = {
+    }
+
+
+	on_po_accepted = {
+		THIS = { clr_country_flag = lost_the_war }
+		set_country_flag = lost_the_war
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+	}
+}
+
+scripted_war_big = {
+    sprite_index = 32
+    is_triggered_only = yes
+    months = 12
+
+    badboy_factor = 0
+    prestige_factor = 1
+    peace_cost_factor = 35
+    penalty_factor = 0
+    constructing_cb = no
+    crisis = no
+
+    break_truce_prestige_factor = 0
+    break_truce_infamy_factor = 0
+    break_truce_militancy_factor = 0
+    truce_months = 48
+
+    good_relation_prestige_factor = 0
+    good_relation_infamy_factor = 0
+    good_relation_militancy_factor = 0
+
+    po_reparations = yes
+	po_status_quo = yes
+
+    war_name = CUT_DOWN_TO_SIZE_NO_INFAMY_WAR_NAME
+
+    can_use = {
+    }
+
+    on_add = {
+    }
+
+
+	on_po_accepted = {
+		THIS = { clr_country_flag = lost_the_war }
+		set_country_flag = lost_the_war
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+	}
+}
+
+scripted_war_huge = {
+    sprite_index = 32
+    is_triggered_only = yes
+    months = 12
+
+    badboy_factor = 0
+    prestige_factor = 1
+    peace_cost_factor = 47.5
+    penalty_factor = 0
+    constructing_cb = no
+    crisis = no
+
+    break_truce_prestige_factor = 0
+    break_truce_infamy_factor = 0
+    break_truce_militancy_factor = 0
+    truce_months = 48
+
+    good_relation_prestige_factor = 0
+    good_relation_infamy_factor = 0
+    good_relation_militancy_factor = 0
+
+    po_reparations = yes
+	po_status_quo = yes
+
+    war_name = CUT_DOWN_TO_SIZE_NO_INFAMY_WAR_NAME
+
+    can_use = {
+    }
+
+    on_add = {
+    }
+
+
+	on_po_accepted = {
+		THIS = { clr_country_flag = lost_the_war }
+		set_country_flag = lost_the_war
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+	}
+}
 
 # Cut Down to size
 abolish_sound_dues_cb = {
