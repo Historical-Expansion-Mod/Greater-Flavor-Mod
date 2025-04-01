@@ -19,17 +19,17 @@ political_decisions = {
         effect = {
 			any_country = {
 				limit = {
+					alliance_with = BOL
+				}
+				leave_alliance = BOL
+			}
+			any_country = {
+				limit = {
 					alliance_with = PEU
 				}
 				leave_alliance = PEU
 			}
 			set_global_flag = bolivia_annexes_peru
-			war = {
-				target = PEU
-				attacker_goal = { casus_belli = make_puppet_no_infamy }
-				defender_goal = { casus_belli = humiliate_no_infamy }
-				call_ally = no
-			}
 			PEU = {
 				any_owned = {
 					limit = {
@@ -52,23 +52,24 @@ political_decisions = {
 				country_event = 191338
 			}
 			any_land_province = {
-					limit = {
-						OR = {
-							province_id = 2301
-							province_id = 3823
-							province_id = 4008
-							province_id = 2302
-							province_id = 2303
-							province_id = 2304
-							province_id = 2578
-							province_id = 2307
-							province_id = 2308
-						}
+				limit = {
+					OR = {
+						province_id = 2301
+						province_id = 3823
+						province_id = 4008
+						province_id = 2302
+						province_id = 2303
+						province_id = 2304
+						province_id = 2578
+						province_id = 2307
+						province_id = 2308
 					}
-					add_core = SPU
+				}
+				add_core = SPU
 			}
-			THIS = { military_access = SPU }
-			SPU = { government = prov_gov_conservative define_general = { name = "Luis José de Orbegoso" personality = defence_3.1 background = attack_2.1 } add_country_modifier = { name = small_country_draft duration = 200 } relation = { who = BOL value = 400 } military_access = BOL create_alliance = BOL remove_country_modifier = relutanct_figher capital = 2304 }
+			create_vassal = SPU
+			THIS = { military_access = SPU create_alliance = SPU }
+			SPU = { government = prov_gov_conservative define_general = { name = "Luis José de Orbegoso" personality = defence_3.1 background = attack_2.1 } add_country_modifier = { name = small_country_draft duration = 200 } relation = { who = BOL value = 400 } military_access = BOL remove_country_modifier = relutanct_figher capital = 2304 }
 			random_owned = {
 				limit = {
 					owner = { SPU = { owns = 2304 } }
@@ -82,6 +83,46 @@ political_decisions = {
 					}
 				}
 			}
+			war = {
+				target = PEU
+				attacker_goal = { casus_belli = make_puppet_no_infamy }
+				defender_goal = { casus_belli = scripted_war_small }
+				call_ally = yes
+			}
+        }
+
+        ai_will_do = { factor = 1 }
+	}
+
+
+	rebel_peru = {
+        picture = yum_peru
+        potential = {
+			tag = IQC
+			vassal_of = PEU
+			NOT = { has_global_flag = rebel_peru }
+        }
+        allow = {
+			SPU = { exists = yes vassal_of = BOL }
+			BOL = { war_with = PEU }
+			year = 1835
+        }
+        effect = {
+            leave_alliance = PEU
+            relation = { who = PEU value = -200 }
+			relation = { who = BOL value = 400 }
+			relation = { who = SPU value = 400 }
+            PEU = { release_vassal = IQC country_event = 19133543 }
+            any_country = {
+                limit = { war_with = THIS }
+                end_war = IQC
+            }
+            war = {
+                target = PEU
+                attacker_goal = {
+                    casus_belli = test_end_war
+                }
+            }
         }
 
         ai_will_do = { factor = 1 }
