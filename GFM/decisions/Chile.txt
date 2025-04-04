@@ -13,6 +13,7 @@ political_decisions = {
                 3814 = { empty = yes }
                 2334 = { empty = yes }
                 2328 = { empty = yes }
+                4090 = { empty = yes }
                 2329 = { empty = yes }
 				2335 = { empty = yes }
             }
@@ -33,6 +34,7 @@ political_decisions = {
 				}
 				AND = {
 				    2328 = { empty = yes }
+                    4090 = { empty = yes }
 				    2329 = { empty = yes }
                     2333 = { empty = no }
                     3814 = { empty = no }
@@ -76,6 +78,7 @@ political_decisions = {
             random_owned = { #Araucania
                 limit = {
 				    2328 = { empty = yes }
+                    4090 = { empty = yes }
 				    2329 = { empty = yes }
                     2333 = { empty = no }
                     3814 = { empty = no }
@@ -85,6 +88,7 @@ political_decisions = {
                 }
                 2329 = { life_rating = 25 secede_province = THIS any_pop = { limit = { is_primary_culture = no } literacy = -0.99 } }
 				2328 = { life_rating = 25 secede_province = THIS any_pop = { limit = { is_primary_culture = no } literacy = -0.99 } }
+                4090 = { life_rating = 25 secede_province = THIS any_pop = { limit = { is_primary_culture = no } literacy = -0.99 } }
             }
             random_owned = { #Porvenir
                 limit = {
@@ -106,11 +110,26 @@ political_decisions = {
         potential = {
             owns = 2332
             2336 = { empty = yes }
+			OR = { tag = GCO tag = LPL }
         }
 
         allow = {
             breech_loaded_rifles = 1
             war = no
+			OR = {
+				AND = {
+					tag = GCO 
+					2295 = { owned_by = GCO }
+					2302 = { owned_by = GCO }
+					2310 = { owned_by = GCO }
+					2313 = { owned_by = GCO }
+				}
+				AND = {
+					tag = LPL
+					2310 = { owned_by = LPL }
+					2313 = { owned_by = LPL }
+				}
+			}
         }
 
         effect = {
@@ -159,21 +178,26 @@ political_decisions = {
 	    picture = puna_chl
 		potential = {
             tag = CHL
-			owns = 2309
-			owns = 2305
+			owns = 4182
+			OR = {
+				NOT = { has_global_flag = PEU_partition }
+				2313 = { OR = { is_core = ARC is_core = ARG is_core = LPL }  }
+			}
 			NOT = { has_global_flag = puna_claimed }
         }
 
         allow = {
 			2309 = { is_core = THIS }
 			2305 = { is_core = THIS }
+			4182 = { is_core = THIS }
+			2375 = { is_core = THIS }
+			owns = 2309
         }
 
         effect = {
             badboy = 3
 			prestige = 1
 			set_global_flag = puna_claimed
-			1714 = { add_core = THIS }
 			2370 = { add_core = THIS }
 			2375 = { add_core = THIS }
 			3554 = { add_core = THIS }
@@ -188,8 +212,9 @@ political_decisions = {
 			owns = 2368
 			OR = { tag = LPL tag = ARC tag = ARG }
 			exists = USA
-			NOT = { owns = 2305 }
-			NOT = { 2305 = { is_core = THIS } }
+			NOT = { owns = 4182 }
+			NOT = { 4182 = { is_core = THIS } }
+			4182 = { empty = no }
 			NOT = { has_country_flag = buchanan_proposed }
         }
 
@@ -198,7 +223,7 @@ political_decisions = {
         }
 
         effect = {
-			2305 = { owner = { country_event = { id = 97143 days = 10 } } }
+			4182 = { owner = { country_event = { id = 97143 days = 10 } } }
 			set_country_flag = buchanan_proposed
         }
         ai_will_do = { factor = 1 }
@@ -261,6 +286,8 @@ political_decisions = {
 					owns = 2335
 					owns = 2334
 					owns = 2391
+					owns = 4089
+					owns = 4093
 					owns = 3949
 					owns = 3555
 					owns = 2392
@@ -284,6 +311,8 @@ political_decisions = {
         effect = {
             set_country_flag = occupation_of_magallanes
 			2391 = { add_core = THIS }
+			4093 = { add_core = THIS }
+			4089 = { add_core = THIS }
 			3949 = { add_core = THIS }
 			3555 = { add_core = THIS }
 			2392 = { add_core = THIS }
@@ -301,4 +330,42 @@ political_decisions = {
 		}
         ai_will_do = { factor = 1 }
     }
+	
+	intervene_on_gco_pb = {
+	picture = BOL_Sucre
+		potential = {
+			tag = CHL
+			GCO = { war_with = BOL war_with = PEU }
+			OR = {
+				PEU = { national_provinces_occupied = 0.10 }
+				BOL = { national_provinces_occupied = 0.10 } 
+			}
+			GCO = { has_country_flag = andean_civil_war }
+			PEU = { has_country_flag = andean_civil_war }
+			BOL = { has_country_flag = andean_civil_war }
+			NOT = { has_country_flag = andean_civil_war }
+		}
+		
+		allow = {
+			is_vassal = no
+			is_disarmed = no
+		}
+		
+		effect = {
+			prestige = 5
+			any_pop = { militancy = -1 consciousness = 3 }
+			GCO = { country_event = 61001 }
+			leave_alliance = GCO
+			set_country_flag = andean_civil_war
+			add_country_modifier = { name = small_country_draft duration = 2737 }
+			war = {
+				target = GCO
+				attacker_goal = { casus_belli = cut_down_to_size_no_infamy country = GCO }
+				defender_goal = { casus_belli = cut_down_to_size_no_infamy country = CHL }
+			}
+			military_access = PEU create_alliance = PEU military_access = BOL create_alliance = BOL
+			BOL = { military_access = CHL } PEU = { military_access = CHL }
+		}
+		ai_will_do = { factor = 1 }
+	}
 }
