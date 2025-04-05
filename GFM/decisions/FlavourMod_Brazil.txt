@@ -333,16 +333,17 @@ political_decisions = {
     claim_madeira = {
         picture = madeira_claim
         potential = {
-			owns = 3435
+			owns = 4015
             OR = {
                 tag = PEU
                 tag = PBC
             }
-			3435 = { is_core = THIS }
+			4015 = { is_core = THIS }
             NOT = {
                 OR = {
                     2404 = { OR = { is_core = PEU is_core = PBC } }
                     3651 = { OR = { is_core = PEU is_core = PBC } }
+                    4186 = { OR = { is_core = PEU is_core = PBC } }
                     3995 = { OR = { is_core = PEU is_core = PBC } }
                     3652 = { OR = { is_core = PEU is_core = PBC } }
                     3996 = { OR = { is_core = PEU is_core = PBC } }
@@ -360,10 +361,10 @@ political_decisions = {
         effect = {
             2404 = { owner = { relation = { who = THIS value = -100 } } }
             3651 = { add_core = THIS add_core = PEU }
+            4186 = { add_core = THIS add_core = PEU }
             3995 = { add_core = THIS add_core = PEU }
             3652 = { add_core = THIS add_core = PEU }
             3996 = { add_core = THIS add_core = PEU }
-            2404 = { add_core = THIS add_core = PEU }
             badboy = 2
         }
 		ai_will_do = {
@@ -446,14 +447,33 @@ political_decisions = {
             owns = 3998
 			OR = { tag = BRZ tag = UPB }
             is_vassal = no
-            2401 = { owner = { is_vassal = no } }
+			OR = {
+				AND = {
+					2401 = { empty = yes }
+					OR = {
+						AND = { 2401 = { is_core = GCO } GCO = { exists = yes } }
+						AND = { 2401 = { is_core = CLM } CLM = { exists = yes } }
+					}
+				}
+				AND = { 2401 = { empty = no } 2401 = { owner = { is_vassal = no tag = CLM } is_core = CLM } }
+				AND = { 2401 = { empty = no } 2401 = { owner = { is_vassal = no tag = GCO } is_core = GCO } }
+			}
 			NOT = { owns = 2401 }
             NOT = { has_country_flag = lleras_lisboa owns = 2401 }
         }
 
         allow = {
             war = no
-            2401 = { owner = { NOT = { truce_with = THIS war = yes } } }
+			OR = {
+				AND = { 2401 = { empty = no } 2401 = { owner = { NOT = { truce_with = THIS war = yes } } } }
+				AND = {
+					2401 = { empty = yes }
+					OR = {
+						AND = { 2401 = { is_core = GCO } GCO = { exists = yes NOT = { truce_with = THIS war = yes } } }
+						AND = { 2401 = { is_core = CLM } CLM = { exists = yes NOT = { truce_with = THIS war = yes } } }
+					}
+				}
+			}
 			OR = {
 				has_country_flag = peru_brazil_treaty_1
 				NOT = {
@@ -463,22 +483,31 @@ political_decisions = {
 							tag = UPB
 						}
 						OR = {
-							owns = 2404
 							owns = 3651
-                            owns = 3995
+							owns = 4186
+							owns = 3995
 							owns = 3652
-                            owns = 3996
+							owns = 3996
 						}
 						OR = {
-							PEU = { owns = 2300 }
-							AND = { PBC = { owns = 2300 } 2404 = { is_core = PBC } }
+							PEU = { owns = 4015 }
+							AND = { PBC = { owns = 4015 } 3995 = { is_core = PBC } }
 						}
 					}
 				}
 			}
             OR = {
                 AND = {
-                    2401 = { owner = { relation = { who = THIS value = 150 } } }
+                    OR = {
+						AND = { 2401 = { empty = no } 2401 = { owner = { relation = { who = THIS value = 150 } } } }
+						AND = {
+							2401 = { empty = yes }
+							OR = {
+								AND = { 2401 = { is_core = GCO } GCO = { exists = yes relation = { who = THIS value = 150 } } }
+								AND = { 2401 = { is_core = CLM } CLM = { exists = yes relation = { who = THIS value = 150 } } }
+							}
+						}
+					}
                     state_n_government = 1
                 }
 				year = 1853
@@ -486,7 +515,45 @@ political_decisions = {
        }
 
         effect = {
-            2401 = { owner = { country_event = 47110 } }
+            random_owned = {
+				limit = {
+					owner = {
+						2401 = { empty = no }
+						NOT = { has_global_flag = notriggeringeventcolombia }
+					}
+				}
+				owner = {
+					2401 = { owner = { country_event = 47110 } }
+					set_global_flag = notriggeringeventcolombia
+				}
+			}
+            random_owned = {
+				limit = {
+					owner = {
+						2401 = { empty = yes }
+						2401 = { is_core = GCO } GCO = { exists = yes }
+						NOT = { has_global_flag = notriggeringeventcolombia }
+					}
+				}
+				owner = {
+					GCO = { country_event = 47110 }
+					set_global_flag = notriggeringeventcolombia
+				}
+			}
+            random_owned = {
+				limit = {
+					owner = {
+						2401 = { empty = yes }
+						2401 = { is_core = CLM } CLM = { exists = yes }
+						NOT = { has_global_flag = notriggeringeventcolombia }
+					}
+				}
+				owner = {
+					CLM = { country_event = 47110 }
+					set_global_flag = notriggeringeventcolombia
+				}
+			}
+			clr_global_flag = notriggeringeventcolombia
             set_country_flag = lleras_lisboa
         }
     }
