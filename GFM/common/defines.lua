@@ -57,9 +57,9 @@ country = {
 	PRESTIGE_HIT_ON_BREAK_COUNTRY = -0.20, -- percentage reduction when country gets taken by rebels
 	MIN_MOBILIZE_LIMIT = 3,
 	POP_GROWTH_COUNTRY_CACHE_DAYS = 30, -- period of cached pop growth (used for player)
-	NEWSPAPER_PRINTING_FREQUENCY = 450, -- days frequency when the news attempt to be printed (may not print if not enough facts collected, and retry after another X days)
-	NEWSPAPER_TIMEOUT_PERIOD = 890, -- the max period for news that may be printed. The probability is decreased with time.
-	NEWSPAPER_MAX_TENSION = 750, -- when tension of printing gets this high, the newspaper will attempt to be printed immediately.
+	NEWSPAPER_PRINTING_FREQUENCY = 99999, -- days frequency when the news attempt to be printed (may not print if not enough facts collected, and retry after another X days)
+	NEWSPAPER_TIMEOUT_PERIOD = 1, -- the max period for news that may be printed. The probability is decreased with time.
+	NEWSPAPER_MAX_TENSION = 99999, -- when tension of printing gets this high, the newspaper will attempt to be printed immediately.
 	NAVAL_BASE_SUPPLY_SCORE_BASE = 10, -- base value that is powered by level of naval base. Determines the naval supplying capabilities.
 	NAVAL_BASE_SUPPLY_SCORE_EMPTY = 2, -- min value for coastal provinces with no naval base.
 	NAVAL_BASE_NON_CORE_SUPPLY_SCORE = 0.3, -- modifier for supply score for naval bases that are not in core provinces.
@@ -414,7 +414,7 @@ diplomacy = {
 	ALLIANCE_RELATION_ON_DECLINE = -50,
 	ALLIANCE_DIPLOMATIC_COST = 1,
 	CANCELALLIANCE_RELATION_ON_ACCEPT = -90,
-	CANCELALLIANCE_DIPLOMATIC_COST = 1,
+	CANCELALLIANCE_DIPLOMATIC_COST = 0,
 
 	CALLALLY_RELATION_ON_ACCEPT = 20,
 	CALLALLY_RELATION_ON_DECLINE = -40,
@@ -424,17 +424,17 @@ diplomacy = {
 	ASKMILACCESS_RELATION_ON_DECLINE = -10,
 	ASKMILACCESS_DIPLOMATIC_COST = 1,
 	CANCELASKMILACCESS_RELATION_ON_ACCEPT = 0,
-	CANCELASKMILACCESS_DIPLOMATIC_COST = 1,
+	CANCELASKMILACCESS_DIPLOMATIC_COST = 0,
 
 	GIVEMILACCESS_RELATION_ON_ACCEPT = 10,
 	GIVEMILACCESS_RELATION_ON_DECLINE = 0,
 	GIVEMILACCESS_DIPLOMATIC_COST = 1,
 	CANCELGIVEMILACCESS_RELATION_ON_ACCEPT = -10,
-	CANCELGIVEMILACCESS_DIPLOMATIC_COST = 1,
+	CANCELGIVEMILACCESS_DIPLOMATIC_COST = 0,
 
 	WARSUBSIDY_RELATION_ON_ACCEPT = 20,
 	WARSUBSIDY_DIPLOMATIC_COST = 1,
-	CANCELWARSUBSIDY_RELATION_ON_ACCEPT = 0,
+	CANCELWARSUBSIDY_RELATION_ON_ACCEPT = -20,
 	CANCELWARSUBSIDY_DIPLOMATIC_COST = 0,
 
 	DISCREDIT_RELATION_ON_ACCEPT = -5,
@@ -477,8 +477,8 @@ diplomacy = {
 
 	DISARMAMENT_ARMY_HIT = 0.5,
 	REPARATIONS_TAX_HIT = 0.2,
-	PRESTIGE_REDUCTION_BASE = 25,
-	PRESTIGE_REDUCTION = 0.1, -- Base value + % of recipient's prestige
+	PRESTIGE_REDUCTION_BASE = 0, -- Abe edit: Used to be 25
+	PRESTIGE_REDUCTION = 0, -- Base value + % of recipient's prestige   Abe edit: Used to be 0.1
 	REPARATIONS_YEARS = 5,
 
 	-- No longer used:
