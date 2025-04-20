@@ -159,8 +159,8 @@ country_event = {
         RUS = { release_vassal = EST release_vassal = LAT }
 		UBD = { inherit = EST }
 		UBD = { inherit = LAT }
-		EST = { primary_culture = estonian remove_accepted_culture = estonian remove_accepted_culture = russian }
-		LAT = { primary_culture = latvian remove_accepted_culture = latvian remove_accepted_culture = russian }
+		EST = { primary_culture = estonian remove_accepted_culture = estonian remove_accepted_culture = russian government = democracy }
+		LAT = { primary_culture = latvian remove_accepted_culture = latvian remove_accepted_culture = russian government = democracy }
         ai_chance = { factor = 1 }
     }
 
@@ -184,15 +184,21 @@ country_event = {
     option = {
         name = "Sign the treaty."
 		UBD = { country_event = 31502004 }
-		set_country_flag = UBD_germans_agreed
+		set_country_flag = UBD_german_help
         ai_chance = { factor = 1 }
     }
 
     option = {
         name = "We cannot do this."
 		UBD = { country_event = 31502005 }
-        ai_chance = { factor = 0 }
-    }
+        ai_chance = { 
+			factor = 4
+			modifier = {
+				factor = 0
+				UBD = { ai = yes }
+			}
+		}
+	}
 }
 
 country_event = {
@@ -208,6 +214,7 @@ country_event = {
 
     option = {
         name = "Excellent!"
+		set_country_flag = UBD_germans_agreed
     }
 }
 
@@ -224,6 +231,7 @@ country_event = {
 
     option = {
         name = "Curses!"
+		set_country_flag = UBD_germans_rejected
     }
 }
 
@@ -241,17 +249,40 @@ country_event = {
     option = {
         name = "An inevitable end..."
 		RUS = { country_event = 31502007 }
-		ai_chance = { factor = 1 }
+		ai_chance = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				has_country_flag = UBD_germans_agreed 
+			}
+		}
     }
 	
 	option = {
         name = "Die Grenzwacht hielt im Osten!"
 		prestige = 5
-		RUS = { release_vassal = UBD }
-		RUS = { country_event = 31502008 }
+		RUS = { 
+			release_vassal = UBD
+			diplomatic_influence = { who = UBD value = -500 }
+		}
+		RUS = { country_event = { id = 31502008 days = 2 } }
+		random_country = { 
+				limit = { 
+					has_country_flag = UBD_german_help 
+				}
+				country_event = { id = 31502021 }
+		}
 		UBD = { government = prov_gov_conservative }
 		remove_accepted_culture = russian
-		ai_chance = { factor = 0 }
+		ai_chance = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { 
+					has_country_flag = UBD_germans_agreed
+				}
+			}
+		}
     }
 }
 
@@ -431,6 +462,7 @@ country_event = {
             has_country_flag = ubd_substate
             government = prov_gov_conservative
             government = democracy
+			government = absolute_monarchy
         }
     }
 	
@@ -441,9 +473,29 @@ country_event = {
 		government = absolute_monarchy
 		nationalvalue = nv_autocracy
 		ruling_party_ideology = reactionary
+		any_pop = { 
+			ideology = { factor = 0.05  value = conservative }
+			ideology = { factor = 0.05  value = reactionary }
+		}
 		political_reform = none_voting
 		political_reform = restricted_meeting
 		UBD = { any_owned = { limit = { is_core = UBD } remove_core = RUS } }
+		any_owned = {
+			limit = {
+				is_core = THIS
+			}
+			add_province_modifier = { name = small_baby_boom duration = 3650 }
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				has_country_flag = german_interference
+				NOT = {
+					has_country_flag = absolute_baltic
+					}
+			}
+		}
     }
 	
 	option = {
@@ -451,23 +503,62 @@ country_event = {
 		government = democracy
 		nationalvalue = nv_liberty
 		ruling_party_ideology = liberal
+		any_pop = { 
+			ideology = { factor = 0.10  value = liberal }
+		}
 		random_owned = {
             limit = { owner = { OR = { vote_franschise = wealth_weighted_voting vote_franschise = landed_voting vote_franschise = none_voting } } }
             owner = { political_reform = wealth_voting }
         }
 		UBD = { any_owned = { limit = { is_core = UBD } remove_core = RUS } }
-    }
+		any_owned = {
+			limit = {
+				is_core = THIS
+			}
+			add_province_modifier = { name = small_baby_boom duration = 3650 }
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				has_country_flag = german_interference
+				NOT = {
+					has_country_flag = liberal_baltic
+					}
+			}
+		}
+	}
 	
 	option = {
         name = "A monarch and a Landtag?"
 		government = prussian_constitutionalism
 		nationalvalue = nv_productivity
 		ruling_party_ideology = conservative
+		any_pop = { 
+			ideology = { factor = 0.05  value = conservative }
+			ideology = { factor = 0.05  value = liberal }
+		}
 		random_owned = {
             limit = { owner = { OR = { vote_franschise = landed_voting vote_franschise = none_voting } } }
             owner = { political_reform = wealth_weighted_voting }
         }
 		UBD = { any_owned = { limit = { is_core = UBD } remove_core = RUS } }
+		any_owned = {
+			limit = {
+				is_core = THIS
+			}
+			add_province_modifier = { name = small_baby_boom duration = 3650 }
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				has_country_flag = german_interference
+				NOT = {
+					has_country_flag = constitutional_baltic
+					}
+			}
+		}
     }
 	
 	option = {
@@ -475,11 +566,30 @@ country_event = {
 		government = presidential_dictatorship
 		nationalvalue = nv_order
 		ruling_party_ideology = reactionary
+		any_pop = { 
+			ideology = { factor = 0.10  value = reactionary }
+		}
 		political_reform = none_voting
 		political_reform = no_meeting
 		political_reform = mandatory_service
 		UBD = { any_owned = { limit = { is_core = UBD } remove_core = RUS } }
+		any_owned = {
+			limit = {
+				is_core = THIS
+			}
+			add_province_modifier = { name = small_baby_boom duration = 3650 }
+		}
 		set_country_flag = temporary_solution
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				has_country_flag = german_interference
+				NOT = {
+					has_country_flag = military_baltic
+					}
+			}
+		}
     }
 	option = {
         name = "Peasants storm in and kill everybody"
@@ -498,6 +608,22 @@ country_event = {
 		nationalvalue = nv_equality
 		add_country_modifier = { name = unrecognized_country duration = 1095 }
 		UBD = { any_owned = { limit = { is_core = UBD } remove_core = RUS } }
+		any_owned = {
+			limit = {
+				is_core = THIS
+			}
+			add_province_modifier = { name = small_baby_boom duration = 3650 }
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				has_country_flag = german_interference
+				NOT = {
+					has_country_flag = get_rekt_germany
+					}
+			}
+		}
     }
 }
 
@@ -533,7 +659,7 @@ country_event = {
 	}
 	option = {
 		name = "Make small reforms to appease the locals. This may appease them, for now."
-		political_reform = harassment
+		political_reform = harrassment
 		political_reform = landed_voting
 		political_reform = culture_voting_only
 		political_reform = appointed
@@ -601,7 +727,7 @@ country_event = {
 	}
 		
 	option = {
-		name = "Lithuania deserves to be free! §BPlay as Lithuania§W"
+		name = "Lithuania deserves to be free! §BPlay as Lithuania§!"
 		remove_accepted_culture = lithuanian
 		set_country_flag = lithuanian_revolt
 		release = LIT
@@ -709,7 +835,7 @@ country_event = {
 	}
 		
 	option = {
-		name = "Estonia shall thrive! §BPlay as Estonia§W"
+		name = "Estonia shall thrive! §BPlay as Estonia§!"
 		set_country_flag = estonian_revolt
 		remove_accepted_culture = estonian
 		release = EST
@@ -822,7 +948,7 @@ country_event = {
 			casus_belli = conquest_any
 			}
 			defender_goal = {
-			casus_belli = acquire_core_state
+			casus_belli = adquire_core_state
 			state_province_id = 354
 			}
 		}
@@ -832,7 +958,7 @@ country_event = {
 	}
 		
 	option = {
-		name = "Lets negotiate with the Latvian Leadership for a better future. §BPlay as Lativa§W"
+		name = "Let's negotiate with the Latvian Leadership for a better future. §BPlay as Latvia§!"
 		release = EST 
 		release = LIT
 		any_owned = {
@@ -920,10 +1046,11 @@ country_event = {
 	is_triggered_only = yes
 	
 	option = {
-		name = "We will come to the rescue of our German brothers."
+		name = "Die Grenzwacht hielt im Osten..."
 		set_country_flag = baltic_puppet
 		create_vassal = FROM
         create_alliance = FROM
+		diplomatic_influence = { who = UBD value = 500 }
 		UBD = { 
 			government = colonial_company_4
 		}
@@ -1018,11 +1145,175 @@ country_event = {
 	
 	option = {
         name = "The Baltic is German, whether they like it or not."
-		any_pop = { consciousness = -5 militancy = -9 }
+		any_pop = { 
+			ideology = { factor = 0.10  value = conservative }
+			consciousness = -5 
+			militancy = -9 
+		}
+		add_accepted_culture = estonian
+		add_accepted_culture = lithuanian
+		random_owned = { 
+			limit = { owner = { has_country_flag = lithuanian_revolt } }
+			owner = { add_accepted_culture = lithuanian }
+		}
 		set_country_flag = german_baltic
 		add_country_modifier = {
 			name = all_german_military
 			duration = -1
 		}
 	}
+}
+
+country_event = {
+
+	id = 31502020
+	title = "Influencing the new Baltic government"
+	desc = "EVTDESC31502020"
+	picture = "riga"
+	
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+        name = "Send the Duke of Mecklenburg-Schwerin, as a reward for being our ally."
+		UBD = { 
+			set_country_flag = absolute_baltic
+			set_country_flag = german_interference 
+		}
+    }
+	
+	option = {
+        name = "Send some liberals thinkers, they are of better use there."
+		UBD = { 
+			set_country_flag = liberal_baltic
+			set_country_flag = german_interference
+			}
+    }
+	
+	option = {
+        name = "Maybe having the Duke and the Landtag sharing power would be for the best."
+		UBD = { 
+			set_country_flag = constitutional_baltic 
+			set_country_flag = german_interference
+		}
+    }
+	
+	option = {
+        name = "Let's give some ideas to the Baltic Military, power suits them, don't you think?"
+		UBD = { 
+			set_country_flag = military_baltic
+			set_country_flag = german_interference
+		}
+    }
+	option = {
+        name = "Let's take our chances and turn them into our puppets"
+		UBD = { 
+			set_country_flag = get_rekt_germany
+			set_country_flag = german_interference 
+		}
+    }
+}
+
+country_event = {
+
+	id = 31502021
+	title = "Die Grenzwacht hielt im Osten"
+	desc = "EVTDESC31500009"
+	picture = "german_destiny"
+	
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+        name = "Of course! All armies east!"
+		diplomatic_influence = { who = UBD value = 500 }
+		relation = { who = UBD value = 200 }
+		create_alliance = UBD
+		RUS = { country_event = 31502010 }
+		ai_chance = { factor = 1 }
+    }
+	
+	option = {
+        name = "Treaty? What treaty?"
+		diplomatic_influence = { who = UBD value = -500 }
+		relation = { who = UBD value = -200 }
+		UBD = { country_event = 31502011 }
+		leave_alliance = UBD
+		ai_chance = { factor = 0 }
+    }
+}
+
+country_event = {
+
+	id = 31502022
+	title = "The Baltic has been liberated!"
+	desc = "EVTDESC31502022"
+	picture = "celebration"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		OR = {
+			tag = UBD
+			tag = EST
+			tag = LAT 
+			tag = LIT
+		}
+		is_vassal = no
+		war = no
+		OR = {
+			ai = no
+			AND = {
+				UBD = { ai = yes }
+				EST = { ai = yes }
+				LAT = { ai = yes }
+				LIT = { ai = yes }
+			}
+		}
+		OR = {
+			AND = {
+				EST = { all_core = { owned_by = THIS } }
+				LAT = { all_core = { owned_by = THIS } }
+				LIT = {
+					all_core = {
+						OR = {
+							owned_by = THIS
+							province_id = 698 
+						}
+					}
+				}
+			}
+			RUS = {
+				any_owned_province = {
+					NOT = {
+						is_core = EST
+						is_core = LAT 
+						is_core = LIT
+					}
+				}
+			}
+		}
+	}
+	
+	mean_time_to_happen = { months = 1 }
+	
+	option = {
+		name = "The Baltic has freed itself from the Russian heel!"
+		prestige = 10
+		RUS = { 
+			all_core = {
+				limit = {
+					OR = {  
+						is_core = EST
+						is_core = LAT
+						is_core = LIT
+					}
+				}
+				remove_core = RUS
+			}
+			prestige = -15
+		}
+    }
 }
