@@ -81,9 +81,16 @@ algeria_french_ottos_cb
 crusade_for_canada
 war_for_canada
 anglo_persian_cb
+scripted_war_minuscule
+scripted_war_small
+scripted_war
+scripted_war_big
+scripted_war_huge
 colonial_competition
 acquire_all_cores
 acquire_core_state
+acquire_core_state_native
+acquire_state_native
 restore_austrian_empire
 colonial_reconquest_cb
 restore_america
@@ -367,6 +374,107 @@ acquire_core_state = {
             }
         }
 		is_substate = no
+		NOT = { AND = { is_culture_group = native_american
+		NOT = { tag = MSK }
+		THIS = {
+			NOT = { is_culture_group = native_american }
+			NOT = { tag = MSK }
+		} } }
+        NOT = { AND = {
+            THIS = {
+				tag = CLM
+				NOT = {
+					owns = 4181
+					owns = 2266
+					owns = 4074
+					owns = 3998
+					owns = 3360
+					owns = 904
+					owns = 1944
+					owns = 3926
+				}
+			}
+			tag = VNZ
+			owns = 696
+			owns = 4018
+			696 = { is_core = CLM }
+			4018 = { NOT = { is_core = CLM } }
+			owns = 2274
+			2274 = { NOT = { is_core = CLM } }
+			owns = 2270
+			2270 = { NOT = { is_core = CLM } }
+			NOT = {
+				owns = 3360
+				owns = 904
+				owns = 1944
+				owns = 3926
+			}
+        } }
+        NOT = { AND = {
+            THIS = {
+				tag = ECU
+				NOT = {
+					owns = 4181
+					owns = 2266
+					owns = 4074
+					owns = 3998
+					owns = 3360
+					owns = 904
+					owns = 1944
+					owns = 3926
+				}
+			}
+			tag = VNZ
+			owns = 696
+			owns = 4018
+			696 = { is_core = ECU }
+			4018 = { NOT = { is_core = ECU } }
+			owns = 2274
+			2274 = { NOT = { is_core = ECU } }
+			owns = 2270
+			2270 = { NOT = { is_core = ECU } }
+			NOT = {
+				owns = 3360
+				owns = 904
+				owns = 1944
+				owns = 3926
+			}
+        } }
+        NOT = { AND = {
+            THIS = {
+				tag = PEU
+				owns = 2287
+				owns = 2291
+				NOT = {
+					owns = 2282
+					owns = 2283
+					owns = 2259
+					owns = 2263
+					owns = 2279
+				}
+			}
+			4011 = {
+				empty = yes
+			}
+			4012 = {
+				empty = yes
+			}
+			4071 = {
+				empty = yes
+			}
+			2288 = {
+				empty = yes
+			}
+			2284 = {
+				empty = yes
+			}
+			4016 = {
+				empty = yes
+			}
+			tag = ECU
+			owns = 4070
+			4070 = { is_core = PEU }
+        } }
         NOT = { is_our_vassal = THIS }
         NOT = { has_country_modifier = neutrality_modifier }
         THIS = { NOT = { has_country_modifier = neutrality_modifier } }
@@ -391,6 +499,199 @@ acquire_core_state = {
     po_demand_state = yes
 
     war_name = WAR_TAKE_CORE_NAME
+
+    on_add = {
+        move_issue_percentage = {
+            from = jingoism
+            to = pro_military
+            value = 0.25
+        }
+        random_owned = {
+            limit = { owner = { tag = VNZ NOT = { year = 1834 } } }
+            owner = { set_country_flag = youarefightingforaraucaright }
+        }
+    }
+
+    on_po_accepted = {
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+        country_event = 2650    # Territorial Loss event
+    }
+}
+acquire_core_state_native = {
+    sprite_index = 5
+    is_triggered_only = yes
+    months = 12
+    crisis = no
+	
+    construction_speed = 1.4
+
+    badboy_factor = 0.6
+    prestige_factor = 2
+    peace_cost_factor = 1.3
+    penalty_factor = 1
+
+    break_truce_prestige_factor = 5
+    break_truce_infamy_factor = 2
+    break_truce_militancy_factor = 2
+    truce_months = 48
+
+    good_relation_prestige_factor = 1
+    good_relation_infamy_factor = 1
+    good_relation_militancy_factor = 1
+
+    can_use = {
+		is_culture_group = native_american
+		capital_scope = { continent = south_america }
+		THIS = { NOT = { is_culture_group = native_american } NOT = { tag = MSK } }
+		THIS = { NOT = { has_unclaimed_cores = no } }
+        any_owned_province = { is_core = THIS }
+        number_of_states = 1 # annex if you want their last state
+		is_substate = no
+        OR = {
+			neighbour = THIS
+            AND = {
+                THIS = { total_amount_of_ships = 5 }
+                any_owned_province = { port = yes }
+            }
+            war_with = THIS
+            any_neighbor_country = { substate_of = THIS }
+        }
+        OR = {
+            THIS = { NOT = { has_country_modifier = punitive_effects } }
+            war_with = THIS
+        }
+        OR = {
+            NOT = { has_country_flag = dismantle_declared }
+            THIS = { NOT = { has_country_flag = in_great_war } }
+            THIS = { ai = no }
+        }
+        NOT = {
+            AND = {
+                #THIS = { ai = yes }
+                has_global_flag = sw_set
+                NOT = { year = 1834 }
+                NOT = { has_country_flag = battle_royale_set }
+            }
+        }
+		is_substate = no
+		NOT = { tag = MSK }
+        NOT = { is_our_vassal = THIS }
+        NOT = { has_country_modifier = neutrality_modifier }
+        THIS = { NOT = { has_country_modifier = neutrality_modifier } }
+    }
+
+    allowed_states = {
+        any_owned_province = { is_core = THIS }
+        OR = {
+			any_owned_province = {
+				any_neighbor_province = {
+					owner = { tag = THIS }
+				}
+			}
+            AND = {
+                THIS = { total_amount_of_ships = 5 }
+                any_owned_province = { port = yes }
+            }
+            THIS = { ai = no }
+        }
+    }
+
+    po_demand_state = yes
+
+    war_name = WAR_TAKE_CORE_NAME
+
+    on_add = {
+        move_issue_percentage = {
+            from = jingoism
+            to = pro_military
+            value = 0.25
+        }
+    }
+
+    on_po_accepted = {
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+        country_event = 2650    # Territorial Loss event
+    }
+}
+acquire_state_native = {
+    sprite_index = 5
+    is_triggered_only = yes
+    months = 12
+    crisis = no
+	
+    construction_speed = 1.4
+
+    badboy_factor = 0.6
+    prestige_factor = 2
+    peace_cost_factor = 1.3
+    penalty_factor = 1
+
+    break_truce_prestige_factor = 5
+    break_truce_infamy_factor = 2
+    break_truce_militancy_factor = 2
+    truce_months = 48
+
+    good_relation_prestige_factor = 1
+    good_relation_infamy_factor = 1
+    good_relation_militancy_factor = 1
+
+    can_use = {
+		is_culture_group = native_american
+		capital_scope = { continent = north_america }
+		THIS = { NOT = { is_culture_group = native_american } NOT = { tag = MSK } }
+        number_of_states = 1 # annex if you want their last state
+		is_substate = no
+        OR = {
+			neighbour = THIS
+            AND = {
+                THIS = { total_amount_of_ships = 5 }
+                any_owned_province = { port = yes }
+            }
+            war_with = THIS
+            any_neighbor_country = { substate_of = THIS }
+        }
+        OR = {
+            THIS = { NOT = { has_country_modifier = punitive_effects } }
+            war_with = THIS
+        }
+        OR = {
+            NOT = { has_country_flag = dismantle_declared }
+            THIS = { NOT = { has_country_flag = in_great_war } }
+            THIS = { ai = no }
+        }
+        NOT = {
+            AND = {
+                #THIS = { ai = yes }
+                has_global_flag = sw_set
+                NOT = { year = 1834 }
+                NOT = { has_country_flag = battle_royale_set }
+            }
+        }
+		is_substate = no
+		NOT = { tag = MSK }
+        NOT = { is_our_vassal = THIS }
+        NOT = { has_country_modifier = neutrality_modifier }
+        THIS = { NOT = { has_country_modifier = neutrality_modifier } }
+    }
+
+    allowed_states = {
+        OR = {
+			any_owned_province = {
+				any_neighbor_province = {
+					owner = { tag = THIS }
+				}
+			}
+            AND = {
+                THIS = { total_amount_of_ships = 5 }
+                any_owned_province = { port = yes }
+            }
+            THIS = { ai = no }
+        }
+    }
+
+    po_demand_state = yes
+
+    war_name = WAR_TAKE_NATIVE_NAME
 
     on_add = {
         move_issue_percentage = {
@@ -433,16 +734,25 @@ acquire_all_cores = {
         civilized = yes
 		THIS = { NOT = { has_unclaimed_cores = no } }
         any_owned_province = { is_core = THIS }
-        number_of_states = 2 # annex if you want their last state
         any_owned_province = { NOT = { is_core = THIS } }
+        number_of_states = 2 # annex if you want their last state
         OR = {
-            THIS = { NOT = { has_country_modifier = punitive_effects } }
             war_with = THIS
+            THIS = { NOT = { has_country_modifier = punitive_effects } }
         }
         OR = {
             NOT = { has_country_flag = dismantle_declared }
             THIS = { NOT = { has_country_flag = in_great_war } }
             THIS = { ai = no }
+        }
+        THIS = {
+            NOT = {
+                has_country_modifier = neutrality_modifier
+                AND = {
+                    war_policy = pacifism
+                    war = no
+                }
+            }
         }
         NOT = {
             AND = {
@@ -451,9 +761,111 @@ acquire_all_cores = {
                 NOT = { has_country_flag = battle_royale_set }
             }
         }
+        NOT = { AND = {
+            THIS = {
+				tag = CLM
+				NOT = {
+					owns = 4181
+					owns = 2266
+					owns = 4074
+					owns = 3998
+					owns = 3360
+					owns = 904
+					owns = 1944
+					owns = 3926
+				}
+			}
+			tag = VNZ
+			owns = 696
+			owns = 4018
+			696 = { is_core = CLM }
+			4018 = { NOT = { is_core = CLM } }
+			owns = 2274
+			2274 = { NOT = { is_core = CLM } }
+			owns = 2270
+			2270 = { NOT = { is_core = CLM } }
+			NOT = {
+				owns = 3360
+				owns = 904
+				owns = 1944
+				owns = 3926
+			}
+        } }
+        NOT = { AND = {
+            THIS = {
+				tag = ECU
+				NOT = {
+					owns = 4181
+					owns = 2266
+					owns = 4074
+					owns = 3998
+					owns = 3360
+					owns = 904
+					owns = 1944
+					owns = 3926
+				}
+			}
+			tag = VNZ
+			owns = 696
+			owns = 4018
+			696 = { is_core = ECU }
+			4018 = { NOT = { is_core = ECU } }
+			owns = 2274
+			2274 = { NOT = { is_core = ECU } }
+			owns = 2270
+			2270 = { NOT = { is_core = ECU } }
+			NOT = {
+				owns = 3360
+				owns = 904
+				owns = 1944
+				owns = 3926
+			}
+        } }
+        NOT = { AND = {
+            THIS = {
+				tag = PEU
+				owns = 2287
+				owns = 2291
+				NOT = {
+					owns = 2282
+					owns = 2283
+					owns = 2259
+					owns = 2263
+					owns = 2279
+				}
+			}
+			4011 = {
+				empty = yes
+			}
+			4012 = {
+				empty = yes
+			}
+			4071 = {
+				empty = yes
+			}
+			2288 = {
+				empty = yes
+			}
+			2284 = {
+				empty = yes
+			}
+			tag = ECU
+			owns = 4070
+			owns = 4016
+			4070 = { is_core = PEU }
+			4016 = { is_core = PEU }
+        } }
+        any_owned_province = { NOT = { is_core = THIS } }
         NOT = { is_our_vassal = THIS }
+		NOT = { AND = {
+			is_culture_group = native_american
+			NOT = { tag = MSK }
+			THIS = {
+				NOT = { is_culture_group = native_american }
+				NOT = { tag = MSK }
+			}
+		} }
         NOT = { has_country_modifier = neutrality_modifier }
-        THIS = { NOT = { has_country_modifier = neutrality_modifier } }
     }
 
     allowed_countries = {
@@ -1525,6 +1937,8 @@ annex_core_country = {
             }
         }
         NOT = { is_our_vassal = THIS }
+        NOT = { any_owned_province = { NOT = { is_core = THIS } } }
+		NOT = { AND = { is_culture_group = native_american NOT = { tag = MSK } THIS = { NOT = { is_culture_group = native_american } NOT = { tag = MSK } } } }
         NOT = { has_country_modifier = neutrality_modifier }
     }
 
@@ -2738,6 +3152,7 @@ free_allied_cores = {
             THIS = { NOT = { has_country_flag = in_great_war } }
             THIS = { ai = no }
         }
+		NOT = { AND = { is_culture_group = native_american NOT = { tag = MSK } THIS = { NOT = { is_culture_group = native_american } NOT = { tag = MSK } } } }
         THIS = { NOT = { has_country_modifier = neutrality_modifier } }
         NOT = { is_our_vassal = THIS }
         NOT = { has_country_modifier = neutrality_modifier }
@@ -3559,6 +3974,8 @@ cut_down_to_size = {
                         owns = 1606 #Jiaxing
                         owns = 2681 #Taibei
                         owns = 2562 #Tainan
+                        owns = 4178 # Kilai
+                        owns = 4179 # Pilam
                         owns = 1499 #Hainan
                         owns = 2632 #Kwangchowan
                         #owns = 1540 #Nantong
@@ -3808,6 +4225,7 @@ great_game_cb = {
     }
 
     on_po_accepted = {
+		set_country_flag = ifyouresikhyougottrolled
         country_event = 19370
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
     }
@@ -7138,6 +7556,247 @@ conquest_senegal = {
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
     }
 }
+
+scripted_war_minuscule = {
+    sprite_index = 32
+    is_triggered_only = yes
+    months = 12
+
+    badboy_factor = 0
+    prestige_factor = 1
+    peace_cost_factor = 8
+    penalty_factor = 0
+    constructing_cb = no
+    crisis = no
+
+    break_truce_prestige_factor = 0
+    break_truce_infamy_factor = 0
+    break_truce_militancy_factor = 0
+    truce_months = 48
+
+    good_relation_prestige_factor = 0
+    good_relation_infamy_factor = 0
+    good_relation_militancy_factor = 0
+
+	po_status_quo = yes
+
+    war_name = CUT_DOWN_TO_SIZE_NO_INFAMY_WAR_NAME
+
+    can_use = {
+    }
+
+    on_add = {
+    }
+
+
+	on_po_accepted = {
+		THIS = { clr_country_flag = lost_the_war }
+		set_country_flag = lost_the_war
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+	}
+}
+
+scripted_war_small = {
+    sprite_index = 32
+    is_triggered_only = yes
+    months = 12
+
+    badboy_factor = 0
+    prestige_factor = 1
+    peace_cost_factor = 15
+    penalty_factor = 0
+    constructing_cb = no
+    crisis = no
+
+    break_truce_prestige_factor = 0
+    break_truce_infamy_factor = 0
+    break_truce_militancy_factor = 0
+    truce_months = 48
+
+    good_relation_prestige_factor = 0
+    good_relation_infamy_factor = 0
+    good_relation_militancy_factor = 0
+
+	po_status_quo = yes
+
+    war_name = CUT_DOWN_TO_SIZE_NO_INFAMY_WAR_NAME
+
+    can_use = {
+    }
+
+    on_add = {
+    }
+
+
+	on_po_accepted = {
+		THIS = { clr_country_flag = lost_the_war }
+		set_country_flag = lost_the_war
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+	}
+}
+
+scripted_war = {
+    sprite_index = 32
+    is_triggered_only = yes
+    months = 12
+
+    badboy_factor = 0
+    prestige_factor = 1
+    peace_cost_factor = 25
+    penalty_factor = 0
+    constructing_cb = no
+    crisis = no
+
+    break_truce_prestige_factor = 0
+    break_truce_infamy_factor = 0
+    break_truce_militancy_factor = 0
+    truce_months = 48
+
+    good_relation_prestige_factor = 0
+    good_relation_infamy_factor = 0
+    good_relation_militancy_factor = 0
+
+	po_status_quo = yes
+
+    war_name = CUT_DOWN_TO_SIZE_NO_INFAMY_WAR_NAME
+
+    can_use = {
+    }
+
+    on_add = {
+    }
+
+
+	on_po_accepted = {
+		THIS = { clr_country_flag = lost_the_war }
+		set_country_flag = lost_the_war
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+	}
+}
+
+scripted_war_big = {
+    sprite_index = 32
+    is_triggered_only = yes
+    months = 12
+
+    badboy_factor = 0
+    prestige_factor = 1
+    peace_cost_factor = 35
+    penalty_factor = 0
+    constructing_cb = no
+    crisis = no
+
+    break_truce_prestige_factor = 0
+    break_truce_infamy_factor = 0
+    break_truce_militancy_factor = 0
+    truce_months = 48
+
+    good_relation_prestige_factor = 0
+    good_relation_infamy_factor = 0
+    good_relation_militancy_factor = 0
+
+	po_status_quo = yes
+
+    war_name = CUT_DOWN_TO_SIZE_NO_INFAMY_WAR_NAME
+
+    can_use = {
+    }
+
+    on_add = {
+    }
+
+
+	on_po_accepted = {
+		THIS = { clr_country_flag = lost_the_war }
+		set_country_flag = lost_the_war
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+	}
+}
+
+scripted_war_huge = {
+    sprite_index = 32
+    is_triggered_only = yes
+    months = 12
+
+    badboy_factor = 0
+    prestige_factor = 1
+    peace_cost_factor = 47.5
+    penalty_factor = 0
+    constructing_cb = no
+    crisis = no
+
+    break_truce_prestige_factor = 0
+    break_truce_infamy_factor = 0
+    break_truce_militancy_factor = 0
+    truce_months = 48
+
+    good_relation_prestige_factor = 0
+    good_relation_infamy_factor = 0
+    good_relation_militancy_factor = 0
+
+	po_status_quo = yes
+
+    war_name = CUT_DOWN_TO_SIZE_NO_INFAMY_WAR_NAME
+
+    can_use = {
+    }
+
+    on_add = {
+    }
+
+
+	on_po_accepted = {
+		THIS = { clr_country_flag = lost_the_war }
+		set_country_flag = lost_the_war
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+	}
+}
+
+# Cut Down to size
+abolish_sound_dues_cb = {
+    sprite_index = 43
+    is_triggered_only = yes
+    months = 12
+
+    badboy_factor = 1.3
+    prestige_factor = 1
+    peace_cost_factor = 25
+    penalty_factor = 1
+    constructing_cb = no
+    crisis = no
+
+    break_truce_prestige_factor = 1
+    break_truce_infamy_factor = 1
+    break_truce_militancy_factor = 1
+    truce_months = 48
+
+    good_relation_prestige_factor = 1
+    good_relation_infamy_factor = 1
+    good_relation_militancy_factor = 1
+
+    po_disarmament = yes
+    po_reparations = yes
+
+    war_name = ABOLISH_SOUND_DUES_CB_WAR_NAME
+
+    can_use = {
+    }
+
+    on_add = {
+        move_issue_percentage = {
+            from = jingoism
+            to = pro_military
+            value = 0.25
+        }
+    }
+
+    on_po_accepted = {
+        372 = { trade_goods = grain remove_province_modifier = sound_dues_toll }
+        clr_global_flag = sound_dues_resisted #No longer resisting
+        set_global_flag = sound_dues_abolished #Have to abolish
+		add_country_modifier = { name = recently_lost_war duration = 1825 }
+    }
+}
 dervish_cb = {
     sprite_index = 29
     is_triggered_only = yes
@@ -10202,6 +10861,7 @@ spanish_reconquista = {
 			tag = ENT
 			tag = CRT
 			tag = DOM
+			tag = IQC
 		}
 		THIS = {
             has_country_flag = monarchy_government
@@ -10275,6 +10935,7 @@ spanish_reconquista = {
 						tag = TEX
 						tag = RGR
 						tag = COS
+						tag = IQC
 					}
 				}
 			}
@@ -10439,6 +11100,8 @@ treaty_port_casus_belli = {
             owns = 1606 #Jiaxing
             owns = 2681 #Taibei
             owns = 2562 #Tainan
+            owns = 4178 # Kilai
+            owns = 4179 # Pilam
             owns = 1499 #Hainan
             owns = 2632 #Kwangchowan
             owns = 1608 #Ningbo
@@ -10510,6 +11173,8 @@ treaty_port_casus_belli = {
                         owns = 1606 #Jiaxing
                         owns = 2681 #Taibei
                         owns = 2562 #Tainan
+                        owns = 4178 # Kilai
+                        owns = 4179 # Pilam
                         owns = 1499 #Hainan
                         owns = 2632 #Kwangchowan
                         owns = 1608 #Ningbo
@@ -14166,51 +14831,4 @@ demand_concession_casus_belli_no_infamy = {
 	on_po_accepted = {
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
 	}
-}
-
-
-# Cut Down to size
-abolish_sound_dues_cb = {
-    sprite_index = 43
-    is_triggered_only = yes
-    months = 12
-
-    badboy_factor = 1.3
-    prestige_factor = 1
-    peace_cost_factor = 25
-    penalty_factor = 1
-    constructing_cb = no
-    crisis = no
-
-    break_truce_prestige_factor = 1
-    break_truce_infamy_factor = 1
-    break_truce_militancy_factor = 1
-    truce_months = 48
-
-    good_relation_prestige_factor = 1
-    good_relation_infamy_factor = 1
-    good_relation_militancy_factor = 1
-
-    po_disarmament = yes
-    po_reparations = yes
-
-    war_name = ABOLISH_SOUND_DUES_CB_WAR_NAME
-
-    can_use = {
-    }
-
-    on_add = {
-        move_issue_percentage = {
-            from = jingoism
-            to = pro_military
-            value = 0.25
-        }
-    }
-
-    on_po_accepted = {
-        372 = { trade_goods = grain remove_province_modifier = sound_dues_toll }
-        clr_global_flag = sound_dues_resisted #No longer resisting
-        set_global_flag = sound_dues_abolished #Have to abolish
-		add_country_modifier = { name = recently_lost_war duration = 1825 }
-    }
 }
