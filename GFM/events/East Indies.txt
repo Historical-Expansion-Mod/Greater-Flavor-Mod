@@ -837,15 +837,21 @@ country_event = {
     title = "EVTNAME97122"
     desc = "EVTDESC97122"
     picture = "lan_xang"
-
     fire_only_once = yes
 
     trigger = {
         has_global_flag = berlin_conference
-        owns = 2575
+		is_vassal = no
+        OR = {
+			owns = 2575
+			2575 = { owner = { vassal_of = THIS } }
+		}
         invention = the_dark_continent
         nationalism_n_imperialism = 1
-        owns = 1390
+        OR = {
+			owns = 1390
+			1390 = { owner = { vassal_of = THIS } }
+		}
         SIA = {
             exists = yes
             OR = {
@@ -872,8 +878,18 @@ country_event = {
 
     option = {
         name = "EVT97122OPTA"
+		random_owned = {
+			limit = {
+				owner = {
+					owns = 1344
+				}
+			}
+			owner = {
+				set_global_flag = siam_gives_burma
+			}
+		}
         SIA = { country_event = 97123 }
-        ai_chance = { factor = 100 }
+        ai_chance = { factor = 1 }
     }
 
     option = {
@@ -888,7 +904,6 @@ country_event = {
     title = "EVTNAME97123"
     desc = "EVTDESC97123"
     picture = "lan_xang"
-
     is_triggered_only = yes
 
     option = {
@@ -906,13 +921,15 @@ country_event = {
                 1391 = { secede_province = FROM remove_core = THIS remove_core = JOH remove_core = PAT add_core = PHG }
                 1390 = { remove_core = THIS }
                 2575 = { remove_core = THIS }
-
             }
         }
 
         random_owned = {
             limit = {
-                owner = { has_global_flag = malaya_formed }
+                owner = {
+					has_global_flag = malaya_formed
+					NOT = { MLY = { vassal_of = FROM } }
+				}
             }
             owner = {
                 inherit = PAT
@@ -925,16 +942,44 @@ country_event = {
             }
         }
 
-        any_owned = {
+        random_owned = {
             limit = {
-                OR = {
-                    province_id = 1340
-                    province_id = 1338
-                    is_core = BUR
-                }
+                owner = {
+					has_global_flag = malaya_formed
+					MLY = { vassal_of = FROM }
+				}
             }
-            secede_province = FROM
+            owner = {
+                inherit = PAT
+                1389 = { secede_province = MLY remove_core = THIS remove_core = JOH remove_core = PAT add_core = MLY }
+                1388 = { remove_core = THIS remove_core = JOH add_core = MLY }
+                8 = { secede_province = MLY remove_core = THIS remove_core = JOH remove_core = PAT add_core = PHG }
+                1391 = { secede_province = MLY remove_core = THIS remove_core = JOH remove_core = PAT add_core = MLY }
+                1390 = { remove_core = THIS }
+                2575 = { remove_core = THIS }
+            }
         }
+
+		random_owned = {
+			limit = {
+				owner = {
+					has_global_flag = siam_gives_burma
+				}
+			}
+			owner = {
+				any_owned = {
+					limit = {
+						OR = {
+							province_id = 1340
+							province_id = 1338
+							is_core = BUR
+						}
+					}
+					secede_province = FROM
+				}
+				clr_global_flag = siam_gives_burma
+			}
+		}
 
         relation = { who = FROM value = 150 }
         FROM = {
@@ -990,13 +1035,13 @@ country_event = {
         }
         ai_chance = {
             factor = 0.05
-                modifier = {
-                    factor = 1.5
-                    civilized = yes
-                }
-            }
-        }
-    }
+			modifier = {
+				factor = 1.5
+				civilized = yes
+			}
+		}
+	}
+}
 
 
 #End of the Padri War
