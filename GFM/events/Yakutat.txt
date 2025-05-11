@@ -5003,7 +5003,11 @@ country_event = {
 
     trigger = {
 		year = 1870
-		tag = POR
+		OR = {
+			tag = POR
+			tag = UPB
+			tag = IBR
+		}
 		owns = 3832
 		war = no
 		ENG = { owns = 1884 }
@@ -5011,16 +5015,17 @@ country_event = {
     }
 
     option = {
-        name = "Ask US President Ulysses S. Grant to arbitrate the dispute."
-		USA = { country_event = 184824011 }
-        ai_chance = { factor = 1 }
+        name = "Let us propose an arbitration by a neutral party to the British."
+		ENG = { country_event = 1848240151 }
+		set_country_flag = bolama_owner
+        ai_chance = { factor = 9 }
     }
 
     option = {
-        name = "We are not risking it! §RGain 1 infamy§W"
-		badboy = 1
+        name = "Bolama is ours, come hell or high water! §RGain 1.5 infamy§W"
+		badboy = 1.5
 		ENG = { country_event = 184824015 }
-        ai_chance = { factor = 0 }
+        ai_chance = { factor = 1 }
     }
 }
 
@@ -5033,12 +5038,16 @@ country_event = {
 
 	option = {
 		name = "Portugal shall have the islands."
-		POR = { country_event = 184824012 }
+		ENG = { country_event = 1848240121 }
 		ai_chance = {
-			factor = 1
+			factor = 8 #default: 80% chance of Portugal
 			modifier = {
-				factor = 0
-				alliance_with = ENG
+				factor = 2 #alliance with Portugal: 87.5% chance of Portugal
+				OR = {
+					alliance_with = POR
+					alliance_with = UPB
+					alliance_with = IBR
+				}
 			}
 		}
 	}
@@ -5047,10 +5056,10 @@ country_event = {
 		name = "Britain shall have the islands."
 		ENG = { country_event = 184824012 }
 		ai_chance = {
-			factor = 1
+			factor = 2 #default: 20% chance of Britain
 			modifier = {
-				factor = 0
-				NOT = { alliance_with = ENG }
+				factor = 32 #alliance with Britain: 87.5% chance of Britain
+				alliance_with = ENG
 			}
 		}
 	}
@@ -5058,157 +5067,322 @@ country_event = {
 
 country_event = {
 	id = 184824012
-	title = "The $FROMCOUNTRY_ADJ$ Arbitration"
-	desc = "BOLAMAFAVORESUS"
+	title = "The Arbitral Award favors us"
+	desc = "BOLAMAFAVORESUSENG"
 	picture = "bolama_dispute"
     fire_only_once = yes
     is_triggered_only = yes
 
 	option = {
         name = "Diplomacy at its finest."
-		random_owned = {
+		any_country = {
 			limit = {
-				owner = {
-					tag = ENG
-				}
+				has_country_flag = bolama_owner
 			}
-			owner = {
-				3832 = { secede_province = THIS add_core = SLE remove_core = GBU }
-				POR = {
-					country_event = 184824014
-				}
-			}
-		}
-		random_owned = {
-			limit = {
-				owner = { tag = POR }
-			}
-			owner = {
-				ENG = { country_event = 184824013 }
-			}
+			country_event = 184824014
 		}
 	}
 }
 
 country_event = {
-	id = 184824013
+	id = 1848240121
+	title = "The Arbitral Award is not in our Favor"
+	desc = "BOLAMAFAVORESPORENG"
+	picture = "bolama_dispute"
+    fire_only_once = yes
+    is_triggered_only = yes
+
+	option = {
+        name = "Oh well. Back to teatime."
+		prestige = -10
+		any_country = {
+			limit = {
+				has_country_flag = bolama_owner
+			}
+			country_event = 184824013
+		}
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+        name = "The islands are OURS! Send Portugal an ultimatum! §RGain 4 infamy§!"
+		badboy = 4
+		any_country = {
+			limit = {
+				has_country_flag = bolama_owner
+			}
+			country_event = 1848240131
+		}
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 184824013 #Portugal informed of Britain accepting them getting the award
 	title = "The $FROMCOUNTRY_ADJ$ Arbitration"
 	desc = "BOLAMAFAVORESPOR"
 	picture = "bolama_dispute"
 	is_triggered_only = yes
 
 	option = {
-		name = "Oh well. Back to tea time."
+		name = "Hurrah!"
+		prestige = 10
         ai_chance = { factor = 1 }
-	}
-
-	option = {
-		name = "No, they are ours! §RGain 3 infamy§!, §RDeclare war on Portugal§W"
-		badboy = 3
-        casus_belli = { target = POR type = place_in_the_sun months = 50 }
-        POR = { casus_belli = { target = ENG type = place_in_the_sun months = 50 } country_event = 184824016 }
-		war = {
-			target = POR
-			attacker_goal = {
-				casus_belli = place_in_the_sun
-				state_province_id = 1877
-			}
-			defender_goal = {
-				casus_belli = place_in_the_sun
-				state_province_id = 1884
-			}
-		}
-        ai_chance = { factor = 0 }
 	}
 }
 
 country_event = {
-	id = 184824014
+	id = 1848240131 #Britain rejected Portugal getting the award
 	title = "The $FROMCOUNTRY_ADJ$ Arbitration"
+	desc = "ENGREFUSESBOLAMA"
+	picture = "bolama_dispute"
+	is_triggered_only = yes
+
+	option = {
+        name = "If it's a war they want... §RMay lead to war with the UK§W"
+		ENG = { country_event = 1848240161 }
+		ai_chance = { factor = 3 }
+    }
+
+	option = {
+        name = "These god-forsaken islands are not worth a war!"
+		prestige = -10
+		3832 = { secede_province = UTI add_core = SLE remove_core = GBU }
+		ENG = {
+			inherit = UTI
+			country_event = 184824010
+		}
+		ai_chance = { factor = 7 }
+    }
+}
+
+country_event = {
+	id = 184824014
+	title = "President Grant favors Britain"
 	desc = "BOLAMAFAVORESENG"
 	picture = "bolama_dispute"
 	is_triggered_only = yes
 
 	option = {
-		name = "Yeah, this was a dumb dispute anyway."
+		name = "We have no choice but to cede the islands."
+		prestige = -10
+		3832 = { secede_province = UTI add_core = SLE remove_core = GBU }
+		ENG = {
+			inherit = UTI
+			country_event = 184824010
+		}
         ai_chance = { factor = 1 }
 	}
 
 	option = {
-		name = "No, they are ours! §RGain 3 infamy§!, §RDeclare war on the British§W"
-		badboy = 3
-        casus_belli = { target = ENG type = place_in_the_sun months = 50 }
-        ENG = { casus_belli = { target = POR type = place_in_the_sun months = 50 } country_event = 184824016 }
+		name = "We won't accept this outrage! §RGain 4 infamy, May lead to war with the UK§W"
+		badboy = 4
+		ENG = { country_event = 18482401510 }
+        ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 18482401510
+	title = "$FROMCOUNTRY$ rejects the Arbitral Award"
+	desc = "PORREFUSEULT"
+	picture = "bolama_dispute"
+	is_triggered_only = yes
+
+	option = {
+		name = "Going to war over such a worthless island would be quite foolish."
+		prestige = -10
+        FROM = { country_event = 184824010 }
+        ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "How dare they! This means WAR! §RDeclare war on Portugal§W"
+        casus_belli = { target = FROM type = island_casus_belli months = 50 }
 		war = {
-			target = ENG
-			attacker_goal = {
-				casus_belli = place_in_the_sun
-				state_province_id = 1884
-			}
-			defender_goal = {
-				casus_belli = place_in_the_sun
-				state_province_id = 1877
-			}
+			target = FROM
+			attacker_goal = { casus_belli = island_casus_belli }
+			defender_goal = { casus_belli = humiliate_no_infamy }
 		}
+		FROM = { country_event = 1848240150 }
+        ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 1848240151
+	title = "The Bolama Dispute"
+	desc = "BOLAMAARBITRATIONENG"
+	picture = "bolama_dispute"
+	is_triggered_only = yes
+
+	option = {
+		name = "We trust that US President Ulysses S. Grant will arbitrate the dispute fairly."
+		USA = { country_event = 184824011 }
+        ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "No, Bolama is ours! Send an ultimatum to the Portuguese."
+        FROM = { country_event = 184824017 }
         ai_chance = { factor = 0 }
 	}
 }
 
 country_event = {
 	id = 184824015
-	title = "The $FROMCOUNTRY_ADJ$ Arbitration"
+	title = "The Bolama Dispute"
 	desc = "BOLAMANOARBITRATION"
 	picture = "bolama_dispute"
 	is_triggered_only = yes
 
 	option = {
-		name = "Yeah, this was a dumb dispute anyway. §GLose 1 infamy§W"
-		badboy = -1
+		name = "Going to war over such a worthless island would be quite foolish."
+		prestige = -10
+        FROM = { country_event = 184824010 }
         ai_chance = { factor = 1 }
 	}
+
 	option = {
-		name = "No, they are ours! §RGain 2 infamy§!, §RDeclare war on Portugal§W"
-		badboy = 2
-        casus_belli = { target = POR type = place_in_the_sun months = 50 }
-        POR = { casus_belli = { target = ENG type = place_in_the_sun months = 50 } country_event = 184824017 }
-		war = {
-			target = POR
-			attacker_goal = {
-				casus_belli = place_in_the_sun
-				state_province_id = 1877
-			}
-			defender_goal = {
-				casus_belli = place_in_the_sun
-				state_province_id = 1884
-			}
-		}
+		name = "No, Bolama is ours! Send an ultimatum to the Portuguese."
+        FROM = { country_event = 1848240171 }
         ai_chance = { factor = 0 }
 	}
 }
 
 country_event = {
-	id = 184824016
-	title = "The $FROMCOUNTRY_ADJ$ Refusal"
-	desc = "The $FROMCOUNTRY_ADJ$ have refused to settle on the terms of the arbitration and are starting a war over Bolama."
+	id = 184824016 #Version where Portugal proposed the arbitration
+	title = "$FROMCOUNTRY$ refuses the Ultimatum"
+	desc = "PORREFUSEULT"
 	picture = "bolama_dispute"
     is_triggered_only = yes
     fire_only_once = yes
 
 	option = {
-        name = "Great! Another useless war!"
+        name = "We will show them who rules the waves! §RGain 1.5 infamy, Declare war on Portugal§W"
+		badboy = 1.5
+        casus_belli = { target = FROM type = island_casus_belli months = 50 }
+		war = {
+			target = FROM
+			attacker_goal = { casus_belli = island_casus_belli }
+			defender_goal = { casus_belli = humiliate_no_infamy }
+		}
+		FROM = { country_event = 1848240150 }
+		ai_chance = { factor = 0 }
+    }
+
+	option = {
+        name = "They have called our bluff. We will not go to war."
+		prestige = -10
+		FROM  = { country_event = 184824010 }
+		ai_chance = { factor = 1 }
     }
 }
 
 country_event = {
-	id = 184824017
-	title = "The $FROMCOUNTRY_ADJ$ Bolama Crisis"
-	desc = "The $FROMCOUNTRY_ADJ$ have escalated the crisis over Bolama and started a war to 'return their rightful posessions to $FROMCOUNTRY_ADJ$ control.'."
+	id = 1848240161 #Version where Portugal refused the arbitration
+	title = "$FROMCOUNTRY$ refuses the Ultimatum"
+	desc = "PORREFUSEULT"
 	picture = "bolama_dispute"
     is_triggered_only = yes
     fire_only_once = yes
 
 	option = {
-        name = "Great! Another useless war!"
+        name = "We will show them who rules the waves! §RDeclare war on Portugal§W"
+        casus_belli = { target = FROM type = island_casus_belli months = 50 }
+		war = {
+			target = FROM
+			attacker_goal = { casus_belli = island_casus_belli }
+			defender_goal = { casus_belli = humiliate_no_infamy }
+		}
+		FROM = { country_event = 1848240150 }
+		ai_chance = { factor = 0 }
+    }
+
+	option = {
+        name = "They have called our bluff. We will not go to war."
+		prestige = -10
+		FROM  = { country_event = 184824010 }
+		ai_chance = { factor = 1 }
+    }
+}
+
+country_event = {
+	id = 1848240150
+	title = "Britain declares War!"
+	desc = "ENGDECSWAR"
+	picture = "bolama_dispute"
+    is_triggered_only = yes
+    fire_only_once = yes
+
+	option = {
+        name = "To arms!"
+    }
+}
+
+country_event = {
+	id = 184824010
+	title = "$FROMCOUNTRY$ backs down"
+	desc = "BOLAMANOCLAIMS"
+	picture = "bolama_dispute"
+    is_triggered_only = yes
+    fire_only_once = yes
+
+	option = {
+        name = "Hurrah! Bolama is ours!"
+		prestige = 10
+    }
+}
+
+country_event = {
+	id = 1848240171 #Version where Portugal refused the arbitration
+	title = "Bolama or War"
+	desc = "ENGDECSOVERBOLAMA2"
+	picture = "bolama_dispute"
+    is_triggered_only = yes
+    fire_only_once = yes
+
+	option = {
+        name = "If it's a war they want... §RMay lead to war with the UK§W"
+		ENG = { country_event = 1848240161 }
+		ai_chance = { factor = 3 }
+    }
+
+	option = {
+        name = "These god-forsaken islands are not worth a war!"
+		prestige = -10
+		3832 = { secede_province = UTI add_core = SLE remove_core = GBU }
+		ENG = {
+			inherit = UTI
+			country_event = 184824010
+		}
+		ai_chance = { factor = 7 }
+    }
+}
+
+country_event = {
+	id = 184824017 #Version where Portugal proposed the arbitration
+	title = "Bolama or War"
+	desc = "ENGDECSOVERBOLAMA"
+	picture = "bolama_dispute"
+    is_triggered_only = yes
+    fire_only_once = yes
+
+	option = {
+        name = "If it's a war they want... §RMay lead to war with the UK§W"
+		ENG = { country_event = 184824016 }
+		ai_chance = { factor = 3 }
+    }
+
+	option = {
+        name = "These god-forsaken islands are not worth a war!"
+		prestige = -10
+		3832 = { secede_province = UTI add_core = SLE remove_core = GBU }
+		ENG = {
+			inherit = UTI
+			country_event = 184824010
+		}
+		ai_chance = { factor = 7 }
     }
 }
 
@@ -18147,7 +18321,6 @@ country_event = {
     title = "The Coto War"
     desc = "COTOWARCOS"
     picture = "coto_war"
-
     fire_only_once = yes
 	is_triggered_only = yes
 
@@ -18164,8 +18337,8 @@ country_event = {
 			}
 		}
     }
-
 }
+
 country_event = {
     id = 18482269
     title = "The Coto War"
@@ -18188,14 +18361,13 @@ country_event = {
 		COS = { country_event = 18482271 }
 		ai_chance = { factor = 0 }
 	}
-
 }
+
 country_event = {
     id = 18482270
     title = "The American Intervention"
     desc = "COTOWARINTERVENTIONAGCLM"
     picture = "intervention_coto_war"
-
     fire_only_once = yes
 	is_triggered_only = yes
 
@@ -18214,8 +18386,8 @@ country_event = {
 		FROM = { country_event = 184822704 }
 		ai_chance = { factor = 0 }
     }
-
 }
+
 country_event = {
 	id = 184822702
 	title = "The Coto War"
