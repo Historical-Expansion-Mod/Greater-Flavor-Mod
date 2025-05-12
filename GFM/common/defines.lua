@@ -518,7 +518,7 @@ diplomacy = {
 	WARSUBSIDIES_PERCENT = 1.00, -- How many percent of imports you are going to pay each day(mil. constructions and mil. maintainence)
 	NEIGHBOUR_BONUS_INFLUENCE_PERCENT = 0.50, -- Bonus to neighbouring countries when influencing
 	SPHERE_NEIGHBOUR_BONUS_INFLUENCE_PERCENT = 0.25, -- Bonus to countries in your sphere neighbouring when influencing
-	OTHER_CONTINENT_BONUS_INFLUENCE_PERCENT = -0.25, -- Malus to countries in another continent
+	OTHER_CONTINENT_BONUS_INFLUENCE_PERCENT = 0, -- Malus to countries in another continent
 	PUPPET_BONUS_INFLUENCE_PERCENT = 2.0, -- bonus if they are our puppet
 
 	-- effects of manually releasing a nation

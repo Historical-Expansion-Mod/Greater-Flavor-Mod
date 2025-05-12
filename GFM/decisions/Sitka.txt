@@ -161,7 +161,7 @@ political_decisions = {
 			set_country_flag = alb_disarmed
 		}
 	}
-	
+
 	Claim_IDC = {
 		picture = idc_claim
         potential = {
@@ -1178,6 +1178,21 @@ political_decisions = {
             tag = PEU
 			NOT = { exists = SPU }
 			NOT = { has_global_flag = peu_second_const }
+			OR = {
+				penal_system = capital_punishment
+				penal_system = colonial_transportation
+				school_reforms = no_schools
+				vote_franschise = none_voting
+				vote_franschise = landed_voting
+				vote_franschise = wealth_weighted_voting
+				slavery = yes_slavery
+				slavery = freedom_of_womb
+				upper_house_composition = appointed
+				upper_house_composition = party_appointed
+				political_parties = harassment
+				political_parties = underground_parties
+				citizens_rights = primary_culture_only
+			}
         }
         allow = {
 			war = no
@@ -1191,19 +1206,106 @@ political_decisions = {
 		}
         effect = {
 			set_global_flag = peu_second_const
-			social_reform = incarceration
-			social_reform = low_schools
-			political_reform = wealth_voting
-			political_reform = no_slavery
-			political_reform = state_equal_weight
-			political_reform = gerrymandering
-			political_reform = culture_voting_only
-			country_event = { id = 123880 days = 75 }
+			random_owned = {
+				limit = {
+					owner = {
+						OR = {
+							penal_system = capital_punishment
+							penal_system = colonial_transportation
+						}
+					}
+				}
+				owner = {
+					social_reform = incarceration
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						school_reforms = no_schools
+					}
+				}
+				owner = {
+					social_reform = low_schools
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						OR = {
+							vote_franschise = none_voting
+							vote_franschise = landed_voting
+							vote_franschise = wealth_weighted_voting
+						}
+					}
+				}
+				owner = {
+					political_reform = wealth_voting
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						OR = {
+							slavery = yes_slavery
+							slavery = freedom_of_womb
+						}
+					}
+				}
+				owner = {
+					political_reform = no_slavery
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						OR = {
+							upper_house_composition = appointed
+							upper_house_composition = party_appointed
+						}
+					}
+				}
+				owner = {
+					political_reform = state_equal_weight
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						OR = {
+							political_parties = harassment
+							political_parties = underground_parties
+						}
+					}
+				}
+				owner = {
+					political_reform = gerrymandering
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						citizens_rights = primary_culture_only
+					}
+				}
+				owner = {
+					political_reform = culture_voting_only
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { year = 1873 }
+					}
+				}
+				owner = {
+					country_event = { id = 123880 days = 75 }
+				}
+			}
         }
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
+
 	peu_const_one = {
 		picture = peu_const_one
         potential = {
@@ -1289,7 +1391,7 @@ political_decisions = {
             factor = 1
         }
     }
-	
+
 	claim_samoa = {
 		picture = samoa_map
         potential = {
@@ -3439,7 +3541,7 @@ political_decisions = {
             1532 = { add_core = MGL } #Ordos
             1534 = { add_core = MGL } #Ulan Chab
             1535 = { add_core = MGL } #Bayannur
-            1596 = { add_core = MGL } #Altay 
+            1596 = { add_core = MGL } #Altay
             1002 = { add_core = MGL } #Manchouli
             2670 = { add_core = MGL } #Verkhneudisnk
             2671 = { add_core = MGL } #Barguzin
@@ -6027,26 +6129,57 @@ political_decisions = {
 							biologism = 1
 						}
 					}
+					AND = {
+						ALD = {
+							all_core = {
+								OR = {
+									owned_by = FRA
+									owned_by = BOR
+								}
+							}
+						}
+						1700 = { is_core = ALD }
+					}
+					AND = {
+						RGA = {
+							all_core = {
+								OR = {
+									owned_by = FRA
+									owned_by = BOR
+								}
+							}
+						}
+						1700 = { is_core = RGA }
+					}
+				}
+				ai = no
+			}
+			OR = {
+				AND = {
 					ALD = {
 						all_core = {
 							OR = {
 								owned_by = FRA
 								owned_by = BOR
+								empty = yes
 							}
 						}
 					}
+					1700 = { is_core = ALD }
 				}
-				ai = no
-			}
-            ALD = {
-                all_core = {
-                    OR = {
-						owned_by = FRA
-						owned_by = BOR
-						empty = yes
+				AND = {
+					RGA = {
+						all_core = {
+							OR = {
+								owned_by = FRA
+								owned_by = BOR
+								empty = yes
+							}
+						}
 					}
-                }
-            }
+					1700 = { is_core = RGA }
+				}
+			}
 			NOT = { has_global_flag = oriental_crisis_sick_man }
 			NOT = { has_global_flag = fast_path_algeria }
             NOT = { has_global_flag = ott_algeria_conquered }
@@ -6100,6 +6233,7 @@ political_decisions = {
 				}
 			}
 			ALD = { primary_culture = maghrebi }
+			RGA = { primary_culture = maghrebi }
         }
 
         ai_will_do = {
@@ -6200,7 +6334,7 @@ political_decisions = {
 				}
 				country_event = 18482493
 			}
-			
+
         }
         ai_will_do = {
             factor = 1
@@ -6372,37 +6506,6 @@ political_decisions = {
                 war = yes
             }
         }
-    }
-    ITA_MNC = {
-        potential = {
-			tag = ITA
-            owns = 472
-            is_core = 472
-            exists = MNC
-			OR = {
-				AND = {
-					war = no
-					prestige = 100
-					is_greater_power = yes
-					war_policy = jingoism
-				}
-				ai = no
-			}
-            NOT = { has_country_flag = ITA_MNC_claimed }
-        }
-        allow = {
-            war = no
-            prestige = 100
-            is_greater_power = yes
-            war_policy = jingoism
-        }
-        effect = {
-            badboy = 0.1
-            prestige = 3
-            set_country_flag = ITA_MNC_claimed
-            inherit = MNC
-        }
-        ai_will_do = { factor = 1 }
     }
 
     conquer_lib_desert = {
@@ -6797,7 +6900,8 @@ political_decisions = {
 					secede_province = THIS
 				}
             }
-            FRA = { release = BRT }
+            FRA_420 = { add_core = BRT }
+			FRA = { release = BRT }
             BOR = { release = BRT }
             THIS = { create_vassal = BRT }
             BEL = { release = WLL }
@@ -7425,7 +7529,7 @@ political_decisions = {
         picture = greenland_purchase
         potential = {
             tag = USA
-            owns = 5
+            owns = 3983
 			251 = { owner = { owns = 252 } }
 			OR = {
 				AND = {
@@ -7840,7 +7944,6 @@ political_decisions = {
 			exists = ECU
 			2259 = { is_core = ECU }
 			2263 = { is_core = ECU }
-			3359 = { is_core = ECU }
 			NOT = { 2260 = { is_core = ECU } }
 			NOT = { owns = 2288 }
 			3359 = { NOT = { owned_by = ECU } }
@@ -7880,11 +7983,9 @@ political_decisions = {
 				tag = CLM
 			}
 			exists = PEU
-			3359 = { is_core = PEU }
 			2263 = { is_core = PEU }
 			NOT = { owns = 2288 }
 			3359 = { NOT = { owned_by = PEU } }
-			2263 = { NOT = { is_core = PEU } }
         }
 
 		allow = {
