@@ -18,6 +18,7 @@ country_event = {
 			capital = 139
 			primary_culture = mexican
 			add_accepted_culture = acadian
+			add_accepted_culture = cajun
 			set_country_flag = new_world_nation
 		}
 		any_owned = {
@@ -613,7 +614,7 @@ country_event = {
 	id = 123942
 	title = "The Captaincy General of Venezuela"
 	desc = "Spain has decided to give autonomy to the Captaincy General of Venezuela."
-	picture = "vnz_event"
+	picture = "vnz_map"
 	fire_only_once = yes
 	is_triggered_only = yes
 
@@ -846,14 +847,15 @@ country_event = {
     fire_only_once = yes
 
     trigger = {
-        primary_culture = french
         capital = 425
+        primary_culture = french
         is_greater_power = yes
         war = no
         OR = {
             has_global_flag = pan_french_nationalism
             year = 1855
         }
+		HAI = { exists = yes }
         NOT = {
             has_country_flag = french_america
             has_country_flag = no_french_america
@@ -919,9 +921,80 @@ country_event = {
         set_country_flag = no_french_america
         FRA = { remove_accepted_culture = french_canadian remove_accepted_culture = cajun }
         BOR = { remove_accepted_culture = french_canadian remove_accepted_culture = cajun }
-        badboy = -2
         NEN = { remove_accepted_culture = french_canadian }
+        ai_chance = { factor = 1 }
+    }
+}
+#Colonial Reconquest
+country_event = {
+    id = 32453453
+    title = "EVTNAME7790001" # French American Colonies
+    desc = "EVTDESC7790004321"
+    picture = "french_canada"
 
+    fire_only_once = yes
+
+    trigger = {
+        capital = 425
+        primary_culture = french
+        is_greater_power = yes
+        war = no
+        OR = {
+            has_global_flag = pan_french_nationalism
+            year = 1855
+        }
+		HAI = { exists = no }
+        NOT = {
+            has_country_flag = french_america
+            has_country_flag = no_french_america
+        }
+    }
+
+    mean_time_to_happen = {
+        months = 1
+        modifier = {
+            factor = 0.01
+            year = 1860
+        }
+    }
+
+    option = {
+        name = "EVTNAME77900031OPTA"
+        set_country_flag = french_america
+        prestige = 15
+        any_greater_power = {
+            limit = {
+                NOT = { alliance_with = THIS }
+            }
+            relation = {
+                who = THIS
+                value = -50
+            }
+        }
+        any_pop = {
+            dominant_issue = {
+                factor = 0.1
+                value = jingoism
+            }
+        }
+        any_pop = {
+            limit = {
+                is_primary_culture = yes
+                is_accepted_culture = yes
+            }
+            consciousness = -3
+            militancy = -3
+        }
+        NEN = { remove_accepted_culture = french_canadian }
+        ai_chance = { factor = 0 }
+    }
+
+    option = {
+        name = "EVTNAME7790001OPTB"
+        set_country_flag = no_french_america
+        FRA = { remove_accepted_culture = french_canadian remove_accepted_culture = cajun }
+        BOR = { remove_accepted_culture = french_canadian remove_accepted_culture = cajun }
+        NEN = { remove_accepted_culture = french_canadian }
         ai_chance = { factor = 1 }
     }
 }
@@ -944,6 +1017,10 @@ country_event = {
             name = louis_napoleon_iii
             duration = 9125
         }
+		add_country_modifier = {
+			name = national_confusion
+			duration = 365
+		}
         ruling_party_ideology = conservative
         any_pop = {
             limit = {
@@ -956,7 +1033,7 @@ country_event = {
                 factor = -5
             }
         }
-        ai_chance = { factor = 100 }
+        ai_chance = { factor = 1 }
     }
 
     option = {
@@ -1305,35 +1382,35 @@ country_event = {
             limit = { culture = venetian }
             add_province_modifier = {
                 name = nationalist_agitation
-                duration = 365
+                duration = 730
             }
         }
         any_owned = {
             limit = { culture = ladin }
             add_province_modifier = {
                 name = nationalist_agitation
-                duration = 365
+                duration = 730
             }
         }
         any_owned = {
             limit = { culture = friulian }
             add_province_modifier = {
                 name = nationalist_agitation
-                duration = 365
+                duration = 730
             }
         }
         any_owned = {
             limit = { culture = tuscan }
             add_province_modifier = {
                 name = nationalist_agitation
-                duration = 365
+                duration = 730
             }
         }
         any_owned = {
             limit = { culture = galloitalian }
             add_province_modifier = {
                 name = nationalist_agitation
-                duration = 365
+                duration = 730
             }
         }
         ai_chance = {
@@ -1382,6 +1459,13 @@ country_event = {
             primary_culture = wallonian
             is_culture_group = arab
 			tag = ETH
+            tag = TPG
+            tag = CHI
+            tag = QNG
+            tag = PER
+            tag = BAD
+            tag = SWI
+            primary_culture = brazilian
         }
         OR = {
             owns = 2044
@@ -1840,7 +1924,7 @@ country_event = {
 					primary_culture = mediano primary_culture = sard primary_culture = neapolitan primary_culture = sicilianu
 				}
             } }
-            change_tag = culture
+            owner = { change_tag = culture }
         }
 		random_owned = {
 			limit = { owner = {
@@ -1930,6 +2014,7 @@ country_event = {
             limit = {
                 tag = PAP
                 NOT = { tag = THIS }
+				government = theocracy
             }
             relation = {
                 who = THIS
@@ -1941,7 +2026,16 @@ country_event = {
                     NOT = { province_id = 749 province_id = 750 }
                 }
                 secede_province = THIS
-				secede_province = ITA
+            }
+        }
+        random_country = {
+            limit = {
+                tag = PAP
+                NOT = { tag = THIS }
+				NOT = { government = theocracy }
+            }
+            any_owned = {
+                secede_province = THIS
             }
         }
 		any_owned = {
@@ -1951,7 +2045,6 @@ country_event = {
 				SIC = { is_greater_power = yes }
             }
             secede_province = THIS
-            secede_province = ITA
 		}
 		any_owned = {
             limit = {
@@ -1960,7 +2053,6 @@ country_event = {
 				SIC = { is_greater_power = yes }
             }
             secede_province = THIS
-            secede_province = ITA
 		}
         random_country = {
             limit = { is_sphere_leader_of = PAP }
@@ -2011,6 +2103,274 @@ country_event = {
         }
     }
 }
+#country_event = {
+#
+#    id = 96170
+#    title = "EVTNAME96170" #Il Risorgimento
+#    desc = "EVTDESC96170"
+#	picture = "risorgimento_pic"
+#    major = yes
+#
+#    trigger = {
+#        is_culture_group = italian
+#        has_country_flag = made_the_call_to_union
+#        revolution_n_counterrevolution = 1
+#        rank = 16
+#        war = no
+#        is_vassal = no
+#        is_disarmed = no
+#        OR = {
+#            AND = {
+#                SAR = {
+#                    ai = yes
+#                }
+#                SIC = {
+#                    ai = yes
+#                }
+#                PAR = {
+#                    ai = yes
+#                }
+#            }
+#			ai = no
+#        }
+#        OR = {
+#            AND = {
+#                PAP = {
+#                    ai = yes
+#                }
+#                TUS = {
+#                    ai = yes
+#                }
+#                MOD = {
+#                    ai = yes
+#                }
+#            }
+#			ai = no
+#        }
+#        OR = {
+#            has_global_flag = italian_call_to_union
+#            has_global_flag = garibaldi_redshirts
+#            AND = {
+#                OR = {
+#                    tag = SAR
+#                    tag = SVY
+#                    tag = SIC
+#                }
+#                exists = GER
+#                year = 1890
+#            }
+#            AND = {
+#                OR = {
+#                    tag = SAR
+#                    tag = SVY
+#                    tag = SIC
+#                }
+#                exists = GCF
+#                year = 1890
+#            }
+#        }
+#        NOT = {
+#            exists = ITA
+#            has_country_flag = does_not_want_to_be_unified
+#        }
+#		NOT = { has_global_flag = you_are_playing_mp }
+#    }
+#
+#    mean_time_to_happen = {
+#        months = 40
+#        modifier = {
+#            factor = 0.5
+#            is_greater_power = yes
+#        }
+#        modifier = {
+#            factor = 3
+#            NOT = { year = 1870 }
+#        }
+#        modifier = {
+#            factor = 1.5
+#            year = 1870
+#            NOT = { year = 1880 }
+#        }
+#        modifier = {
+#            factor = 0.5
+#            year = 1890
+#        }
+#        modifier = {
+#            factor = 0.75
+#            exists = GER
+#        }
+#    }
+#
+#    option = {
+#        name = "EVTOPTA11103" #Accept inheritance
+#        clr_country_flag = made_the_call_to_union
+#        prestige = 10
+#        random_country = {
+#            limit = { is_sphere_leader_of = THIS }
+#            set_country_flag = objects_to_italy
+#        }
+#        add_accepted_culture = south_italian
+#        add_accepted_culture = north_italian
+#        random_owned = {
+#            limit = { owner = { is_culture_group = italian accepted_culture = french } }
+#            owner = { remove_accepted_culture = french }
+#        }
+#        random_owned = {
+#            limit = { owner = { is_culture_group = italian accepted_culture = south_german } }
+#            owner = { remove_accepted_culture = south_german }
+#        }
+#        random_owned = {
+#            limit = { owner = { is_culture_group = italian accepted_culture = british } }
+#            owner = { remove_accepted_culture = british }
+#        }
+#
+#        random_owned = {
+#            limit = { owner = { ai = yes } }
+#            owner = { war_exhaustion = -20 }
+#        }
+#
+#		random_owned = {
+#			limit = { owner = { NOT = { primary_culture = south_italian } } }
+#            owner = { change_tag = culture }
+#        }
+#		random_owned = {
+#			limit = { owner = {
+#				primary_culture = south_italian
+#                ITA = { ai = yes exists = yes }
+#                THIS = { ai = yes }
+#            } }
+#			owner = {
+#				ITA = { inherit = THIS }
+#			}
+#        }
+#		random_owned = {
+#			limit = { owner = {
+#				primary_culture = south_italian
+#                ITA = { ai = yes exists = yes }
+#                THIS = { ai = no }
+#            } }
+#			owner = {
+#                ITA = { any_owned = { secede_province = THIS } }
+#                THIS = {
+#                    random_owned = {
+#                        limit = { owner = { owns = 749 } }
+#                        owner = { capital = 749 set_country_flag = romeisyourcapital }
+#                    }
+#                    random_owned = {
+#                        limit = { owner = { NOT = { capital = 749 } NOT = { has_country_flag = romeisyourcapital } owns = 720 } }
+#                        owner = { capital = 720 }
+#                    }
+#                    change_tag = culture
+#                }
+#			}
+#        }
+#		random_owned = {
+#			limit = { owner = {
+#				primary_culture = south_italian
+#                ITA = { ai = no exists = yes }
+#            } }
+#			owner = {
+#                ITA = { inherit = THIS }
+#			}
+#        }
+#        any_country = {
+#            limit = {
+#                NOT = {
+#                    tag = THIS
+#                    tag = PAP
+#                    tag = SMR
+#                }
+#                NOT = { has_country_flag = post_colonial_country }
+#                is_culture_group = THIS
+#                is_greater_power = no
+#                num_of_cities = 1
+#            }
+#            country_event = 34563646
+#        }
+#        random_country = {
+#            limit = {
+#                tag = PAP
+#                NOT = { tag = THIS }
+#            }
+#            relation = {
+#                who = THIS
+#                value = -200
+#            }
+#            leave_alliance = THIS
+#            any_owned = {
+#                limit = {
+#                    NOT = { province_id = 749 province_id = 750 }
+#                }
+#                secede_province = THIS
+#				secede_province = ITA
+#            }
+#        }
+#		any_owned = {
+#            limit = {
+#                province_id = 3397
+#				757 = { owned_by = SIC }
+#				SIC = { is_greater_power = yes }
+#            }
+#            secede_province = THIS
+#            secede_province = ITA
+#		}
+#		any_owned = {
+#            limit = {
+#                province_id = 3398
+#				2567 = { owned_by = SIC }
+#				SIC = { is_greater_power = yes }
+#            }
+#            secede_province = THIS
+#            secede_province = ITA
+#		}
+#        random_country = {
+#            limit = { is_sphere_leader_of = PAP }
+#            set_country_flag = objects_to_italy
+#            diplomatic_influence = { who = PAP value = -200 }
+#            leave_alliance = PAP
+#        }
+#        any_country = {
+#            limit = { alliance_with = PAP }
+#            set_country_flag = objects_to_italy
+#            diplomatic_influence = { who = PAP value = -100 }
+#            leave_alliance = PAP
+#        }
+#        any_country = {
+#            limit = {
+#                NOT = { is_culture_group = italian }
+#                exists = yes
+#                OR = {
+#                    has_country_flag = objects_to_italy
+#                    primary_culture = french
+#                    tag = AUS
+#                    tag = AUB
+#                    tag = KUK
+#                    AND = {
+#                        neighbour = ITA
+#                        is_greater_power = yes
+#                    }
+#                }
+#            }
+#            country_event = { id = 96165 days = 20 }
+#        }
+#        ai_chance = {
+#            factor = 95
+#        }
+#    }
+#
+#    option = {
+#        name = "EVTOPTB11103"
+#        prestige = 5
+#        set_country_flag = does_not_want_to_be_unified
+#        clr_country_flag = made_the_call_to_union
+#        any_pop = {
+#            militancy = 2
+#        }
+#        ai_chance = {
+#            factor = 5
+#        }
+#    }
+#}
 country_event = {
     id = 34563646
     title = "EVTNAME11101"
@@ -2094,242 +2454,6 @@ country_event = {
     }
 }
 country_event = {
-
-    id = 96170
-    title = "EVTNAME96170" #Il Risorgimento
-    desc = "EVTDESC96170"
-	picture = "risorgimento_pic"
-    major = yes
-
-    trigger = {
-        is_culture_group = italian
-        OR = {
-            AND = {
-                SAR = {
-                    ai = yes
-                }
-                SIC = {
-                    ai = yes
-                }
-                PAR = {
-                    ai = yes
-                }
-            }
-			ai = no
-        }
-        OR = {
-            AND = {
-                PAP = {
-                    ai = yes
-                }
-                TUS = {
-                    ai = yes
-                }
-                MOD = {
-                    ai = yes
-                }
-            }
-			ai = no
-        }
-        OR = {
-            has_global_flag = italian_call_to_union
-            has_global_flag = garibaldi_redshirts
-            AND = {
-                OR = {
-                    tag = SAR
-                    tag = SVY
-                    tag = SIC
-                }
-                exists = GER
-                year = 1890
-            }
-            AND = {
-                OR = {
-                    tag = SAR
-                    tag = SVY
-                    tag = SIC
-                }
-                exists = GCF
-                year = 1890
-            }
-        }
-        war = no
-        is_vassal = no
-        is_disarmed = no
-        NOT = {
-            exists = ITA
-            has_country_flag = does_not_want_to_be_unified
-        }
-        OR = {
-			is_secondary_power = yes
-            is_greater_power = yes
-        }
-		NOT = { has_global_flag = you_are_playing_mp }
-        revolution_n_counterrevolution = 1
-        has_country_flag = made_the_call_to_union
-    }
-
-    mean_time_to_happen = {
-        months = 40
-        modifier = {
-            factor = 0.5
-            is_greater_power = yes
-        }
-        modifier = {
-            factor = 3
-            NOT = { year = 1870 }
-        }
-        modifier = {
-            factor = 1.5
-            year = 1870
-            NOT = { year = 1880 }
-        }
-        modifier = {
-            factor = 0.5
-            year = 1890
-        }
-        modifier = {
-            factor = 0.75
-            exists = GER
-        }
-    }
-
-    option = {
-        name = "EVTOPTA11103" #Accept inheritance
-        clr_country_flag = made_the_call_to_union
-        prestige = 10
-        random_country = {
-            limit = { is_sphere_leader_of = THIS }
-            set_country_flag = objects_to_italy
-        }
-        add_accepted_culture = sard
-		add_accepted_culture = neapolitan
-		add_accepted_culture = sicilianu
-		add_accepted_culture = mediano
-		add_accepted_culture = maltese
-		add_accepted_culture = tuscan
-		add_accepted_culture = galloitalian
-		add_accepted_culture = venetian
-		add_accepted_culture = friulian
-		add_accepted_culture = ladin
-        random_owned = {
-            limit = { owner = { is_culture_group = italian accepted_culture = french } }
-            owner = { remove_accepted_culture = french }
-        }
-        random_owned = {
-            limit = { owner = { is_culture_group = italian accepted_culture = south_german } }
-            owner = { remove_accepted_culture = south_german }
-        }
-        random_owned = {
-            limit = { owner = { is_culture_group = italian accepted_culture = british } }
-            owner = { remove_accepted_culture = british }
-        }
-
-        random_owned = {
-            limit = { owner = { ai = yes } }
-            owner = { war_exhaustion = -20 }
-        }
-
-        change_tag = culture
-
-        any_country = {
-            limit = {
-                NOT = {
-                    tag = THIS
-                    tag = PAP
-                    tag = SMR
-                }
-				OR = {
-					is_vassal = no
-					vassal_of = THIS
-				}
-                is_culture_group = THIS
-                capital_scope = { continent = europe }
-                num_of_cities = 1
-            }
-            country_event = 11101
-        }
-
-        random_country = {
-            limit = {
-                tag = PAP
-                NOT = { tag = THIS }
-            }
-            relation = {
-                who = THIS
-                value = -200
-            }
-            leave_alliance = THIS
-            any_owned = {
-                limit = {
-                    NOT = { province_id = 749 province_id = 750 }
-                }
-                secede_province = THIS
-            }
-        }
-		any_owned = {
-            limit = {
-                province_id = 3397
-				757 = { owned_by = SIC }
-				SIC = { is_greater_power = yes }
-            }
-            secede_province = SIC
-		}
-		any_owned = {
-            limit = {
-                province_id = 3398
-				2567 = { owned_by = SIC }
-				SIC = { is_greater_power = yes }
-            }
-            secede_province = SIC
-		}
-        any_country = {
-            limit = {
-                NOT = { is_culture_group = italian }
-                exists = yes
-                OR = {
-                    has_country_flag = objects_to_italy
-                    AND = {
-                        neighbour = ITA
-                        OR = {
-                            tag = AUS
-                            tag = AUB
-                            tag = KUK
-                        }
-                    }
-                    AND = {
-                        neighbour = ITA
-                        is_greater_power = yes
-                    }
-                }
-            }
-            country_event = { id = 96165 days = 20 }
-        }
-
-        random_owned = {
-            limit = { owner = { capital = 720 } }
-            SAR = { all_core = { remove_core = SAR } }
-        }
-
-        ai_chance = {
-            factor = 99
-        }
-    }
-
-    option = {
-        name = "EVTOPTB11103" #Refuse inheritance
-        prestige = 5
-        set_country_flag = does_not_want_to_be_unified
-        clr_country_flag = made_the_call_to_union
-        any_pop = {
-            militancy = 6
-        }
-        ai_chance = {
-            factor = 1
-        }
-    }
-}
-country_event = {
     id = 6100
     title = "EVTNAME6100" # Italians in Asmara
     desc = "EVTDESC6100"
@@ -2399,12 +2523,15 @@ country_event = {
             tag = AUB
             tag = KUK
             tag = DNB
+			tag = GCF
         }
         NOT = { exists = ITA }
         PAP = { vassal_of = THIS }
-        SIC = { vassal_of = THIS }
+        NPL = { vassal_of = THIS }
         SRD = { vassal_of = THIS }
         LOM = { vassal_of = THIS }
+		TUS = { vassal_of = THIS }
+		SYC = { vassal_of = THIS }
         war = no
         nationalism_n_imperialism = 1
         has_country_flag = austrian_outside_italy
@@ -2419,11 +2546,10 @@ country_event = {
         name = "To the Lombards!"
         LOM = {
             inherit = PAP
-            inherit = SIC
-            inherit = SRD
-            inherit = TUS
-            inherit = NPL
-            inherit = SYC
+			inherit = NPL
+			inherit = TUS
+			inherit = SYC
+			inherit = SRD
             change_tag = ITA
             add_accepted_culture = sard
 			add_accepted_culture = neapolitan
@@ -2436,20 +2562,19 @@ country_event = {
 			add_accepted_culture = ladin
 			add_accepted_culture = friulian
         }
-        ITA = { set_country_flag = AUS_ITA_treaty }
+        ITA = { set_country_flag = AUS_ITA_treaty set_country_flag = colony_exemption }
         ai_chance = {
             factor = 25
         }
     }
     option = {
         name = "To the Sicilians!"
-        SIC = {
-            inherit = PAP
+        NPL = {
             inherit = LOM
-            inherit = SRD
-            inherit = TUS
-            inherit = NPL
-            inherit = SYC
+			inherit = PAP
+			inherit = TUS
+			inherit = SRD
+			inherit = SYC
             change_tag = ITA
             add_accepted_culture = sard
 			add_accepted_culture = neapolitan
@@ -2461,11 +2586,11 @@ country_event = {
 			add_accepted_culture = venetian
 			add_accepted_culture = ladin
 			add_accepted_culture = friulian
-			random_owned = { limit = { owner = { SIC = { government = absolute_monarchy } } } owner = { SIC = { government = absolute_empire } } }
-			random_owned = { limit = { owner = { SIC = { government = hms_government } } } owner = { SIC = { government = semi_constitutional_empire } } }
-			random_owned = { limit = { owner = { SIC = { government = prussian_constitutionalism } } } owner = { SIC = { government = constitutional_empire } } }
+			random_owned = { limit = { owner = { government = absolute_monarchy } } owner = { government = absolute_empire } }
+			random_owned = { limit = { owner = { government = prussian_constitutionalism } } owner = { government = semi_constitutional_empire } }
+			random_owned = { limit = { owner = { government = hms_government } } owner = { government = constitutional_empire } }
         }
-        ITA = { set_country_flag = AUS_ITA_treaty }
+        ITA = { set_country_flag = AUS_ITA_treaty set_country_flag = colony_exemption }
         set_global_flag = ITS_form
         ai_chance = {
             factor = 25
@@ -2474,12 +2599,11 @@ country_event = {
     option = {
         name = "To His Holiness the Pope!"
         PAP = {
-            inherit = SIC
             inherit = LOM
-            inherit = SRD
-            inherit = TUS
-            inherit = NPL
-            inherit = SYC
+			inherit = NPL
+			inherit = TUS
+			inherit = SYC
+			inherit = SRD
             change_tag = ITA
             primary_culture = mediano
             add_accepted_culture = sard
@@ -2492,7 +2616,7 @@ country_event = {
 			add_accepted_culture = ladin
 			add_accepted_culture = friulian
         }
-        ITA = { set_country_flag = AUS_ITA_treaty }
+        ITA = { set_country_flag = AUS_ITA_treaty set_country_flag = colony_exemption }
         any_pop = {
                 limit = {
                     religion = catholic
@@ -2518,7 +2642,7 @@ country_event = {
     }
 }
 country_event = {
-    id = 202001
+    id = 43252313
     title = "EVTNAME202001"
     desc = "EVTDESC202001"
     picture = "cinque_giornate"
@@ -2655,7 +2779,7 @@ country_event = {
 country_event = {
     id = 123525
     title = "The Long Walk of the Navaho"
-    desc = "To decimate the navaho raiders who so often attacked settlements in Arizona, the Navaho people have been marched to New Mexico for a new reservation only to march them back, thereby causing hundreds of deaths and weakening them permanently."
+    desc = "To decimate the Navaho raiders who so often attacked settlements in Arizona, the Navaho people have been marched to New Mexico for a new reservation only to march them back, thereby causing hundreds of deaths and weakening them permanently."
     fire_only_once = yes
     picture = "longwalk"
     mean_time_to_happen = { months = 5 }
@@ -3225,6 +3349,9 @@ country_event = {
 				add_accepted_culture = galloitalian
 				add_accepted_culture = sicilianu
 		}
+		random_owned = { limit = { owner = { ITA = { primary_culture = neapolitan government = absolute_monarchy } } } owner = { ITA = { government = absolute_empire } } }
+		random_owned = { limit = { owner = { ITA = { primary_culture = neapolitan government = prussian_constitutionalism } } } owner = { ITA = { government = semi_constitutional_empire } } }
+		random_owned = { limit = { owner = { ITA = { primary_culture = neapolitan government = hms_government } } } owner = { ITA = { government = constitutional_empire } } }
     }
 }
 country_event = {
@@ -3398,6 +3525,38 @@ country_event = {
     }
 }
 country_event = {
+    id = 78568542
+    title = "MC Cultures"
+    desc = "Great"
+	picture = "chinese_migration_to_hawaii"
+    fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+        name = "I forgor."
+		NCT = {
+			add_accepted_culture = galloitalian
+			remove_accepted_culture = north_italian
+		}
+    }
+}
+country_event = {
+    id = 78568543
+    title = "MC Cultures"
+    desc = "Great"
+	picture = "chinese_migration_to_hawaii"
+    fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+        name = "I forgor."
+		NCT = {
+			remove_accepted_culture = galloitalian
+			remove_accepted_culture = north_italian
+		}
+    }
+}
+country_event = {
 	id = 700700
 	title = "EVTNAME700700" #$COUNTRYNAME$
     desc = "EVTDESC700700"
@@ -3542,8 +3701,6 @@ country_event = {
 		1040 = { add_core = THIS }
 		1032 = { add_core = THIS }
 		1469 = { add_core = THIS }
-		3609 = { add_core = THIS }
-		1030 = { add_core = THIS }
 		country_event = 700701
     }
 	

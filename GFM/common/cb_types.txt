@@ -39,7 +39,7 @@
 # TRIGGERED - Triggered from within the code or by event effects
 # --------------------------------------------------------------
 
-# A note on naval requirements for overseas targets: `num_of_ports` has a curious behaviour where
+# A note on naval requirements for overseas targets: `num_of_ports` has a curious behavior where
 # paths from the capital to coastal provinces are computed and the final result only accounts for
 # those that are reachable. (This may only apply for inland capitals.)
 #
@@ -47,7 +47,7 @@
 # much else does. This bears repeating: a country may be fully occupied and/or covered in *roaming*
 # armies, and this won't affect what `num_of_ports` reports. However if a single rebel brigade
 # starts a 100-year siege on the capital in a country that is otherwise free of troubles, suddenly
-# the whole country counts as being landlocked. (This singular behaviour also includes the fact that
+# the whole country counts as being landlocked. (This singular behavior also includes the fact that
 # occupied ports seem to be accounted for, though paths to the owner's capital are never computed
 # for them.)
 #
@@ -56,6 +56,15 @@
 
 # Order that CBs are executed in a peace treaty
 peace_order = {
+spanish_reconquista
+call_allies_cb
+make_puppet_no_add_wargoal
+cut_down_to_size_no_add_wargoal_2
+algeria_french_ottos_2_cb
+sahel_jihad_cb
+free_allied_cores_no_infamy
+zemene_mesafint
+great_war_penalty_cb
 treaty_port_casus_belli
 island_casus_belli
 war_reparations
@@ -161,6 +170,7 @@ establish_protectorate_casus_belli_no_infamy
 negotiated_transfer
 status_quo
 test_end_war
+test_end_war_2
 take_capital
 demand_concession_capital_late
 demand_concession_capital
@@ -199,34 +209,44 @@ dismantle_cb = {
     good_relation_militancy_factor = 0
 
     can_use = {
-		THIS = {
-			is_greater_power = yes
-			mass_politics = 1
-		}
 		OR = {
-			rank = 16
-			colonial_nation = yes
-			any_owned_province = { is_overseas = yes }
-		}
-		THIS = {
-			is_disarmed = no
-			NOT = {
-				has_country_flag = in_great_war
-				has_country_modifier = no_more_war
-				has_country_modifier = neutrality_modifier
+            AND = {
+                 THIS = {
+			        is_greater_power = yes
+		        	mass_politics = 1
+		        }
+		        OR = {
+			        rank = 16
+			        colonial_nation = yes
+			        any_owned_province = { is_overseas = yes }
+		        }
+		        THIS = {
+			        is_disarmed = no
+			        NOT = {
+			    	    has_country_flag = in_great_war
+			    	    has_country_modifier = no_more_war
+		        		has_country_modifier = neutrality_modifier
+			        }
+			        NOT = { check_variable = { which = dismantlement_leader value = 0.99 } }
+		        }
+		        is_vassal = no
+		        is_disarmed = no
+		        OR = {
+			        NOT = { relation = { who = THIS value = -100 } }
+			        war_with = THIS
+		        }
+		        NOT = { is_our_vassal = THIS }
+		        NOT = { has_country_flag = target_of_dismantlement }
+		        NOT = { has_country_modifier = neutrality_modifier }
+		        NOT = { check_variable = { which = target_of_dismantlement value = 0.99 } }
+            }
+            AND = {
+				THIS = {
+					ai = no
+					has_country_flag = literally_cheating
+				}
 			}
-			NOT = { check_variable = { which = dismantlement_leader value = 0.99 } }
-		}
-		is_vassal = no
-		is_disarmed = no
-		OR = {
-			NOT = { relation = { who = THIS value = -100 } }
-			war_with = THIS
-		}
-		NOT = { is_our_vassal = THIS }
-		NOT = { has_country_flag = target_of_dismantlement }
-		NOT = { has_country_modifier = neutrality_modifier }
-		NOT = { check_variable = { which = target_of_dismantlement value = 0.99 } }
+        }
     }
 
     po_disarmament = yes
@@ -946,7 +966,7 @@ conquest_low = {
                 civilized = no
                 OR = {
 					NOT = { number_of_states = 4 }
-					NOT = { number_of_cities = 5 }
+					NOT = { num_of_cities = 5 }
 				}
             }
 		}
@@ -1023,7 +1043,7 @@ conquest_tiny = {
                 civilized = no
                 OR = {
 					NOT = { number_of_states = 4 }
-					NOT = { number_of_cities = 5 }
+					NOT = { num_of_cities = 5 }
 				}
             }
 		}
@@ -1091,7 +1111,7 @@ conquest_minuscule = {
                 civilized = no
                 OR = {
 					NOT = { number_of_states = 4 }
-					NOT = { number_of_cities = 5 }
+					NOT = { num_of_cities = 5 }
 				}
             }
             AND = {
@@ -5286,6 +5306,16 @@ demand_concession_casus_belli = {
             THIS = { total_amount_of_divisions = 1 }
             war_with = THIS
         }
+		OR = {
+			AND = {
+				NOT = { tag = QNG }
+				NOT = { tag = KOR }
+				NOT = { tag = MCK }
+			}
+			THIS = { primary_culture = japanese }
+			THIS = { primary_culture = russian }
+			THIS = { ai = no }
+		}
         OR = {
             NOT = {
                 has_country_modifier = neutrality_modifier
@@ -5541,6 +5571,16 @@ demand_concession_NI_casus_belli = {
             THIS = { total_amount_of_divisions = 1 }
             war_with = THIS
         }
+		OR = {
+			AND = {
+				NOT = { tag = QNG }
+				NOT = { tag = KOR }
+				NOT = { tag = MCK }
+			}
+			THIS = { primary_culture = japanese }
+			THIS = { primary_culture = russian }
+			THIS = { ai = no }
+		}
         OR = {
             THIS = { NOT = { has_country_modifier = punitive_effects } }
             war_with = THIS
@@ -5730,6 +5770,16 @@ demand_concession_BC_casus_belli = {
             THIS = { total_amount_of_divisions = 1 }
             war_with = THIS
         }
+		OR = {
+			AND = {
+				NOT = { tag = QNG }
+				NOT = { tag = KOR }
+				NOT = { tag = MCK }
+			}
+			THIS = { primary_culture = japanese }
+			THIS = { primary_culture = russian }
+			THIS = { ai = no }
+		}
         OR = {
             war_with = THIS
             NOT = {
@@ -10450,6 +10500,7 @@ treaty_port_casus_belli = {
             owns = 3841 #Juzur Khuriya Muriya
 			owns = 3967 #Barbara
             owns = 3857 #Oki Islands
+			owns = 1393 #Brunei
         }
         OR = {
             THIS = { NOT = { has_country_modifier = punitive_effects } }
@@ -10520,6 +10571,7 @@ treaty_port_casus_belli = {
 						owns = 3841 #Juzur Khuriya Muriya
 						owns = 3967 #Barbara
 						owns = 3857 #Oki Islands
+						owns = 1393 #Brunei
                     }
                 }
             }
@@ -10649,7 +10701,7 @@ island_casus_belli = {
             owns = 2234 #Isla Margarita
             owns = 77 #St Pierre et Miquelon
             owns = 368 #Queen Charlotte Islands
-            owns = 3566 #Santa Catalina Islands
+            owns = 3566 #Channel Islands (California)
             owns = 3480 #Isles of Scilly
             owns = 419 #Channel Islands
 			owns = 304 #Isle of Man
@@ -10659,6 +10711,7 @@ island_casus_belli = {
 			owns = 3676 #Commander Islands
 			owns = 2406 #Pescadores Islands
 			owns = 3857 #Oki Islands
+			owns = 1393 #Brunei
 			owns = 3841 #Juzur Khuriya Muriya
 			owns = 3260 #Sado
 			owns = 2589 #Tsushima
@@ -10666,6 +10719,9 @@ island_casus_belli = {
 			owns = 1177 #Socotra
 			owns = 1071 #Qeshm
 			owns = 1961 #Chusan Islands
+            owns = 502 #Islas Baleares
+            owns = 473 #Corsica Island
+			owns = 3832 #Bolama
         }
         OR = {
             THIS = { NOT = { has_country_modifier = punitive_effects } }
@@ -10695,425 +10751,230 @@ island_casus_belli = {
     on_po_accepted = {
 		add_country_modifier = { name = recently_lost_war duration = 1825 }
 		THIS = { add_country_modifier = { name = only_one_island duration = 365 } }
-		random_owned = {
-			limit = {
-				owner = {
-					owns = 348 #Aland
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367000 }
-			}
+		#Aland
+        random_owned = {
+			limit = { owner = { owns = 348 } }
+			owner = { THIS = { country_event = 8367000 } }
 		}
+        #Gotland
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 331 #Gotland
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367001 }
-			}
+			limit = { owner = { owns = 331 } }
+			owner = { THIS = { country_event = 8367001 } }
 		}
+        #Oland
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 3562 #Oland
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367002 }
-			}
+			limit = { owner = { owns = 3562 } }
+			owner = { THIS = { country_event = 8367002 } }
 		}
+        #Bornholm
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 374 #Bornholm
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367003 }
-			}
+			limit = { owner = { owns = 374 } }
+			owner = { THIS = { country_event = 8367003 } }
 		}
+        #Rugen
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 3561 #Rugen
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367004 }
-			}
+			limit = { owner = { owns = 3561 } }
+			owner = { THIS = { country_event = 8367004 } }
 		}
+        #Heligoland
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 533 #Heligoland
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367005 }
-			}
+			limit = { owner = { owns = 533 } }
+			owner = { THIS = { country_event = 8367005 } }
 		}
+        #West Frisian Islands
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 3573 #West Frisian Islands
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367006 }
-			}
+			limit = { owner = { owns = 3573 } }
+			owner = { THIS = { country_event = 8367006 } }
 		}
+        #East Frisian Islands
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 1953 #East Frisian Islands
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367007 }
-			}
+			limit = { owner = { owns = 1953 } }
+			owner = { THIS = { country_event = 8367007 } }
 		}
+        #North Frisian Islands
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 3862 #North Frisian Islands
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367008 }
-			}
+			limit = { owner = { owns = 3862 } }
+			owner = { THIS = { country_event = 8367008 } }
 		}
+        #Malta
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 854 #Malta
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367009 }
-			}
+			limit = { owner = { owns = 854 } }
+			owner = { THIS = { country_event = 8367009 } }
 		}
+        #Elba
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 3396 #Elba
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367010 }
-			}
+			limit = { owner = { owns = 3396 } }
+			owner = { THIS = { country_event = 8367010 } }
 		}
+        #Fernando Po
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 1955 #Fernando Po
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367011 }
-			}
+			limit = { owner = { owns = 1955 } }
+			owner = { THIS = { country_event = 8367011 } }
 		}
+        #Sao Tome
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 1954 #Sao Tome
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367012 }
-			}
+			limit = { owner = { owns = 1954 } }
+			owner = { THIS = { country_event = 8367012 } }
 		}
+        #Fernando de Noronha
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 3482 #Fernando de Noronha
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367013 }
-			}
+			limit = { owner = { owns = 3482 } } 
+            owner = { THIS = { country_event = 8367013 } }
 		}
+        #Trindade e Martim Vaz
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 3666 #Trinidade e Martim Vaz
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367014 }
-			}
+			limit = { owner = { owns = 3666 } }
+			owner = { THIS = { country_event = 8367014 } }
 		}
+        #Chiloe
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 579 #Chiloe
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367015 }
-			}
+			limit = { owner = { owns = 579 } }
+			owner = { THIS = { country_event = 8367015 } }
 		}
+        #Rapa Nui
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 2336 #Rapa Nui
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367016 }
-			}
+			limit = { owner = { owns = 2336 } }
+			owner = { THIS = { country_event = 8367016 } }
 		}
+        #Galapagos
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 2285 #Galapagos
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367017 }
-			}
+			limit = { owner = { owns = 2285 } }
+			owner = { THIS = { country_event = 8367017 } }
 		}
+        #Navassa
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 3411 #Navassa
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367018 }
-			}
+			limit = { owner = { owns = 3411 } }
+			owner = { THIS = { country_event = 8367018 } }
 		}
+        #Massawa
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 1849 #Massawa
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367019 }
-			}
+			limit = {owner = { owns = 1849 } }
+			owner = { THIS = { country_event = 8367019 } }
 		}
+        #Bay Islands
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 3393 #Bay Islands
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367020 }
-			}
+			limit = { owner = { owns = 3393 } }
+			owner = { THIS = { country_event = 8367020 } }
 		}
+        #San Andres y Providencia
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 3614 #San Andres y Providencia
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367021 }
-			}
+			limit = { owner = { owns = 3614 } }
+			owner = { THIS = { country_event = 8367021 } }
 		}
+        #Isla Margarita
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 2234 #Isla Margarita
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367022 }
-			}
+			limit = { owner = { owns = 2234 } }
+			owner = { THIS = { country_event = 8367022 } }
 		}
+        #St Pierre et Miquelon
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 77 #St Pierre et Miquelon
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367023 }
-			}
+			limit = { owner = { owns = 77 } }
+			owner = { THIS = { country_event = 8367023 } }
 		}
+        #Queen Charlotte Islands
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 368 #Queen Charlotte Islands
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367024 }
-			}
+			limit = { owner = { owns = 368 } }
+			owner = { THIS = { country_event = 8367024 } }
 		}
+        #Channel Islands (California)
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 3566 #Santa Catalina Islands
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367025 }
-			}
+			limit = { owner = { owns = 3566 } }
+			owner = { THIS = { country_event = 8367025 } }
 		}
+        #Isles of Scilly
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 3480 #Isles of Scilly
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367026 }
-			}
+			limit = { owner = { owns = 3480 } }
+			owner = { THIS = { country_event = 8367026 } }
 		}
+        #Channel Islands
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 419 #Channel Islands
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367027 }
-			}
+			limit = { owner = { owns = 419 } }
+			owner = { THIS = { country_event = 8367027 } }
 		}
+        #Isle of Man
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 304 #Isle of Man
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367028 }
-			}
+			limit = { owner = { owns = 304 } }
+			owner = { THIS = { country_event = 8367028 } }
 		}
+        #Shetland
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 1724 #Shetland
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367029 }
-			}
+			limit = { owner = { owns = 1724 } }
+			owner = { THIS = { country_event = 8367029 } }
 		}
+        #Isle of Wight
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 3606 #Isle of Wight
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367030 }
-			}
+			limit = { owner = { owns = 3606 } }
+			owner = { THIS = { country_event = 8367030 } }
 		}
+        #Long Island
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 233 #Long Island
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367031 }
-			}
+			limit = { owner = { owns = 233 } }
+			owner = { THIS = { country_event = 8367031 } }
 		}
+        #Commander Islands
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 3676 #Commander Islands
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367032 }
-			}
+			limit = { owner = { owns = 3676 } }
+			owner = { THIS = { country_event = 8367032 } }
 		}
+        #Pescadores Islands
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 2406 #Pescadores Islands
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367033 }
-			}
+			limit = { owner = { owns = 2406 } }
+			owner = { THIS = { country_event = 8367033 } }
 		}
+        #Oki Islands
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 3857 #Oki Islands
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367034 }
-			}
+			limit = { owner = { owns = 3857 } }
+			owner = { THIS = { country_event = 8367034 } }
 		}
+        #Juzur Khuriya Muriya
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 3841 #Juzur Khuriya Muriya
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367035 }
-			}
+			limit = { owner = { owns = 3841 } }
+			owner = { THIS = { country_event = 8367035 } }
 		}
+        #Sado
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 3260 #Sado
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367036 }
-			}
+			limit = { owner = { owns = 3260 } }
+			owner = { THIS = { country_event = 8367036 } }
 		}
+        #Tsushima
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 2589 #Tsushima
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367037 }
-			}
+			limit = { owner = { owns = 2589 } }
+			owner = { THIS = { country_event = 8367037 } }
 		}
+        #Cheju
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 1637 #Cheju
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367038 }
-			}
+			limit = { owner = { owns = 1637 } }
+			owner = { THIS = { country_event = 8367038 } }
 		}
+        #Socotra
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 1177 #Socotra
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367039 }
-			}
+			limit = { owner = { owns = 1177 } }
+			owner = { THIS = { country_event = 8367039 } }
 		}
+        #Qeshm
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 1071 #Qeshm
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367040 }
-			}
+			limit = { owner = { owns = 1071 } }
+			owner = { THIS = { country_event = 8367040 } }
 		}
+        #Chusan Islands
 		random_owned = {
-			limit = {
-				owner = {
-					owns = 1961 #Chusan Islands
-				}
-			}
-			owner = {
-				THIS = { country_event = 8367041 }
-			}
+			limit = { owner = { owns = 1961 } }
+			owner = { THIS = { country_event = 8367041 } }
+		}
+        #Islas Baleares
+        random_owned = { 
+            limit = { owner = { owns = 502 } }
+            owner = { THIS = { country_event = 8367042 } }
+        }
+        #Corsica Island
+        random_owned = { 
+            limit = { owner = { owns = 473 } }
+            owner = { THIS = { country_event = 8367043 } }
+        }
+        #Bolama
+		random_owned = {
+			limit = { owner = { owns = 3832 } }
+			owner = { THIS = { country_event = 8367044 } }
 		}
     }
 }
@@ -11159,13 +11020,12 @@ end_radicals = {
         }
         NOT = {
             is_our_vassal = THIS
-		}
-        NOT = {
             has_country_modifier = neutrality_modifier
+			AND = {
+				tag = PRG
+				THIS = { ai = yes }
+			}
 		}
-        NOT = {
-			has_country_modifier = francia_utopia
-        }
 		THIS = {
 			NOT = {
 				government = proletarian_dictatorship
@@ -12214,9 +12074,6 @@ war_reparations = {
     good_relation_militancy_factor = 1
 
     can_use = {
-        THIS = {
-            civilized = yes
-        }
         war_with = THIS
 		THIS = {
             NOT = { has_country_modifier = neutrality_modifier }
@@ -12721,6 +12578,37 @@ test_end_war = {
     break_truce_infamy_factor = 0
     break_truce_militancy_factor = 0
     truce_months = 48
+
+    good_relation_prestige_factor = 0
+    good_relation_infamy_factor = 0
+    good_relation_militancy_factor = 0
+
+    can_use = { THIS = { has_country_flag = dont_use_this_ever } }
+
+    allowed_states = {
+        NOT = { any_owned_province = { is_capital = yes } }
+    }
+
+    po_demand_state = yes
+    war_name = WAR_TREATY_SIGNING
+
+    on_add = { }
+}
+test_end_war_2 = {
+    sprite_index = 20
+    is_triggered_only = yes
+    months = 0
+    crisis = no
+
+    badboy_factor = 0
+    prestige_factor = 0
+    peace_cost_factor = 0
+    penalty_factor = 0
+
+    break_truce_prestige_factor = 0
+    break_truce_infamy_factor = 0
+    break_truce_militancy_factor = 0
+    truce_months = 90
 
     good_relation_prestige_factor = 0
     good_relation_infamy_factor = 0
@@ -14294,6 +14182,16 @@ demand_concession_casus_belli_no_infamy = {
             THIS = { total_amount_of_divisions = 1 }
             war_with = THIS
         }
+		OR = {
+			AND = {
+				NOT = { tag = QNG }
+				NOT = { tag = KOR }
+				NOT = { tag = MCK }
+			}
+			THIS = { primary_culture = japanese }
+			THIS = { primary_culture = russian }
+			THIS = { ai = no }
+		}
         OR = {
             THIS = { NOT = { has_country_modifier = punitive_effects } }
             war_with = THIS
