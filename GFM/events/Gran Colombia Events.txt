@@ -1956,141 +1956,88 @@ country_event = {
 }
 country_event = {
 	id = 62052
-	title = "The Acre has been settled by another country"
+	title = "The Acre settlement"
 	desc = "62052_desc"
 	picture = "administration"
+	fire_only_once = yes
 	
 	trigger = {
-		OR = { tag = GCO tag = FGC }
+		NOT = { tag = GCO tag = FGC }
 		has_global_flag = GCO_DESTROYED_BRZ
 		OR = {
-			3392 = { empty = no NOT = { owned_by THIS } owner = { NOT = { has_country_flag = acre_ultimatum } } }
-			2321 = { empty = no NOT = { owned_by THIS } owner = { NOT = { has_country_flag = acre_ultimatum } } }
+			3382 = { empty = no owned_by = THIS }
+			2321 = { empty = no owned_by = THIS }
 		}
 	}
 	
 	option = {
-		name = "Send them an ultimatum!"
-		badboy = 2
-		prestige = 2
+		name = "Give the settlement to Colombia!"
+		badboy = -2
+		prestige = -2
 		random_owned = {
-			limit = { 3392 = { empty = no NOT = { owned_by = THIS } owner = { NOT = { has_country_flag = acre_ultimatum } } } }
+			limit = { GCO = { exists = yes } }
 			owner = {
-				3392 = { owner = { country_event = 62053 } }
+				any_owned = {
+					limit = {
+						OR = {
+							province_id = 3382
+							province_id = 2321
+							province_id = 4187
+							province_id = 3381
+							province_id = 3435
+							province_id = 3326
+							province_id = 2549
+						}
+					}
+					secede_province = GCO
+				}
+				GCO = { country_event = 62053 }
 			}
 		}
 		random_owned = {
-			limit = { 2321 = { empty = no NOT = { owned_by = THIS } owner = { NOT = { has_country_flag = acre_ultimatum } } } }
+			limit = { FGC = { exists = yes } }
 			owner = {
-				2321 = { owner = { country_event = 62053 } }
+				any_owned = {
+					limit = {
+						OR = {
+							province_id = 3382
+							province_id = 2321
+							province_id = 4187
+							province_id = 3381
+							province_id = 3435
+							province_id = 3326
+							province_id = 2549
+						}
+					}
+					secede_province = FGC
+				}
+				FGC = { country_event = 62053 }
 			}
 		}
         ai_chance = {
-			factor = 1
+			factor = 99
+			modifier = {
+				factor = 0
+				OR = { AND = { exists = GCO military_score = GCO } AND = { exists = FGC military_score = FGC } }
+			}
 		}
 	}
 	option = {
-		name = "Let them settle!"
-		prestige = -5
-		random_owned = {
-			limit = { 3392 = { empty = no NOT = { owned_by = THIS } owner = { NOT = { has_country_flag = acre_ultimatum } } } }
-			owner = {
-				3392 = { owner = { set_country_flag = acre_ultimatum } }
-			}
-		}
-		random_owned = {
-			limit = { 2321 = { empty = no NOT = { owned_by = THIS } owner = { NOT = { has_country_flag = acre_ultimatum } } } }
-			owner = {
-				2321 = { owner = { set_country_flag = acre_ultimatum } }
-			}
-		}
-        ai_chance = { factor = 0 }
+		name = "We settled it fair and square!"
+		prestige = 5
+        ai_chance = { factor = 1 }
 	}
 }
 country_event = {
 	id = 62053
-	title = "$FROMCOUNTRY$ has sent us an ultimatum over Acre"
+	title = "$FROMCOUNTRY$ has gave us the acre settlement"
 	desc = "62053_desc"
 	picture = "administration"
 	fire_only_once =  yes
 	
 	is_triggered_only = yes
 	
-	immediate = { set_country_flag = acre_ultimatum }
-	
 	option = {
-		name = "We have no other choice..."
-		prestige = -2
-		any_owned = {
-			limit = {
-				OR = {
-					province_id = 3392
-					province_id = 2321
-					province_id = 4187
-					province_id = 3381
-					province_id = 3435
-					province_id = 3326
-					province_id = 2549
-				}
-			}
-			secede_province = FROM
-		}
-		FROM = { relation = { who = THIS value = -50 } country_event = 62054 }
-        ai_chance = {
-			factor = 99
-			modifier = {
-				factor = 0
-				military_score = FROM
-			}
-		}
-	}
-	option = {
-		name = "we won't cede an inch!"
-		prestige = 2
-		FROM = { country_event = 62055 }
-        ai_chance = { factor = 1 }
-	}
-}
-
-country_event = {
-	id = 62054
-	title = "$FROMCOUNTRY$ has accepted"
-	desc = "62054_desc"
-	picture = "administration"
-	fire_only_once =  yes
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = "They made the right choice."
-	}
-}
-
-country_event = {
-	id = 62055
-	title = "$FROMCOUNTRY$ has refused"
-	desc = "62055_desc"
-	picture = "administration"
-	fire_only_once =  yes
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = "It's war then."
-		prestige = -5
-        war = {
-            target = FROM
-            attacker_goal = {
-                casus_belli = acquire_all_core
-                country = THIS
-            }
-        }
-		ai_chance = { factor = 1 }
-	}
-	
-	option = {
-		name = "We cannot afford war."
-		prestige = -20
-		ai_chance = { factor = 0 }
-	}
+		name = "No more conflicts bewteen us."
+		relation = { who = FROM value = 50 }
 }
