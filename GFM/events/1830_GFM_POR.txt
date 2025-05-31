@@ -152,6 +152,7 @@ country_event = {
 		tag = POR
 		month = 7
 		NOT = { year = 1836 }
+		MPR = { exists = no }
     }
 
     mean_time_to_happen = { days = 1 }
@@ -224,6 +225,7 @@ country_event = {
 			political_reform = underground_parties
 			political_reform = none_voting
 		}
+	    ai_chance = { factor = 1 }
     }
 
 	option = { # Change tag to Liberal Portugal
@@ -249,6 +251,7 @@ country_event = {
 			political_reform = none_voting
 		}
 		change_tag_no_core_switch = MPR
+	    ai_chance = { factor = 0 }
     }
 }
 
@@ -434,18 +437,44 @@ country_event = {
     fire_only_once = yes
 
     trigger = {
-		tag = POR
-	    has_global_flag = eighteenthirty_startdate
 		OR = {
-			MPR = { exists = no }
-			all_core = {
+			AND = {
+				tag = MPR
 				OR = {
-					controlled_by = THIS
-					province_id = 2134
+					AND = {
+						NOT = { war_with = POR }
+						POR = { exists = yes }
+					}
+					POR = { government = hms_government }
+					POR = { government = prussian_constitutionalism }
+					POR = { exists = no }
+					all_core = {
+						OR = {
+							controlled_by = THIS
+							province_id = 2135
+							province_id = 1498
+							province_id = 3287
+						}
+					}
+				}
+			}
+			AND = {
+				tag = POR
+				OR = {
+					MPR = { exists = no }
+					MPR = { government = absolute_monarchy }
+					all_core = {
+						OR = {
+							controlled_by = THIS
+							province_id = 2134
+						}
+					}
 				}
 			}
 		}
+		has_global_flag = eighteenthirty_startdate
 		has_global_flag = portugal_trolstarts
+		NOT = { has_global_flag = porended }
 		NOT = { has_global_flag = por_liberal_victory has_global_flag = por_absolutist_victory }
     }
 
@@ -453,74 +482,64 @@ country_event = {
 
     option = {
         name = "PORLOSESOPT"
+		set_global_flag = porended
 		random_owned = {
 			limit = {
-				owner = { MPR = { exists = yes } }
+				owner = { tag = POR MPR = { exists = no } }
 			}
-			owner = { POR = { inherit = MPR } }
+			owner = { 
+				end_war = MPR
+				MPR = { all_core = { remove_core = MPR } }
+				any_pop = { militancy = -10 }
+				POR = { capital = 521 political_reform = none_voting }
+				set_global_flag = por_absolutist_victory
+			}
 		}
-		MPR = { all_core = { remove_core = MPR } }
-		any_pop = { militancy = -10 }
-		POR = { capital = 521 political_reform = none_voting }
-		set_global_flag = por_absolutist_victory
+		random_owned = {
+			limit = {
+				owner = { tag = POR MPR = { exists = yes } }
+			}
+			owner = {
+				end_war = MPR
+				MPR = { all_core = { remove_core = MPR } }
+				any_pop = { militancy = -10 }
+				POR = { capital = 521 political_reform = none_voting }
+				set_global_flag = por_absolutist_victory
+				POR = { inherit = MPR }
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = { tag = MPR POR = { exists = no } }
+			}
+			owner = { 
+				end_war = POR
+				any_pop = { militancy = -10 }
+				set_global_flag = por_liberal_victory
+				MPR = { all_core = { remove_core = MPR add_core = POR } }
+				change_tag = POR
+				ruling_party_ideology = liberal
+				POR = { capital = 521 }
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = { tag = MPR POR = { exists = yes } }
+			}
+			owner = {
+				end_war = POR
+				any_pop = { militancy = -10 }
+				set_global_flag = por_liberal_victory
+				MPR = { all_core = { remove_core = MPR add_core = POR } }
+				MPR = { inherit = POR }
+				change_tag = POR
+				ruling_party_ideology = liberal
+				POR = { capital = 521 }
+			}
+		}
     }
 }
 
-# Batalha de Asseiceira - fires for (Liberal) Portugal
-country_event = {
-    id = 16051960
-    title = "The Battle of Asseiceira"
-    desc = "MPRLOSES"
-    picture = "battle_asseceira"
-
-    fire_only_once = yes
-
-    trigger = {
-		tag = MPR
-	    has_global_flag = eighteenthirty_startdate
-		OR = {
-			AND = {
-				NOT = { war_with = POR }
-				POR = { exists = yes }
-			}
-			AND = {
-				POR = { exists = no }
-			}
-			all_core = {
-				OR = {
-					controlled_by = THIS
-					province_id = 2135
-					province_id = 1498
-					province_id = 3287
-				}
-			}
-		}
-		has_global_flag = portugal_trolstarts
-		NOT = { has_global_flag = por_liberal_victory has_global_flag = por_absolutist_victory }
-    }
-
-    mean_time_to_happen = { days = 1 }
-
-    option = {
-        name = "MPRLOSESOPT"
-		any_pop = { militancy = -10 }
-		random_owned = {
-			limit = {
-				owner = { POR = { exists = yes } }
-			}
-			owner = { MPR = { inherit = POR } }
-		}
-		set_global_flag = por_liberal_victory
-		MPR = { all_core = { remove_core = MPR add_core = POR } }
-		change_tag = POR
-		ruling_party_ideology = liberal
-		political_reform = appointed
-		political_reform = landed_voting
-		political_reform = no_meeting
-		political_reform = non_secret_ballots
-		POR = { capital = 521 }
-    }
-}
 country_event = {
     id = 184823113
     title = "Raid Lourenço Marques?"

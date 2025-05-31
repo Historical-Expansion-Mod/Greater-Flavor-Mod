@@ -775,7 +775,6 @@ political_decisions = {
 			badboy = 2
 			1791 = { add_core = THIS }
 			3779 = { add_core = THIS }
-			3986 = { add_core = THIS }
 			3982 = { add_core = THIS }
 			casus_belli = {
 				target = TND
@@ -1076,6 +1075,7 @@ political_decisions = {
 			OR = {
 				civilization_progress = 0.6
 				civilized = yes
+				AND = { ai = yes year = 1880 }
 			}
         }
         effect = {
@@ -1319,6 +1319,16 @@ political_decisions = {
 					1922 = { secede_province = THIS life_rating = 25 }
 				}
 			}
+			random_owned = {
+				limit = {
+					owner = {
+						1916 = { empty = yes }
+					}
+				}
+				owner = {
+					1916 = { secede_province = THIS life_rating = 25 }
+				}
+			}
         }
         ai_will_do = {
             factor = 1
@@ -1509,15 +1519,17 @@ political_decisions = {
 			prestige = 5
 			1179 = { secede_province = THIS }
 			3692 = { secede_province = THIS change_controller = NYE }
-			NYE = { war = {
-				target = THIS
+			war = {
+				target = NYE
 				attacker_goal = {
+					casus_belli = cut_down_to_size_no_infamy
+				}
+				defender_goal = {
 					casus_belli = acquire_any_state
 					state_province_id = 3692
 				}
 				call_ally = no
 			}
-		}
         }
         ai_will_do = {
             factor = 1
@@ -1584,6 +1596,7 @@ political_decisions = {
 				}
 				owner = {
 					create_vassal = ANG
+					ANG = { set_country_flag = colony_exemption }
 				}
 			}
 			random_owned = {
@@ -1612,6 +1625,7 @@ political_decisions = {
 						target = ANG
 						attacker_goal = { casus_belli = make_puppet }
 					}
+					ANG = { set_country_flag = colony_exemption }
 				}
 			}
 			random_owned = {
@@ -1924,7 +1938,7 @@ political_decisions = {
 			is_disarmed = no
 			owns = 2059
 			MOZ = { owns = 3803 }
-			prestige = 10
+			OR = { prestige = 10 ai = yes }
 			OR = {
 				year = 1854
 				nationalism_n_imperialism = 1
@@ -1935,17 +1949,25 @@ political_decisions = {
 			random_owned = {
 				limit = {
 					owner = {
-						MOZ = { vassal_of = THIS }
+						OR = {
+							MOZ = { vassal_of = THIS }
+							AND = {
+								ai = yes
+								MOZ = { ai = yes }
+							}
+						}
 					}
 				}
 				owner = {
 					release_vassal = MOZ
+					inherit = MOZ
+					MOZ = { any_owned = { secede_province = THIS } }
 				}
 			}
 			random_owned = {
 				limit = {
 					owner = {
-						MOZ = { is_vassal = no NOT = { owns = 2055 } owns = 3803 }
+						MOZ = { is_vassal = no owns = 3803 NOT = { owns = 2055 } }
 					}
 				}
 				owner = {
@@ -3867,6 +3889,9 @@ political_decisions = {
 			random_owned = { limit = { owner = { 3846 = { empty = yes } } } owner = {
 				3846 = { secede_province = THIS life_rating = 25 any_pop = { literacy = -0.99 } }
 			} }
+			random_owned = { limit = { owner = { 1916 = { empty = yes } } } owner = {
+				1916 = { secede_province = THIS life_rating = 25 any_pop = { literacy = -0.99 } }
+			} }
 			random_owned = { limit = { owner = { 1922 = { empty = yes } } } owner = {
 				1922 = { secede_province = THIS life_rating = 25 any_pop = { literacy = -0.99 } }
 			} }
@@ -4681,7 +4706,6 @@ political_decisions = {
 			1912 = { add_core = GYM add_core = ASH }
 			1913 = { add_core = GYM add_core = ASH }
 			3891 = { add_core = GYM add_core = ASH }
-			1916 = { add_core = GYM add_core = ASH }
 			3893 = { add_core = GYM add_core = ASH }
 			1911 = { add_core = GYM add_core = ASH }
 			3956 = { add_core = GYM add_core = ASH }
@@ -5695,10 +5719,7 @@ political_decisions = {
         potential = {
             owns = 2221 #Nanjing
             capital = 1616
-            OR = {
-				tag = CHI
-				tag = KMT
-			}
+			tag = KMT
         }
 
         allow = {
@@ -6660,8 +6681,9 @@ political_decisions = {
         }
         effect = {
 			set_country_flag = colonize_ambasbay
+			1937 = { add_core = ARO }
 			3611 = { change_province_name = "Ambas Bay" }
-			3611 = { secede_province = THIS add_core = CMR any_pop = { literacy = -0.99 } life_rating = 25 secede_province = UTI }
+			3611 = { secede_province = THIS add_core = ARO any_pop = { literacy = -0.99 } life_rating = 25 secede_province = UTI }
 			THIS = { inherit = UTI }
 			UTI = { all_core = { remove_core = UTI } }
         }
@@ -9782,9 +9804,6 @@ political_decisions = {
 			}
 			3703 = { empty = yes }
 			3669 = { empty = yes }
-			3704 = { empty = yes }
-			3610 = { empty = yes }
-			1846 = { empty = yes }
 			1845 = { empty = yes }
 			NOT = { has_country_flag = raid_sudan }
         }
@@ -9804,75 +9823,169 @@ political_decisions = {
             war = no
         }
         effect = {
-			1845 = {
-				life_rating = 25
-				add_core = SUD
-				secede_province = THIS
-				slaves = { reduce_pop = 1.2 }
-				any_pop = { limit = { has_pop_culture = sudanese } reduce_pop = 1.2 }
-				any_pop = { literacy = -0.99 }
+			random_owned = {
+				limit = {
+					owner = {
+						1845 = { empty = yes }
+					}
+				}
+				owner = {
+					1845 = {
+						life_rating = 25
+						secede_province = THIS
+						slaves = { reduce_pop = 1.2 }
+						any_pop = { limit = { has_pop_culture = sudanese } reduce_pop = 1.2 }
+						any_pop = { literacy = -0.99 }
+					}
+				}
 			}
-			3703 = {
-				life_rating = 20
-				add_core = SUD
-				secede_province = THIS
-				slaves = { reduce_pop = 1.2 }
-				any_pop = { limit = { has_pop_culture = sudanese } reduce_pop = 1.2 }
-				any_pop = { literacy = -0.99 }
+			random_owned = {
+				limit = {
+					owner = {
+						3703 = { empty = yes }
+					}
+				}
+				owner = {
+					3703 = {
+						life_rating = 20
+						secede_province = THIS
+						slaves = { reduce_pop = 1.2 }
+						any_pop = { limit = { has_pop_culture = sudanese } reduce_pop = 1.2 }
+						any_pop = { literacy = -0.99 }
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						3669 = { empty = yes }
+					}
+				}
+				owner = {
+					3669 = {
+						life_rating = 20
+						secede_province = THIS
+						slaves = { reduce_pop = 1.2 }
+						any_pop = { limit = { has_pop_culture = sudanese } reduce_pop = 1.2 }
+						any_pop = { literacy = -0.99 }
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						3610 = { empty = yes }
+					}
+				}
+				owner = {
+					3610 = {
+						life_rating = 15
+						secede_province = THIS
+						slaves = { reduce_pop = 1.2 }
+						any_pop = { limit = { has_pop_culture = sudanese } reduce_pop = 1.2 }
+						any_pop = { literacy = -0.99 }
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						3704 = { empty = yes }
+					}
+				}
+				owner = {
+					3704 = {
+						life_rating = 25
+						secede_province = THIS
+						slaves = { reduce_pop = 1.2 }
+						any_pop = { limit = { has_pop_culture = sudanese } reduce_pop = 1.2 }
+						any_pop = { literacy = -0.99 }
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						1846 = { empty = yes }
+					}
+				}
+				owner = {
+					1846 = {
+						life_rating = 20
+						secede_province = THIS
+						slaves = { reduce_pop = 1.2 }
+						any_pop = { limit = { has_pop_culture = sudanese } reduce_pop = 1.2 }
+						any_pop = { literacy = -0.99 }
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						1845 = { empty = yes }
+					}
+				}
+				owner = {
+					1845 = {
+						secede_province = THIS
+						slaves = { reduce_pop = 1.2 }
+						any_pop = { limit = { has_pop_culture = sudanese } reduce_pop = 1.2 }
+						any_pop = { literacy = -0.99 }
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						3610 = { empty = yes }
+					}
+				}
+				owner = {
+					3610 = {
+						secede_province = THIS
+						life_rating = 10
+						any_pop = { literacy = -0.99 }
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						1844 = { empty = yes }
+					}
+				}
+				owner = {
+					1844 = {
+						secede_province = THIS
+						slaves = { reduce_pop = 1.2 }
+						any_pop = { limit = { has_pop_culture = sudanese } reduce_pop = 1.2 }
+						any_pop = { literacy = -0.99 }
+					}
+				}
 			}
 			3669 = {
-				life_rating = 20
 				add_core = SUD
-				secede_province = THIS
-				slaves = { reduce_pop = 1.2 }
-				any_pop = { limit = { has_pop_culture = sudanese } reduce_pop = 1.2 }
-				any_pop = { literacy = -0.99 }
 			}
 			3610 = {
-				life_rating = 15
 				add_core = SUD
-				secede_province = THIS
-				slaves = { reduce_pop = 1.2 }
-				any_pop = { limit = { has_pop_culture = sudanese } reduce_pop = 1.2 }
-				any_pop = { literacy = -0.99 }
+			}
+			3703 = {
+				add_core = SUD
 			}
 			3704 = {
-				life_rating = 25
 				add_core = SUD
-				secede_province = THIS
-				slaves = { reduce_pop = 1.2 }
-				any_pop = { limit = { has_pop_culture = sudanese } reduce_pop = 1.2 }
-				any_pop = { literacy = -0.99 }
 			}
 			1846 = {
-				life_rating = 20
 				add_core = SUD
-				secede_province = THIS
-				slaves = { reduce_pop = 1.2 }
-				any_pop = { limit = { has_pop_culture = sudanese } reduce_pop = 1.2 }
-				any_pop = { literacy = -0.99 }
 			}
 			1845 = {
-				add_core = SUD
-				secede_province = THIS
-				slaves = { reduce_pop = 1.2 }
-				any_pop = { limit = { has_pop_culture = sudanese } reduce_pop = 1.2 }
-				any_pop = { literacy = -0.99 }
-			}
-			3610 = {
-				secede_province = THIS
-				life_rating = 10
-				any_pop = { literacy = -0.99 }
-			}
-			1847 = {
 				add_core = SUD
 			}
 			1844 = {
 				add_core = SUD
-				secede_province = THIS
-				slaves = { reduce_pop = 1.2 }
-				any_pop = { limit = { has_pop_culture = sudanese } reduce_pop = 1.2 }
-				any_pop = { literacy = -0.99 }
+			}
+			1847 = {
+				add_core = SUD
 			}
 			3700 = {
 				add_core = SUD
@@ -10837,7 +10950,6 @@ political_decisions = {
 					OR = {
 						owns = 1731
 						owns = 1741
-						owns = 1736
 						owns = 1752
 						owns = 3668
 					}
@@ -10851,7 +10963,6 @@ political_decisions = {
 					OR = {
 						owns = 1731
 						owns = 1741
-						owns = 1736
 						owns = 1752
 						owns = 3668
 					}
