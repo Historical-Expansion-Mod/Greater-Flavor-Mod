@@ -2615,6 +2615,7 @@ country_event = {
 
     option = {
         name = "EVT37741OPTA"
+		set_global_flag = treaty_of_shimoneseki
         FROM = {
             clr_country_flag = negotiate_unequal_treaty
             end_war = THIS
@@ -2665,6 +2666,7 @@ country_event = {
                     OR = {
                         is_core = THIS
                         region = CHI_1485
+						province_id = 1481
                     }
                 }
                 any_pop = { militancy = 6 }
@@ -2686,8 +2688,245 @@ country_event = {
                 war_with = THIS
             }
             end_war = THIS
-        }
+		}
     }
+}
+
+#Tripartite Intervention for Liandong recession
+country_event = {
+	id = 1316087
+	title = "Liandong ceded to Japan in perpetuity!"
+	desc = "EVTDESC1316087"
+	picture = "japanese_power"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		JAP = { owns = 1481 }
+		NOT = { has_global_flag = rjw_over }
+		war = no
+		NOT = { truce_with = JAP has_country_flag = liandong_crisis }
+	}
+	
+	option = {
+		name = "They are threatening our interests in Manchuria! Maybe we can leverage Berlin and Paris to help us revert the lease of Liandong!"
+		set_country_flag = liandong_crisis
+		JAP = { country_event = 1316088 }
+		random_country = {
+			limit = { 
+				capital = 549
+				is_greater_power = yes
+			}
+			country_event = 1316187
+		}
+		random_country = {
+			limit = {
+				capital = 425
+				is_greater_power = yes
+			}
+			country_event = 1316187
+		}
+		set_global_flag = tripartite_intervention
+		ai_chance = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { rank = 16 }
+				JAP = { rank = 8 }
+			}
+		}
+	}
+	
+	option = {
+		name = "There are better ways to secure our interests than alienating Japan. §GLose 2 infamy§!"
+		set_country_flag = liandong_crisis
+		badboy = -2
+		prestige = -5
+		1481 = { trade_goods = precious_goods }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_greater_power = yes
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 1316088
+	title = "Tripartite Intervention demands withdraw from Liandong!"
+	desc = "EVTDESC1316088"
+	picture = "japanese_invasion_of_manchuria"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "We better not anger the other Great Powers. Withdraw from Liandong!"
+		prestige = -5
+		money = 15000
+		1481 = { secede_province = UTI }
+		random_country = {
+			limit = { owns = 1616 }
+			inherit = UTI
+			country_event = 1316288
+		}
+		FROM = { country_event = 1316188 }
+		relation = { who = RUS value = 25 }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Liandong is ours. Russia has no say in this! §RGain 5 infamy§!"
+		badboy = 5
+		prestige = 10
+		1481 = { trade_goods = precious_goods }
+		RUS = { country_event = 1316287 }
+		relation = { who = RUS value = -100 }
+		ai_chance = {
+			factor = 1 
+			modifier = {
+				factor = 0 
+				RUS = { is_greater_power = yes }
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 1316187
+	title = "Russia calls for intervention in the Far East!"
+	desc = "EVTDESC1316187"
+	picture = "japanese_power"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "The Russians have our full support! Japan shall withdraw!"
+		set_country_flag = tripartite_participation
+		prestige = 5
+		relation = { who = RUS value = 100 }
+		relation = { who = JAP value = -50 }
+		ai_chance = {
+			factor = 6
+			modifier = {
+				factor = 10
+				JAP = { NOT = { alliance_with = ENG } }
+			}
+			modifier = {
+			factor = 0
+			alliance_with = JAP
+			}
+		}
+	}
+	
+	option = {
+		name = "We rather have good relations with Japan! We want no part in this!"
+		relation = { who = RUS value = -50 }
+		relation = { who = JAP value = -25 }
+		ai_chance = {
+			factor = 1
+			modifier = {
+			factor = 4
+				JAP = { alliance_with = ENG }
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 1316188
+	title = "Japan withdraws from Liandong!"
+	desc = "EVTDESC1316188"
+	picture = "japanese_invasion_of_manchuria"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Our interests in Manchuria have been secured, for now..."
+		prestige = 5
+	}
+}
+
+country_event = {
+	id = 1316287
+	title = "Japan holds on to Liandong!"
+	desc = "EVTDESC1316287"
+	picture = "japanese_invasion_of_manchuria"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "All armies to the East! We will teach them a lesson!"
+		prestige = 5
+		set_global_flag = rjw_over_liandong
+		war = {
+            target = FROM
+            attacker_goal = { casus_belli = cut_down_to_size_no_add_wargoal_2 }
+            defender_goal = { casus_belli = cut_down_to_size_no_add_wargoal_2 }
+            call_ally = yes
+        }
+		FROM = { set_country_flag = only_one_war_with_russia }
+		ai_chance = {
+			factor = 9
+			modifier = {
+				factor = 1
+				JAP = { alliance_with = ENG }
+			}
+		}
+	}
+	
+	option = {
+		name = "Maybe we shouldn't spill blood over land that isn't even ours."
+		prestige = -10
+		ai_chance = { 
+			factor = 1
+			modifier = {
+				factor = 9
+				JAP = { alliance_with = ENG }
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 1316288
+	title = "Japan returns Liandong!"
+	desc = "EVTDESC1316288"
+	picture = "japanese_invasion_of_manchuria"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Finally! Some good news!"
+		money = -15000
+	}
+}
+
+country_event = {
+	id = 1316289
+	title = "Japan resist triple intervention!"
+	desc = "Japan has refused Russian demands and now we shall teach them they aren't the true masters of Asia!"
+	picture = "japanese_invasion_of_manchuria"
+	
+	trigger = {
+		RUS = { war_with = JAP }
+		has_global_flag = rjw_over_liandong
+		has_country_flag = tripartite_participation
+		NOT = { has_country_flag = tripartite_war has_global_flag = rjw_over }
+	}
+	
+	option = { 
+		name = "Japan shall learn its place!"
+		prestige = 5
+		set_country_flag = tripartite_war
+		war = {
+            target = JAP
+            attacker_goal = { casus_belli = cut_down_to_size_no_infamy }
+            defender_goal = { casus_belli = status_quo }
+            call_ally = no
+        }
+	}
 }
 
 #Unequal Treaty if war is won
