@@ -390,7 +390,7 @@ country_event = {
 	}
 	
 	option = {
-		name = "§RGain 2.5 infamy§! Seize the islands! We shall control the North Atlantic!"
+		name = "Seize the islands! We shall control the North Atlantic! §RGain 2.5 infamy§! "
 		252 = { owner = { country_event = 49512 } }
 		ai_chance = { 
 			factor = 1
@@ -429,5 +429,389 @@ country_event = {
 		253 = { secede_province = UTI }
 		FROM = { inherit = UTI }
 		relation = { who = FROM value = -50 }
+	}
+}
+
+country_event = {
+	id = 800807
+	title = "The Liberation of Finland?"
+	desc = "EVTDESC800807"
+	picture = "diet_of_finland"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "And change one tyrant for another? We rather stay with the Russians."
+		FROM = { 
+			war = {
+		        target = FIN
+			    attacker_goal = { casus_belli = release_puppet_no_infamy }
+			    defender_goal = { casus_belli = cut_down_to_size_no_infamy }
+			    call_ally = yes
+			}
+		}
+		set_global_flag = finnish_liberation
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				in_sphere = FROM
+			}
+		}
+	}
+	
+	option = {
+		name = "Sometimes the devil you don't is better than the devil you know..."
+		RUS = { 
+			release_vassal = FIN
+			diplomatic_influence = { who = FIN value = -500 }
+			country_event = 800808
+		}
+		create_alliance = FROM
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { in_sphere = FROM }
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 800808
+	title = "Finland betrays us!"
+	desc = "EVTDESC800808"
+	picture = "diet_of_finland"
+	
+	is_triggered_only = yes 
+	
+	option = {
+		name = "We can't let that slide! Finland is ours!"
+		prestige = 5
+		war = {
+		        target = FIN
+			    attacker_goal = { casus_belli = conquest_any }
+			    defender_goal = { casus_belli = cut_down_to_size_no_infamy }
+			    call_ally = yes
+			}
+		set_global_flag = finnish_liberation
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 800809
+	title = "The Liberation of Finland!"
+	desc = "EVTDESC800809"
+	picture = "diet_of_finland"
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = { days = 1 }
+	
+	trigger = {
+		OR = { 
+			tag = SCA
+			tag = SWE
+		}
+		has_global_flag = finnish_liberation
+		has_country_flag = liberate_finland
+		war = no
+		FIN = { war = no exist = yes is_vassal = no }
+		RUS = { exist = yes truce_with = THIS }
+	}
+	
+	option = {
+		name = "Restore the 1808 border and try to strike a friendship treaty §GLose 1.5 infamy§W"
+		badboy = -1.5
+		clr_global_flag = finnish_liberation
+		inherit = FIN
+		any_owned = { 
+			limit = { 
+				OR = { 
+					province_id = 340
+					province_id = 339
+					province_id = 4030
+				}
+			}
+			remove_core = FIN
+			remove_core = SWE
+			remove_core = SCA
+			add_core = KRL
+			add_core = RUS
+			secede_province = RUS
+		}
+		
+		RUS = {
+			any_owned = {
+				limit = { 
+					is_core = FIN 
+				}
+				remove_core = RUS
+				secede_province = THIS
+			}
+			all_core = {
+				limit = { is_core = FIN }
+				remove_core = RUS
+			}
+			country_event = 800810
+		}
+		country_event = 800811
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "All of Finland should be free"
+		clr_global_flag = finnish_liberation
+		inherit = FIN
+		RUS = {
+			any_owned = {
+				limit = { is_core = FIN }
+				remove_core = RUS
+				secede_province = THIS
+			}
+			all_core = {
+				limit = { is_core = FIN }
+				remove_core = RUS
+			}
+		}
+		country_event = 800811
+		ai_chance = { factor = 2 }
+	}
+	
+	option = {
+		name = "Karelia shall be liberated as well! §RGain 3 infamy§W"
+		clr_global_flag = finnish_liberation
+		badboy = 3
+		inherit = FIN
+		RUS = {
+			any_owned = {
+				limit = { OR = { is_core = FIN is_core = KRL } }
+				remove_core = RUS
+				secede_province = THIS
+			}
+			all_core = {
+				limit = { is_core = FIN }
+				remove_core = RUS
+			}
+		}
+		country_event = 800811
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 800810
+	title = "Treaty of Eternal Friendship?"
+	desc = "EVTDESC800810"
+	picture = "diet_of_finland"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Their support is more valueable than Finland §GLose 1.5 infamy§W"
+		prestige = -5
+		badboy = -1.5
+		relation = { who = FROM value = 200 }
+		create_alliance = FROM
+		FROM = { set_country_flag = russian_friendship }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "They take Finland from us and expect friendship? Stale the negotiations."
+		prestige = 5
+		relation = { who = FROM value = -50 }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 800811
+	title = "The Fate of Finland"
+	desc = "EVTDESC800811"
+	picture = "diet_of_finland"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Finland shall be integrated!"
+		add_accepted_culture = finnish
+		FIN = { all_core = { add_core = THIS remove_core = RUS } }
+		random_owned = {
+			limit = { owner = { owns = 984 } }
+			owner = { country_event = 800812 }
+		}
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "The Finnish deserve autonomy §GLose 1.5 infamy§W"
+		badboy = -1.5
+		add_accepted_culture = finnish
+		release_vassal = FIN
+		create_alliance = FIN
+		diplomatic_influence = { who = FIN value = 400 }
+		random_owned = {
+			limit = { owner = { primary_culture = swedish } }
+			FIN = {
+				any_owned = { 
+					limit = {
+						OR = { 
+							province_id = 343
+							province_id = 345
+							province_id = 346
+							province_id = 348
+						}
+					}
+					add_core = THIS
+					remove_core = FIN
+					secede_province = THIS
+				}
+				relation = { who = THIS value = -100 }
+			}
+		}
+		random_owned = {
+			limit = { owner = { owns = 984 } }
+			owner = { country_event = 800812 }
+		}
+		any_owned = { 
+			limit = {
+				province_id = 343
+				province_id = 345
+				province_id = 346
+				province_id = 348
+			}
+			add_core = FIN
+		}
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 800812
+	title = "The Question of Karelia"
+	desc = "EVTDESC800812"
+	picture = "diet_of_finland"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Karelia shall be an integral part of our nation!"
+		random_owned = {
+			limit = { owner = { NOT = { owns = 347 } } }
+			owner = { 
+				any_owned = {
+					limit = { is_core = KRL }
+					add_core = FIN
+					secede_province = FIN
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { owns = 347 } }
+			owner = { 
+				set_country_flag = integrating_karelia
+				}
+			}
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Set up a military administration to govern it!"
+		release_vassal = KRL
+		create_alliance = KRL
+		diplomatic_influence = { who = KRL value = 400 }
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 800813
+	title = "Finland is ours!"
+	desc = "EVTDESC800814"
+	picture = "diet_of_finland"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = RUS
+		has_global_flag = finnish_liberation
+		war = no
+		OR = {
+			is_our_vassal = FIN
+			FIN = { all_core = { owned_by = THIS } exist = no }
+		}
+		OR = {
+			truce_with = SCA
+			truce_with = SWE
+		}
+	}
+	
+	option = {
+		name = "Finnmark shall be ours! §RGain 0.5 infamy§W"
+		prestige = 10
+		badboy = 0.5
+		clr_global_flag = finnish_liberation
+		307 = {
+			owner = {
+				any_owned = {
+					limit = { province_id = 307 }
+					add_core = FIN
+					secede_province = THIS
+				}
+			}
+		}
+		inherit = FIN
+		FIN = { all_core = { add_core = THIS remove_core = SCA remove_core = SWE } }
+		ai_chance = { factor = 2 }
+	}
+	
+	option = {
+		name = "A couple more Baltic islands will help our power projection! §RGain 2 infamy§W"
+		badboy = 2
+		prestige = 10
+		clr_global_flag = finnish_liberation
+		331 = {
+			owner = {
+				any_owned = {
+					limit = { OR = { province_id = 331 province_id = 374 } }
+					add_core = THIS
+					secede_province = THIS
+				}
+			}
+		}
+		inherit = FIN
+		FIN = { all_core = { add_core = THIS remove_core = SCA remove_core = SWE } }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Finnmark and the Baltic islands shall be ours! §RGain 3 infamy§W"
+		badboy = 3
+		prestige = 20
+		clr_global_flag = finnish_liberation
+		307 = {
+			owner = {
+				any_owned = {
+					limit = { province_id = 307 }
+					add_core = FIN
+					secede_province = THIS
+				}
+			}
+		}
+		inherit = FIN
+		FIN = { all_core = { add_core = THIS remove_core = SCA remove_core = SWE } }
+		331 = {
+			owner = {
+				any_owned = {
+					limit = { OR = { province_id = 331 province_id = 374 } }
+					add_core = THIS
+					secede_province = THIS
+				}
+			}
+		}
+		ai_chance = { factor = 1 }
 	}
 }
