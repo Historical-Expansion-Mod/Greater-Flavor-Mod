@@ -408,7 +408,6 @@ political_decisions = {
             has_country_flag = monarchy_government
             NOT = { has_global_flag = has_become_dual_monarchy }
             NOT = { has_country_flag = austrian_greater_germany }
-            NOT = { has_country_flag = ai_demand_sigmaringen }
         }
 
         allow = {
@@ -436,7 +435,6 @@ political_decisions = {
                 nationalism_n_imperialism = 1
                 is_greater_power = no
             }
-			NOT = { has_country_flag = ai_demand_sigmaringen }
         }
 
         effect = {
@@ -513,22 +511,22 @@ political_decisions = {
                 GER = { exists = no }
                 GCF = { exists = no }
                 NOT = {
-                    OR = {
                         average_militancy = 6
                         revolt_percentage = 0.25
-                    }
                 }
             }
             modifier = {
                 factor = 0
                 NOT = {
                     has_country_flag = brothers_war_loser
-                    OR = {
-                        average_militancy = 7
-                        revolt_percentage = 0.25
-                    }
+					average_militancy = 7
+					revolt_percentage = 0.25
                 }
-                NOT = { year = 1867 }
+                #NOT = { year = 1867 }
+            }
+			modifier = {
+                factor = 0
+                has_country_flag = ai_demand_sigmaringen
             }
         }
     }
@@ -785,7 +783,7 @@ political_decisions = {
             CAN = { all_core = { add_core = QUE remove_core = ENG remove_core = CAN remove_core = COL remove_core = MRU } }
             RPL = { annex_to = THIS government = democracy all_core = { add_core = QUE remove_core = ENG remove_core = COL } }
             QUE = { all_core = { remove_core = ENG remove_core = RPL remove_core = CAN remove_core = NEW } }
-            ACA = { all_core = { add_core = ACA remove_core = ENG } }
+            ACA = { all_core = { add_core = QUE remove_core = ENG } }
             add_accepted_culture = french_canadian
             add_accepted_culture = acadian
             add_accepted_culture = afro_french
@@ -1662,6 +1660,48 @@ political_decisions = {
             factor = 1
         }
     }
+	
+	french_annex_sardinia = {
+		picture = perfect_fusion
+		potential = {
+			OR = {
+                tag = FRA
+                tag = BOR
+            }
+			SRD = { vassal_of = THIS }
+            is_greater_power = yes
+			has_global_flag = french_outside_italy
+		}
+		
+		allow = {
+			nationalism_n_imperialism = 1
+			SRD = { vassal_of = THIS in_sphere = THIS }
+		}
+		
+		effect = {
+			prestige = 5
+			badboy = 5
+			SRD = { 
+				annex_to = THIS
+				all_core = {
+					add_core = THIS
+				}
+			}
+			any_pop = {
+				limit = { culture = sard }
+				militancy = 2
+			}
+			any_country = {
+                limit = {
+					is_culture_group = italian
+                }
+                relation = {
+					who = THIS
+					value = -50
+				}
+            }
+		}
+	}
 
     become_piedmont = {
         picture = become_savoy
@@ -2439,7 +2479,7 @@ political_decisions = {
                 limit = {
                     tag = PRU
                     exists = no
-                    THIS = { capital = 549 }
+					NOT = { has_global_flag = prussia_no_ger }
                 }
                 country_event = 11105
             }
@@ -2502,6 +2542,12 @@ political_decisions = {
                         capital_scope = { continent = south_africa }
                         capital_scope = { continent = asia }
                     }
+					NOT = {
+						AND = {
+							tag = PRU
+							has_global_flag = prussia_no_ger
+						}
+					}
                     OR = {
                         is_vassal = no
                         vassal_of = THIS
@@ -3321,6 +3367,302 @@ political_decisions = {
             }
         }
     }
+
+	ITA_create_yugoslavia = {
+		picture = form_yugoslavia
+		potential = {
+			tag = ITA
+			OR = {
+				has_country_flag = conquest_adriatic_happened
+                is_sphere_leader_of = SER
+                any_owned_province = { is_core = ALB }
+                any_owned_province = { is_core = BUL }
+                is_sphere_leader_of = MON
+                is_sphere_leader_of = CRO
+                is_sphere_leader_of = BOS
+                is_sphere_leader_of = SLO
+                is_sphere_leader_of = BUL
+            }
+            NOT = {
+                exists = YUG
+				exists = BFR
+                has_global_flag = yugoslavia_formed
+				has_country_flag = italian_yug
+            }
+			NOT = {
+				AND = {
+					ai = yes
+					OR = {
+						SER = { ai = no }
+						MON = { ai = no }
+						CRO = { ai = no }
+						BOS = { ai = no }
+						SLO = { ai = no }
+						BUL = { ai = no }
+					}
+				}
+			}
+        }
+		allow = {
+            is_greater_power = yes
+            783 = { NOT = { is_core = THIS } }
+            SER = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+            BOS = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+            CRO = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+			ALB = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+            war = no
+        }
+        effect = {
+			prestige = 10
+			badboy = 5
+			country_event = 800800
+			set_country_flag = italian_yug
+		}
+		ai_will_do = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.8
+			}
+		}
+	}
+	
+	RUS_create_yugoslavia = {
+		picture = form_yugoslavia
+		potential = {
+			tag = RUS
+			OR = {
+                is_sphere_leader_of = SER
+                any_owned_province = { is_core = ALB }
+                any_owned_province = { is_core = BUL }
+                is_sphere_leader_of = MON
+                is_sphere_leader_of = CRO
+                is_sphere_leader_of = BOS
+                is_sphere_leader_of = SLO
+                is_sphere_leader_of = BUL
+				has_global_flag = establish_panslavism
+            }
+            NOT = {
+                exists = YUG
+				exists = BFR
+                has_global_flag = yugoslavia_formed
+				has_country_flag = russian_yug
+            }
+			NOT = {
+				AND = {
+					ai = yes
+					OR = {
+						SER = { ai = no }
+						MON = { ai = no }
+						CRO = { ai = no }
+						BOS = { ai = no }
+						SLO = { ai = no }
+						BUL = { ai = no }
+					}
+				}
+			}
+        }
+		allow = {
+            is_greater_power = yes
+            783 = { NOT = { is_core = THIS } }
+            SER = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+            BOS = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+            CRO = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+			BUL = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+            war = no
+        }
+        effect = {
+			prestige = 10
+			badboy = 8
+			country_event = 800801
+			set_country_flag = russian_yug
+		}
+		ai_will_do = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.6
+			}
+		}
+	}
+	
+	AUS_create_yuguslavia = {
+		picture = form_yugoslavia
+	
+		potential = {
+			OR = { 
+				tag = AUS
+				tag = KUK
+				tag = AUB
+				tag = DNB
+			}
+			OR = {
+                is_sphere_leader_of = SER
+                any_owned_province = { is_core = ALB }
+                any_owned_province = { is_core = BUL }
+                is_sphere_leader_of = MON
+                is_sphere_leader_of = BOS
+                is_sphere_leader_of = SLO
+				tag = AUB
+				tag = DNB
+            }
+            NOT = {
+                exists = YUG
+				exists = BFR
+                has_global_flag = yugoslavia_formed
+				has_country_flag = austrian_yug
+            }
+			NOT = {
+				AND = {
+					ai = yes
+					OR = {
+						SER = { ai = no }
+						MON = { ai = no }
+						CRO = { ai = no }
+						BOS = { ai = no }
+						SLO = { ai = no }
+					}
+				}
+			}
+        }
+		
+		allow = {
+            is_greater_power = yes
+            OR = { 
+				owns = 771
+				771 = { owner = { vassal_of = THIS } }
+			}
+            SER = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+            MON = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+            CRO = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+            war = no
+        }
+		
+		effect = {
+			prestige = 10
+			badboy = 5
+			country_event = 800803
+			set_country_flag = austrian_yug
+		}
+		ai_will_do = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.8
+			}
+		}
+	}
+
 	reclaim_italian_lands = {
 		picture = reclaim_italian_lands
         potential = {
@@ -7081,9 +7423,10 @@ political_decisions = {
 			3509 = { add_core = THIS } #Baluchistan
 			1055 = { add_core = THIS } #Northern Caucasus
 			3391 = { add_core = THIS } #Northern Caucasus
-			any_land_province = {
-				limit = { is_core = KHR }
-				add_core = PER
+			KHR = {
+				all_core = {
+					add_core = PER
+				}
 			}
         }
 
@@ -7591,7 +7934,6 @@ political_decisions = {
             has_country_flag = monarchy_government
             NOT = { has_global_flag = has_become_dual_monarchy_BOH }
             NOT = { has_country_flag = austrian_greater_germany }
-            NOT = { has_country_flag = ai_demand_sigmaringen }
         }
 
         allow = {
@@ -7706,22 +8048,22 @@ political_decisions = {
                 GER = { exists = no }
                 GCF = { exists = no }
                 NOT = {
-                    OR = {
                         average_militancy = 6
                         revolt_percentage = 0.25
-                    }
                 }
             }
             modifier = {
                 factor = 0
                 NOT = {
                     has_country_flag = brothers_war_loser
-                    OR = {
-                        average_militancy = 7
-                        revolt_percentage = 0.25
-                    }
+					average_militancy = 7
+					revolt_percentage = 0.25
                 }
                 #NOT = { year = 1867 }
+            }
+			modifier = {
+                factor = 0
+                has_country_flag = ai_demand_sigmaringen
             }
         }
     }
