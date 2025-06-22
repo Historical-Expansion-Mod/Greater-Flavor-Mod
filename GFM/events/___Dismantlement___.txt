@@ -11,7 +11,7 @@
 #################################################################
 
 country_event = { 
-    id = 20470
+    id = 20550
     title = "Selection Menu Setup"
     is_triggered_only = yes
 	
@@ -60,8 +60,8 @@ country_event = {
 
 		FROM = { 
 			set_country_flag = dismantlement_leader
-			set_variable = { which = dismantlement_currency value = 75 }
-			country_event = 20471
+			#set_variable = { which = dismantlement_currency value = 75 }
+			country_event = 20551
 		}
 	} 
 	
@@ -72,7 +72,7 @@ country_event = {
 }
 
 country_event = { 
-    id = 20471
+    id = 20551
     title = "Selection Menu"
 	picture  = "RAM/dismantlement_selection_menu"
     is_triggered_only = yes
@@ -219,7 +219,8 @@ country_event = { # Initial Dismantlement Event Setup
     is_triggered_only = yes
 	
 	immediate = {
-		any_country = { limit = { overlord = { has_country_flag = dismantlement_targets } } set_country_flag = dismantlement_targets }		# Vassal of vassals, don't have any puppets deeper, should really be recusive 
+		any_country = { limit = { has_country_flag = dismantlement_target } set_country_flag = dismantlement_targets }
+		any_country = { limit = { overlord = { has_country_flag = dismantlement_target } } set_country_flag = dismantlement_targets }		# Vassal of vassals, don't have any puppets deeper, should really be recusive 
 		any_country = { limit = { overlord = { has_country_flag = dismantlement_targets } } set_country_flag = dismantlement_targets }
 		any_country = { limit = { overlord = { has_country_flag = dismantlement_targets } } set_country_flag = dismantlement_targets }
 		any_country = { limit = { overlord = { has_country_flag = dismantlement_targets } } set_country_flag = dismantlement_targets }
@@ -348,6 +349,9 @@ country_event = { # Scope the cores to release
 			}
 			inherit = UTI
 		}
+
+		#any_country = { limit = { has_country_flag = dismantlement_leader has_country_flag = literally_cheating } set_variable = { which = dismantlement_currency value = 200 } } 
+		CLN = { country_event = 20530 }
 		
 		# Designate Independent Targets
 		any_country = {
@@ -422,7 +426,7 @@ country_event = { # Scope the cores to release
 			#set_country_flag = dismantlement_targeting_short_buffer																																																							
 		}
 		
-		CLN = { country_event = 20452 }
+		CLN = { country_event = 20542 }
 		
 		# Check if target needs puppet option
 		any_country = {
@@ -446,6 +450,7 @@ country_event = { # Scope the cores to release
 		any_country = { limit = { has_country_flag = dismantlement_target } set_country_flag = dynamic_loc } slot_4 = { add_province_modifier = { name = dynamic_loc duration = -1 } } CLN = { country_event = 2 }		
 		
 		# Current Dismantlement Currency
+		any_country = { set_variable = { which = dynamic_loc value = 0 } }
 		CLN = { country_event = 20432 }																	# Dynamic Loc Target - Slot 4		
 		any_country = { limit = { has_country_flag = dismantlement_leader } set_country_flag = dynamic_loc } slot_5 = { add_province_modifier = { name = dynamic_loc duration = -1 } } CLN = { country_event = 7 }
 		CLN = { country_event = 20433 }
@@ -488,14 +493,40 @@ country_event = { # Scope the cores to release
 						any_country = {
 							limit = {
 								has_country_flag = dismantlement_targeting_long_buffer
+								OR = {
+									exists = no
+									overlord = { has_country_flag = dismantlement_targets }
+								}
 							}
 							THIS = {
 								any_country = { 
 									limit = { 
 										has_country_flag = dismantlement_leader 
 										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
 									}
-									country_event = 40442	# No Formables, All Options
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20443	# No Formables, All Options
+								}
+							}
+						}
+						any_country = {
+							limit = {
+								has_country_flag = dismantlement_targeting_long_buffer
+								AND = {
+									exists = yes
+									NOT = { overlord = { has_country_flag = dismantlement_targets } }
+								}
+							}
+							THIS = {
+								any_country = { 
+									limit = { 
+										has_country_flag = dismantlement_leader 
+										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
+									}
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20442	# No Formables, All Options
 								}
 							}
 						}
@@ -511,14 +542,40 @@ country_event = { # Scope the cores to release
 						any_country = {
 							limit = {
 								has_country_flag = dismantlement_targeting_long_buffer
+								OR = {
+									exists = no
+									overlord = { has_country_flag = dismantlement_targets }
+								}
 							}
 							THIS = {
 								any_country = { 
 									limit = { 
 										has_country_flag = dismantlement_leader 
 										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
 									}
-									country_event = 40441	# This will be based on a variable
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20441	# This will be based on a variable
+								}
+							}
+						}
+						any_country = {
+							limit = {
+								has_country_flag = dismantlement_targeting_long_buffer
+								AND = {
+									exists = yes
+									NOT = { overlord = { has_country_flag = dismantlement_targets } }
+								}
+							}
+							THIS = {
+								any_country = { 
+									limit = { 
+										has_country_flag = dismantlement_leader 
+										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
+									}
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20440	# No Formables, All Options
 								}
 							}
 						}
@@ -540,8 +597,10 @@ country_event = { # Scope the cores to release
 									limit = { 
 										has_country_flag = dismantlement_leader 
 										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
 									}
-									country_event = 40440	# This will be based on a variable
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20440	# This will be based on a variable
 								}
 							}
 						}
@@ -569,14 +628,40 @@ country_event = { # Scope the cores to release
 						any_country = {
 							limit = {
 								has_country_flag = dismantlement_targeting_long_buffer
+								OR = {
+									exists = no
+									overlord = { has_country_flag = dismantlement_targets }
+								}
 							}
 							THIS = {
 								any_country = { 
 									limit = { 
 										has_country_flag = dismantlement_leader 
 										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
 									}
-									country_event = 40445	# This will be based on a variable
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20453	# No Formables, All Options
+								}
+							}
+						}
+						any_country = {
+							limit = {
+								has_country_flag = dismantlement_targeting_long_buffer
+								AND = {
+									exists = yes
+									NOT = { overlord = { has_country_flag = dismantlement_targets } }
+								}
+							}
+							THIS = {
+								any_country = { 
+									limit = { 
+										has_country_flag = dismantlement_leader 
+										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
+									}
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20452	# No Formables, All Options
 								}
 							}
 						}
@@ -592,14 +677,40 @@ country_event = { # Scope the cores to release
 						any_country = {
 							limit = {
 								has_country_flag = dismantlement_targeting_long_buffer
+								OR = {
+									exists = no
+									overlord = { has_country_flag = dismantlement_targets }
+								}
 							}
 							THIS = {
 								any_country = { 
 									limit = { 
 										has_country_flag = dismantlement_leader 
 										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
 									}
-									country_event = 40444	# This will be based on a variable
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20451	# This will be based on a variable
+								}
+							}
+						}
+						any_country = {
+							limit = {
+								has_country_flag = dismantlement_targeting_long_buffer
+								AND = {
+									exists = yes
+									NOT = { overlord = { has_country_flag = dismantlement_targets } }
+								}
+							}
+							THIS = {
+								any_country = { 
+									limit = { 
+										has_country_flag = dismantlement_leader 
+										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
+									}
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20450	# No Formables, All Options
 								}
 							}
 						}
@@ -621,8 +732,10 @@ country_event = { # Scope the cores to release
 									limit = { 
 										has_country_flag = dismantlement_leader 
 										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
 									}
-									country_event = 40443	# This will be based on a variable
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20450	# This will be based on a variable
 								}
 							}
 						}
@@ -650,14 +763,40 @@ country_event = { # Scope the cores to release
 						any_country = {
 							limit = {
 								has_country_flag = dismantlement_targeting_long_buffer
+								OR = {
+									exists = no
+									overlord = { has_country_flag = dismantlement_targets }
+								}
 							}
 							THIS = {
 								any_country = { 
 									limit = { 
 										has_country_flag = dismantlement_leader 
 										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
 									}
-									country_event = 40448	# This will be based on a variable
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20463	# No Formables, All Options
+								}
+							}
+						}
+						any_country = {
+							limit = {
+								has_country_flag = dismantlement_targeting_long_buffer
+								AND = {
+									exists = yes
+									NOT = { overlord = { has_country_flag = dismantlement_targets } }
+								}
+							}
+							THIS = {
+								any_country = { 
+									limit = { 
+										has_country_flag = dismantlement_leader 
+										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
+									}
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20462	# No Formables, All Options
 								}
 							}
 						}
@@ -673,14 +812,40 @@ country_event = { # Scope the cores to release
 						any_country = {
 							limit = {
 								has_country_flag = dismantlement_targeting_long_buffer
+								OR = {
+									exists = no
+									overlord = { has_country_flag = dismantlement_targets }
+								}
 							}
 							THIS = {
 								any_country = { 
 									limit = { 
 										has_country_flag = dismantlement_leader 
 										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
 									}
-									country_event = 40447	# This will be based on a variable
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20461	# This will be based on a variable
+								}
+							}
+						}
+						any_country = {
+							limit = {
+								has_country_flag = dismantlement_targeting_long_buffer
+								AND = {
+									exists = yes
+									NOT = { overlord = { has_country_flag = dismantlement_targets } }
+								}
+							}
+							THIS = {
+								any_country = { 
+									limit = { 
+										has_country_flag = dismantlement_leader 
+										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
+									}
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20460	# No Formables, All Options
 								}
 							}
 						}
@@ -702,8 +867,10 @@ country_event = { # Scope the cores to release
 									limit = { 
 										has_country_flag = dismantlement_leader 
 										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
 									}
-									country_event = 40446	# This will be based on a variable
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20460	# This will be based on a variable
 								}
 							}
 						}
@@ -731,14 +898,40 @@ country_event = { # Scope the cores to release
 						any_country = {
 							limit = {
 								has_country_flag = dismantlement_targeting_long_buffer
+								OR = {
+									exists = no
+									overlord = { has_country_flag = dismantlement_targets }
+								}
 							}
 							THIS = {
 								any_country = { 
 									limit = { 
 										has_country_flag = dismantlement_leader 
 										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
 									}
-									country_event = 40451	# This will be based on a variable
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20473	# No Formables, All Options
+								}
+							}
+						}
+						any_country = {
+							limit = {
+								has_country_flag = dismantlement_targeting_long_buffer
+								AND = {
+									exists = yes
+									NOT = { overlord = { has_country_flag = dismantlement_targets } }
+								}
+							}
+							THIS = {
+								any_country = { 
+									limit = { 
+										has_country_flag = dismantlement_leader 
+										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
+									}
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20472	# No Formables, All Options
 								}
 							}
 						}
@@ -754,14 +947,175 @@ country_event = { # Scope the cores to release
 						any_country = {
 							limit = {
 								has_country_flag = dismantlement_targeting_long_buffer
+								OR = {
+									exists = no
+									overlord = { has_country_flag = dismantlement_targets }
+								}
 							}
 							THIS = {
 								any_country = { 
 									limit = { 
 										has_country_flag = dismantlement_leader 
 										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
 									}
-									country_event = 40450	# This will be based on a variable
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20471	# This will be based on a variable
+								}
+							}
+						}
+						any_country = {
+							limit = {
+								has_country_flag = dismantlement_targeting_long_buffer
+								AND = {
+									exists = yes
+									NOT = { overlord = { has_country_flag = dismantlement_targets } }
+								}
+							}
+							THIS = {
+								any_country = { 
+									limit = { 
+										has_country_flag = dismantlement_leader 
+										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
+									}
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20470	# No Formables, All Options
+								}
+							}
+						}
+					}
+				}
+				any_country = {
+					limit = {
+						has_country_flag = dismantlement_leader 
+						has_global_flag = dismantlement_targeting_buffer 
+						NOT = { check_variable = { which = dismantlement_currency value = 2.99 } }
+					}
+					THIS = {
+						any_country = {
+							limit = {
+								has_country_flag = dismantlement_targeting_long_buffer
+							}
+							THIS = {
+								any_country = { 
+									limit = { 
+										has_country_flag = dismantlement_leader 
+										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
+									}
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20470	# This will be based on a variable
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		# 4 Formables Avalible
+		any_country = {
+			limit = {
+				CLN = {
+					check_variable = { which = total_dismantlement_formables value = 3.99 }
+					#NOT = { check_variable = { which = total_dismantlement_formables value = 4.99 } }
+				}
+			}
+			THIS = {
+				any_country = {
+					limit = {
+						has_country_flag = dismantlement_leader 
+						has_global_flag = dismantlement_targeting_buffer 
+						check_variable = { which = dismantlement_currency value = 6.99 }
+					}
+					THIS = {
+						any_country = {
+							limit = {
+								has_country_flag = dismantlement_targeting_long_buffer
+								OR = {
+									exists = no
+									overlord = { has_country_flag = dismantlement_targets }
+								}
+							}
+							THIS = {
+								any_country = { 
+									limit = { 
+										has_country_flag = dismantlement_leader 
+										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
+									}
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20483	# No Formables, All Options
+								}
+							}
+						}
+						any_country = {
+							limit = {
+								has_country_flag = dismantlement_targeting_long_buffer
+								AND = {
+									exists = yes
+									NOT = { overlord = { has_country_flag = dismantlement_targets } }
+								}
+							}
+							THIS = {
+								any_country = { 
+									limit = { 
+										has_country_flag = dismantlement_leader 
+										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
+									}
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20482	# No Formables, All Options
+								}
+							}
+						}
+					}
+				}
+				any_country = {
+					limit = {
+						has_country_flag = dismantlement_leader 
+						has_global_flag = dismantlement_targeting_buffer 
+						check_variable = { which = dismantlement_currency value = 2.99 } NOT = { check_variable = { which = dismantlement_currency value = 6.99 } }
+					}
+					THIS = {
+						any_country = {
+							limit = {
+								has_country_flag = dismantlement_targeting_long_buffer
+								OR = {
+									exists = no
+									overlord = { has_country_flag = dismantlement_targets }
+								}
+							}
+							THIS = {
+								any_country = { 
+									limit = { 
+										has_country_flag = dismantlement_leader 
+										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
+									}
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20481	# This will be based on a variable
+								}
+							}
+						}
+						any_country = {
+							limit = {
+								has_country_flag = dismantlement_targeting_long_buffer
+								AND = {
+									exists = yes
+									NOT = { overlord = { has_country_flag = dismantlement_targets } }
+								}
+							}
+							THIS = {
+								any_country = { 
+									limit = { 
+										has_country_flag = dismantlement_leader 
+										has_global_flag = dismantlement_targeting_buffer 
+										NOT = { has_global_flag = dismantlement_targeting_final_buffer }
+									}
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20480	# No Formables, All Options
 								}
 							}
 						}
@@ -784,7 +1138,8 @@ country_event = { # Scope the cores to release
 										has_country_flag = dismantlement_leader 
 										has_global_flag = dismantlement_targeting_buffer 
 									}
-									country_event = 40449	# This will be based on a variable
+									set_global_flag = dismantlement_targeting_final_buffer
+									country_event = 20480	# This will be based on a variable
 								}
 							}
 						}
@@ -792,22 +1147,7 @@ country_event = { # Scope the cores to release
 				}
 			}
 		}
-		#any_country = {
-		#	limit = {
-		#		has_country_flag = dismantlement_targeting_long_buffer
-		#		#capital_scope = { continent = asia }
-		#	}
-		#	THIS = {
-		#		any_country = { 
-		#			limit = { 
-		#				has_country_flag = dismantlement_leader has_global_flag = dismantlement_targeting_buffer 
-		#			}
-		#			country_event = 20406	# This will be based on a variable
-		#		}
-		#	}
-		#}
-		#clr_global_flag = dismantlement_targeting_buffer																																											# Ignore on by Default
-		
+		clr_global_flag = dismantlement_targeting_final_buffer
 	}
 	
 	option = {
@@ -863,1567 +1203,6 @@ country_event = { # This Event is a placeholder
 	
 }
 
-
-#################################################################
-#																#
-#				Target Handler            			 			#
-#																#
-#################################################################
-
-
-# Min+1 Options
-country_event = { # Thing the player sees # this is about to get confusing af
-    id = 20440
-    title = "Mandate for Dissolution" # "Mandate for Dissolution"
-    #desc = "EVTDESC1000"
-    #picture = "dismantlement_3"
-    is_triggered_only = yes
-	
-    immediate = {
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_12 = {}
-		slot_1 = {}
-		dismantlement_loc_13 = {}
-		slot_2 = {}
-		dismantlement_loc_14 = {}
-		slot_3 = {}
-		dismantlement_loc_15 = {}
-		slot_4 = {}
-		dismantlement_loc_16 = {}
-		slot_1 = {}
-		dismantlement_loc_17 = {}
-		slot_4 = {}
-		dismantlement_loc_18 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_1 = {}
-		blue = {}
-		slot_5 = {}
-		clear = {}
-		dismantlement_loc_ddr_2 = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_3 = {}
-		red = {}
-		slot_30 = {}
-		clear = {}
-		dismantlement_loc_ddr_4 = {}
-	} 
-	
-	option = {
-        name = "EVT20405OPTA"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent_override clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "EVT20405OPTB"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	
-	option = {
-        name = "Ignore"	# Puppet | Annex | Allied Annex 1 | Any Union | Vote | Ignore
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer clr_global_flag = dismantlement_targeting_buffer }
-		ai_chance = { 
-			factor = 0.1
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-}
-
-# Min+1 Options
-country_event = { # Thing the player sees # this is about to get confusing af
-    id = 20441
-    title = "Mandate for Dissolution" # "Mandate for Dissolution"
-    #desc = "EVTDESC1000"
-    #picture = "dismantlement_3"
-    is_triggered_only = yes
-	
-    immediate = {
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_12 = {}
-		slot_1 = {}
-		dismantlement_loc_13 = {}
-		slot_2 = {}
-		dismantlement_loc_14 = {}
-		slot_3 = {}
-		dismantlement_loc_15 = {}
-		slot_4 = {}
-		dismantlement_loc_16 = {}
-		slot_1 = {}
-		dismantlement_loc_17 = {}
-		slot_4 = {}
-		dismantlement_loc_18 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_1 = {}
-		blue = {}
-		slot_5 = {}
-		clear = {}
-		dismantlement_loc_ddr_2 = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_3 = {}
-		red = {}
-		slot_30 = {}
-		clear = {}
-		dismantlement_loc_ddr_4 = {}
-	} 
-	
-	option = {
-        name = "EVT20405OPTA"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent_override clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "EVT20405OPTB"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "EVT20405OPTC"	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_puppeteer
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_puppet clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				change_variable = { which = dismantlement_currency value = -3 }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 1 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	
-	option = {
-        name = "Ignore"	# Puppet | Annex | Allied Annex 1 | Any Union | Vote | Ignore
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer clr_global_flag = dismantlement_targeting_buffer }
-		ai_chance = { 
-			factor = 0.1
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-}
-
-# Min+1 Options
-country_event = { # Thing the player sees # this is about to get confusing af
-    id = 40442
-    title = "Mandate for Dissolution" # "Mandate for Dissolution"
-    #desc = "EVTDESC1000"
-    picture = "dismantlement_choice_5"
-    is_triggered_only = yes
-	
-    immediate = {
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_12 = {}
-		slot_1 = {}
-		dismantlement_loc_13 = {}
-		slot_2 = {}
-		dismantlement_loc_14 = {}
-		slot_3 = {}
-		dismantlement_loc_15 = {}
-		slot_4 = {}
-		dismantlement_loc_16 = {}
-		slot_1 = {}
-		dismantlement_loc_17 = {}
-		slot_4 = {}
-		dismantlement_loc_18 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_1 = {}
-		blue = {}
-		slot_5 = {}
-		clear = {}
-		dismantlement_loc_ddr_2 = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_3 = {}
-		red = {}
-		slot_30 = {}
-		clear = {}
-		dismantlement_loc_ddr_4 = {}
-	} 
-	
-	option = {
-        name = "EVT20405OPTA"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent_override clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "EVT20405OPTB"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = "EVT20405OPTC"	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_puppeteer
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_puppet clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				change_variable = { which = dismantlement_currency value = -3 }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 1 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "EVT20405OPTD"	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_annexer
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_annex clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				change_variable = { which = dismantlement_currency value = -7 }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "Ignore"	# Puppet | Annex | Allied Annex 1 | Any Union | Vote | Ignore
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer clr_global_flag = dismantlement_targeting_buffer }
-		ai_chance = { 
-			factor = 0.1
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-}
-
-# 1 formables
-
-# Min+1 Options
-country_event = { # Thing the player sees # this is about to get confusing af
-    id = 40443
-    title = "Mandate for Dissolution" # "Mandate for Dissolution"
-    #desc = "EVTDESC1000"
-    #picture = "dismantlement_3"
-    is_triggered_only = yes
-	
-    immediate = {
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_12 = {}
-		slot_1 = {}
-		dismantlement_loc_13 = {}
-		slot_2 = {}
-		dismantlement_loc_14 = {}
-		slot_3 = {}
-		dismantlement_loc_15 = {}
-		slot_4 = {}
-		dismantlement_loc_16 = {}
-		slot_1 = {}
-		dismantlement_loc_17 = {}
-		slot_4 = {}
-		dismantlement_loc_18 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_1 = {}
-		blue = {}
-		slot_5 = {}
-		clear = {}
-		dismantlement_loc_ddr_2 = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_3 = {}
-		red = {}
-		slot_30 = {}
-		clear = {}
-		dismantlement_loc_ddr_4 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_23 = {}
-		slot_7 = {}
-		#spacebreak_state = {}
-		slot_6 = {}
-		
-	} 
-	
-	option = {
-        name = "EVT20405OPTA"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent_override clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "EVT20405OPTB"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = ""	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_unifier
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_short_buffer clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				any_country = { limit =  { check_variable = { which = dismantlement_formable value = 0.99 } NOT = { check_variable = { which = dismantlement_formable value = 1.99 } } } set_country_flag = current_dismantlement_formable }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "Ignore"	# Puppet | Annex | Allied Annex 1 | Any Union | Vote | Ignore
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer clr_global_flag = dismantlement_targeting_buffer }
-		ai_chance = { 
-			factor = 0.1
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-}
-
-# Min+1 Options
-country_event = { # Thing the player sees # this is about to get confusing af
-    id = 40444
-    title = "Mandate for Dissolution" # "Mandate for Dissolution"
-    #desc = "EVTDESC1000"
-    picture = "dismantlement_choice_5"
-    is_triggered_only = yes
-	
-    immediate = {
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_12 = {}
-		slot_1 = {}
-		dismantlement_loc_13 = {}
-		slot_2 = {}
-		dismantlement_loc_14 = {}
-		slot_3 = {}
-		dismantlement_loc_15 = {}
-		slot_4 = {}
-		dismantlement_loc_16 = {}
-		slot_1 = {}
-		dismantlement_loc_17 = {}
-		slot_4 = {}
-		dismantlement_loc_18 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_1 = {}
-		blue = {}
-		slot_5 = {}
-		clear = {}
-		dismantlement_loc_ddr_2 = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_3 = {}
-		red = {}
-		slot_30 = {}
-		clear = {}
-		dismantlement_loc_ddr_4 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_23 = {}
-		slot_7 = {}
-		#spacebreak_state = {}
-		slot_6 = {}
-		
-	} 
-	
-	option = {
-        name = "EVT20405OPTA"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent_override clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "EVT20405OPTB"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "EVT20405OPTC"	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_puppeteer
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_puppet clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				change_variable = { which = dismantlement_currency value = -3 }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 1 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = ""	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_unifier
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_short_buffer clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				any_country = { limit =  { check_variable = { which = dismantlement_formable value = 0.99 } NOT = { check_variable = { which = dismantlement_formable value = 1.99 } } } set_country_flag = current_dismantlement_formable }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "Ignore"	# Puppet | Annex | Allied Annex 1 | Any Union | Vote | Ignore
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer clr_global_flag = dismantlement_targeting_buffer }
-		ai_chance = { 
-			factor = 0.1
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-}
-
-# Min+1 Options
-country_event = { # Thing the player sees # this is about to get confusing af
-    id = 40445
-    title = "Mandate for Dissolution" # "Mandate for Dissolution"
-    #desc = "EVTDESC1000"
-    picture = "dismantlement_choice_6"
-    is_triggered_only = yes
-	
-    immediate = {
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_12 = {}
-		slot_1 = {}
-		dismantlement_loc_13 = {}
-		slot_2 = {}
-		dismantlement_loc_14 = {}
-		slot_3 = {}
-		dismantlement_loc_15 = {}
-		slot_4 = {}
-		dismantlement_loc_16 = {}
-		slot_1 = {}
-		dismantlement_loc_17 = {}
-		slot_4 = {}
-		dismantlement_loc_18 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_1 = {}
-		blue = {}
-		slot_5 = {}
-		clear = {}
-		dismantlement_loc_ddr_2 = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_3 = {}
-		red = {}
-		slot_30 = {}
-		clear = {}
-		dismantlement_loc_ddr_4 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_23 = {}
-		slot_7 = {}
-		#spacebreak_state = {}
-		slot_6 = {}
-	} 
-	
-	option = {
-        name = "EVT20405OPTA"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent_override clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "EVT20405OPTB"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = "EVT20405OPTC"	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_puppeteer
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_puppet clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				change_variable = { which = dismantlement_currency value = -3 }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 1 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "EVT20405OPTD"	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_annexer
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_annex clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				change_variable = { which = dismantlement_currency value = -7 }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = ""	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_unifier
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_short_buffer clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				any_country = { limit =  { check_variable = { which = dismantlement_formable value = 0.99 } NOT = { check_variable = { which = dismantlement_formable value = 1.99 } } } set_country_flag = current_dismantlement_formable }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "Ignore"	# Puppet | Annex | Allied Annex 1 | Any Union | Vote | Ignore
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer clr_global_flag = dismantlement_targeting_buffer }
-		ai_chance = { 
-			factor = 0.1
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-}
-
-# 2 formables
-
-# Min+1 Options
-country_event = { # Thing the player sees # this is about to get confusing af
-    id = 40446
-    title = "Mandate for Dissolution" # "Mandate for Dissolution"
-    #desc = "EVTDESC1000"
-    picture = "dismantlement_choice_5"
-    is_triggered_only = yes
-	
-    immediate = {
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_12 = {}
-		slot_1 = {}
-		dismantlement_loc_13 = {}
-		slot_2 = {}
-		dismantlement_loc_14 = {}
-		slot_3 = {}
-		dismantlement_loc_15 = {}
-		slot_4 = {}
-		dismantlement_loc_16 = {}
-		slot_1 = {}
-		dismantlement_loc_17 = {}
-		slot_4 = {}
-		dismantlement_loc_18 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_1 = {}
-		blue = {}
-		slot_5 = {}
-		clear = {}
-		dismantlement_loc_ddr_2 = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_3 = {}
-		red = {}
-		slot_30 = {}
-		clear = {}
-		dismantlement_loc_ddr_4 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_23 = {}
-		slot_7 = {}
-		#spacebreak_state = {}
-		slot_6 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_23 = {}
-		slot_9 = {}
-		#spacebreak_state = {}
-		slot_8 = {}
-	} 
-	
-	option = {
-        name = "EVT20405OPTA"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent_override clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "EVT20405OPTB"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = ""	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_unifier
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_short_buffer clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				any_country = { limit =  { check_variable = { which = dismantlement_formable value = 0.99 } NOT = { check_variable = { which = dismantlement_formable value = 1.99 } } } set_country_flag = current_dismantlement_formable }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = ""	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_unifier
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_short_buffer clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				any_country = { limit =  { check_variable = { which = dismantlement_formable value = 1.99 } NOT = { check_variable = { which = dismantlement_formable value = 2.99 } } } set_country_flag = current_dismantlement_formable }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "Ignore"	# Puppet | Annex | Allied Annex 1 | Any Union | Vote | Ignore
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer clr_global_flag = dismantlement_targeting_buffer }
-		ai_chance = { 
-			factor = 0.1
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-}
-
-# Min+1 Options
-country_event = { # Thing the player sees # this is about to get confusing af
-    id = 40447
-    title = "Mandate for Dissolution" # "Mandate for Dissolution"
-    #desc = "EVTDESC1000"
-    picture = "dismantlement_choice_6"
-    is_triggered_only = yes
-	
-    immediate = {
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_12 = {}
-		slot_1 = {}
-		dismantlement_loc_13 = {}
-		slot_2 = {}
-		dismantlement_loc_14 = {}
-		slot_3 = {}
-		dismantlement_loc_15 = {}
-		slot_4 = {}
-		dismantlement_loc_16 = {}
-		slot_1 = {}
-		dismantlement_loc_17 = {}
-		slot_4 = {}
-		dismantlement_loc_18 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_1 = {}
-		blue = {}
-		slot_5 = {}
-		clear = {}
-		dismantlement_loc_ddr_2 = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_3 = {}
-		red = {}
-		slot_30 = {}
-		clear = {}
-		dismantlement_loc_ddr_4 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_23 = {}
-		slot_7 = {}
-		#spacebreak_state = {}
-		slot_6 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_23 = {}
-		slot_9 = {}
-		#spacebreak_state = {}
-		slot_8 = {}
-	} 
-	
-	option = {
-        name = "EVT20405OPTA"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent_override clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "EVT20405OPTB"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "EVT20405OPTC"	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_puppeteer
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_puppet clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				change_variable = { which = dismantlement_currency value = -3 }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 1 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = ""	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_unifier
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_short_buffer clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				any_country = { limit =  { check_variable = { which = dismantlement_formable value = 0.99 } NOT = { check_variable = { which = dismantlement_formable value = 1.99 } } } set_country_flag = current_dismantlement_formable }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = ""	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_unifier
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_short_buffer clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				any_country = { limit =  { check_variable = { which = dismantlement_formable value = 1.99 } NOT = { check_variable = { which = dismantlement_formable value = 2.99 } } } set_country_flag = current_dismantlement_formable }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "Ignore"	# Puppet | Annex | Allied Annex 1 | Any Union | Vote | Ignore
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer clr_global_flag = dismantlement_targeting_buffer }
-		ai_chance = { 
-			factor = 0.1
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-}
-
-# Min+1 Options
-country_event = { # Thing the player sees # this is about to get confusing af
-    id = 40448
-    title = "Mandate for Dissolution" # "Mandate for Dissolution"
-    #desc = "EVTDESC1000"
-    picture = "dismantlement_choice_7"
-    is_triggered_only = yes
-	
-    immediate = {
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_12 = {}
-		slot_1 = {}
-		dismantlement_loc_13 = {}
-		slot_2 = {}
-		dismantlement_loc_14 = {}
-		slot_3 = {}
-		dismantlement_loc_15 = {}
-		slot_4 = {}
-		dismantlement_loc_16 = {}
-		slot_1 = {}
-		dismantlement_loc_17 = {}
-		slot_4 = {}
-		dismantlement_loc_18 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_1 = {}
-		blue = {}
-		slot_5 = {}
-		clear = {}
-		dismantlement_loc_ddr_2 = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_3 = {}
-		red = {}
-		slot_30 = {}
-		clear = {}
-		dismantlement_loc_ddr_4 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_23 = {}
-		slot_7 = {}
-		#spacebreak_state = {}
-		slot_6 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_23 = {}
-		slot_9 = {}
-		#spacebreak_state = {}
-		slot_8 = {}
-	} 
-	
-	option = {
-        name = "EVT20405OPTA"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent_override clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "EVT20405OPTB"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = "EVT20405OPTC"	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_puppeteer
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_puppet clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				change_variable = { which = dismantlement_currency value = -3 }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 1 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "EVT20405OPTD"	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_annexer
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_annex clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				change_variable = { which = dismantlement_currency value = -7 }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = ""	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_unifier
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_short_buffer clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				any_country = { limit =  { check_variable = { which = dismantlement_formable value = 0.99 } NOT = { check_variable = { which = dismantlement_formable value = 1.99 } } } set_country_flag = current_dismantlement_formable }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = ""	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_unifier
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_short_buffer clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				any_country = { limit =  { check_variable = { which = dismantlement_formable value = 1.99 } NOT = { check_variable = { which = dismantlement_formable value = 2.99 } } } set_country_flag = current_dismantlement_formable }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "Ignore"	# Puppet | Annex | Allied Annex 1 | Any Union | Vote | Ignore
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer clr_global_flag = dismantlement_targeting_buffer }
-		ai_chance = { 
-			factor = 0.1
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-}
-
-# 3 formables
-
-# Min+1 Options
-country_event = { # Thing the player sees # this is about to get confusing af
-    id = 40449
-    title = "Mandate for Dissolution" # "Mandate for Dissolution"
-    #desc = "EVTDESC1000"
-    picture = "dismantlement_choice_6"
-    is_triggered_only = yes
-	
-    immediate = {
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_12 = {}
-		slot_1 = {}
-		dismantlement_loc_13 = {}
-		slot_2 = {}
-		dismantlement_loc_14 = {}
-		slot_3 = {}
-		dismantlement_loc_15 = {}
-		slot_4 = {}
-		dismantlement_loc_16 = {}
-		slot_1 = {}
-		dismantlement_loc_17 = {}
-		slot_4 = {}
-		dismantlement_loc_18 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_1 = {}
-		blue = {}
-		slot_5 = {}
-		clear = {}
-		dismantlement_loc_ddr_2 = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_3 = {}
-		red = {}
-		slot_30 = {}
-		clear = {}
-		dismantlement_loc_ddr_4 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_23 = {}
-		slot_7 = {}
-		#spacebreak_state = {}
-		slot_6 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_23 = {}
-		slot_9 = {}
-		#spacebreak_state = {}
-		slot_8 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_23 = {}
-		slot_11 = {}
-		#spacebreak_state = {}
-		slot_10 = {}
-	} 
-	
-	option = {
-        name = "EVT20405OPTA"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent_override clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "EVT20405OPTB"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = ""	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_unifier
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_short_buffer clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				any_country = { limit =  { check_variable = { which = dismantlement_formable value = 0.99 } NOT = { check_variable = { which = dismantlement_formable value = 1.99 } } } set_country_flag = current_dismantlement_formable }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = ""	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_unifier
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_short_buffer clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				any_country = { limit =  { check_variable = { which = dismantlement_formable value = 1.99 } NOT = { check_variable = { which = dismantlement_formable value = 2.99 } } } set_country_flag = current_dismantlement_formable }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = ""	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_unifier
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_short_buffer clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				any_country = { limit =  { check_variable = { which = dismantlement_formable value = 2.99 } NOT = { check_variable = { which = dismantlement_formable value = 3.99 } } } set_country_flag = current_dismantlement_formable }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "Ignore"	# Puppet | Annex | Allied Annex 1 | Any Union | Vote | Ignore
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer clr_global_flag = dismantlement_targeting_buffer }
-		ai_chance = { 
-			factor = 0.1
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-}
-
-# Min+1 Options
-country_event = { # Thing the player sees # this is about to get confusing af
-    id = 40450
-    title = "Mandate for Dissolution" # "Mandate for Dissolution"
-    #desc = "EVTDESC1000"
-    picture = "dismantlement_choice_7"
-    is_triggered_only = yes
-	
-    immediate = {
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_12 = {}
-		slot_1 = {}
-		dismantlement_loc_13 = {}
-		slot_2 = {}
-		dismantlement_loc_14 = {}
-		slot_3 = {}
-		dismantlement_loc_15 = {}
-		slot_4 = {}
-		dismantlement_loc_16 = {}
-		slot_1 = {}
-		dismantlement_loc_17 = {}
-		slot_4 = {}
-		dismantlement_loc_18 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_1 = {}
-		blue = {}
-		slot_5 = {}
-		clear = {}
-		dismantlement_loc_ddr_2 = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_3 = {}
-		red = {}
-		slot_30 = {}
-		clear = {}
-		dismantlement_loc_ddr_4 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_23 = {}
-		slot_7 = {}
-		#spacebreak_state = {}
-		slot_6 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_23 = {}
-		slot_9 = {}
-		#spacebreak_state = {}
-		slot_8 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_23 = {}
-		slot_11 = {}
-		#spacebreak_state = {}
-		slot_10 = {}
-	} 
-	
-	option = {
-        name = "EVT20405OPTA"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent_override clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "EVT20405OPTB"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "EVT20405OPTC"	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_puppeteer
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_puppet clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				change_variable = { which = dismantlement_currency value = -3 }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 1 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = ""	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_unifier
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_short_buffer clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				any_country = { limit =  { check_variable = { which = dismantlement_formable value = 0.99 } NOT = { check_variable = { which = dismantlement_formable value = 1.99 } } } set_country_flag = current_dismantlement_formable }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = ""	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_unifier
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_short_buffer clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				any_country = { limit =  { check_variable = { which = dismantlement_formable value = 1.99 } NOT = { check_variable = { which = dismantlement_formable value = 2.99 } } } set_country_flag = current_dismantlement_formable }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = ""	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_unifier
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_short_buffer clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				any_country = { limit =  { check_variable = { which = dismantlement_formable value = 2.99 } NOT = { check_variable = { which = dismantlement_formable value = 3.99 } } } set_country_flag = current_dismantlement_formable }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "Ignore"	# Puppet | Annex | Allied Annex 1 | Any Union | Vote | Ignore
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer clr_global_flag = dismantlement_targeting_buffer }
-		ai_chance = { 
-			factor = 0.1
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-}
-
-# Min+1 Options
-country_event = { # Thing the player sees # this is about to get confusing af
-    id = 40451
-    title = "Mandate for Dissolution" # "Mandate for Dissolution"
-    #desc = "EVTDESC1000"
-    picture = "dismantlement_choice_8"
-    is_triggered_only = yes
-	
-    immediate = {
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_12 = {}
-		slot_1 = {}
-		dismantlement_loc_13 = {}
-		slot_2 = {}
-		dismantlement_loc_14 = {}
-		slot_3 = {}
-		dismantlement_loc_15 = {}
-		slot_4 = {}
-		dismantlement_loc_16 = {}
-		slot_1 = {}
-		dismantlement_loc_17 = {}
-		slot_4 = {}
-		dismantlement_loc_18 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_1 = {}
-		blue = {}
-		slot_5 = {}
-		clear = {}
-		dismantlement_loc_ddr_2 = {}
-		linebreak_state = {}
-		dismantlement_loc_ddr_3 = {}
-		red = {}
-		slot_30 = {}
-		clear = {}
-		dismantlement_loc_ddr_4 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_23 = {}
-		slot_7 = {}
-		#spacebreak_state = {}
-		slot_6 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_23 = {}
-		slot_9 = {}
-		#spacebreak_state = {}
-		slot_8 = {}
-		linebreak_state = {}
-		linebreak_state = {}
-		dismantlement_loc_23 = {}
-		slot_11 = {}
-		#spacebreak_state = {}
-		slot_10 = {}
-	} 
-	
-	option = {
-        name = "EVT20405OPTA"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent_override clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "EVT20405OPTB"	# Liberate Country
-		set_country_flag = dismantlement_liberator
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_independent clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-		CLN = { country_event = 20490 }
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = "EVT20405OPTC"	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_puppeteer
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_puppet clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				change_variable = { which = dismantlement_currency value = -3 }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 1 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "EVT20405OPTD"	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_annexer
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_annex clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				change_variable = { which = dismantlement_currency value = -7 }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = ""	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_unifier
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_short_buffer clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				any_country = { limit =  { check_variable = { which = dismantlement_formable value = 0.99 } NOT = { check_variable = { which = dismantlement_formable value = 1.99 } } } set_country_flag = current_dismantlement_formable }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = ""	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_unifier
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_short_buffer clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				any_country = { limit =  { check_variable = { which = dismantlement_formable value = 1.99 } NOT = { check_variable = { which = dismantlement_formable value = 2.99 } } } set_country_flag = current_dismantlement_formable }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-
-	option = {
-        name = ""	# Puppet or Annex
-		#any_country = { limit = { has_global_flag = dismantlement_option_annex NOT = { has_global_flag = dismantlement_option_puppet } }
-		#	THIS = {
-				set_country_flag = dismantlement_unifier
-				any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } set_country_flag = dismantlement_short_buffer clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer }
-				any_country = { limit =  { check_variable = { which = dismantlement_formable value = 2.99 } NOT = { check_variable = { which = dismantlement_formable value = 3.99 } } } set_country_flag = current_dismantlement_formable }
-				CLN = { country_event = 20490 }
-		#	}
-		#}
-		ai_chance = { 
-			factor = 0.5
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-	option = {
-        name = "Ignore"	# Puppet | Annex | Allied Annex 1 | Any Union | Vote | Ignore
-		any_country = { limit = { has_country_flag = dismantlement_targeting_long_buffer } clr_country_flag = dismantlement_rewriteable_vassal clr_country_flag = dismantlement_independent_core clr_country_flag = dismantlement_rewriteable_core clr_country_flag = dismantlement_targeting_long_buffer clr_global_flag = dismantlement_targeting_buffer }
-		ai_chance = { 
-			factor = 0.1
-			modifier = { factor = 0 has_global_flag = dismantlement_debug }
-		}
-    }
-	
-}
 
 
 #################################################################
@@ -2981,5 +1760,675 @@ country_event = { #
 }
 
 
+country_event = { #
+    id = 20520
+    title = "Ok maybe I will buffer it after all"		# This loads the leader and target into the dismantlement system
+    is_triggered_only = yes
+	
+    immediate = {
+		any_country = {
+			limit = { has_country_flag = dismantlement_waiting_leader }
+			THIS = {
+				any_country = {
+					limit = { has_country_flag = dismantlement_declared_leader }
+					change_variable = { which = dismantlement_waiting_leader value = 1 }
+				}
+			}
+		}
+		any_country = {
+			limit = { has_country_flag = dismantlement_waiting_defeated }
+			THIS = {
+				any_country = {
+					limit = { has_country_flag = dismantlement_declared_target }
+					change_variable = { which = dismantlement_waiting_defeated value = 1 }
+				}
+			}
+		}
+		any_country = {
+			limit = { has_country_flag = dismantlement_declared_leader }
+			change_variable = { which = dismantlement_waiting_leader value = 1 }
+		}
+		any_country = {
+			limit = { has_country_flag = dismantlement_declared_target }
+			change_variable = { which = dismantlement_waiting_defeated value = 1 }
+		}
+		any_country = {
+			clr_country_flag = dismantlement_declared_leader
+			clr_country_flag = dismantlement_declared_target
+		}
+
+	} 
+	
+	option = {
+        name = "Buffer it"
+    }
+	
+}
+
+country_event = { #
+    id = 20521
+    title = "Unload a buffer"		# This loads the leader and target into the dismantlement system
+    is_triggered_only = yes
+	
+    immediate = {
+		# I put the chance more that 20 tags are being dismantled simultainiously at low
+		# 20
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_leader value = 19.99 } NOT = {  check_variable = { which = dismantlement_waiting_leader value = 20.99 } } } set_country_flag = dismantlement_leader set_variable = { which = dismantlement_waiting_leader value = 0 } } 
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_defeated value = 19.99 } NOT = {  check_variable = { which = dismantlement_waiting_defeated value = 20.99 } } } set_country_flag = dismantlement_target set_global_flag = dismantlement_unbuffered set_variable = { which = dismantlement_waiting_defeated value = 0 } }
+		# 19
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_leader value = 18.99 } NOT = {  check_variable = { which = dismantlement_waiting_leader value = 19.99 } } } set_country_flag = dismantlement_leader set_variable = { which = dismantlement_waiting_leader value = 0 } } 
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_defeated value = 18.99 } NOT = {  check_variable = { which = dismantlement_waiting_defeated value = 19.99 } } } set_country_flag = dismantlement_target set_global_flag = dismantlement_unbuffered set_variable = { which = dismantlement_waiting_defeated value = 0 } }
+		# 18
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_leader value = 17.99 } NOT = {  check_variable = { which = dismantlement_waiting_leader value = 18.99 } } } set_country_flag = dismantlement_leader set_variable = { which = dismantlement_waiting_leader value = 0 } }
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_defeated value = 17.99 } NOT = {  check_variable = { which = dismantlement_waiting_defeated value = 18.99 } } } set_country_flag = dismantlement_target set_global_flag = dismantlement_unbuffered set_variable = { which = dismantlement_waiting_defeated value = 0 } }
+		# 17
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_leader value = 16.99 } NOT = {  check_variable = { which = dismantlement_waiting_leader value = 17.99 } } } set_country_flag = dismantlement_leader set_variable = { which = dismantlement_waiting_leader value = 0 } }
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_defeated value = 16.99 } NOT = {  check_variable = { which = dismantlement_waiting_defeated value = 17.99 } } } set_country_flag = dismantlement_target set_global_flag = dismantlement_unbuffered set_variable = { which = dismantlement_waiting_defeated value = 0 } }
+		# 16
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_leader value = 15.99 } NOT = {  check_variable = { which = dismantlement_waiting_leader value = 16.99 } } } set_country_flag = dismantlement_leader set_variable = { which = dismantlement_waiting_leader value = 0 } }
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_defeated value = 15.99 } NOT = {  check_variable = { which = dismantlement_waiting_defeated value = 16.99 } } } set_country_flag = dismantlement_target set_global_flag = dismantlement_unbuffered set_variable = { which = dismantlement_waiting_defeated value = 0 } }
+		# 15
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_leader value = 14.99 } NOT = {  check_variable = { which = dismantlement_waiting_leader value = 15.99 } } } set_country_flag = dismantlement_leader set_variable = { which = dismantlement_waiting_leader value = 0 } }
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_defeated value = 14.99 } NOT = {  check_variable = { which = dismantlement_waiting_defeated value = 15.99 } } } set_country_flag = dismantlement_target set_global_flag = dismantlement_unbuffered set_variable = { which = dismantlement_waiting_defeated value = 0 } }
+		# 14
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_leader value = 13.99 } NOT = {  check_variable = { which = dismantlement_waiting_leader value = 14.99 } } } set_country_flag = dismantlement_leader set_variable = { which = dismantlement_waiting_leader value = 0 } }
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_defeated value = 13.99 } NOT = {  check_variable = { which = dismantlement_waiting_defeated value = 14.99 } } } set_country_flag = dismantlement_target set_global_flag = dismantlement_unbuffered set_variable = { which = dismantlement_waiting_defeated value = 0 } }
+		# 13
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_leader value = 12.99 } NOT = {  check_variable = { which = dismantlement_waiting_leader value = 13.99 } } } set_country_flag = dismantlement_leader set_variable = { which = dismantlement_waiting_leader value = 0 } }
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_defeated value = 12.99 } NOT = {  check_variable = { which = dismantlement_waiting_defeated value = 13.99 } } } set_country_flag = dismantlement_target set_global_flag = dismantlement_unbuffered set_variable = { which = dismantlement_waiting_defeated value = 0 } }
+		# 12
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_leader value = 11.99 } NOT = {  check_variable = { which = dismantlement_waiting_leader value = 12.99 } } } set_country_flag = dismantlement_leader set_variable = { which = dismantlement_waiting_leader value = 0 } }
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_defeated value = 11.99 } NOT = {  check_variable = { which = dismantlement_waiting_defeated value = 12.99 } } } set_country_flag = dismantlement_target set_global_flag = dismantlement_unbuffered set_variable = { which = dismantlement_waiting_defeated value = 0 } }
+		# 11
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_leader value = 10.99 } NOT = {  check_variable = { which = dismantlement_waiting_leader value = 11.99 } } } set_country_flag = dismantlement_leader set_variable = { which = dismantlement_waiting_leader value = 0 } }
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_defeated value = 10.99 } NOT = {  check_variable = { which = dismantlement_waiting_defeated value = 11.99 } } } set_country_flag = dismantlement_target set_global_flag = dismantlement_unbuffered set_variable = { which = dismantlement_waiting_defeated value = 0 } }
+		# 10
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_leader value = 9.99 } NOT = {  check_variable = { which = dismantlement_waiting_leader value = 10.99 } } } set_country_flag = dismantlement_leader set_variable = { which = dismantlement_waiting_leader value = 0 } }
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_defeated value = 9.99 } NOT = {  check_variable = { which = dismantlement_waiting_defeated value = 10.99 } } } set_country_flag = dismantlement_target set_global_flag = dismantlement_unbuffered set_variable = { which = dismantlement_waiting_defeated value = 0 } }
+		# 9
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_leader value = 8.99 } NOT = {  check_variable = { which = dismantlement_waiting_leader value = 9.99 } } } set_country_flag = dismantlement_leader set_variable = { which = dismantlement_waiting_leader value = 0 } }
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_defeated value = 8.99 } NOT = {  check_variable = { which = dismantlement_waiting_defeated value = 9.99 } } } set_country_flag = dismantlement_target set_global_flag = dismantlement_unbuffered set_variable = { which = dismantlement_waiting_defeated value = 0 } }
+		# 8
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_leader value = 7.99 } NOT = {  check_variable = { which = dismantlement_waiting_leader value = 8.99 } } } set_country_flag = dismantlement_leader set_variable = { which = dismantlement_waiting_leader value = 0 } }
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_defeated value = 7.99 } NOT = {  check_variable = { which = dismantlement_waiting_defeated value = 8.99 } } } set_country_flag = dismantlement_target set_global_flag = dismantlement_unbuffered set_variable = { which = dismantlement_waiting_defeated value = 0 } }
+		# 7
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_leader value = 6.99 } NOT = {  check_variable = { which = dismantlement_waiting_leader value = 7.99 } } } set_country_flag = dismantlement_leader set_variable = { which = dismantlement_waiting_leader value = 0 } }
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_defeated value = 6.99 } NOT = {  check_variable = { which = dismantlement_waiting_defeated value = 7.99 } } } set_country_flag = dismantlement_target set_global_flag = dismantlement_unbuffered set_variable = { which = dismantlement_waiting_defeated value = 0 } }
+		# 6
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_leader value = 5.99 } NOT = {  check_variable = { which = dismantlement_waiting_leader value = 6.99 } } } set_country_flag = dismantlement_leader set_variable = { which = dismantlement_waiting_leader value = 0 } }
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_defeated value = 5.99 } NOT = {  check_variable = { which = dismantlement_waiting_defeated value = 6.99 } } } set_country_flag = dismantlement_target set_global_flag = dismantlement_unbuffered set_variable = { which = dismantlement_waiting_defeated value = 0 } }
+		# 5
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_leader value = 4.99 } NOT = {  check_variable = { which = dismantlement_waiting_leader value = 5.99 } } } set_country_flag = dismantlement_leader set_variable = { which = dismantlement_waiting_leader value = 0 } }
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_defeated value = 4.99 } NOT = {  check_variable = { which = dismantlement_waiting_defeated value = 5.99 } } } set_country_flag = dismantlement_target set_global_flag = dismantlement_unbuffered set_variable = { which = dismantlement_waiting_defeated value = 0 } }
+		# 4
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_leader value = 3.99 } NOT = {  check_variable = { which = dismantlement_waiting_leader value = 4.99 } } } set_country_flag = dismantlement_leader set_variable = { which = dismantlement_waiting_leader value = 0 } }
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_defeated value = 3.99 } NOT = {  check_variable = { which = dismantlement_waiting_defeated value = 4.99 } } } set_country_flag = dismantlement_target set_global_flag = dismantlement_unbuffered set_variable = { which = dismantlement_waiting_defeated value = 0 } }
+		# 3
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_leader value = 2.99 } NOT = {  check_variable = { which = dismantlement_waiting_leader value = 3.99 } } } set_country_flag = dismantlement_leader set_variable = { which = dismantlement_waiting_leader value = 0 } }
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_defeated value = 2.99 } NOT = {  check_variable = { which = dismantlement_waiting_defeated value = 3.99 } } } set_country_flag = dismantlement_target set_global_flag = dismantlement_unbuffered set_variable = { which = dismantlement_waiting_defeated value = 0 } }
+		# 2
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_leader value = 1.99 } NOT = {  check_variable = { which = dismantlement_waiting_leader value = 2.99 } } } set_country_flag = dismantlement_leader set_variable = { which = dismantlement_waiting_leader value = 0 } }
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_defeated value = 1.99 } NOT = {  check_variable = { which = dismantlement_waiting_defeated value = 2.99 } } } set_country_flag = dismantlement_target set_global_flag = dismantlement_unbuffered set_variable = { which = dismantlement_waiting_defeated value = 0 } }
+		# 1
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_leader value = 0.99 } NOT = {  check_variable = { which = dismantlement_waiting_leader value = 1.99 } } } set_country_flag = dismantlement_leader set_variable = { which = dismantlement_waiting_leader value = 0 } }
+		any_country = { limit = { NOT = { has_global_flag = dismantlement_unbuffered } check_variable = { which = dismantlement_waiting_defeated value = 0.99 } NOT = {  check_variable = { which = dismantlement_waiting_defeated value = 1.99 } } } set_country_flag = dismantlement_target set_global_flag = dismantlement_unbuffered set_variable = { which = dismantlement_waiting_defeated value = 0 } }
+		clr_global_flag = dismantlement_unbuffered
+	} 
+	
+	option = {
+        name = "Buffer it"
+    }
+	
+}
+
+country_event = { #
+    id = 20530
+    title = "Calculate Dismantlement Currency"		# This loads the leader and target into the dismantlement system
+    is_triggered_only = yes
+	
+    immediate = {
+		any_country = { set_variable = { which = dismantlement_currency value = 10 } }
+		UTI = { set_variable = { which = dynamic_loc value = 10 } }
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+			}
+			set_country_flag = viewer
+		}
+		#
+		#	Mass Politics
+		#
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				mass_politics = 1
+			}
+			change_variable = { which = dismantlement_currency value = 1 }
+			UTI = { change_variable = { which = dynamic_loc value = 1 } }
+			set_global_flag = green
+			slot_1 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { slot_2 = { secede_province = THIS state_scope = { change_region_name = "§B2§!" } secede_province = QQQ } }
+			CLN = { country_event = 9 }
+		}
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				mass_politics = 0
+			}
+			set_global_flag = red
+			slot_1 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { slot_2 = { secede_province = THIS state_scope = { change_region_name = "§B0§!" } secede_province = QQQ } }
+			CLN = { country_event = 9 }
+		}
+		CLN = { slot_3 = { secede_province = THIS state_scope = { change_region_name = "§B2§!" } secede_province = QQQ } }
+		
+		#
+		#	Mobilisation
+		#
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				is_mobilised = no
+			}
+			change_variable = { which = dismantlement_currency value = 2 }
+			UTI = { change_variable = { which = dynamic_loc value = 2 } }
+			set_global_flag = green
+			slot_4 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_5 = { secede_province = THIS state_scope = { change_region_name = "Not Mobilized|" } secede_province = QQQ } }
+			CLN = { slot_6 = { secede_province = THIS state_scope = { change_region_name = "§B2§!" } secede_province = QQQ } }
+		}
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				is_mobilised = yes
+			}
+			set_global_flag = red
+			slot_4 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_5 = { secede_province = THIS state_scope = { change_region_name = "Strained by Mobilization|" } secede_province = QQQ } }
+			CLN = { slot_6 = { secede_province = THIS state_scope = { change_region_name = "§B0§!" } secede_province = QQQ } }
+		}
+		CLN = { slot_7 = { secede_province = THIS state_scope = { change_region_name = "§B2§!" } secede_province = QQQ } }
+
+		#
+		#	Ships
+		#
+		CLN = { slot_8 = { secede_province = THIS state_scope = { change_region_name = "§B5§!" } secede_province = QQQ } }
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				NOT = { total_amount_of_ships = 100 }
+			}
+			UTI = { change_variable = { which = dynamic_loc value = 0 } }
+			set_global_flag = red
+			slot_9 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_10 = { secede_province = THIS state_scope = { change_region_name = "(Less than 100)" } secede_province = QQQ } }
+			CLN = { slot_11 = { secede_province = THIS state_scope = { change_region_name = "§B0§!" } secede_province = QQQ } }
+		}
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				total_amount_of_ships = 100
+				NOT = { total_amount_of_ships = 200 }
+			}
+			change_variable = { which = dismantlement_currency value = 1 }
+			UTI = { change_variable = { which = dynamic_loc value = 1 } }
+			set_global_flag = yellow
+			slot_9 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_10 = { secede_province = THIS state_scope = { change_region_name = "(Less than 200)" } secede_province = QQQ } }
+			CLN = { slot_11 = { secede_province = THIS state_scope = { change_region_name = "§B1§!" } secede_province = QQQ } }
+		}
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				total_amount_of_ships = 200
+				NOT = { total_amount_of_ships = 300 }
+			}
+			change_variable = { which = dismantlement_currency value = 2 }
+			UTI = { change_variable = { which = dynamic_loc value = 2 } }
+			set_global_flag = yellow
+			slot_9 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_10 = { secede_province = THIS state_scope = { change_region_name = "(Less than 300)" } secede_province = QQQ } }
+			CLN = { slot_11 = { secede_province = THIS state_scope = { change_region_name = "§B2§!" } secede_province = QQQ } }
+		}
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				total_amount_of_ships = 300
+				NOT = { total_amount_of_ships = 400 }
+			}
+			change_variable = { which = dismantlement_currency value = 3 }
+			UTI = { change_variable = { which = dynamic_loc value = 3 } }
+			set_global_flag = yellow
+			slot_9 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_10 = { secede_province = THIS state_scope = { change_region_name = "(Less than 400)" } secede_province = QQQ } }
+			CLN = { slot_11 = { secede_province = THIS state_scope = { change_region_name = "§B3§!" } secede_province = QQQ } }
+		}
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader
+				total_amount_of_ships = 400
+				NOT = { total_amount_of_ships = 500 }
+			}
+			change_variable = { which = dismantlement_currency value = 4 }
+			UTI = { change_variable = { which = dynamic_loc value = 4 } }
+			set_global_flag = yellow
+			slot_9 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_10 = { secede_province = THIS state_scope = { change_region_name = "(Less than 500)" } secede_province = QQQ } }
+			CLN = { slot_11 = { secede_province = THIS state_scope = { change_region_name = "§B4§!" } secede_province = QQQ } }
+		}
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				total_amount_of_ships = 500
+			}
+			change_variable = { which = dismantlement_currency value = 5 }
+			UTI = { change_variable = { which = dynamic_loc value = 5 } }
+			set_global_flag = green
+			slot_9 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_10 = { secede_province = THIS state_scope = { change_region_name = "(500 or more)" } secede_province = QQQ } }
+			CLN = { slot_11 = { secede_province = THIS state_scope = { change_region_name = "§B5§!" } secede_province = QQQ } }
+		}
+
+		#
+		#	Brigades
+		#
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				NOT = { total_amount_of_divisions = 50 }
+			}
+			UTI = { change_variable = { which = dynamic_loc value = 0 } }
+			set_global_flag = red
+			slot_12 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_13 = { secede_province = THIS state_scope = { change_region_name = "(Less than 100)" } secede_province = QQQ } }
+			CLN = { slot_14 = { secede_province = THIS state_scope = { change_region_name = "§B0§!" } secede_province = QQQ } }
+		}
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				total_amount_of_divisions = 50
+				NOT = { total_amount_of_divisions = 100 }
+			}
+			change_variable = { which = dismantlement_currency value = 1 }
+			UTI = { change_variable = { which = dynamic_loc value = 1 } }
+			set_global_flag = yellow
+			slot_12 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_13 = { secede_province = THIS state_scope = { change_region_name = "(Less than 200)" } secede_province = QQQ } }
+			CLN = { slot_14 = { secede_province = THIS state_scope = { change_region_name = "§B1§!" } secede_province = QQQ } }
+		}
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				total_amount_of_divisions = 100
+				NOT = { total_amount_of_divisions = 150 }
+			}
+			change_variable = { which = dismantlement_currency value = 2 }
+			UTI = { change_variable = { which = dynamic_loc value = 2 } }
+			set_global_flag = yellow
+			slot_12 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_13 = { secede_province = THIS state_scope = { change_region_name = "(Less than 300)" } secede_province = QQQ } }
+			CLN = { slot_14 = { secede_province = THIS state_scope = { change_region_name = "§B2§!" } secede_province = QQQ } }
+		}
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				total_amount_of_divisions = 150
+				NOT = { total_amount_of_divisions = 200 }
+			}
+			change_variable = { which = dismantlement_currency value = 3 }
+			UTI = { change_variable = { which = dynamic_loc value = 3 } }
+			set_global_flag = yellow
+			slot_12 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_13 = { secede_province = THIS state_scope = { change_region_name = "(Less than 400)" } secede_province = QQQ } }
+			CLN = { slot_14 = { secede_province = THIS state_scope = { change_region_name = "§B3§!" } secede_province = QQQ } }
+		}
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader
+				total_amount_of_divisions = 200
+				NOT = { total_amount_of_divisions = 250 }
+			}
+			change_variable = { which = dismantlement_currency value = 4 }
+			UTI = { change_variable = { which = dynamic_loc value = 4 } }
+			set_global_flag = yellow
+			slot_12 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_13 = { secede_province = THIS state_scope = { change_region_name = "(Less than 500)" } secede_province = QQQ } }
+			CLN = { slot_14 = { secede_province = THIS state_scope = { change_region_name = "§B4§!" } secede_province = QQQ } }
+		}
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				total_amount_of_divisions = 250
+			}
+			change_variable = { which = dismantlement_currency value = 5 }
+			UTI = { change_variable = { which = dynamic_loc value = 5 } }
+			set_global_flag = green
+			slot_12 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_13 = { secede_province = THIS state_scope = { change_region_name = "(500 or more)" } secede_province = QQQ } }
+			CLN = { slot_14 = { secede_province = THIS state_scope = { change_region_name = "§B5§!" } secede_province = QQQ } }
+		}
+
+		#
+		#	Finances
+		#
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				NOT = { money = 500000 }
+			}
+			UTI = { change_variable = { which = dynamic_loc value = 0 } }
+			set_global_flag = red
+			slot_12 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_13 = { secede_province = THIS state_scope = { change_region_name = "(Less than Five Hundred Thousand)" } secede_province = QQQ } }
+			CLN = { slot_14 = { secede_province = THIS state_scope = { change_region_name = "§B0§!" } secede_province = QQQ } }
+		}
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				money = 500000
+				NOT = { money = 1000000 }
+			}
+			change_variable = { which = dismantlement_currency value = 1 }
+			UTI = { change_variable = { which = dynamic_loc value = 1 } }
+			set_global_flag = yellow
+			slot_12 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_13 = { secede_province = THIS state_scope = { change_region_name = "(Less than One Million)" } secede_province = QQQ } }
+			CLN = { slot_14 = { secede_province = THIS state_scope = { change_region_name = "§B1§!" } secede_province = QQQ } }
+		}
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				money = 1000000
+				NOT = { money = 2000000 }
+			}
+			change_variable = { which = dismantlement_currency value = 2 }
+			UTI = { change_variable = { which = dynamic_loc value = 2 } }
+			set_global_flag = yellow
+			slot_12 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_13 = { secede_province = THIS state_scope = { change_region_name = "(Less than Two Million)" } secede_province = QQQ } }
+			CLN = { slot_14 = { secede_province = THIS state_scope = { change_region_name = "§B2§!" } secede_province = QQQ } }
+		}
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				money = 2000000
+				NOT = { money = 3000000 }
+			}
+			change_variable = { which = dismantlement_currency value = 3 }
+			UTI = { change_variable = { which = dynamic_loc value = 3 } }
+			set_global_flag = yellow
+			slot_12 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_13 = { secede_province = THIS state_scope = { change_region_name = "(Less than Three Million)" } secede_province = QQQ } }
+			CLN = { slot_14 = { secede_province = THIS state_scope = { change_region_name = "§B3§!" } secede_province = QQQ } }
+		}
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader
+				money = 3000000
+				NOT = { money = 4000000 }
+			}
+			change_variable = { which = dismantlement_currency value = 4 }
+			UTI = { change_variable = { which = dynamic_loc value = 4 } }
+			set_global_flag = yellow
+			slot_12 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_13 = { secede_province = THIS state_scope = { change_region_name = "(Less than Four Million)" } secede_province = QQQ } }
+			CLN = { slot_14 = { secede_province = THIS state_scope = { change_region_name = "§B4§!" } secede_province = QQQ } }
+		}
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				money = 4000000
+			}
+			change_variable = { which = dismantlement_currency value = 5 }
+			UTI = { change_variable = { which = dynamic_loc value = 5 } }
+			set_global_flag = green
+			slot_12 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_13 = { secede_province = THIS state_scope = { change_region_name = "(Four Million or more)" } secede_province = QQQ } }
+			CLN = { slot_14 = { secede_province = THIS state_scope = { change_region_name = "§B5§!" } secede_province = QQQ } }
+		}
+
+		#
+		#	League of Nations Mandate
+		#
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				has_country_flag = league_of_nations_mandate_dismantlement
+			}
+			change_variable = { which = dismantlement_currency value = 1 }
+			UTI = { change_variable = { which = dynamic_loc value = 1 } }
+			set_global_flag = green
+			slot_15 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_16 = { secede_province = THIS state_scope = { change_region_name = "League of Nations Approves" } secede_province = QQQ } }
+			CLN = { slot_17 = { secede_province = THIS state_scope = { change_region_name = "§B2§!" } secede_province = QQQ } }
+		}
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				NOT = { has_country_flag = league_of_nations_mandate_dismantlement }
+			}
+			set_global_flag = red
+			slot_15 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+			CLN = { country_event = 9 }
+			CLN = { slot_16 = { secede_province = THIS state_scope = { change_region_name = "League of Nations Ignored" } secede_province = QQQ } }
+			CLN = { slot_17 = { secede_province = THIS state_scope = { change_region_name = "§B0§!" } secede_province = QQQ } }
+		}
+		CLN = { slot_18 = { secede_province = THIS state_scope = { change_region_name = "§B2§!" } secede_province = QQQ } }
+
+		#
+		#	Debug
+		#
+		any_country = {
+			limit = { 
+				has_country_flag = dismantlement_leader 
+				has_country_flag = literally_cheating
+			}
+			UTI = { change_variable = { which = dynamic_loc value = 200 } }
+			change_variable = { which = dismantlement_currency value = 200 }
+			CLN = { slot_40 = { secede_province = THIS state_scope = { change_region_name = "§GDebug Mode On|    §B200 §b/ §B0§!" } secede_province = QQQ } }
+		}
+		slot_39 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+		UTI = { set_country_flag = dynamic_loc}
+		CLN = { country_event = 7 }
+		any_country = {
+			clr_country_flag = viewer
+		}
+		any_country = {
+			limit = { has_country_flag = dismantlement_leader NOT = { has_country_flag = literally_cheating } }
+			country_event = 20531
+		}
+		any_country = {
+			limit = { has_country_flag = dismantlement_leader has_country_flag = literally_cheating }
+			country_event = 20532
+		}
+
+	} 
+	
+	option = {
+        name = "Buffer it"
+    }
+	
+}
+
+country_event = { # Initial Dismantlement Event
+    id = 20531
+    title = "Dismantlement Currency" # "Mandate for Dissolution" # Victor Initial Notification Event
+    #desc = "EVTDESC1000"
+    #picture = "dismantlement"
+    is_triggered_only = yes
+	
+    immediate = {
+
+		dismantlement_loc_25 = {}
+		linebreak_state = {}
+		linebreak_state = {}
+		# Invention
+		slot_1 = {}
+		dismantlement_loc_26 = {}
+		tabbreak_state = {}
+		slot_2 = {}
+		backslash = {}
+		slot_3 = {}
+		linebreak_state = {}
+		# Mobilisation
+		slot_4 = {}
+		slot_5 = {}
+		tabbreak_state = {}
+		slot_6 = {}
+		clear = {}
+		backslash = {}
+		slot_7 = {}
+		# Ships
+		linebreak_state = {}
+		slot_9 = {}
+		dismantlement_loc_28 = {}
+		slot_10 = {}
+		colon = {}
+		tabbreak_state = {}
+		slot_11 = {}
+		clear = {}
+		backslash = {}
+		slot_8 = {}
+		# Troops
+		linebreak_state = {}
+		slot_12 = {}
+		dismantlement_loc_29 = {}
+		slot_13 = {}
+		colon = {}
+		tabbreak_state = {}
+		slot_14 = {}
+		clear = {}
+		backslash = {}
+		slot_8 = {}
+		# LON
+		linebreak_state = {}
+		slot_15 = {}
+		slot_16 = {}
+		colon = {}
+		tabbreak_state = {}
+		slot_17 = {}
+		clear = {}
+		backslash = {}
+		slot_18 = {}
+		linebreak_state = {}
+		linebreak_state = {}
+		dismantlement_total_currency = {}
+		tabbreak_state = {}
+		blue = {}
+		slot_39 = {}
+		clear = {}
+		backslash = {}
+		dismantlement_total_number = {}
+	} 
+	
+	option = {
+        name = "Continue"
+    }
+}
+
+country_event = { # Initial Dismantlement Event
+    id = 20532
+    title = "Dismantlement Currency" # This version is for the literally cheating tag
+    #desc = "EVTDESC1000"
+    #picture = "dismantlement"
+    is_triggered_only = yes
+	
+    immediate = {
+		
+		dismantlement_loc_25 = {}
+		linebreak_state = {}
+		linebreak_state = {}
+		# Invention
+		slot_1 = {}
+		dismantlement_loc_26 = {}
+		tabbreak_state = {}
+		slot_2 = {}
+		backslash = {}
+		slot_3 = {}
+		# Mobilisation
+		linebreak_state = {}
+		slot_4 = {}
+		slot_5 = {}
+		tabbreak_state = {}
+		slot_6 = {}
+		clear = {}
+		backslash = {}
+		slot_7 = {}
+		# Ships
+		linebreak_state = {}
+		slot_9 = {}
+		dismantlement_loc_28 = {}
+		slot_10 = {}
+		colon = {}
+		tabbreak_state = {}
+		slot_11 = {}
+		clear = {}
+		backslash = {}
+		slot_8 = {}
+		# Troops
+		linebreak_state = {}
+		slot_12 = {}
+		dismantlement_loc_29 = {}
+		slot_13 = {}
+		colon = {}
+		tabbreak_state = {}
+		slot_14 = {}
+		clear = {}
+		backslash = {}
+		slot_8 = {}
+		# Debug
+		linebreak_state = {}
+		slot_40 = {}
+		linebreak_state = {}
+		linebreak_state = {}
+		dismantlement_total_currency = {}
+		tabbreak_state = {}
+		blue = {}
+		slot_39 = {}
+		clear = {}
+		backslash = {}
+		dismantlement_total_number = {}
+
+	} 
+	
+	option = {
+        name = "Continue"
+    }
+}
 
 
+country_event = { #
+    id = 20560
+    title = "Options Event for Colonies"		
+    is_triggered_only = yes
+	
+    immediate = {
+		
+	} 
+	
+	option = {
+        name = "Buffer it"
+    }
+	
+}
