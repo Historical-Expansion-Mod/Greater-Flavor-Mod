@@ -12,27 +12,32 @@
 #
 
 country_event = { # Prime Colonial Territory - forces historical colonies/borders
-    id = 20450
+    id = 20541
     title = "Assign Colonial Land"
     is_triggered_only = yes
 	
 	immediate = {
+		# Colony of Morocoo																																						# Name
 		any_land_province = {
 			limit = {
-				# Provinces
-				OR = {
+				OR = {																																							# Provinces of the Colonial Region
 					provid = 1687
 					provid = 1686
 					provid = 3865
 					provid = 1688
 				}
+				CLN = { NOT = { has_global_flag = dismantlement_colony_buffer } }
 			}
-			add_province_modifier = { 
-				name = dismantlement_colony
-				duration = -1
+			add_province_modifier = { name = dismantlement_colony duration = -1 }
+			set_global_flag = dismantlement_colony_buffer
+			CLN = { 
+				set_global_flag = dismantlement_colony_buffer 
+				slot_10 = { secede_province = THIS state_scope = { change_region_name = "Morocco" } secede_province = QQQ }														# State Name for Event
 			}
-			# Need a keylist for this
+			# Colonies																																							# Colonies to merge into
+			MOR = { set_country_flag = dismantlement_colony_target }																											
 		}
+		CLN = { limit = { has_global_flag = dismantlement_colony_total_buffer } change_variable = { which = dismantlement_colony_total value = 1 } }
 	}
 	
 	option = {
@@ -42,7 +47,7 @@ country_event = { # Prime Colonial Territory - forces historical colonies/border
 
 
 country_event = { # Dismantlement Formables	# Dynamic - You can add your own dismantlement formables	
-    id = 20452
+    id = 20542
     title = "Dismantlement Formables Tags"
     is_triggered_only = yes
 	
@@ -113,6 +118,8 @@ country_event = { # Dismantlement Formables	# Dynamic - You can add your own dis
 				NOT = { NOR = { has_country_flag = dismantlement_targets } }
 				OR = {
 					tag = GRN	# Greenland
+					tag = ICL	# Iceland
+					tag = FRO	# Faroe Islands
 				}
 				has_country_flag = dismantlement_targeting_long_buffer	
 			}
@@ -160,6 +167,7 @@ country_event = { # Dismantlement Formables	# Dynamic - You can add your own dis
 					AND = { tag = EST }	# Estonia
 					AND = { tag = KRL }	# Karelia
 					AND = { tag = SMI }	# Sápmi
+					tag = ALN	# Åland
 				}
 				has_country_flag = dismantlement_targeting_long_buffer	
 			}
@@ -251,6 +259,11 @@ country_event = { # Dismantlement Formables	# Dynamic - You can add your own dis
 		any_country = {				# French West Indies
 			limit = {
 				NOT = { FWI = { has_country_flag = dismantlement_targets } }
+				#OR = {
+				#	FWI = { exists = yes }	# Caribbean
+				#	FRA = { has_country_flag = dismantlement_targets }	# UK
+				#	BOR = { has_country_flag = dismantlement_targets }	# England
+				#}	
 				OR = {
 					tag = CRB	# Caribbean
 					tag = NAN	# Netherlands Antilles
@@ -274,7 +287,11 @@ country_event = { # Dismantlement Formables	# Dynamic - You can add your own dis
 		any_country = {				# British West Indies
 			limit = {
 				NOT = { CRB = { has_country_flag = dismantlement_targets } }
-				
+				#OR = {
+				#	CRB = { exists = yes }	# Caribbean
+				#	ENG = { has_country_flag = dismantlement_targets }	# UK
+				#	ENL = { has_country_flag = dismantlement_targets }	# England
+				#}				
 				OR = {
 					tag = FWI	# Caribbean
 					tag = NAN	# Netherland Antilles
@@ -298,6 +315,10 @@ country_event = { # Dismantlement Formables	# Dynamic - You can add your own dis
 		any_country = {				# Dutch West Indies
 			limit = {
 				NOT = { NAN = { has_country_flag = dismantlement_targets } }
+				#OR = {
+				#	NAN = { exists = yes }	# Netherlands Antilles
+				#	NET = { has_country_flag = dismantlement_targets }	# Netherlands
+				#}
 				OR = {
 					tag = CRB	# Caribbean
 					tag = FWI	# French West Indies
@@ -321,18 +342,23 @@ country_event = { # Dismantlement Formables	# Dynamic - You can add your own dis
 		any_country = {				# Intermarium
 			limit = {
 				OR = {
-					tag = UKR
-					tag = RUT
-					tag = BYE
-					tag = LIT
-					tag = LAT
-					tag = EST
-					tag = POL
-					tag = GLM
-					tag = PLC
-					tag = UBD
-					tag = MOL
-					tag = CRI
+					tag = UKR	# Ukraine
+					tag = RUT	# Ruthenia
+					tag = BYE	# Byelorussia
+					tag = LIT	# Lithuania
+					tag = LAT	# Latvia
+					tag = EST	# Estonia
+					tag = POL	# Poland
+					tag = GLM	# Galicia
+					tag = PLC	# Poland-Lithuania
+					tag = UBD	# United Baltic Duchy
+					tag = MOL	# Moldova
+					tag = CRI	# Crimea
+					tag = BKV	# Bukovina
+					#AND = {
+					#	tag = DON # DON joining PLR through Ukraine
+					#	UKR = { capital_scope = { owner = { tag = PLR } } }
+					#}
 				}
 				has_country_flag = dismantlement_targeting_long_buffer	
 			}
@@ -345,7 +371,10 @@ country_event = { # Dismantlement Formables	# Dynamic - You can add your own dis
 		any_country = {				# Ukraine
 			limit = {
 				OR = {
-					AND = { tag = DON }	# Check that Ukraine is also being dismantled to avoid finland-in-exile
+					#AND = {
+					#	tag = DON # Check that Ukraine is also being dismantled to avoid finland-in-exile
+					#	UKR = { capital_scope = { owner = { has_country_flag = dismantlement_target } } }
+					#}
 					tag = CRI
 					tag = RUT
 				}
@@ -382,12 +411,12 @@ country_event = { # Dismantlement Formables	# Dynamic - You can add your own dis
 		any_country = {				# South Germany
 			limit = {
 				OR = {
-					tag = WUR
-					tag = BAD
-					tag = SGM
-					tag = ALS
-					tag = BAV
-					tag = FRK
+					tag = WUR	# Württemberg
+					tag = BAD	# Baden
+					tag = SGM	# Sigmaring
+					tag = ALS	# Alsace
+					tag = BAV	# Bavaria
+					tag = FRK	# Franken
 				}
 				has_country_flag = dismantlement_targeting_long_buffer
 			}
