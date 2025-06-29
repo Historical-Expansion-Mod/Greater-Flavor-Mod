@@ -304,6 +304,144 @@ country_event = {
 }
 
 country_event = {
+	id = 800825
+	title = "German Confederation occupies Holstein!"
+	desc = "EVTDESC800825"
+	picture = "schleswig_independence"
+	major = yes
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = { days = 7 }
+	
+	trigger = {
+		OR = {
+			tag = DNN
+			tag = DEN
+		}
+		has_country_flag = november_constitution
+		has_country_flag = schleswig_holstein_restored
+		HOL = { vassal_of = THIS }
+	}
+	
+	option = {
+		name = "Not this again..."
+		prestige = -5
+		release_vassal = HOL
+		HOL = { change_tag = SWH } 
+		random_country = {
+			limit = { primary_culture = north_german is_greater_power = yes }
+			country_event = { id = 800826 days = 7 }
+		}
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 800826
+	title = "Saxony and Hannover occupy Holstein!"
+	desc = "EVTDESC800826"
+	picture = "schleswig_independence"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "This is our chance to avenge 1852! Schleswig-Holstein shall be freed!"
+		set_global_flag = second_schlewsig_war
+		create_alliance = HOL
+		random_country = {
+			limit = { primary_culture = south_german OR = { is_greater_power = yes capital = 619 } }
+			country_event = 800827
+		}
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Send a message to Frankfurt saying we won't aid Holstein."
+		prestige = -20
+		any_country = {
+			limit = { primary_culture = north_german }
+			relation = { who = THIS value = -100 }
+		}
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 800827
+	title = "$FROMCOUNTRY$ suggests intervention in Holstein"
+	desc = "EVTDESC800827"
+	picture = "schleswig_independence"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "We don't, we risk alienating the rest of the German Confederation"
+		prestige = 5
+		create_alliance = HOL
+		set_country_flag = holstein_candidate
+		372 = { owner = { country_event = 800828 } }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "We saw what happened last time. Back off."
+		prestige = -5
+		set_country_flag = holstein_candidate
+		372 = { owner = { country_event = 800828 } }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 800828
+	title = "German Confederation demands withdraw from Schleswig"
+	desc = "EVTDESC800828"
+	picture = "schleswig_independence"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "We will never back off from Schleswig."
+		prestige = 5
+		HOL = {
+			casus_belli = {
+            target = THIS
+            type = liberate_country
+            months = 6
+			}
+		}
+		war = {
+			target = HOL
+			attacker_goal = {
+				casus_belli = annex_core_country
+			}
+			defender_goal = { casus_belli = liberate_country country = SCH }
+			call_ally = yes
+		}
+        any_country = {
+            limit = { OR = { primary_culture = south_german primary_culture = north_german } }
+            leave_alliance = THIS
+            relation = {
+                who = THIS
+                value = -200
+            }
+        }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "It is hopeless, withdraw from Schleswig once and for all."
+		prestige = -20
+		release = SCH
+		release_vassal = HOL
+		HOL = { inherit = SCH change_tag = SWH }
+		SWH = { all_core = { remove_core = THIS } }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
     id = 90054 # Schleswig-Holstein Rebellion
     title = "EVTNAME90054"
     desc = "EVTDESC90054"
@@ -596,11 +734,6 @@ country_event = {
 		name = "Fine! We didn't want to do it anyway..."
 		prestige = -5
 		war_exhaustion = - 100
-		any_country = {
-			limit = { OR = { alliance_with = HOL tag = HOL } }
-			peace_with = DEN
-			peace_with = DNN
-		}
 		372 = { owner = { country_event = 800819 } }
 		ai_chance = { factor = 1 }
 	}
@@ -627,6 +760,10 @@ country_event = {
 	option = {
 		name = "That should be an improvement, at least..."
 		prestige = -5
+		any_country = {
+			limit = { OR = { alliance_with = HOL tag = HOL } }
+			peace_with = THIS
+		}
 		inherit = HOL
 		release_vassal = SWH
 		set_country_flag = schleswig_holstein_restored
@@ -673,7 +810,7 @@ country_event = {
 
 country_event = {
 	id = 800821
-	title = "Prince Frederick is defeated!"
+	title = "Victory in Holstein!"
 	desc = "EVTDESC800821"
 	picture = tropper_1849
 	
@@ -684,7 +821,7 @@ country_event = {
 			tag = DEN
 			tag = DNN
 		}
-		has_global_flag = first_schlewsig_war
+		OR = { has_global_flag = first_schlewsig_war has_global_flag = second_schlewsig_war }
 		NOT = { has_country_flag = schleswig_holstein_restored }
 		SWH = { all_core = { owned_by = THIS } }
 	}
@@ -693,6 +830,7 @@ country_event = {
 		name = "Denmark and Schleswig are finally one!"
 		prestige = 10
 		release_vassal = HOL
+		create_alliance = HOL
 		SWH = { all_core = { remove_core = GER remove_core = SWH } }
 	}
 }
