@@ -392,8 +392,9 @@ country_event = {
 	fire_only_once = yes
 
     trigger = {
-        has_country_flag = UBD_germans_agreed
+        has_country_flag = UBD_german_help
 		RUS = { war_with = UBD }
+		NOT = { war_with = RUS }
     }
 	
     mean_time_to_happen = { days = 1 }
@@ -472,7 +473,7 @@ country_event = {
         }
     }
 	
-    mean_time_to_happen = { months = 1 }
+    mean_time_to_happen = { days = 1 }
 	
 	option = {
         name = "We need a proper monarch."
@@ -1304,8 +1305,8 @@ country_event = {
 				}
 			}
 			RUS = {
-				any_owned_province = {
-					NOT = {
+				NOT = {
+					any_owned_province = {
 						is_core = EST
 						is_core = LAT 
 						is_core = LIT
@@ -1335,4 +1336,74 @@ country_event = {
 			prestige = -15
 		}
     }
+}
+
+country_event = {
+	id = 800824
+	title = "The Lithuanian Question"
+	desc = "EVTDESC800824"
+	picture = "riga"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Lithuania shall join the Baltic States §R(Blocks Germany from annexing the UBD)§!"
+		set_global_flag = lithuania_in_the_UBD
+		UBD = { add_accepted_culture = lithuanian }
+			
+		random_country = {
+			limit = {
+				tag = LIT
+				exists = yes
+				ai = yes
+				war = no
+				vassal_of = THIS
+			}
+			annex_to = UBD
+		}
+		any_country = {
+			limit = {
+				NOT = { tag = UBD }
+				any_owned_province = { is_core = LIT }
+				OR = {
+					in_sphere = THIS
+					vassal_of = THIS
+				}
+				war = no
+			}
+			any_owned = { limit = { is_core = LIT } secede_province = THIS }
+		}
+		any_owned = { limit = { is_core = LIT NOT = { is_core = THIS } } secede_province = UBD }	
+		LIT = { all_core = { limit = { NOT = { is_core = THIS } } add_core = UBD } }
+		diplomatic_influence = { who = UBD value = 50 }
+		relation = { who = UBD value = 50 }
+		UBD = { any_pop = { limit = { has_pop_culture = lithuanian }  consciousness = 4 militancy = 5 } }
+		UBD = { any_owned = { limit = { is_core = LIT } add_province_modifier = { name = nationalist_agitation duration = 1095 } } }
+		any_owned = { limit = { is_core = THIS } remove_core = UBD remove_core = LIT }
+		ai_chance = { factor = 0 }
+	}
+	
+	option = {
+		name = "Support Lithuanian claims instead"
+		LIT = {
+			BYE = { all_core = { add_core = LIT } }
+            945 = { remove_core = LIT }
+            3531 = { remove_core = LIT }
+            944 = { remove_core = LIT }
+            949 = { remove_core = LIT }
+            1007 = { remove_core = LIT }
+            943 = { remove_core = LIT  }
+            1015 = { remove_core = LIT }
+			set_country_flag = grand_duchy_lit
+		}
+		any_owned = { limit = { is_core = THIS } remove_core = UBD remove_core = LIT }
+		random_owned = {
+			limit = { LIT = { NOT = { vassal_of = THIS exists = yes } } }
+			release_vassal = LIT
+			create_alliance = LIT
+			diplomatic_influence = { who = LIT value = 400 }
+		}
+		any_owned = { limit = { is_core = LIT } secede_province = LIT }
+		ai_chance = { factor = 1 }
+	}
 }
