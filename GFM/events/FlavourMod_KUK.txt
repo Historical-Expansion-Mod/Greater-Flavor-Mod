@@ -21,10 +21,10 @@ country_event = {
     trigger = {
         tag = GCF
         owns = 619 #Vienna
-        owns = 599 #Munich
+        owns = 576 #Aachen
+        owns = 559 #Leipzig
         owns = 564 #Frankfurt
-        owns = 534 #Hannover
-        owns = 549 #Berlin
+		owns = 549 #Berlin
     }
 
     mean_time_to_happen = { days = 3 }
@@ -38,18 +38,18 @@ country_event = {
     }
 
     option = {
-        name = "EVT4813525OPTB" #Munich
+        name = "EVT4813525OPTB" #Aachen
         capital_scope = { any_pop = { consciousness = 2 } }
-        599 = { any_pop = { militancy = -1 consciousness = -2 } }
-        capital = 599
-        ai_chance = { factor = 15 }
+        576  = { any_pop = { militancy = -1 consciousness = -2 } }
+        capital = 576 
+        ai_chance = { factor = 1 }
     }
 
     option = {
-        name = "EVT4813525OPTC" #Hannover
+        name = "EVT4813525OPTC" #Leipzig
         capital_scope = { any_pop = { consciousness = 2 } }
-        534 = { any_pop = { militancy = -1 consciousness = -2 } }
-        capital = 534
+        559  = { any_pop = { militancy = -1 consciousness = -2 } }
+        capital = 559 
         ai_chance = { factor = 10 }
     }
 
@@ -63,10 +63,9 @@ country_event = {
 
     option = {
         name = "EVT4813525OPTE" #Vienna
-        capital_scope = { any_pop = { consciousness = 2 } }
         619 = { any_pop = { militancy = -1 consciousness = -2 } }
         capital = 619
-        ai_chance = { factor = 1 }
+        ai_chance = { factor = 15 }
     }
 }
 
@@ -208,6 +207,15 @@ country_event = {
             who = FROM
             value = 200
         }
+		# Schleswig Holstein is puppeted so Denmark don't instantly declares for it
+		random_owned = {
+			limit = {
+				HOL = { vassal_of = THIS }
+			}
+			HOL = { all_core = { add_core = SWH } }
+			SCH = { inherit = HOL all_core = { add_core = SWH } change_tag = SWH }
+			FROM = { create_vassal = SWH create_alliance = SWH } 
+		}
         any_country = {
             limit = {
                 exists = yes
@@ -584,6 +592,15 @@ country_event = {
             who = FROM
             value = 200
         }
+		# Schleswig Holstein is puppeted so Denmark don't instantly declares for it
+		random_owned = {
+			limit = {
+				HOL = { vassal_of = THIS }
+			}
+			HOL = { all_core = { add_core = SWH } }
+			SCH = { inherit = HOL all_core = { add_core = SWH } change_tag = SWH }
+			FROM = { create_vassal = SWH create_alliance = SWH } 
+		}
         any_country = {
             limit = {
                 exists = yes
@@ -1388,4 +1405,183 @@ country_event = {
             }
         }
     }
+}
+
+country_event = {
+	id = 800825
+	title = "The Polish Plight"
+	desc = "EVTDESC800825"
+	picture = "polish_partition"
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = { months = 6 }
+	
+	trigger = {
+		has_global_flag = prussia_no_ger
+		OR = {
+			tag = DNB
+			tag = AUB
+		}
+		year = 1860
+		NOT = { year = 1865 }
+		699 = { OR = { owned_by = PRU owned_by = NGF } }
+		NOT = { is_our_vassal = PRU }
+		POL = { exists = no }
+	}
+	
+	option = {
+		name = "And crippling the Prussians further? Promise full support! §RGain 3 infamy§!"
+		badboy = 3
+		money = -50000
+		set_global_flag = poznan_cooking
+		set_country_flag = poznan_connection
+		ai_chance = { factor = 9 }
+	}
+	
+	option = {
+		name = "Nay! The Prussians have been humiliated enough."
+		prestige = -5
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+		id = 800826
+		title = "Greater Poland Uprising of $YEAR$"
+		desc = "EVTDESC800826"
+		picture = "polish_uprising_aus"
+		
+		fire_only_once = yes
+		
+		mean_time_to_happen = { months = 12 }
+		
+		trigger = {
+			OR = { tag = PRU tag = NGF }
+			has_global_flag = poznan_cooking
+			PZN = { OR = { all_core = { owned_by = THIS } vassal_of = THIS } }
+		}
+		
+		option = {
+			name = "We can't take another loss! To arms!"
+			prestige = 5
+			random_owned = {
+				limit = { PZN = { exists = yes vassal_of = THIS } }
+				owner = { release_vassal = PZN }
+			}
+			random_owned = {
+				limit = { PZN = { exists = no } }
+				owner = { release = PZN }
+			}
+			random_country = {
+					limit = { has_country_flag = poznan_connection }
+					create_alliance = PZN
+					diplomatic_influence = { who = PZN value = 400 }
+					set_country_flag = poznan_war
+					clr_country_flag = poznan_connection
+					clr_global_flag = poznan_cooking
+			}
+			war = {
+				target = PZN
+				attacker_goal = {
+					casus_belli = annex_core_country
+				}
+				defender_goal = {
+					casus_belli = status_quo
+				}
+				call_ally = yes
+			}
+			ai_chance = {
+				factor = 1
+				modifier = {
+					factor = 0
+					OR = { 
+						in_sphere = AUB
+						in_sphere = DNB
+					}
+				}
+			}
+		}
+		
+		option = {
+			name = "It is hopeless. The Polish have support from Vienna."
+			prestige = -20
+			random_owned = {
+				limit = { PZN = { exists = yes vassal_of = THIS } }
+				owner = { release_vassal = PZN }
+			}
+			random_owned = {
+				limit = { PZN = { exists = no } }
+				owner = { release = PZN }
+			}
+			random_country = {
+					limit = { has_country_flag = poznan_connection }
+					create_alliance = PZN
+					diplomatic_influence = { who = PZN value = 400 }
+					country_event = 800827
+					clr_country_flag = poznan_connection
+					clr_global_flag = poznan_cooking
+			}
+			ai_chance = {
+				factor = 1
+				modifier = {
+					factor = 0
+					NOT = { 
+						in_sphere = AUB
+						in_sphere = DNB
+					}
+				}
+			}
+		}
+	}
+	
+country_event = {
+	id = 800827
+	title = "Prussia gives up Poznan"
+	desc = "EVTDESC800827"
+	picture = "celebration"
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = { days = 1 }
+	
+	trigger = {
+		has_country_flag = poznan_war
+		PZN = { exists = yes war = no in_sphere = THIS }
+	}
+	
+	option = {
+		name = "A nation redeemed!"
+		prestige = 5 
+		clr_country_flag = poznan_war
+		random_owned = {
+			limit = { owner = { NOT = { owns = 706 is_our_vassal = POL } } }
+			owner = { 
+				create_vassal = PZN
+				create_alliance = PZN
+			}
+		}
+		random_owned = {
+			limit = { owner = { owns = 706 NOT = { is_our_vassal = POL } } }
+			owner = { 
+			inherit = PZN
+				any_owned = {
+					limit = {
+						OR = {
+							region = RUS_706
+							region = PRU_701
+						}
+					}
+					secede_province = POL
+				}
+				create_vassal = POL
+				create_alliance = POL
+				diplomatic_influence = { who = POL value = 400 }
+			}
+		}
+		random_owned = {
+			limit = { owner = { POL = { exists = yes vassal_of = THIS } }
+			owner = { POL = { inherit = PZN } }
+		}
+	}
 }
