@@ -1015,43 +1015,77 @@ country_event = {
 # Ottoman Invasion of Iraq - fires for Iraq
 country_event = {
 	id = 16051936
-	title = "The Ottomans Send a New Ruler"
+	title = "The Ottomans Send an Envoy"
 	desc = "OTTOSINVADEMAMLUKIEAQ"
 	picture = "mamluk_iraqi"
 	is_triggered_only = yes
 
 	option = {
-		name = "We'll abide by their decision."
+		name = "We'll abide by their decision. §RGame over.§!"
 		TUR = { release_vassal = IRQ }
 		TUR = { country_event = 160519361 }
         ai_chance = { factor = 0 }
 	}
 	option = {
-		name = "We will fight to the last man."
-		TUR = { release_vassal = IRQ }
-		TUR = { country_event = 160519362 }
+		name = "Kill him and hope for the best. §RThey'll know in 30 days§!"
+		TUR = { country_event = { id = 160519362 days = 30 } }
         ai_chance = { factor = 1 }
 	}
 }
 country_event = {
 	id = 160519361
-	title = "New Ruler Established Control in Baghdad"
+	title = "Envoy Establishes Control in Baghdad"
 	desc = "OTTOSMAMLUKIEAQAGAINTWO"
 	picture = "mamluk_iraqi"
 	is_triggered_only = yes
+	
+	immediate = {
+		set_country_flag = hide_tooltip
+		random_owned = {
+			limit = {
+				owner = {
+					has_country_flag = hide_tooltip
+					MKN = { exists = no }
+					DUB = { exists = yes vassal_of = TUR owns = 933 }
+				}
+			}
+			owner = {
+				DUB = { country_event = 160519363 }
+			}
+		}
+		clr_country_flag = hide_tooltip
+	}
 
 	option = {
 		name = "Great!"
 		inherit = IRQ
+		IRQ = { government = absolute_monarchy }
 	}
 }
 country_event = {
 	id = 160519362
-	title = "New Ruler Assassinated in Baghdad"
+	title = "Envoy Assassinated in Baghdad"
 	desc = "OTTOSMAMLUKIEAQAGAINTHREE"
 	picture = "mamluk_iraqi"
 	is_triggered_only = yes
 
+	immediate = {
+		set_country_flag = hide_tooltip
+		random_owned = {
+			limit = {
+				owner = {
+					has_country_flag = hide_tooltip
+					MKN = { exists = no }
+					DUB = { exists = yes vassal_of = TUR owns = 933 }
+				}
+			}
+			owner = {
+				DUB = { country_event = 160519364 }
+			}
+		}
+		clr_country_flag = hide_tooltip
+	}
+	
 	option = {
 		name = "We can't afford another campaign."
 		prestige = 2
@@ -1059,6 +1093,7 @@ country_event = {
 	}
 	option = {
 		name = "Send the army!"
+		TUR = { release_vassal = IRQ }
 		war = {
 			target = IRQ
 			attacker_goal = { casus_belli = conquest_any }
@@ -1066,6 +1101,98 @@ country_event = {
 			call_ally = no
 		}
         ai_chance = { factor = 1 }
+	}
+}
+country_event = {
+	id = 160519363
+	title = "Baghdad Annexed by the Ottomans"
+	desc = "BAGHDADISGONEONE"
+	picture = "mamluk_iraqi"
+	is_triggered_only = yes
+	
+	immediate = {
+		set_country_flag = hide_tooltip
+		random_owned = {
+			limit = {
+				owner = {
+					has_country_flag = hide_tooltip
+					MKN = { exists = no }
+					DUB = { exists = yes vassal_of = TUR owns = 933 }
+				}
+			}
+			owner = {
+				MKN = {
+					all_core = { remove_core = MKN }
+					primary_culture = bedouin
+					add_accepted_culture = mashriqi
+					religion = shiite
+					remove_accepted_culture = kurdish
+					set_country_flag = shiite_country
+					clr_country_flag = sunni_country
+					clr_country_flag = yazidi_country
+				}
+				change_tag = MKN
+				DUB = { all_core = { remove_core = DUB } }
+				DUB = { government = absolute_monarchy }
+			}
+		}
+		clr_country_flag = hide_tooltip
+	}
+
+	option = {
+		name = "We have no choice but to hope for the best."
+		prestige = -1
+	}
+	option = {
+		name = "Prepare for a revolt soon."
+		prestige = 1
+		MKN = { set_country_flag = let_s_go_revolt }
+	}
+}
+country_event = {
+	id = 160519364
+	title = "Baghdad At War With The Ottomans"
+	desc = "BAGHDADISGONETWO"
+	picture = "mamluk_iraqi"
+	is_triggered_only = yes
+	
+	immediate = {
+		set_country_flag = hide_tooltip
+		random_owned = {
+			limit = {
+				owner = {
+					has_country_flag = hide_tooltip
+					MKN = { exists = no }
+					DUB = { exists = yes vassal_of = TUR owns = 933 }
+				}
+			}
+			owner = {
+				MKN = {
+					all_core = { remove_core = MKN }
+					primary_culture = bedouin
+					add_accepted_culture = mashriqi
+					religion = shiite
+					remove_accepted_culture = kurdish
+					set_country_flag = shiite_country
+					clr_country_flag = sunni_country
+					clr_country_flag = yazidi_country
+				}
+				change_tag = MKN
+				DUB = { all_core = { remove_core = DUB } }
+				DUB = { government = absolute_monarchy }
+			}
+		}
+		clr_country_flag = hide_tooltip
+	}
+
+	option = {
+		name = "We have no choice but to hope for the best."
+		prestige = -1
+	}
+	option = {
+		name = "Prepare for a revolt soon."
+		prestige = 1
+		MKN = { set_country_flag = let_s_go_revolt }
 	}
 }
 country_event = {
@@ -1583,6 +1710,8 @@ country_event = {
 			any_owned = {
 				limit = {
 					OR = {
+						province_id = 3300
+						province_id = 3428
 						province_id = 908
 						province_id = 909
 						province_id = 3357
@@ -1719,8 +1848,10 @@ country_event = {
 		owns = 3474
 		month = 4
 		is_vassal = no
-		NOT = { year = 1836 }
+		PLS = { exists = no }
+		NOT = { year = 1841 }
 		NOT = { has_global_flag = peasants_palestine1834 }
+		NOT = { has_global_flag = eighteenthirty_startdate }
     }
 
     mean_time_to_happen = { days = 1 }
@@ -1728,6 +1859,26 @@ country_event = {
     option = {
         name = "End this, now!"
 		set_global_flag = peasants_palestine1834
+			PLS = { government = absolute_monarchy }
+            random_owned = {
+                limit = {
+                    owner = {
+                        PLS = { exists = yes owns = 3351 }
+                        KHZ = { exists = yes }
+                    }
+                }
+                owner = { KHZ = { inherit = PLS } }
+            }
+			922 = { add_core = PLS }
+			920 = { add_core = PLS }
+			3357 = { add_core = PLS }
+			908 = { add_core = PLS }
+			919 = { add_core = PLS }
+			917 = { add_core = PLS }
+			909 = { add_core = PLS }
+			3474 = { add_core = PLS }
+			918 = { add_core = PLS }
+			916 = { add_core = PLS }
 		any_owned = {
 			limit = {
 				OR = {
@@ -1771,6 +1922,26 @@ country_event = {
     option = {
         name = "For the liberation of Arabia! §BPlay as Palestine§W"
 		set_global_flag = peasants_palestine1834
+			PLS = { government = absolute_monarchy }
+            random_owned = {
+                limit = {
+                    owner = {
+                        PLS = { exists = yes owns = 3351 }
+                        KHZ = { exists = yes }
+                    }
+                }
+                owner = { KHZ = { inherit = PLS } }
+            }
+			922 = { add_core = PLS }
+			920 = { add_core = PLS }
+			3357 = { add_core = PLS }
+			908 = { add_core = PLS }
+			919 = { add_core = PLS }
+			917 = { add_core = PLS }
+			909 = { add_core = PLS }
+			3474 = { add_core = PLS }
+			918 = { add_core = PLS }
+			916 = { add_core = PLS }
 		any_owned = {
 			limit = {
 				OR = {
@@ -1826,8 +1997,10 @@ country_event = {
 		owns = 3474
 		month = 4
 		is_vassal = yes
-		NOT = { year = 1835 }
+		PLS = { exists = no }
+		NOT = { year = 1841 }
 		NOT = { has_global_flag = peasants_palestine1834 }
+		NOT = { has_global_flag = eighteenthirty_startdate }
     }
 
     mean_time_to_happen = { days = 1 }
@@ -1835,6 +2008,26 @@ country_event = {
     option = {
         name = "End this, now!"
 		set_global_flag = peasants_palestine1834
+			PLS = { government = absolute_monarchy }
+            random_owned = {
+                limit = {
+                    owner = {
+                        PLS = { exists = yes owns = 3351 }
+                        KHZ = { exists = yes }
+                    }
+                }
+                owner = { KHZ = { inherit = PLS } }
+            }
+			922 = { add_core = PLS }
+			920 = { add_core = PLS }
+			3357 = { add_core = PLS }
+			908 = { add_core = PLS }
+			919 = { add_core = PLS }
+			917 = { add_core = PLS }
+			909 = { add_core = PLS }
+			3474 = { add_core = PLS }
+			918 = { add_core = PLS }
+			916 = { add_core = PLS }
 		any_pop = {
 			limit = { location = {
 				OR = {
