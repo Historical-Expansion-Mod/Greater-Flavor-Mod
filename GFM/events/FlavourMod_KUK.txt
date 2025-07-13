@@ -623,7 +623,10 @@ country_event = {
             military_access = FROM
             create_alliance = FROM
         }
-
+		
+		# Erfurt core is removed from Brandenburg, so it is given to Saxony later
+		554 = { remove_core = BRN }
+		
         # Rhineland is released, if still owned by Prussia
         random_country = {
             limit = {
@@ -1408,180 +1411,49 @@ country_event = {
 }
 
 country_event = {
-	id = 800825
-	title = "The Polish Plight"
-	desc = "EVTDESC800825"
-	picture = "polish_partition"
+	id = 800832
+	title = "Expand the South German Confederation?"
+	desc = "EVTDESC800832"
+	picture = "germanistentag"
 	
 	fire_only_once = yes
 	
 	mean_time_to_happen = { months = 6 }
 	
 	trigger = {
-		has_global_flag = prussia_no_ger
-		OR = {
-			tag = DNB
-			tag = AUB
+		has_country_flag = control_frankfurt_parlament
+		capital = 619
+		owns = 586
+		FRM = { vassal_of = THIS }
+		RHI = { vassal_of = THIS }
+		WES = { vassal_of = THIS }
+		NOT = {
+			owns = 570
+			owns = 2560
+			owns = 3904
+			owns = 571
 		}
-		year = 1860
-		NOT = { year = 1865 }
-		699 = { OR = { owned_by = PRU owned_by = NGF } }
-		NOT = { is_our_vassal = PRU }
-		POL = { exists = no }
+		570 = { owner = { OR = { tag = THIS vassal_of = THIS } } }
+		2560 = { owner = { OR = { tag = THIS vassal_of = THIS } } }
+		3904 = { owner = { OR = { tag = THIS vassal_of = THIS } } }
+		571 = { owner = { OR = { tag = THIS vassal_of = THIS } } }
 	}
 	
 	option = {
-		name = "And crippling the Prussians further? Promise full support! §RGain 3 infamy§!"
-		badboy = 3
-		money = -50000
-		set_global_flag = poznan_cooking
-		set_country_flag = poznan_connection
-		ai_chance = { factor = 9 }
-	}
-	
-	option = {
-		name = "Nay! The Prussians have been humiliated enough."
-		prestige = -5
+		name = "Propose the new borders in the Federal Convention"
+		570 = { secede_province = THIS add_core = THIS }
+		2560 = { secede_province = THIS add_core = THIS }
+		3904 = { secede_province = THIS add_core = THIS }
+		571 = { secede_province = THIS add_core = THIS }
 		ai_chance = { factor = 1 }
 	}
-}
-
-country_event = {
-		id = 800826
-		title = "Greater Poland Uprising of $YEAR$"
-		desc = "EVTDESC800826"
-		picture = "polish_uprising_aus"
-		
-		fire_only_once = yes
-		
-		mean_time_to_happen = { months = 12 }
-		
-		trigger = {
-			OR = { tag = PRU tag = NGF }
-			has_global_flag = poznan_cooking
-			PZN = { OR = { all_core = { owned_by = THIS } vassal_of = THIS } }
-		}
-		
-		option = {
-			name = "We can't take another loss! To arms!"
-			prestige = 5
-			random_owned = {
-				limit = { PZN = { exists = yes vassal_of = THIS } }
-				owner = { release_vassal = PZN }
-			}
-			random_owned = {
-				limit = { PZN = { exists = no } }
-				owner = { release = PZN }
-			}
-			random_country = {
-					limit = { has_country_flag = poznan_connection }
-					create_alliance = PZN
-					diplomatic_influence = { who = PZN value = 400 }
-					set_country_flag = poznan_war
-					clr_country_flag = poznan_connection
-					clr_global_flag = poznan_cooking
-			}
-			war = {
-				target = PZN
-				attacker_goal = {
-					casus_belli = annex_core_country
-				}
-				defender_goal = {
-					casus_belli = status_quo
-				}
-				call_ally = yes
-			}
-			ai_chance = {
-				factor = 1
-				modifier = {
-					factor = 0
-					OR = { 
-						in_sphere = AUB
-						in_sphere = DNB
-					}
-				}
-			}
-		}
-		
-		option = {
-			name = "It is hopeless. The Polish have support from Vienna."
-			prestige = -20
-			random_owned = {
-				limit = { PZN = { exists = yes vassal_of = THIS } }
-				owner = { release_vassal = PZN }
-			}
-			random_owned = {
-				limit = { PZN = { exists = no } }
-				owner = { release = PZN }
-			}
-			random_country = {
-					limit = { has_country_flag = poznan_connection }
-					create_alliance = PZN
-					diplomatic_influence = { who = PZN value = 400 }
-					country_event = 800827
-					clr_country_flag = poznan_connection
-					clr_global_flag = poznan_cooking
-			}
-			ai_chance = {
-				factor = 1
-				modifier = {
-					factor = 0
-					NOT = { 
-						in_sphere = AUB
-						in_sphere = DNB
-					}
-				}
-			}
-		}
-	}
-	
-country_event = {
-	id = 800827
-	title = "Prussia gives up Poznan"
-	desc = "EVTDESC800827"
-	picture = "celebration"
-	
-	fire_only_once = yes
-	
-	mean_time_to_happen = { days = 1 }
-	
-	trigger = {
-		has_country_flag = poznan_war
-		PZN = { exists = yes war = no in_sphere = THIS }
-	}
 	
 	option = {
-		name = "A nation redeemed!"
-		prestige = 5 
-		clr_country_flag = poznan_war
-		random_owned = {
-			limit = { owner = { NOT = { owns = 706 is_our_vassal = POL } } }
-			owner = { 
-				create_vassal = PZN
-				create_alliance = PZN
-			}
-		}
-		random_owned = {
-			limit = { owner = { owns = 706 NOT = { is_our_vassal = POL } } }
-			owner = { 
-			inherit = PZN
-				any_owned = {
-					limit = {
-						OR = {
-							region = RUS_706
-							region = PRU_701
-						}
-					}
-					secede_province = POL
-				}
-				create_vassal = POL
-				create_alliance = POL
-				diplomatic_influence = { who = POL value = 400 }
-			}
-		}
-		random_owned = {
-			limit = { owner = { POL = { exists = yes vassal_of = THIS } }
-			owner = { POL = { inherit = PZN } }
-		}
+		name = "We actually rather leave it our puppets"
+		570 = { secede_province = RHI add_core = RHI remove_core = THIS }
+		2560 = { secede_province = WES add_core = WES remove_core = THIS }
+		3904 = { secede_province = RHI add_core = RHI remove_core = THIS remove_core = BAV }
+		571 = { secede_province = RHI add_core = RHI remove_core = THIS remove_core = BAV }
+		ai_chance = { factor = 1 }
 	}
 }

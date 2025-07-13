@@ -1337,3 +1337,124 @@ country_event = {
 		}
     }
 }
+
+country_event = {
+	id = 800824
+	title = "The Lithuanian Question"
+	desc = "EVTDESC800824"
+	picture = "riga"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Lithuania shall join the Baltic States §R(Blocks Germany from annexing the UBD)§!"
+		set_global_flag = lithuania_in_the_UBD
+		UBD = { add_accepted_culture = lithuanian }
+			
+		random_country = {
+			limit = {
+				tag = LIT
+				exists = yes
+				ai = yes
+				war = no
+				vassal_of = THIS
+			}
+			annex_to = UBD
+		}
+		any_country = {
+			limit = {
+				NOT = { tag = UBD }
+				any_owned_province = { is_core = LIT }
+				OR = {
+					in_sphere = THIS
+					vassal_of = THIS
+				}
+				war = no
+			}
+			any_owned = { limit = { is_core = LIT } secede_province = THIS }
+		}
+		any_owned = { limit = { is_core = LIT NOT = { is_core = THIS } } secede_province = UBD }	
+		LIT = { all_core = { limit = { NOT = { is_core = THIS } } add_core = UBD } }
+		diplomatic_influence = { who = UBD value = 50 }
+		relation = { who = UBD value = 50 }
+		UBD = { any_pop = { limit = { has_pop_culture = lithuanian }  consciousness = 4 militancy = 5 } }
+		UBD = { any_owned = { limit = { is_core = LIT } add_province_modifier = { name = nationalist_agitation duration = 1095 } } }
+		any_owned = { limit = { is_core = THIS } remove_core = UBD remove_core = LIT }
+		ai_chance = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				LIT = { ai = no }
+			}
+		}
+	}
+	
+	option = {
+		name = "Support Lithuanian claims instead"
+		LIT = {
+			BYE = { all_core = { add_core = LIT } }
+            945 = { remove_core = LIT }
+            3531 = { remove_core = LIT }
+            944 = { remove_core = LIT }
+            949 = { remove_core = LIT }
+            1007 = { remove_core = LIT }
+            943 = { remove_core = LIT  }
+            1015 = { remove_core = LIT }
+			set_country_flag = grand_duchy_lit
+		}
+		any_owned = { limit = { is_core = THIS } remove_core = UBD remove_core = LIT }
+		any_country = {
+			limit = { any_owned_province = { is_core = LIT } in_sphere = THIS OR = { vassal_of = THIS is_vassal = no } }
+			any_owned = { limit = { is_core = LIT } secede_province = THIS }
+		}
+		any_owned = { limit = { is_core = LIT } secede_province = LIT }
+		LIT = { country_event = 800835 }
+		
+		ai_chance = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				UBD = { ai = no }
+			}
+		}
+	}
+	
+}
+
+country_event = {
+	id = 800835
+	title = "$FROMCOUNTRY$ supports our claims!"
+	desc = "EVTDESC800835"
+	picture = "treaty"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Maybe $FROMCOUNTRY$ isn't that bad after all... §R(You will become a vassal!)§!"
+		FROM = { create_vassal = LIT create_alliance = LIT diplomatic_influence = { who = LIT value = 400 } }
+		prestige = 5
+		set_country_flag = grand_duchy_lit
+		ai_chance = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				LIT = { ai = no }
+			}
+		}
+	}
+	
+	option = {
+		name = "As long as it keeps us free..."
+		prestige = 5
+		set_country_flag = grand_duchy_lit
+		
+		ai_chance = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				FROM = { ai = no }
+			}
+		}
+	}
+	
+}
