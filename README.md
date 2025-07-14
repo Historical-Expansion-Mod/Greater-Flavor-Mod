@@ -12,15 +12,16 @@ Failure to extract the mod may be due to a common GitHub issue, so try downloadi
 ## Submods
   * GFM is standalone - you do not need the original HFM to play.
   * GFM Shattered World releases every single nation and adds a bunch more along with all the fantasy formables.
-  * GFM Performance Increase changes files to a lower resolution, thus reducing lag (doesn't change checksums).
+  * GFM Low Res Map changes the map to a lower resolution, thus reducing lag (doesn't change checksums).
   * GFM More Cultures adds a lot more cultures to the game.
   * GFM Fantasy Formables is a submod that adds several unrealistic formable countries.
   * GFM Fluff Decisions adds inconsequential flavor decisions
   * GFM No Swastikas removes every swastika in the game.
   * GFM Grid Map is a map submod that returns the grid from vanilla to GFM.
   * GFM Belle Dark is a map submod that applies the Belle Dark map mod to GFM.
-  * GFM 1830 Startdate is no longer a submod but a bookmark, nevertheless it allows people to start the game in 1830 and has content for the added years.
   * GFM Terrain Pictures Submod adds over a thousand unique terrain pictures to GFM.
+  * GFM Newspapers Submod adds newspaper back to GFM, after being removed to increase perfomance.
+  * GFM Cat Leaders Submod changes general and admiral portraits into cat pictures from memes and from our discord server (which is at the bottom of the file).
   * Music Sub Mod adds more music to the game. This is located in a separate repository which can be found [here]( https://github.com/Elijah-maker/GFM-Music-Submod)
   * Absolute gigachad Jay de Brabant has [made a submod]( https://github.com/LePetitJayJay/Victoria-2-Anime-Flags-Mod) for GFM adding anime girl flags (the repo also includes regular HFM flags).
 
@@ -57,7 +58,7 @@ GFM owes its existence to:
 * BloomerMagma
 * UlfDerDritte
 * Erling E. Kristiansen
-* Wooper Goldberg
+* Yochanan Yaakov May
 * Sarifzx
 * Atlas
 * General Garcia
@@ -69,6 +70,7 @@ GFM owes its existence to:
 * RadRadishRadiator
 * ElYisusKing
 * Trigori
+* EtherealTamakii
 
 
 As well as the original developer of HFM, the one and only: SighPie

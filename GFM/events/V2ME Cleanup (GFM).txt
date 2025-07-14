@@ -37,10 +37,10 @@ country_event = {
 
 	option = {
 		name = "Checking..."
-		random_country = { limit = { has_global_flag = dismantlement_active  } CLN = { country_event = 20430 } } # Dismantlement Handler Event
 		random_owned = {
 			limit = {
 				owner = {
+					BOR = { exists = yes }
 					NOT = { BOR = { has_country_flag = monarchy_government } }
 				}
 			}
@@ -51,6 +51,7 @@ country_event = {
 		random_owned = {
 			limit = {
 				owner = {
+					SPC = { exists = yes }
 					NOT = { SPC = { has_country_flag = monarchy_government } }
 				}
 			}
@@ -76,44 +77,6 @@ country_event = {
 						remove_core = SPC
 					}
 					change_tag = SPA
-				}
-			}
-		}
-		random_owned = {
-			limit = {
-				owner = {
-					OR = {
-						FGC = {
-							has_country_modifier = panamanian_integration
-						}
-						GCO = {
-							has_country_modifier = panamanian_integration
-						}
-						CLM = {
-							has_country_modifier = panamanian_integration
-						}
-					}
-					OR = {
-						PNM = { exists = yes }
-						2204 = {
-							NOT = { owned_by = FGC owned_by = GCO owned_by = CLM }
-						}
-					}
-					2204 = { is_core = PNM }
-				}
-			}
-			owner = {
-				FGC = {
-					clr_country_flag = panamanian_integration
-					remove_country_modifier = panamanian_integration
-				}
-				GCO = {
-					clr_country_flag = panamanian_integration
-					remove_country_modifier = panamanian_integration
-				}
-				CLM = {
-					clr_country_flag = panamanian_integration
-					remove_country_modifier = panamanian_integration
 				}
 			}
 		}
@@ -196,10 +159,10 @@ country_event = {
 		#updating missing flags
 		any_country = {
 			limit = {
-				exists = yes
 				NOT = {
 					has_country_flag = existing_country
 				}
+				exists = yes
 			}
 			set_country_flag = existing_country
 		}
@@ -219,15 +182,6 @@ country_event = {
 			}
 			clr_country_flag = lost_the_war
 		}
-
-		#native assimilation cleanup
-		any_country = {
-            limit = {
-                has_country_flag = native_assimilation_enacted
-                NOT = { has_country_modifier = native_assimilation_act_policy }
-            }
-            clr_country_flag = native_assimilation_enacted
-        }
 
 		#pay owed steamers
 		any_country = {
@@ -442,6 +396,52 @@ country_event = {
 
 	option = {
 		name = "Checking..."
+		random_owned = {
+			limit = {
+				owner = {
+					OR = {
+						FGC = {
+							has_country_modifier = panamanian_integration
+						}
+						GCO = {
+							has_country_modifier = panamanian_integration
+						}
+						CLM = {
+							has_country_modifier = panamanian_integration
+						}
+					}
+					OR = {
+						PNM = { exists = yes }
+						2204 = {
+							NOT = { owned_by = FGC owned_by = GCO owned_by = CLM }
+						}
+					}
+					2204 = { is_core = PNM }
+				}
+			}
+			owner = {
+				FGC = {
+					clr_country_flag = panamanian_integration
+					remove_country_modifier = panamanian_integration
+				}
+				GCO = {
+					clr_country_flag = panamanian_integration
+					remove_country_modifier = panamanian_integration
+				}
+				CLM = {
+					clr_country_flag = panamanian_integration
+					remove_country_modifier = panamanian_integration
+				}
+			}
+		}
+		#native assimilation cleanup
+		any_country = {
+            limit = {
+                has_country_flag = native_assimilation_enacted
+                NOT = { has_country_modifier = native_assimilation_act_policy }
+            }
+            clr_country_flag = native_assimilation_enacted
+        }
 		any_owned = {
 			limit = {
 				NOT = { province_id = 3486 }
@@ -1535,6 +1535,22 @@ country_event = {
 			}
 			government = hms_government
 		}
+		any_country = {
+			limit = {
+				is_vassal = yes
+				NOT = { has_country_flag = vassal_nation_cb }
+				ai = yes
+			}
+			set_country_flag = vassal_nation_cb
+		}
+		any_country = {
+			limit = {
+				has_country_flag = vassal_nation_cb
+				is_vassal = no
+				ai = yes
+			}
+			clr_country_flag = vassal_nation_cb
+		}
 		any_land_province = {
 			limit = {
 				OR = {
@@ -1549,6 +1565,48 @@ country_event = {
 			remove_province_modifier = slave_trade_decadence_2
 			remove_province_modifier = slave_trade_decadence_3
 			remove_province_modifier = slave_trade_decadence_4
+		}
+		any_land_province = {
+			limit = {
+				NOT = {
+					has_province_modifier = unemployment_joever
+				}
+				month = 1
+				NOT = {
+					province_control_days = 30
+				}
+				OR = {
+					unemployment_by_type = {
+						type = farmers
+						value = 0.4
+					}
+					unemployment_by_type = {
+						type = labourers
+						value = 0.4
+					}
+				}
+			}
+			add_province_modifier = { name = unemployment_joever duration = 45 }
+		}
+		any_land_province = {
+			limit = {
+				has_province_modifier = unemployment_joever
+				month = 1
+				NOT = {
+					province_control_days = 30
+				}
+				NOT = {
+					unemployment_by_type = {
+						type = farmers
+						value = 0.4
+					}
+					unemployment_by_type = {
+						type = labourers
+						value = 0.4
+					}
+				}
+			}
+			remove_province_modifier = unemployment_joever
 		}
 		any_land_province = {
 			limit = {
@@ -6855,6 +6913,7 @@ country_event = {
 				OR = {
 					tag = PZN
 					tag = SLS
+					tag = DNZ
 					tag = ALS
 					tag = BEL
 					tag = BOS
@@ -21089,6 +21148,18 @@ country_event = {
 								owns = 4070
 							}
 							4071 = { empty = yes }
+						}
+						AND = {
+							owns = 4182
+							2305 = { empty = yes }
+							year = 1858
+							#month = 6
+						}
+						AND = {
+							owns = 2309
+							2375 = { empty = yes }
+							year = 1852
+							#month = 8
 						}
 						AND = {
 							owns = 2287
