@@ -768,6 +768,193 @@ political_decisions = {
 		}
 	}
 
+	purchase_matto-grosso = {
+		potential = {
+			OR = { tag = GCO tag = FGC }
+			has_global_flag = GCO_DESTROYED_BRZ
+			2295 = { owned_by = GCO is_core = GCO }
+			NOT = { has_global_flag = purchase_matto-grosso }
+		}
+		
+		allow = {
+			year = 1862
+			OR = {
+				BOL = { exists = yes vassal_of = THIS }
+				2313 = { owned_by = THIS }
+			}
+			NOT = { owns = 3991 }
+		}
+		
+		effect = {
+			set_global_flag = purchase_matto-grosso
+			3991 = { owner = { country_event = 6232030 } }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	invade_matto-grosso = {
+		potential = {
+			OR = { tag = GCO tag = FGC }
+			has_global_flag = purchase_matto-grosso
+			2295 = { owned_by = THIS is_core = THIS }
+			NOT = { 3991 = { is_core = THIS } }
+			NOT = { has_global_flag = invade_matto-grosso }
+		}
+		
+		allow = {
+			year = 1868
+			OR = {
+				BOL = { exists = yes vassal_of = THIS }
+				2313 = { owned_by = THIS }
+			}
+			3991 = { owner = { NOT = { war_with = THIS truce_with = THIS } } }
+		}
+		
+		effect = {
+			badboy = 15
+			set_global_flag = invade_matto-grosso
+			BRZ_2408 = { add_core = THIS }
+			BRZ_2416 = { add_core = THIS }
+			random_owned = {
+				limit = { owner = { 3991 = { owned_by = BRZ } } }
+				any_country = {
+					limit = { alliance_with = BRZ }
+					leave_alliance = BRZ
+				}
+				owner = {
+					war = {
+						target = BRZ
+						attacker_goal = { casus_belli = scripted_war_small country = GCO }
+						defender_goal = { casus_belli = scripted_war_small country = BRZ }
+						call_ally = no
+					}
+				}
+				BRZ = { country_event = 6232033 }
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	revoke_brazilian_claims = {
+		potential = {
+			OR = { tag = GCO tag = FGC }
+			has_global_flag = invade_matto-grosso
+			3991 = { is_core = THIS }
+			NOT = { has_global_flag = brazilian_cores_revoked }
+			truce_with = BRZ
+			BRZ = { has_country_flag = lost_the_war }
+		}
+		
+		allow = {
+			NOT = { war_with = BRZ }
+		}
+		
+		effect = {
+			prestige = 10
+			set_global_flag = brazilian_cores_revoked
+			random_owned = {
+				limit = { owner = { BRZ = { has_country_flag = lost_the_war } } }
+				BRZ = {
+					any_owned = {
+						limit = {
+							OR = {
+								region = BRZ_2408
+								region = BRZ_2416
+								is_core = THIS
+							}
+						}
+						secede_province = THIS
+					}
+					clr_country_flag = lost_the_war
+				}
+			}
+			BRZ_2408 = { remove_core = BRZ }
+			BRZ_2416 = { remove_core = BRZ }
+			MGO = { primary_culture = north_andean add_accepted_culture = brazilian }
+			BRZ_2408 = { 
+				add_core = ACE
+			}
+			BRZ_2408 = { 
+				remove_core = PAA
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	revoke_colombian_claims = {
+		potential = {
+			tag = BRZ
+			has_global_flag = invade_matto-grosso
+			3991 = { is_core = THIS }
+			NOT = { has_country_flag = amazonas_reclaimed }
+			NOT = { has_global_flag = colombian_cores_revoked }
+			OR = { truce_with = GCO truce_with = FGC }
+			OR = { GCO = { has_country_flag = lost_the_war } FGC = { has_country_flag = lost_the_war } }
+		}
+		
+		allow = {
+			OR = { GCO = { is_disarmed = yes } FGC = { is_disarmed = yes } }
+			2410 = { is_core = THIS owned_by = THIS }
+			3991 = { is_core = THIS owned_by = THIS }
+		}
+		
+		effect = {
+			set_global_flag = colombian_cores_revoked
+			prestige = 10
+			random_owned = {
+				limit = { owner = { GCO = { has_country_flag = lost_the_war } } }
+				GCO = {
+					any_owned = {
+						limit = {
+							OR = {
+								region = BRZ_2408
+								region = BRZ_2416
+								is_core = THIS
+							}
+						}
+						secede_province = THIS
+					}
+					clr_country_flag = lost_the_war
+				}
+			}
+			random_owned = {
+				limit = { owner = { FGC = { has_country_flag = lost_the_war } } }
+				FGC = {
+					any_owned = {
+						limit = {
+							OR = {
+								region = BRZ_2408
+								region = BRZ_2416
+								is_core = THIS
+							}
+						}
+						secede_province = THIS
+					}
+					clr_country_flag = lost_the_war
+				}
+			}
+			BRZ_2408 = { 
+				limit = { is_core = BRZ }
+				remove_core = GCO
+				remove_core = FGC
+			}
+			BRZ_2416 = { 
+				limit = { is_core = BRZ }
+				remove_core = GCO
+				remove_core = FGC
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
 	treaty_of_havana = {
 		potential = {
 			has_global_flag = spanish_colombian_war
