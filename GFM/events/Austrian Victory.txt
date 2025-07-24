@@ -520,3 +520,487 @@ country_event = {
 		}
 	}
 }
+
+country_event = {
+    id = 73649200
+    title = "$FROMCOUNTRY$ proposes a referendum in Schleswig"
+    desc = "EVTDESC73649200"
+	picture = "rhineland"
+	
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "Accept the referendum!"
+		FROM = { country_event = 73649201 }
+		ai_chance = {
+			factor = 95
+			modifier = {
+				factor = 0.1
+				is_greater_power = yes
+			}
+		}
+	}
+
+    option = {
+        name = "refuse the referendum!"
+		set_country_flag = schleswig_referendum_rejected
+		FROM = { country_event = 73649202 }
+		ai_chance = { factor = 5 }
+	}
+}
+
+country_event = {
+    id = 73649201
+    title = "$FROMCOUNTRY$ agrees to do the referendum"
+    desc = "EVTDESC73649201"
+	picture = "rhineland"
+	
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "Huzzah!"
+		prestige = 5
+		CLN = { country_event = 73649203 }
+		set_country_flag = schleswig_referendum_ongoing
+	}
+}
+
+country_event = {
+    id = 73649202
+    title = "$FROMCOUNTRY$ refuses to do the referendum"
+    desc = "EVTDESC73649202"
+	picture = "rhineland"
+	
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "Bah!"
+		prestige = -5
+		relation = { who = FROM value = -100 }
+	}
+}
+
+country_event = {
+    id = 73649203
+    title = "A referendum in Schleswig"
+    desc = "EVTDESC73649203"
+	picture = "rhineland"
+	
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "Accept the referendum!"
+		random_list = {
+			90 = { any_country = { limit = { has_country_flag = schleswig_referendum_ongoing } country_event = { id = 73649204 days = 30 } } }
+			5 = { any_country = { limit = { has_country_flag = schleswig_referendum_ongoing } country_event = { id = 73649205 days = 30 } } }
+			5 = { any_country = { limit = { has_country_flag = schleswig_referendum_ongoing } country_event = { id = 73649206 days = 30 } } }
+		}
+	}
+}
+
+country_event = {
+    id = 73649204
+    title = "Northern Schleswig favors the Danish"
+    desc = "EVTDESC73649204"
+	picture = "rhineland"
+	
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "At least we got something"
+		clr_country_flag = schleswig_referendum_ongoing
+		any_country = {
+			limit = {
+				OR = {
+					tag = DEN
+					tag = DNN
+					tag = SCA
+				}
+				exists = yes
+				NOT = { has_country_flag = schleswig_referendum_rejected }
+			}
+			set_country_flag = schleswig_referendum_ended
+		}
+		371 = { remove_core = THIS remove_core = GER remove_core = GCF }
+		random_owned = {
+			limit = { owner = { SCA = { has_country_flag = schleswig_referendum_ended } } }
+			owner = {
+				any_owned = {
+					limit = {
+						province_id = 371
+					}
+					secede_province = SCA
+				}
+			}
+			SCA = { country_event = 73649207 }
+		}
+		random_owned = {
+			limit = { owner = { DNN = { has_country_flag = schleswig_referendum_ended } } }
+			owner = {
+				any_owned = {
+					limit = {
+						province_id = 371
+					}
+					secede_province = DNN
+				}
+			}
+			DNN = { country_event = 73649207 }
+		}
+		random_owned = {
+			limit = { owner = { DEN = { has_country_flag = schleswig_referendum_ended } } }
+			owner = {
+				any_owned = {
+					limit = {
+						province_id = 371
+					}
+					secede_province = DEN
+				}
+			}
+			DEN = { country_event = 73649207 }
+		}
+		random_owned = {
+			limit = { owner = { SCA = { has_country_flag = schleswig_referendum_ended } } }
+			any_country = {
+				limit = {
+					OR = {
+						primary_culture = north_german
+						primary_culture = south_german
+					}
+					OR = {
+						in_sphere = THIS
+						vassal_of = THIS
+					}
+				}
+				any_owned = {
+					limit = { province_id = 371 }
+					secede_province = THIS
+					secede_province = SCA
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { DNN = { has_country_flag = schleswig_referendum_ended } } }
+			any_country = {
+				limit = {
+					OR = {
+						primary_culture = north_german
+						primary_culture = south_german
+					}
+					OR = {
+						in_sphere = THIS
+						vassal_of = THIS
+					}
+				}
+				any_owned = {
+					limit = { province_id = 371 }
+					secede_province = THIS
+					secede_province = DNN
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { DEN = { has_country_flag = schleswig_referendum_ended } } }
+			any_country = {
+				limit = {
+					OR = {
+						primary_culture = north_german
+						primary_culture = south_german
+					}
+					OR = {
+						in_sphere = THIS
+						vassal_of = THIS
+					}
+				}
+				any_owned = {
+					limit = { province_id = 371 }
+					secede_province = THIS
+					secede_province = DEN
+				}
+			}
+		}
+	}
+}
+
+country_event = {
+    id = 73649205
+    title = "Schleswig favors the Germans"
+    desc = "EVTDESC73649205"
+	picture = "rhineland"
+	
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "Glory to Germany!"
+		clr_country_flag = schleswig_referendum_ongoing
+		prestige = 5
+		any_country = {
+			limit = {
+				OR = {
+					tag = DEN
+					tag = DNN
+					tag = SCA
+				}
+				exists = yes
+				NOT = { has_country_flag = schleswig_referendum_rejected }
+			}
+			set_country_flag = schleswig_referendum_ended
+		}
+		371 = { remove_core = THIS remove_core = GER remove_core = GCF }
+		random_owned = {
+			limit = { owner = { SCA = { has_country_flag = schleswig_referendum_ended } } }
+			owner = {
+				370 = { remove_core = SCA }
+				371 = { remove_core = SCA }
+				3862 = { remove_core = SCA }
+			}
+			SCA = { country_event = 73649208 }
+		}
+		random_owned = {
+			limit = { owner = { DNN = { has_country_flag = schleswig_referendum_ended } } }
+			owner = {
+				370 = { remove_core = DNN }
+				371 = { remove_core = DNN }
+				3862 = { remove_core = DNN }
+			}
+			DNN = { country_event = 73649208 }
+		}
+		random_owned = {
+			limit = { owner = { DEN = { has_country_flag = schleswig_referendum_ended } } }
+			owner = {
+				370 = { remove_core = DEN }
+				371 = { remove_core = DEN }
+				3862 = { remove_core = DEN }
+			}
+			DEN = { country_event = 73649208 }
+		}
+	}
+}
+
+country_event = {
+    id = 73649206
+    title = "Schleswig favors the Danish"
+    desc = "EVTDESC73649206"
+	picture = "rhineland"
+	
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "What a shame..."
+		clr_country_flag = schleswig_referendum_ongoing
+		any_country = {
+			limit = {
+				OR = {
+					tag = DEN
+					tag = DNN
+					tag = SCA
+				}
+				exists = yes
+				NOT = { has_country_flag = schleswig_referendum_rejected }
+			}
+			set_country_flag = schleswig_referendum_ended
+		}
+		370 = { remove_core = THIS remove_core = GER remove_core = GCF }
+		371 = { remove_core = THIS remove_core = GER remove_core = GCF }
+		3862 = { remove_core = THIS remove_core = GER remove_core = GCF }
+		random_owned = {
+			limit = { owner = { SCA = { has_country_flag = schleswig_referendum_ended } } }
+			owner = {
+				any_owned
+					limit = {
+						OR = {
+							province_id = 370
+							province_id = 371
+							province_id = 3862
+						}
+					}
+					secede_province = SCA
+				}
+			}
+			SCA = { country_event = 73649209 }
+		}
+		random_owned = {
+			limit = { owner = { DNN = { has_country_flag = schleswig_referendum_ended } } }
+			owner = {
+				any_owned
+					limit = {
+						OR = {
+							province_id = 370
+							province_id = 371
+							province_id = 3862
+						}
+					}
+					secede_province = DNN
+				}
+			}
+			DNN = { country_event = 73649209 }
+		}
+		random_owned = {
+			limit = { owner = { DEN = { has_country_flag = schleswig_referendum_ended } } }
+			owner = {
+				any_owned
+					limit = {
+						OR = {
+							province_id = 370
+							province_id = 371
+							province_id = 3862
+						}
+					}
+					secede_province = DEN
+				}
+			}
+			DEN = { country_event = 73649209 }
+		}
+		random_owned = {
+			limit = { owner = { SCA = { has_country_flag = schleswig_referendum_ended } } }
+			any_country = {
+				limit = {
+					OR = {
+						primary_culture = north_german
+						primary_culture = south_german
+					}
+					OR = {
+						in_sphere = THIS
+						vassal_of = THIS
+					}
+				}
+				any_owned = {
+					limit = {
+						OR = {
+							province_id = 370
+							province_id = 371
+							province_id = 3862
+						}
+					}
+					secede_province = THIS
+					secede_province = SCA
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { DNN = { has_country_flag = schleswig_referendum_ended } } }
+			any_country = {
+				limit = {
+					OR = {
+						primary_culture = north_german
+						primary_culture = south_german
+					}
+					OR = {
+						in_sphere = THIS
+						vassal_of = THIS
+					}
+				}
+				any_owned = {
+					limit = {
+						OR = {
+							province_id = 370
+							province_id = 371
+							province_id = 3862
+						}
+					}
+					secede_province = THIS
+					secede_province = DNN
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { DEN = { has_country_flag = schleswig_referendum_ended } } }
+			any_country = {
+				limit = {
+					OR = {
+						primary_culture = north_german
+						primary_culture = south_german
+					}
+					OR = {
+						in_sphere = THIS
+						vassal_of = THIS
+					}
+				}
+				any_owned = {
+					limit = {
+						OR = {
+							province_id = 370
+							province_id = 371
+							province_id = 3862
+						}
+					}
+					secede_province = THIS
+					secede_province = DEN
+				}
+			}
+		}
+	}
+}
+
+country_event = {
+    id = 73649207
+    title = "Southern Schleswig favors the Germans"
+    desc = "EVTDESC73649207"
+	picture = "rhineland"
+	
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "At least we got something"
+		370 = { remove_core = THIS }
+		3862 = { remove_core = THIS }
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 370
+					province_id = 3862
+				}
+			}
+			secede_province = FROM
+		}
+	}
+}
+
+country_event = {
+    id = 73649208
+    title = "Schleswig favors the Germans"
+    desc = "EVTDESC73649208"
+	picture = "rhineland"
+	
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "What a shame..."
+		370 = { remove_core = THIS }
+		371 = { remove_core = THIS }
+		3862 = { remove_core = THIS }
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 370
+					province_id = 371
+					province_id = 3862
+				}
+			}
+			secede_province = FROM
+		}
+	}
+}
+
+country_event = {
+    id = 73649209
+    title = "Schleswig favors the Danish"
+    desc = "EVTDESC73649209"
+	picture = "rhineland"
+	
+    fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "Glory to the Danish people!"
+		prestige = 5
+	}
+}
