@@ -1,11 +1,202 @@
 political_decisions = {
+	tarfaya_purchase = {
+        picture = tarfaya_purchase
+        potential = {
+			owns = 1696
+			NOT = { owns = 3682 }
+            NOT = { has_global_flag = tarfaya_purchase }
+        }
+
+        allow = {
+			3682 = {
+				owner = {
+					NOT = {
+						war_with = THIS
+						truce_with = THIS
+					}
+					war = no
+				}
+			}
+			OR = {
+				money = 50000
+				ai = yes
+			}
+            war = no
+			is_vassal = no
+			OR = {
+				year = 1895
+				AND = {
+					year = 1890
+					3682 = { owner = { alliance_with = THIS } }
+				}
+			}
+        }
+
+        effect = {
+            set_global_flag = tarfaya_purchase
+            3682 = { owner = { country_event = 325501 } }
+        }
+        ai_will_do = { factor = 1 }
+    }
+
+	integrating_mexico = {
+		picture = mexico_map
+		potential = {
+			tag = USA
+			NOT = { has_country_flag = mexico_integrated }
+			OR = {
+				AND = {
+					MEX = {
+						all_core = {
+							OR = {
+								owned_by = THIS
+								is_core = CUB
+								is_core = HAI
+								is_core = DOM
+								is_core = PHL
+								province_id = 2190
+								province_id = 2189
+								province_id = 2188
+								province_id = 3843
+								province_id = 2187
+								province_id = 3410
+								province_id = 2186
+								province_id = 2628
+								is_core = ELS
+								is_core = HON
+								is_core = NIC
+								is_core = COS
+								is_core = PNM
+							}
+						}
+					}
+					NOT = { has_country_flag = mexico_independence }
+				}
+				AND = {
+					OR = {
+						has_country_flag = mexico_annexation
+						has_country_flag = mexico_annexation_2
+					}
+					has_country_flag = mexico_independence
+					OR = {
+						has_global_flag = american_civil_war_has_happened
+						has_global_flag = alt_american_civil_war_has_happened
+					}
+					MEX = { exists = no }
+				}
+			}
+		}
+		allow = {
+			is_disarmed = no
+			war = no
+			NOT = { has_country_modifier = recently_lost_war }
+			is_greater_power = yes
+			citizens_rights = all_voting_pops
+			social_science = 1
+		}
+		effect = {
+			badboy = 15
+			set_country_flag = mexico_integrated
+			any_owned = {
+				limit = {
+					is_core = MEX
+					NOT = {
+						is_core = CUB
+						is_core = HAI
+						is_core = DOM
+						is_core = PHL
+						province_id = 2190
+						province_id = 2189
+						province_id = 2188
+						province_id = 3843
+						province_id = 2187
+						province_id = 3410
+						province_id = 2186
+						province_id = 2628
+						is_core = ELS
+						is_core = HON
+						is_core = NIC
+						is_core = COS
+						is_core = PNM
+					}
+				}
+				add_core = THIS
+			}
+		}
+	}
+
+	disarm_albania = {
+		picture = disarm_albania
+        potential = {
+			ai = no
+			tag = TUR
+			NOT = { exists = ALB year = 1847 has_country_flag = alb_disarmed }
+        }
+        allow = {
+            war = no
+            is_vassal = no
+            is_disarmed = no
+			ALB = { all_core = { owned_by = THIS is_core = THIS } }
+        }
+        effect = {
+			any_owned = {
+				limit = {
+					is_core = ALB
+				}
+				secede_province = ALB
+			}
+			ALB = {
+				war = {
+					target = THIS
+					attacker_goal = { casus_belli = humiliate_no_infamy }
+					defender_goal = { casus_belli = annex_core_country }
+				}
+			}
+			ALB = {
+				capital = 849
+				government = prussian_constitutionalism
+				political_reform = landed_voting
+				political_reform = harassment
+			}
+			set_country_flag = alb_disarmed
+		}
+	}
+
+	Claim_IDC = {
+		picture = idc_claim
+        potential = {
+			tag = IDC
+			NOT = { has_country_flag = idc_claimed }
+        }
+        allow = {
+            rank = 16
+            war = no
+            nationalism_n_imperialism = 1
+            is_vassal = no
+            is_disarmed = no
+            NOT = { has_country_modifier = recently_lost_war }
+			all_core = { owned_by = THIS }
+            OR = {
+                war_policy = pro_military
+                war_policy = jingoism
+			}
+        }
+        effect = {
+			badboy = 10
+			CHI_1601 = { add_core = IDC }
+			CHI_1505 = { add_core = IDC }
+			CHI_1504 = { add_core = IDC }
+			set_country_flag = idc_claimed
+			add_accepted_culture = zhuang
+			add_accepted_culture = miao
+		}
+	}
+
     gco_afro_latino_rights = {
         picture = gco_afro_latino
         potential = {
             tag = GCO
-            NOT = { has_country_flag = gco_afro_latino_accepted }
             slavery = no_slavery
-			NOT = { accepted_culture = afro_latino }
             OR = {
                 government = hms_government
                 government = democracy
@@ -13,6 +204,8 @@ political_decisions = {
 				government = radical_republic
 				government = proletarian_dictatorship
             }
+			NOT = { accepted_culture = afro_latino }
+            NOT = { has_country_flag = gco_afro_latino_accepted }
         }
 
         allow = {
@@ -23,9 +216,9 @@ political_decisions = {
 				ruling_party_ideology = socialist
 				ruling_party_ideology = communist
 			}
-			NOT = { citizenship_policy = residency }
 			citizens_rights = all_voting_pops
 			slavery = no_slavery
+			NOT = { citizenship_policy = residency }
         }
 
         effect = {
@@ -54,9 +247,14 @@ political_decisions = {
         picture = king_kaffa
         potential = {
 			tag = ETH
-			owns = 1863
-			3591 = {
-				NOT = { is_core = THIS }
+			owns = 1855
+			OR = {
+				3591 = {
+					NOT = { is_core = THIS }
+				}
+				1863 = {
+					NOT = { is_core = THIS }
+				}
 			}
         }
         allow = {
@@ -64,21 +262,35 @@ political_decisions = {
 			is_vassal = no
 			OR = {
 				civilized = yes
-				year = 1880
+				year = 1876
 			}
         }
         effect = {
             badboy = 2
 			3591 = { add_core = THIS }
+			3595 = { add_core = THIS }
+			1863 = { add_core = THIS }
+			3697 = { add_core = THIS }
+			3930 = { add_core = THIS }
 			random_owned = {
 				limit = {
 					owner = {
-						3591 = { owned_by = KAF }
+						3591 = { empty = yes }
+					}
+				}
+				owner = {
+					3591 = { secede_province = THIS any_pop = { literacy = -0.99 } }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						1863 = { owned_by = ORM }
 					}
 				}
 				owner = {
 					war = {
-						target = KAF
+						target = ORM
 						attacker_goal = { casus_belli = annex_core_country }
 						defender_goal = { casus_belli = humiliate_no_infamy }
 					}
@@ -92,12 +304,14 @@ political_decisions = {
 	violate_pando_noboa = {
         picture = valdivieso
         potential = {
+			owns = 2283
+			2283 = { is_core = THIS }
+			owns = 2282
+			2282 = { is_core = THIS }
 			OR = {
 				tag = ECU
 				tag = GCO
 			}
-			2283 = { owned_by = THIS is_core = THIS }
-			2282 = { owned_by = THIS is_core = THIS }
 			2291 = { owned_by = PEU NOT = { is_core = THIS } }
 			2287 = { owned_by = PEU NOT = { is_core = THIS } }
         }
@@ -122,22 +336,20 @@ political_decisions = {
         picture = Maritime_Destiny
         potential = {
             tag = CHL
-            NOT = { has_country_flag = Maritime_Destiny }
 			has_country_flag = PO_Expedition
 			801 = { empty = yes }
+            NOT = { has_country_flag = Maritime_Destiny }
         }
         allow = {
 			all_core = { OR = { owned_by = THIS empty = yes } }
             war = no
             total_amount_of_ships = 30
-			OR = {
-				is_greater_power = yes
-				is_secondary_power = yes
-			}
+			rank = 16
 			naval_decision_making = 1
 			nationalism_n_imperialism = 1
 			steamers = 1
 			801 = { empty = yes }
+			3905 = { empty = yes }
             2553 = { empty = yes }
             2552 = { empty = yes }
         }
@@ -145,29 +357,30 @@ political_decisions = {
             set_country_flag = Maritime_Destiny
             badboy = 3
 			801 = { secede_province = THIS any_pop = { literacy = -0.99 } life_rating = 25 }
+			3905 = { secede_province = THIS any_pop = { literacy = -0.99 } life_rating = 25 }
 			2553 = { secede_province = THIS any_pop = { literacy = -0.99 } life_rating = 25 }
 			2552 = { secede_province = THIS any_pop = { literacy = -0.99 } life_rating = 25 }
         }
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
     PO_Expedition = {
         picture = PO_Expedition
         potential = {
             tag = CHL
             owns = 2336
-            NOT = { has_country_flag = PO_Expedition }
 			801 = { empty = yes }
+			3905 = { empty = yes }
             2546 = { empty = yes }
             2547 = { empty = yes }
             2553 = { empty = yes }
+            NOT = { has_country_flag = PO_Expedition }
         }
         allow = {
             war = no
             money = 50000
             naval_statistics = 1
 			801 = { empty = yes }
+			3905 = { empty = yes }
             2546 = { empty = yes }
             2547 = { empty = yes }
             2553 = { empty = yes }
@@ -181,9 +394,7 @@ political_decisions = {
 	            duration = 10950
             }
         }
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
     Tonga_CHL = {
         picture = Tonga_CHL
@@ -201,10 +412,7 @@ political_decisions = {
 			naval_logistics = 1
             total_amount_of_ships = 40
 			all_core = { OR = { owned_by = THIS empty = yes } }
-			OR = {
-				is_greater_power = yes
-				is_secondary_power = yes
-			}
+			rank = 16
             2540 = { empty = yes }
             2545 = { empty = yes }
             2546 = { empty = yes }
@@ -219,9 +427,7 @@ political_decisions = {
             2546 = { secede_province = THIS any_pop = { literacy = -0.99 } life_rating = 25 }
             2547 = { secede_province = THIS any_pop = { literacy = -0.99 } life_rating = 25 }
         }
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
     Puppeting_Samoa = {
         picture = Puppeting_Samoa
@@ -235,10 +441,7 @@ political_decisions = {
         allow = {
             war = no
             money = 50000
-			OR = {
-				is_greater_power = yes
-				is_secondary_power = yes
-			}
+			rank = 16
             military_logistics = 1
             total_amount_of_ships = 50
 			all_core = { OR = { owned_by = THIS empty = yes } }
@@ -251,16 +454,14 @@ political_decisions = {
 				attacker_goal = { casus_belli = conquest_any }
 			}
         }
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
 	khivan_campaign = {
         picture = khivan_campaign
         potential = {
-			is_greater_power = yes
 			tag = RUS
 			owns = 1183
+			is_greater_power = yes
 			exists = KHI
 			KHI = { is_vassal = no }
 			NOT = { neighbour = KHI has_country_flag = khivan_campaign_sent }
@@ -279,15 +480,15 @@ political_decisions = {
 	cremieux_decree = {
         picture = cremieux_decree
         potential = {
-			is_greater_power = yes
-			primary_culture = french
-			NOT = { accepted_culture = sephardic }
-			owns = 425
 			owns = 1700
+			capital = 425
 			owns = 1704
 			owns = 1701
 			owns = 1709
 			owns = 1713
+			primary_culture = french
+			is_greater_power = yes
+			NOT = { accepted_culture = sephardic }
         }
         allow = {
 			war = no
@@ -307,10 +508,16 @@ political_decisions = {
 	fort_nemours = {
         picture = fort_nemours
         potential = {
-			NOT = { has_global_flag = colonial_railroading_disabled }
 			primary_culture = french
 			is_greater_power = yes
-			1894 = { empty = yes }
+			OR = {
+				1894 = { empty = yes }
+				1894 = { owned_by = IVC }
+				1894 = { owned_by = FTE }
+				1894 = { owned_by = ASH }
+			}
+			NOT = { has_global_flag = colonial_railroading_disabled }
+			NOT = { has_global_flag = fort_nemours }
         }
         allow = {
 			war = no
@@ -323,8 +530,16 @@ political_decisions = {
 			}
 		}
         effect = {
-			1894 = { secede_province = THIS }
-			1894 = { change_province_name = "Fort Nemours" }
+			set_global_flag = fort_nemours
+			random_owned = { limit = { owner = { 1894 = { empty = no } } } owner = {
+				1894 = { owner = { country_event = 18490030 } }
+				1894 = { secede_province = THIS }
+				1894 = { change_province_name = "Fort Nemours" }
+			} }
+			random_owned = { limit = { owner = { 1894 = { empty = yes } } } owner = {
+				1894 = { secede_province = THIS life_rating = 25 }
+				1894 = { change_province_name = "Fort Nemours" }
+			} }
 			set_country_flag = fort_nemours
         }
         ai_will_do = { factor = 1 }
@@ -332,12 +547,12 @@ political_decisions = {
 	anglo_zanzibari_treaty = {
         picture = anglo_zanzibari_treaty
         potential = {
-			tag = ENG
-			is_greater_power = yes
-			owns = 2087
-			NOT = { has_global_flag = anglo_zanzibari_treaty }
-			ZAN = { owns = 2048 slavery = yes_slavery is_vassal = no }
 			year = 1860
+			tag = ENG
+			owns = 2087
+			is_greater_power = yes
+			MZR = { owns = 2048 slavery = yes_slavery is_vassal = no }
+			NOT = { has_global_flag = anglo_zanzibari_treaty }
         }
         allow = {
 			OR = {
@@ -350,22 +565,23 @@ political_decisions = {
 		}
         effect = {
 			set_global_flag = anglo_zanzibari_treaty
-			ZAN = { country_event = 115520 }
+			MZR = { country_event = 115520 }
         }
         ai_will_do = { factor = 1 }
     }
 	polo_bustamante = {
         picture = polo_bustamante
         potential = {
-			NOT = { has_global_flag = polo_bustamante_treaty }
+			owns = 3557
+			owns = 2301
+			owns = 3823
 			OR = {
 				tag = BOL
 				tag = PEU
 			}
 			PEU = { exists = yes }
 			BOL = { exists = yes }
-			owns = 3557
-			owns = 2301
+			NOT = { has_global_flag = polo_bustamante_treaty }
         }
         allow = {
 			OR = {
@@ -448,6 +664,7 @@ political_decisions = {
 				owner = {
 					3557 = { remove_core = PEU }
 					2301 = { remove_core = PEU }
+					3823 = { remove_core = PEU }
 					2549 = { remove_core = PEU }
 					3381 = { remove_core = PEU }
 					3435 = { remove_core = PEU }
@@ -468,6 +685,7 @@ political_decisions = {
 				owner = {
 					3557 = { remove_core = BOL secede_province = PEU }
 					2301 = { remove_core = BOL secede_province = PEU }
+					3823 = { remove_core = BOL secede_province = PEU }
 					2549 = { remove_core = PEU }
 					3381 = { remove_core = PEU }
 					3435 = { remove_core = PEU }
@@ -486,6 +704,7 @@ political_decisions = {
 				owner = {
 					3557 = { remove_core = BOL }
 					2301 = { remove_core = BOL }
+					3823 = { remove_core = BOL }
 				}
 			}
 			random_owned = {
@@ -521,16 +740,31 @@ political_decisions = {
 					3326 = { remove_core = BOL }
 				}
 			}
+			random_owned = {
+				limit = {
+					owner = {
+						2310 = { NOT = { is_core = PEU } }
+						2316 = { is_core = PEU }
+					}
+				}
+				owner = {
+					2320 = { remove_core = PEU }
+					2316 = { remove_core = PEU }
+					2317 = { remove_core = PEU }
+					3380 = { remove_core = PEU }
+					2318 = { remove_core = PEU }
+				}
+			}
         }
         ai_will_do = { factor = 1 }
     }
 	invade_san_juan = {
         picture = invade_san_juan
         potential = {
-			3491 = { owned_by = NIC }
-			2200 = { owned_by = MSK }
-			MSK = { vassal_of = THIS }
 			USA = { war_with = MEX }
+			MSK = { vassal_of = THIS }
+			2200 = { owned_by = MSK }
+			3491 = { owned_by = NIC }
 			NOT = { year = 1854 }
         }
         allow = {
@@ -545,14 +779,13 @@ political_decisions = {
 	bouvet_island = {
         picture = bouvet
         potential = {
+			year = 1900
 			OR = {
-				tag = DNN
+				has_country_flag = i_am_dnn
 				tag = SCA
 				tag = NOR
 			}
 			693 = { empty = yes }
-			year = 1900
-			civilized = yes
 			is_vassal = no
         }
         allow = {
@@ -562,7 +795,6 @@ political_decisions = {
 			693 = { secede_province = THIS change_province_name = "Bouvetøya" }
 			ENG = { country_event = 123952 }
         }
-
         ai_will_do = { factor = 1 }
     }
 	prince_edward_islands = {
@@ -573,11 +805,11 @@ political_decisions = {
 				2100 = { owner = { vassal_of = THIS } }
 			}
 			3563 = { empty = yes }
-			OR = {
-			    year = 1900
-				primary_culture = boer
-			}
 			civilized = yes
+			OR = {
+				primary_culture = boer
+			    year = 1900
+			}
         }
         allow = {
 		    OR = {
@@ -591,14 +823,13 @@ political_decisions = {
         effect = {
 			3563 = { secede_province = THIS }
         }
-
         ai_will_do = { factor = 1 }
     }
 	warri_protectorate = {
         picture = eng_warri
         potential = {
-			has_country_flag = niger_coast_protectorate
 			tag = ENG
+			has_country_flag = niger_coast_protectorate
 			neighbour = WRI
 			WRI = { is_vassal = no ai = yes civilized = no }
             NOT = { has_global_flag = colonial_railroading_disabled }
@@ -617,10 +848,10 @@ political_decisions = {
 	calabar_protectorate = {
         picture = eng_calabar
         potential = {
-			has_country_flag = niger_coast_protectorate
 			tag = ENG
-			neighbour = CLA
-			CLA = { is_vassal = no ai = yes civilized = no }
+			has_country_flag = niger_coast_protectorate
+			neighbour = ARO
+			ARO = { is_vassal = no ai = yes civilized = no }
             NOT = { has_global_flag = colonial_railroading_disabled }
 			NOT = { has_country_flag = calabar_protectorate }
         }
@@ -629,7 +860,7 @@ political_decisions = {
         }
         effect = {
             set_country_flag = calabar_protectorate
-            CLA = { annex_to = THIS }
+            ARO = { annex_to = THIS }
         }
 
         ai_will_do = { factor = 1 }
@@ -637,8 +868,8 @@ political_decisions = {
 	benin_expedition = {
         picture = eng_benin
         potential = {
-			has_country_flag = niger_coast_protectorate
 			tag = ENG
+			has_country_flag = niger_coast_protectorate
 			neighbour = BEN
 			BEN = { is_vassal = no civilized = no }
             NOT = { has_global_flag = colonial_railroading_disabled }
@@ -658,8 +889,8 @@ political_decisions = {
 	anglo_aro_war = {
         picture = eng_aro
         potential = {
-			has_country_flag = niger_coast_protectorate
 			tag = ENG
+			has_country_flag = niger_coast_protectorate
 			neighbour = ARO
 			ARO = { is_vassal = no civilized = no }
             NOT = { has_global_flag = colonial_railroading_disabled }
@@ -679,11 +910,11 @@ political_decisions = {
 	nigeria_borders = {
 		picture = map_nigeria
 		potential = {
-			tag = ENG
 			owns = 1923
-			NOT = { has_country_flag = nigeria_bordered }
-			has_country_flag = nigeria_master
+			tag = ENG
 			has_country_flag = niger_coast_protectorate
+            owns = 1926
+			NOT = { has_country_flag = nigeria_bordered }
 		}
 
 		allow = {
@@ -702,23 +933,18 @@ political_decisions = {
 				}
 			}
 			1950 = { owner = { civilized = yes } }
+			1934 = { owner = { civilized = yes } }
 			1952 = { owner = { civilized = yes } }
 			1948 = { owner = { civilized = yes } }
+			3758 = { owner = { civilized = yes } }
 			1815 = { owner = { civilized = yes } }
 			1938 = { owner = { civilized = yes } }
 		}
 
 		effect = {
 			set_country_flag = nigeria_bordered
-			random_owned = {
-				limit = {
-					owner = {
-						war = no
-						is_disarmed = no
-						owns = 1919
-					}
-				}
-				owner = { THIS = { country_event = 96062 } }
+			1919 = {
+				owner = { country_event = 96062 }
 			}
 		}
 
@@ -728,20 +954,20 @@ political_decisions = {
 		picture = rebellion_losses
         potential = {
             tag = ENG
+			has_country_flag = rebellion_1837_begun
 			CAN = { all_core = { OR = { owned_by = THIS empty = yes } } }
 			NOT = { has_country_flag = no_canadian_act_of_union }
 			NOT = { has_country_flag = parliament_burned_already }
-			has_country_flag = rebellion_1837_begun
 			NOT = { year = 1850 }
         }
         allow = {
+			has_country_flag = canadian_act_of_union
+			state_n_government = 1
 			war = no
 			is_vassal = no
 			is_disarmed = no
 			is_greater_power = yes
 			year = 1838
-			has_country_flag = canadian_act_of_union
-			state_n_government = 1
 			money = 50000
 		}
         effect = {
@@ -761,19 +987,18 @@ political_decisions = {
 		picture = integrate_asm
         potential = {
             tag = ENG
-			exists = ASM
 			ASM = { vassal_of = THIS }
 			EIC = { vassal_of = THIS }
-			ASM = { ai = yes }
 			1258 = { owned_by = EIC }
 			1260 = { owned_by = ASM }
+			ASM = { ai = yes }
         }
         allow = {
+			is_greater_power = yes
+			year = 1838
 			war = no
 			is_vassal = no
 			is_disarmed = no
-			is_greater_power = yes
-			year = 1838
 		}
         effect = {
 			ASM = { annex_to = EIC government = absolute_monarchy }
@@ -786,9 +1011,8 @@ political_decisions = {
 		picture = kisilev_reforms
         potential = {
             tag = RUS
-			NOT = { has_country_flag = kisilev_reforms_enacted }
-			exists = yes
 			debt_law = serfdom
+			NOT = { has_country_flag = kisilev_reforms_enacted }
         }
         allow = {
 			war = no
@@ -834,14 +1058,11 @@ political_decisions = {
 		picture = potato
         potential = {
             tag = RUS
-			NOT = { has_country_flag = potatoes_forced }
-			exists = yes
 			debt_law = serfdom
+			NOT = { has_country_flag = potatoes_forced }
 			NOT = { year = 1872 }
         }
         allow = {
-			war = no
-			is_vassal = no
 			owns = 1037
 			owns = 1038
 			owns = 1035
@@ -849,6 +1070,8 @@ political_decisions = {
 			owns = 1030
 			owns = 1028
 			owns = 3609
+			war = no
+			is_vassal = no
 			NOT = { economic_policy = laissez_faire }
 			year = 1840
 		}
@@ -872,10 +1095,10 @@ political_decisions = {
 	peu_const_prado = {
 		picture = prado
         potential = {
-            tag = PEU
 			has_global_flag = peu_third_const
-			NOT = { exists = SPU }
+            tag = PEU
 			has_global_flag = do_the_prado_const
+			NOT = { exists = SPU }
         }
         allow = {
 			NOT = { exists = PRR }
@@ -911,7 +1134,7 @@ political_decisions = {
         effect = {
 			SPA = { country_event = 112335 }
 			clr_country_flag = do_pareja
-			set_country_flag = look_out_peru_a_civil_war_is_coming
+			set_country_flag = prado_is_coming
         }
         ai_will_do = {
             factor = 1
@@ -920,10 +1143,10 @@ political_decisions = {
 	peu_const_three = {
 		picture = peu_const_three
         potential = {
-            tag = PEU
 			has_global_flag = peu_second_const
-			NOT = { exists = SPU }
+            tag = PEU
 			NOT = { has_global_flag = peu_third_const }
+			NOT = { exists = SPU }
         }
         allow = {
 			war = no
@@ -951,10 +1174,25 @@ political_decisions = {
 	peu_const_two = {
 		picture = peu_const_two
         potential = {
-            tag = PEU
 			has_global_flag = peu_first_const
+            tag = PEU
 			NOT = { exists = SPU }
 			NOT = { has_global_flag = peu_second_const }
+			OR = {
+				penal_system = capital_punishment
+				penal_system = colonial_transportation
+				school_reforms = no_schools
+				vote_franschise = none_voting
+				vote_franschise = landed_voting
+				vote_franschise = wealth_weighted_voting
+				slavery = yes_slavery
+				slavery = freedom_of_womb
+				upper_house_composition = appointed
+				upper_house_composition = party_appointed
+				political_parties = harassment
+				political_parties = underground_parties
+				citizens_rights = primary_culture_only
+			}
         }
         allow = {
 			war = no
@@ -964,34 +1202,122 @@ political_decisions = {
 				ruling_party_ideology = liberal
 				ruling_party_ideology = radical
 			}
+			PRR = { exists = no }
 		}
         effect = {
 			set_global_flag = peu_second_const
-			social_reform = incarceration
-			social_reform = low_schools
-			political_reform = wealth_voting
-			political_reform = no_slavery
-			political_reform = state_equal_weight
-			political_reform = gerrymandering
-			political_reform = culture_voting_only
-			country_event = { id = 123880 days = 75 }
+			random_owned = {
+				limit = {
+					owner = {
+						OR = {
+							penal_system = capital_punishment
+							penal_system = colonial_transportation
+						}
+					}
+				}
+				owner = {
+					social_reform = incarceration
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						school_reforms = no_schools
+					}
+				}
+				owner = {
+					social_reform = low_schools
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						OR = {
+							vote_franschise = none_voting
+							vote_franschise = landed_voting
+							vote_franschise = wealth_weighted_voting
+						}
+					}
+				}
+				owner = {
+					political_reform = wealth_voting
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						OR = {
+							slavery = yes_slavery
+							slavery = freedom_of_womb
+						}
+					}
+				}
+				owner = {
+					political_reform = no_slavery
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						OR = {
+							upper_house_composition = appointed
+							upper_house_composition = party_appointed
+						}
+					}
+				}
+				owner = {
+					political_reform = state_equal_weight
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						OR = {
+							political_parties = harassment
+							political_parties = underground_parties
+						}
+					}
+				}
+				owner = {
+					political_reform = gerrymandering
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						citizens_rights = primary_culture_only
+					}
+				}
+				owner = {
+					political_reform = culture_voting_only
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { year = 1873 }
+					}
+				}
+				owner = {
+					country_event = { id = 123880 days = 75 }
+				}
+			}
         }
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
+
 	peu_const_one = {
 		picture = peu_const_one
         potential = {
             tag = PEU
-			NOT = { has_global_flag = peu_first_const }
 			OR = {
-				NOT = { has_global_flag = eighteenthirty_startdate }
 				AND = {
-					NOT = { has_global_flag = bermudist_victory }
 					has_global_flag = bolivia_annexes_peru
+					NOT = { has_global_flag = bermudist_victory }
 				}
+				NOT = { has_global_flag = eighteenthirty_startdate }
 			}
+			NOT = { has_global_flag = peu_first_const }
         }
         allow = {
 			war = no
@@ -1021,13 +1347,14 @@ political_decisions = {
 		picture = vnz_crisis
         potential = {
             tag = VNZ
-			NOT = { has_country_flag = vnz_crisis_started }
+			owns = 2276
+			owns = 2275
+			owns = 3781
 			2242 = { owned_by = ENG }
 			2243 = { owned_by = ENG }
 			3568 = { owned_by = ENG }
 			830 = { owned_by = ENG }
-			owns = 2276
-			owns = 2275
+			NOT = { has_country_flag = vnz_crisis_started }
         }
         allow = {
 			war = no
@@ -1045,9 +1372,9 @@ political_decisions = {
 	mckinley_tariff = {
 		picture = mckinley
         potential = {
+			year = 1890
             tag = USA
 			NOT = { has_country_flag = mckinley_tariff }
-			year = 1890
         }
         allow = {
 			war = no
@@ -1064,18 +1391,18 @@ political_decisions = {
             factor = 1
         }
     }
-	
+
 	claim_samoa = {
 		picture = samoa_map
         potential = {
             OR = {
 				AND = {
-					tag = GER
-					owns = 2536
-				}
-				AND = {
 					tag = ENG
 					owns = 2454
+				}
+				AND = {
+					tag = GER
+					owns = 2536
 				}
 				AND = {
 					tag = USA
@@ -1105,12 +1432,12 @@ political_decisions = {
 		picture = ferdinand_two
         potential = {
             tag = SIC
+			exists = FRA
+			owns = 762
 			SYC = { all_core = { OR = { owned_by = THIS empty = yes } } }
+			exists = ENG
 			NOT = { has_country_flag = sulfur_contracted }
 			NOT = { year = 1841 }
-			owns = 762
-			exists = ENG
-			exists = FRA
         }
         allow = {
 			war = no
@@ -1130,11 +1457,6 @@ political_decisions = {
 	sudeten_treaty = {
 		picture = gtfo
         potential = {
-            OR = {
-				tag = PRU
-				tag = NGF
-				tag = GER
-			}
 			owns = 558
 			owns = 602
 			owns = 600
@@ -1149,7 +1471,11 @@ political_decisions = {
 			owns = 3333
 			owns = 3334
 			owns = 3483
-			NOT = { has_country_flag = sudeten_treaty_done }
+            OR = {
+				tag = PRU
+				tag = NGF
+				tag = GER
+			}
 			OR = {
 				AUS = {
 					owns = 631
@@ -1194,6 +1520,7 @@ political_decisions = {
 					owns = 3426
 				}
 			}
+			NOT = { has_country_flag = sudeten_treaty_done }
         }
         allow = {
 			war = no
@@ -1216,22 +1543,59 @@ political_decisions = {
 			1178 = { owned_by = NYE }
 			NYE = { civilized = no is_vassal = no exists = yes ai = yes war = no }
 			NOT = { has_country_flag = nye_invaded }
+			NOT = { truce_with = NYE }
         }
         allow = {
             war = no
             is_vassal = no
 			is_disarmed = no
 			revolution_n_counterrevolution = 1
+			OR = { neighbour = NYE AND = { num_of_ports = 1 NYE = { num_of_ports = 1 } } }
 			NOT = { badboy = 0.8 }
         }
         effect = {
 			set_country_flag = nye_invaded
 			prestige = 5
 			badboy = 2
-			war = {
-                target = NYE
-                attacker_goal = { casus_belli = conquest_any }
-                defender_goal = { casus_belli = humiliate_no_infamy }
+			random_owned = {
+				limit = {
+					owner = {
+						owns = 3860
+					}
+				}
+				owner = {
+					war = {
+						target = NYE
+						attacker_goal = { casus_belli = conquest_any }
+						defender_goal = {
+							casus_belli = acquire_any_state
+							state_province_id = 3860
+						}
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { owns = 3860 }
+					}
+				}
+				owner = {
+					war = {
+						target = NYE
+						attacker_goal = { casus_belli = conquest_any }
+						defender_goal = {
+							casus_belli = acquire_any_state
+							state_province_id = 1155
+						}
+					}
+				}
+			}
+			random_owned = {
+				limit = { owner = { NYE = { owns = 3864 } owns = 3692 } }
+				owner = {
+					3864 = { secede_province = THIS }
+				}
 			}
         }
         ai_will_do = {
@@ -1241,16 +1605,18 @@ political_decisions = {
 	arosemena_treaty = {
         picture = arosemena_treaty
         potential = {
-            tag = CLM
 			year = 1860
-			904 = { is_core = VNZ is_core = CLM }
-			3360 = { is_core = VNZ is_core = CLM }
-			696 = { is_core = VNZ is_core = CLM }
+            tag = CLM
 			2277 = { owned_by = VNZ }
 			2278 = { owned_by = VNZ }
 			2249 = { owned_by = CLM }
+			3748 = { owned_by = CLM }
 			2262 = { owned_by = CLM }
             3376 = { owned_by = CLM }
+			904 = { is_core = VNZ is_core = CLM }
+			3360 = { is_core = VNZ is_core = CLM }
+			696 = { is_core = VNZ is_core = CLM }
+			NOT = { 2277 = { is_core = CLM } }
 			NOT = { has_global_flag = arosemena_treaty_done }
         }
         allow = {
@@ -1386,7 +1752,7 @@ political_decisions = {
 		allow = {
 			OR = {
 				year = 1843
-				has_global_flag = civil_war_of_eighteenfiftyone_has_happened
+				has_global_flag = cw_eighfiftone_happened
 			}
 			war = no
 			OR = {
@@ -1419,13 +1785,13 @@ political_decisions = {
 		picture = c_const_lm
 		potential = {
 			tag = CLM
-			NOT = { has_country_flag = clm_const_one }
 			NOT = {
 				AND = {
 					has_global_flag = apulo_conventioned
 					NOT = { has_country_flag = clm_first_const }
 				}
 			}
+			NOT = { has_country_flag = clm_const_one }
 		}
 
 		allow = {
@@ -1467,14 +1833,14 @@ political_decisions = {
 	nav_treaty_brz_vnz = {
 		picture = gtfo
 		potential = {
-			NOT = { has_country_flag = nav_treaty_done }
+			owns = 1977
 			OR = {
 				tag = BRZ
 				tag = UPB
 			}
 			is_vassal = no
-			owns = 2403
 			NOT = { owns = 2532 }
+			NOT = { has_country_flag = nav_treaty_done }
 		}
 
 		allow = {
@@ -1501,31 +1867,30 @@ political_decisions = {
 	take_libya = {
 		picture = map_libya
 		potential = {
-			NOT = { has_country_flag = libya_taken }
+			owns = 749
+			tag = ITA
 			OR = {
-				tag = ITA
-				tag = ITS
+				AND = {
+					TUR = {
+						any_owned_province = {
+							port = yes
+							OR = {
+								is_core = TRI
+								is_core = CYR
+							}
+						}
+					}
+					TRI = { exists = no }
+				}
+				TRI = { exists = yes vassal_of = TUR }
 			}
 			is_vassal = no
-			owns = 749
-			NOT = { government = proletarian_dictatorship }
-			LBY = { exists = no }
-			CYR = { exists = no }
-			TRI = { exists = no }
-			TUR = {
-				any_owned_province = {
-					port = yes
-					OR = {
-						is_core = TRI
-						is_core = CYR
-						is_core = LBY
-					}
-				}
-			}
 			OR = {
 				ai = no
-				year = 1911
+				year = 1906
 			}
+			NOT = { government = proletarian_dictatorship }
+			NOT = { has_country_flag = libya_taken }
 		}
 
 		allow = {
@@ -1583,17 +1948,31 @@ political_decisions = {
 				exists = GCF
 				has_country_flag = austrian_destiny
 			}
-
 		}
 
 		allow = {
-			NOT = { badboy = 0.5 }
-			any_owned_province = {
+			OR = {
+				AND = {
+					any_owned_province = {
+						NOT = {
+							OR = {
+								is_core = AUS
+								is_core = GER
+								province_id = 3285
+								is_colonial = yes
+							}
+						}
+					}
+					NOT = { badboy = 0.5 }
+				}
 				NOT = {
-					OR = {
-						is_core = AUS
-						is_core = GER
-						is_colonial = yes
+					any_owned_province = {
+						NOT = {
+							is_core = AUS
+							is_core = GER
+							province_id = 3285
+							is_colonial = yes
+						}
 					}
 				}
 			}
@@ -1637,7 +2016,91 @@ political_decisions = {
 		}
 
 		effect = {
-			country_event = 31510
+			random_owned = {
+				limit = {
+					owner = {
+						any_owned_province = {
+							NOT = {
+								OR = {
+									is_core = AUS
+									is_core = GER
+									province_id = 3285
+									is_colonial = yes
+								}
+							}
+						}
+					}
+				}
+				owner = { country_event = 31510 }
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = {
+							any_owned_province = {
+								NOT = {
+									is_core = AUS
+									is_core = GER
+									province_id = 3285
+									is_colonial = yes
+								}
+							}
+						}
+					}
+				}
+				owner = {
+					set_country_flag = austrian_destiny
+        			set_country_flag = austrian_greater_germany
+					any_owned = {
+						limit = {
+							OR = {
+								province_id = 624
+								province_id = 778
+								province_id = 623
+							}
+							is_core = HUN
+						}
+						add_core = UTI
+						remove_core = HUN
+					}
+        			all_core = {
+            			limit = {
+                			NOT = { is_core = HUN }
+							NOT = {
+								is_core = CRO
+							}
+            			}
+            			add_core = GER
+        			}
+        			any_pop = {
+            			limit = {
+                			is_primary_culture = no
+                			is_accepted_culture = no
+                			location = { is_core = GER }
+            			}
+            			consciousness = 5
+            			militancy = 5
+        			}
+					any_owned = {
+						limit = { is_core = UTI }
+						remove_core = UTI
+						add_core = HUN
+					}
+					any_owned = {
+						limit = { province_id = 3285 }
+						add_core = GER
+					}
+					random_owned = {
+						limit = { owner = { 769 = { is_core = THIS } } }
+						owner = {
+							770 = { add_core = GER }
+							778 = { add_core = GER }
+						}
+					}
+					689 = { add_core = GER }
+					2584 = { add_core = GER }
+				}
+			}
 		}
 
 	    ai_will_do = {
@@ -1701,6 +2164,7 @@ political_decisions = {
 	greater_mauritania = {
 		picture = Greater_Mauritania
         potential = {
+			ai = no
             tag = TRZ
             NOT = { has_country_flag = Greater_Mauritania_claimed }
         }
@@ -1718,6 +2182,21 @@ political_decisions = {
             3431 = {
 				add_core = TRZ
             }
+            3984 = {
+				add_core = TRZ
+            }
+            3985 = {
+				add_core = TRZ
+            }
+            3787 = {
+				add_core = TRZ
+            }
+            1784 = {
+				add_core = TRZ
+            }
+            3829 = {
+				add_core = TRZ
+            }
 			2609 = {
 				add_core = TRZ
             }
@@ -1730,10 +2209,22 @@ political_decisions = {
             1773 = {
 				add_core = TRZ
             }
+            3833 = {
+				add_core = TRZ
+            }
 			1803 = {
 				add_core = TRZ
             }
+			3788 = {
+				add_core = TRZ
+            }
 			1805 = {
+				add_core = TRZ
+            }
+			3811 = {
+				add_core = TRZ
+            }
+			3812 = {
 				add_core = TRZ
             }
         }
@@ -1743,9 +2234,9 @@ political_decisions = {
     }
     Greater_Korea = {
         potential = {
+			ai = no
             tag = KOR
             NOT = { has_country_flag = Greater_Korea_claimed }
-			ai = no
         }
         allow = {
             war = no
@@ -1789,9 +2280,9 @@ political_decisions = {
     Western_Banatia = {
 		picture = banatia_map
         potential = {
+			ai = no
             tag = BAN
             NOT = { has_country_flag = Western_Banatia_claimed }
-			ai = no
         }
         allow = {
             war = no
@@ -1828,9 +2319,9 @@ political_decisions = {
     Eastern_Banatia = {
 		picture = banatia_map
         potential = {
+			ai = no
             tag = BAN
             NOT = { has_country_flag = Eastern_Banatia_claimed }
-			ai = no
         }
         allow = {
             war = no
@@ -1874,9 +2365,9 @@ political_decisions = {
     Claim_Belgrade = {
 		picture = banatia_map
         potential = {
+			ai = no
             tag = BAN
             NOT = { has_country_flag = Belgrade_claimed }
-			ai = no
         }
         allow = {
             war = no
@@ -1891,7 +2382,7 @@ political_decisions = {
             prestige = 15
             set_country_flag = Belgrade_claimed
             794 = {
-            add_core = BAN
+				add_core = BAN
             }
         }
         ai_will_do = {
@@ -1900,6 +2391,7 @@ political_decisions = {
     }
     Claim_Forte = {
         potential = {
+			ai = no
             OR = {
                 tag = VNZ
 				AND = {
@@ -1909,7 +2401,6 @@ political_decisions = {
             }
 			NOT = { 2532 = { is_core = THIS } }
             NOT = { has_country_flag = Forte_claimed }
-			ai = no
         }
         allow = {
             war = no
@@ -1944,14 +2435,26 @@ political_decisions = {
         potential = {
             owns = 2276
 			owns = 2275
+			owns = 3781
+			2276 = { is_core = THIS }
+			2275 = { is_core = THIS }
+			3781 = { is_core = THIS }
 			OR = {
-				tag = VNZ
 				AND = {
-					tag = GCO
+					rank = 16
+					tag = VNZ
+				}
+				AND = {
 					year = 1836
+					OR = {
+						tag = GCO
+						has_country_flag = i_am_hsa
+						tag = MEX
+						has_country_flag = i_am_cum
+						has_country_flag = i_am_uss
+					}
 				}
 			}
-			rank = 16
 		    NOT = {
                 owns = 2242
 				owns = 2243
@@ -1963,6 +2466,7 @@ political_decisions = {
 
         allow = {
             war = no
+			rank = 16
 			is_vassal = no
             money = 200000
             2242 = {
@@ -1986,14 +2490,21 @@ political_decisions = {
         picture = trinidad_tobago
         potential = {
 			owns = 2276
+			2276 = { is_core = THIS }
+			rank = 16
 			OR = {
 				tag = VNZ
 				AND = {
-					tag = GCO
 					year = 1836
+					OR = {
+						tag = GCO
+						has_country_flag = i_am_hsa
+						tag = MEX
+						has_country_flag = i_am_cum
+						has_country_flag = i_am_uss
+					}
 				}
 			}
-			rank = 16
 		    NOT = {
                 owns = 2237
 				owns = 2238
@@ -2022,18 +2533,74 @@ political_decisions = {
         ai_will_do = { factor = 1 }
     }
 
+	ABC_purchase = {
+        picture = curacao
+        potential = {
+			OR = {
+				tag = PRU
+				tag = GER
+				tag = NGF
+				tag = GCF
+			}
+		    NOT = {
+				owns = 2235
+				has_country_flag = curacao_purchase
+			}
+        }
+
+        allow = {
+			nationalism_n_imperialism = 1
+			total_amount_of_ships = 15
+			owns = 528
+			is_greater_power = yes
+            war = no
+            is_vassal = no
+            money = 250000
+			OR = { war_policy = jingoism war_policy = pro_military }
+            2235 = {
+                owner = {
+                    war = no
+					OR = { is_vassal = no vassal_of = THIS }
+					NOT = { truce_with = THIS }
+					relation = { who = THIS value = 50 }
+                }
+            }
+        }
+
+        effect = {
+            set_country_flag = curacao_purchase
+            2235 = { owner = { country_event = 9748321 } }
+        }
+
+        ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { 2235 = { owner = { vassal_of = THIS } } }
+				NOT = { ruling_party_ideology = reactionary }
+			}
+		}
+    }
+
 	ABC_punchase = {
         picture = curacao
         potential = {
 			owns = 2272
+			2272 = { is_core = THIS }
+			rank = 16
 			OR = {
 				tag = VNZ
 				AND = {
-					tag = GCO
 					year = 1836
+					OR = {
+						tag = GCO
+						has_country_flag = i_am_hsa
+						tag = MEX
+						has_country_flag = i_am_cum
+						has_country_flag = i_am_uss
+					}
 				}
 			}
-			rank = 16
 		    NOT = {
                 owns = 2235
 			}
@@ -2063,26 +2630,23 @@ political_decisions = {
     Claim_ABC = {
 		picture = curacao
         potential = {
-            OR = {
-                tag = VNZ
-                tag = GCO
-            }
-            NOT = { has_country_flag = ABC_claimed }
 			ai = no
-			NOT = {
-				AND = {
-					2235 = { is_core = THIS }
-					2234 = { is_core = THIS }
-				}
-			}
+            OR = {
+                tag = GCO
+                tag = VNZ
+            }
 			OR = {
 				NOT = { rank = 16 }
-				has_country_flag = curacao_purchase
 				owns = 2235
-                owns = 2234
+				has_country_flag = curacao_purchase
 			}
+			NOT = {
+				2235 = { is_core = THIS }
+			}
+            NOT = { has_country_flag = ABC_claimed }
         }
         allow = {
+			rank = 16
             war = no
             is_vassal = no
 			NOT = { has_country_modifier = recently_lost_war }
@@ -2094,10 +2658,7 @@ political_decisions = {
             set_country_flag = ABC_claimed
 			any_country = {
 			    limit = {
-					OR = {
-						owns = 2235
-                        owns = 2234
-					}
+					owns = 2235
 				}
 				limit = {
 					THIS = {
@@ -2105,10 +2666,8 @@ political_decisions = {
 					}
 				}
 				2235 = { add_core = VNZ }
-				2234 = { add_core = VNZ }
 			}
             2235 = { add_core = THIS }
-            2234 = { add_core = THIS }
         }
         ai_will_do = {
             factor = 1
@@ -2118,26 +2677,27 @@ political_decisions = {
     Claim_TRT = {
 		picture = trinidad_tobago
         potential = {
-            OR = {
-                tag = VNZ
-                tag = GCO
-            }
-            NOT = { has_country_flag = TRT_claimed }
 			ai = no
-			NOT = {
-				AND = {
-					2237 = { is_core = THIS }
-					2238 = { is_core = THIS }
-				}
-			}
+            OR = {
+                tag = GCO
+                tag = VNZ
+            }
 			OR = {
 				NOT = { rank = 16 }
 				has_country_flag = trinidad_tobago_purchase
 				owns = 2237
                 owns = 2238
 			}
+			NOT = {
+				AND = {
+					2237 = { is_core = THIS }
+					2238 = { is_core = THIS }
+				}
+			}
+            NOT = { has_country_flag = TRT_claimed }
         }
         allow = {
+			rank = 16
             war = no
             is_vassal = no
 			NOT = { has_country_modifier = recently_lost_war }
@@ -2174,8 +2734,8 @@ political_decisions = {
 		picture = gco_dominican
         potential = {
             tag = GCO
-			NOT = { has_country_flag = dr_claimed }
 			NOT = { 2214 = { is_core = THIS } }
+			NOT = { has_country_flag = dr_claimed }
         }
         allow = {
             OR = {
@@ -2233,20 +2793,18 @@ political_decisions = {
     }
 
     Greater_LUX = {
+		picture = luxembourg_crisis
         potential = {
+			ai = no
             tag = LUX
             NOT = { has_country_flag = Greater_LUX }
-			ai = no
         }
         allow = {
             war = no
             prestige = 20
             is_vassal = no
 			is_disarmed = no
-			OR = {
-				is_secondary_power = yes
-				is_greater_power = yes
-			}
+			rank = 16
 			war_policy = jingoism
 			owns = 397
         }
@@ -2254,12 +2812,10 @@ political_decisions = {
             badboy = 3
             prestige = 15
             set_country_flag = Greater_LUX
-            398 = {
-				add_core = LUX
-            }
-			3379 = {
-				add_core = LUX
-			}
+            398 = { add_core = LUX }
+			3379 = { add_core = LUX }
+			396 = { add_core = LUX }
+			405 = { add_core = LUX }
         }
         ai_will_do = {
             factor = 1
@@ -2267,9 +2823,9 @@ political_decisions = {
     }
     Claim_MAD = {
         potential = {
+			ai = no
             tag = MAD
             NOT = { has_country_flag = MAD_claimed }
-			ai = no
         }
         allow = {
             war = no
@@ -2315,90 +2871,14 @@ political_decisions = {
             factor = 1
         }
     }
-    Claim_YUC = {
-        potential = {
-            tag = YUC
-            NOT = { has_country_flag = YUC_claimed }
-			OR = {
-				AND = {
-					war = no
-					prestige = 5
-					is_vassal = no
-					OR = {
-						is_greater_power = yes
-						is_secondary_power = yes
-					}
-					OR = {
-						war_policy = jingoism
-						war_policy = pro_military
-					}
-				}
-				ai = no
-			}
-        }
-        allow = {
-            war = no
-            prestige = 5
-            is_vassal = no
-			OR = {
-				is_greater_power = yes
-				is_secondary_power = yes
-			}
-            OR = {
-                war_policy = jingoism
-                war_policy = pro_military
-            }
-        }
-        effect = {
-            badboy = 8
-            prestige = 15
-            set_country_flag = YUC_claimed
-            2165 = {
-            add_core = YUC
-            }
-            2181 = {
-            add_core = YUC
-            }
-            3615 = {
-            add_core = YUC
-            }
-            2186 = {
-            add_core = YUC
-            }
-            2182 = {
-            add_core = YUC
-            }
-            2190 = {
-            add_core = YUC
-            }
-            2187 = {
-            add_core = YUC
-            }
-            2188 = {
-            add_core = YUC
-            }
-            2628 = {
-            add_core = YUC
-            }
-            3410 = {
-            add_core = YUC
-            }
-            2189 = {
-            add_core = YUC
-            }
-        }
-        ai_will_do = {
-            factor = 1
-        }
-    }
+
     Claim_Siberia = {
         potential = {
             tag = SIB
-            NOT = { has_country_flag = Siberia_claimed }
 			OR = {
 				AND = {
-					war = no
 					prestige = 15
+					war = no
 					is_vassal = no
 					OR = {
 						war_policy = jingoism
@@ -2407,6 +2887,7 @@ political_decisions = {
 				}
 				ai = no
 			}
+            NOT = { has_country_flag = Siberia_claimed }
         }
         allow = {
             war = no
@@ -2495,9 +2976,9 @@ political_decisions = {
     Claim_MSQ = {
 		picture = moskito_coast_reserve
         potential = {
+			ai = no
             tag = GCO
             NOT = { has_country_flag = MSQ_claimed }
-			ai = no
         }
         allow = {
             war = no
@@ -2525,15 +3006,139 @@ political_decisions = {
             factor = 1
         }
     }
-    Claim_ARM = {
+	Claim_AZB = {
         potential = {
-            tag = ARM
-            NOT = { has_country_flag = ARM_claimed }
+            OR = {
+				tag = AZB
+				tag = TCA
+			}
+			OR = {
+				is_vassal = no
+				has_country_flag = viceroy_autonomy
+			}
 			OR = {
 				AND = {
+					owns = 1102
+					owns = 1105
+					owns = 1098
+					owns = 1101
+					owns = 1112
 					war = no
-					prestige = 50
-					is_vassal = no
+				}
+				ai = no
+			}
+            NOT = { has_country_flag = AZB_claimed }
+        }
+        allow = {
+            war = no
+            OR = {
+				is_vassal = no
+				has_country_flag = viceroy_autonomy
+			}
+            OR = { 	
+				AND = { 
+					owns = 1102
+					owns = 1105
+					owns = 1098
+					owns = 1101
+					owns = 1112
+				}
+				prestige = 50
+			}
+        }
+        effect = {
+            badboy = 10
+            prestige = 30
+            set_country_flag = AZB_claimed
+			3429 = {
+            add_core = AZB
+			add_core = THIS
+            }
+			1090 = {
+            add_core = AZB
+			add_core = THIS
+            }
+			1099 = {
+            add_core = AZB
+			add_core = THIS
+            }
+			2548 = {
+            add_core = AZB
+			add_core = THIS
+            }
+			1093 = {
+            add_core = AZB
+			add_core = THIS
+            }
+			1052 = {
+            add_core = AZB
+			add_core = THIS
+            }
+			928 = {
+            add_core = AZB
+			add_core = THIS
+            }
+			924 = {
+            add_core = AZB
+			add_core = THIS
+            }
+			923 = {
+            add_core = AZB
+			add_core = THIS
+            }
+			925 = {
+            add_core = AZB
+			add_core = THIS
+            }
+			3352 = {
+            add_core = AZB
+			add_core = THIS
+            }
+			1117 = {
+            add_core = AZB
+			add_core = THIS
+            }
+			3495 = {
+            add_core = AZB
+			add_core = THIS
+            }
+			1119 = {
+            add_core = AZB
+			add_core = THIS
+            }
+			1120 = {
+            add_core = AZB
+			add_core = THIS
+            }
+			1122 = {
+            add_core = AZB
+			add_core = THIS
+            }
+			1113 = {
+            add_core = AZB
+			add_core = THIS
+            }
+			1124 = {
+            add_core = AZB
+			add_core = THIS
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+    }
+    Claim_ARM = {
+        potential = {
+            OR = { 
+				tag = ARM
+				tag = TCA
+			}
+			OR = {
+				is_vassal = no
+				has_country_flag = viceroy_autonomy
+			}
+			OR = {
+				AND = {
 					owns = 882
 					owns = 892
 					owns = 3386
@@ -2541,89 +3146,156 @@ political_decisions = {
 					owns = 1098
 					owns = 888
 					owns = 885
+					war = no
 				}
 				ai = no
 			}
+            NOT = { has_country_flag = ARM_claimed }
         }
         allow = {
             war = no
-            prestige = 50
-            is_vassal = no
-            owns = 892
-            owns = 1093
-            owns = 1098
-            owns = 888
-            owns = 885
-        }
+            OR = { 
+				is_vassal = no
+				has_country_flag = viceroy_autonomy
+			}
+            OR = {
+				prestige = 50
+				AND = { 
+					owns = 892
+					owns = 1093
+					owns = 1098
+					owns = 888
+					owns = 885
+				}
+			}
+		}
         effect = {
             badboy = 14
             prestige = 30
             set_country_flag = ARM_claimed
+			3535 = {
+            add_core = ARM
+			add_core = THIS
+            }
+			882 = {
+            add_core = ARM
+			add_core = THIS
+            }
+			1107 = {
+            add_core = ARM
+			add_core = THIS
+            }
+			3503 = {
+            add_core = ARM
+			add_core = THIS
+            }
+			3504 = {
+            add_core = ARM
+			add_core = THIS
+            }
+			895 = {
+            add_core = ARM
+			add_core = THIS
+            }
+			3345 = {
+            add_core = ARM
+			add_core = THIS
+            }
+			894 = {
+            add_core = ARM
+			add_core = THIS
+            }
+			900 = {
+            add_core = ARM
+			add_core = THIS
+            }
             1110 = {
             add_core = ARM
+			add_core = THIS
             }
             1109 = {
             add_core = ARM
+			add_core = THIS
             }
             1104 = {
             add_core = ARM
+			add_core = THIS
             }
             3316 = {
             add_core = ARM
+			add_core = THIS
             }
             1092 = {
             add_core = ARM
+			add_core = THIS
             }
             1091 = {
             add_core = ARM
+			add_core = THIS
             }
             1090 = {
             add_core = ARM
+			add_core = THIS
             }
             1094 = {
             add_core = ARM
+			add_core = THIS
             }
             1096 = {
             add_core = ARM
+			add_core = THIS
             }
             1095 = {
             add_core = ARM
+			add_core = THIS
             }
             3274 = {
             add_core = ARM
-            }
-            3315 = {
-            add_core = ARM
+			add_core = THIS
             }
             889 = {
             add_core = ARM
+			add_core = THIS
             }
             899 = {
             add_core = ARM
+			add_core = THIS
             }
             898 = {
             add_core = ARM
+			add_core = THIS
             }
             893 = {
             add_core = ARM
+			add_core = THIS
             }
             2414 = {
             add_core = ARM
+			add_core = THIS
             }
             3362 = {
             add_core = ARM
+			add_core = THIS
             }
             3427 = {
             add_core = ARM
+			add_core = THIS
             }
             3348 = {
             add_core = ARM
+			add_core = THIS
             }
 			3316 = {
             add_core = ARM
+			add_core = THIS
             }
 			3429 = {
             add_core = ARM
+			add_core = THIS
+            }
+			896 = {
+            add_core = ARM
+			add_core = THIS
             }
         }
         ai_will_do = {
@@ -2634,16 +3306,16 @@ political_decisions = {
         potential = {
             tag = ARM
             civilized = yes
-            NOT = { has_country_flag = GEO_accepted }
 			OR = {
-				ai = no
 				AND = {
-					war = no
 					owns = 1090
-					owns = 1092
 					biologism = 1
+					owns = 1092
+					war = no
 				}
+				ai = no
 			}
+            NOT = { has_country_flag = GEO_accepted }
         }
         allow = {
             war = no
@@ -2662,24 +3334,20 @@ political_decisions = {
     }
     Claim_URU = {
         potential = {
+			ai = no
             tag = URU
             NOT = { has_country_flag = URU_claimed }
-			ai = no
         }
         allow = {
             war = no
             prestige = 70
             is_vassal = no
             owns = 2344
-			OR = {
-				is_greater_power = yes
-				is_secondary_power = yes
-			}
+			rank = 16
 			war_policy = jingoism
         }
         effect = {
             badboy = 10
-            prestige = 30
             set_country_flag = URU_claimed
             2359 = {
             add_core = URU
@@ -2733,9 +3401,10 @@ political_decisions = {
     }
     Claim_YEM = {
         potential = {
-            tag = YEM
-            NOT = { has_country_flag = YEM_claimed }
 			ai = no
+            tag = YEM
+			OR = { has_country_flag = become_yemen_nye has_country_flag = you_are_yemen }
+            NOT = { has_country_flag = YEM_claimed }
         }
         allow = {
             war = no
@@ -2754,6 +3423,9 @@ political_decisions = {
             1174 = {
             add_core = YEM
             }
+            3841 = {
+            add_core = YEM
+            }
         }
         ai_will_do = {
             factor = 1
@@ -2763,16 +3435,25 @@ political_decisions = {
     Claim_OMA = {
 		picture = trucial_oman
         potential = {
+			ai = no
             tag = OMA
             NOT = { has_country_flag = OMA_claimed }
-			ai = no
         }
         allow = {
             war = no
             prestige = 10
             is_vassal = no
 			is_disarmed = no
-            all_core = { owned_by = THIS }
+			OR = {
+				AND = {
+					owns = 2664
+					owns = 1169
+					owns = 1166
+					owns = 1171
+					1170 = { OR = { owned_by = THIS owner = { vassal_of = THIS } } }
+				}
+				owns = 3691
+			}
             war_policy = jingoism
         }
         effect = {
@@ -2787,7 +3468,13 @@ political_decisions = {
 			12 = {
 				add_core = OMA
             }
+			3916 = {
+				add_core = OMA
+            }
 			1167 = {
+				add_core = OMA
+            }
+			3691 = {
 				add_core = OMA
             }
         }
@@ -2798,17 +3485,19 @@ political_decisions = {
     Claim_Gulf = {
 		picture = persian_gulf
         potential = {
+			ai = no
             OR = {
-                tag = KHZ
-                tag = LUR
-                tag = QAS
+				tag = PER
                 tag = KWT
                 tag = BHR
                 tag = QAT
+                tag = KHZ
+				tag = IRQ
+                tag = LUR
+                tag = QAS
 				tag = BSR
 				tag = KGN
-				tag = PER
-				tag = IRQ
+				has_country_flag = is_iran
             }
             NOT = { has_country_flag = Gulf_claimed }
         }
@@ -2825,6 +3514,7 @@ political_decisions = {
             }
 			OR = {
 				NOT = { tag = PER }
+				NOT = { has_country_flag = is_iran }
 				AND = {
 					owns = 1132
 					owns = 1121
@@ -2904,8 +3594,7 @@ political_decisions = {
             is_vassal = no
 			is_disarmed = no
             OR = {
-                is_greater_power = yes
-                is_secondary_power = yes
+                rank = 16
 				owns = 1532
 				owns = 1600
 				owns = 2670
@@ -2925,7 +3614,7 @@ political_decisions = {
             1532 = { add_core = MGL } #Ordos
             1534 = { add_core = MGL } #Ulan Chab
             1535 = { add_core = MGL } #Bayannur
-            1596 = { add_core = MGL } #Altay 
+            1596 = { add_core = MGL } #Altay
             1002 = { add_core = MGL } #Manchouli
             2670 = { add_core = MGL } #Verkhneudisnk
             2671 = { add_core = MGL } #Barguzin
@@ -2935,7 +3624,7 @@ political_decisions = {
             1600 = { add_core = MGL } #Urumtsi
             1595 = { add_core = MGL } #lli
             1068 = { add_core = MGL } #Ulala
-			#apparently 2021 Abe was dumb and forgor a bunch of cores:
+			#apparently 2021 Abe was dumb and forgor a bunch of cores impressively
 			1556 = { add_core = MGL }
 			1558 = { add_core = MGL }
 			2645 = { add_core = MGL }
@@ -2946,6 +3635,7 @@ political_decisions = {
 			2674 = { add_core = MGL }
 			1613 = { add_core = MGL }
 			1533 = { add_core = MGL }
+			1879 = { add_core = MGL }
 			1552 = { add_core = MGL }
 			1553 = { add_core = MGL }
 			1188 = { add_core = MGL }
@@ -2954,13 +3644,14 @@ political_decisions = {
 			1594 = { add_core = MGL }
 			3527 = { add_core = MGL }
 			1597 = { add_core = MGL }
+			3915 = { add_core = MGL }
 			1598 = { add_core = MGL }
 			3322 = { add_core = MGL }
 			2607 = { add_core = MGL }
-			3321 = { add_core = MGL }
 			add_accepted_culture = oirat
 			add_accepted_culture = kalmyk
 			add_accepted_culture = tatar
+			random_owned = { limit = { owner = { has_global_flag = global_mc_setup_complete } } owner = { country_event = 485832594 } }
         }
 
         ai_will_do = {
@@ -2974,23 +3665,12 @@ political_decisions = {
     Mongol_claims = { #decision number 2
         picture = claim_greater_mongolia
         potential = {
-			has_country_flag = claim_greater_mongolia
-            tag = MGL
-            NOT = { has_country_flag = Mongol_claimed }
 			ai = no
+            tag = MGL
+			has_country_flag = claim_greater_mongolia
+            NOT = { has_country_flag = Mongol_claimed }
         }
         allow = {
-            OR = {
-                is_greater_power = yes
-                is_secondary_power = yes
-				owns = 1555
-				owns = 1587
-				owns = 1561
-            }
-            war = no
-			is_disarmed = no
-            prestige = 100
-            is_vassal = no
             owns = 1595
             owns = 1557
             owns = 2671
@@ -3000,6 +3680,16 @@ political_decisions = {
             owns = 1599
             owns = 1600
             owns = 1002
+            OR = {
+                rank = 16
+				owns = 1555
+				owns = 1587
+				owns = 1561
+            }
+            war = no
+			is_disarmed = no
+            prestige = 100
+            is_vassal = no
         }
         effect = {
             badboy = 10
@@ -3128,6 +3818,8 @@ political_decisions = {
 			add_accepted_culture = uighur
 			add_accepted_culture = manchu
 			add_accepted_culture = siberian
+			add_accepted_culture = yakut
+			random_owned = { limit = { owner = { has_global_flag = global_mc_setup_complete } } owner = { country_event = 485832595 } }
         }
         ai_will_do = {
             factor = 1
@@ -3136,17 +3828,14 @@ political_decisions = {
     Claim_MGL = { #become the mongol empire
 		picture = claim_greater_mongolia
         potential = {
+			ai = no
             tag = MGL
-            NOT = { has_country_flag = formed_mgl_empire }
 			OR = {
 				AND = {
-					OR = {
-						is_greater_power = yes
-						is_secondary_power = yes
-					}
+					rank = 16
+					prestige = 50
 					war = no
 					is_disarmed = no
-					prestige = 50
 					is_vassal = no
 					OR = {
 						government = theocracy
@@ -3159,8 +3848,8 @@ political_decisions = {
 						war_policy = pro_military
 					}
 				}
-				ai = no
 			}
+			NOT = { has_country_flag = formed_mgl_empire }
         }
         allow = {
             rank = 12
@@ -3217,6 +3906,7 @@ political_decisions = {
             prestige = 20
             set_country_flag = formed_mgl_empire
 			add_accepted_culture = han_chinese
+			add_accepted_culture = hanhui
         }
         ai_will_do = {
             factor = 1
@@ -3224,12 +3914,12 @@ political_decisions = {
     }
     Claim_POM = {
         potential = {
+			ai = no
             OR = {
 				tag = MEC
 				tag = MST
             }
             NOT = { has_country_flag = POM_claimed }
-			ai = no
         }
         allow = {
             war = no
@@ -3265,11 +3955,11 @@ political_decisions = {
     }
     Claim_BSQ = {
         potential = {
+            ai = no
             OR = {
 				tag = BSQ
 				tag = BRT
             }
-            ai = no
             NOT = { has_country_flag = BSQ_claimed }
         }
         allow = {
@@ -3292,110 +3982,41 @@ political_decisions = {
             factor = 1
         }
     }
-    Claim_NWG = {
-        potential = {
-            OR = {
-				tag = BNF
-				tag = NET
-			}
-            NOT = { has_country_flag = NWG_claimed }
-            owns = 397
-            owns = 3314
-            owns = 387
-            owns = 375
-            owns = 381
-            owns = 383
-			OR = {
-				AND = {
-					war = no
-					prestige = 100
-					is_vassal = no
-					NOT = {
-					in_sphere = GER
-					}
-					is_disarmed = no
-					war_policy = jingoism
-				}
-				ai = no
-			}
-        }
-        allow = {
-            war = no
-			is_greater_power = yes
-            is_vassal = no
-            NOT = {
-				in_sphere = GER
-				in_sphere = GCF
-				alliance_with = GER
-				alliance_with = GCF
-            }
-            is_disarmed = no
-            war_policy = jingoism
-        }
-        effect = {
-            badboy = 8
-            prestige = 15
-            set_country_flag = NWG_claimed
-            3379 = {
-				add_core = THIS add_core = NET
-            }
-            396 = {
-				add_core = THIS add_core = NET
-            }
-            577 = {
-				add_core = THIS add_core = NET
-            }
-            1743 = {
-				add_core = THIS add_core = NET
-            }
-            543 = {
-				add_core = THIS add_core = NET
-            }
-            3259 = {
-				add_core = THIS add_core = NET
-            }
-        }
-        ai_will_do = {
-            factor = 1
-        }
-    }
+	
     Claim_Oceania = {
+		picture = claim_australasia
         potential = {
             OR = {
 				tag = AST
 				tag = NZL
-				has_country_flag = i_am_ahu
             }
-            NOT = { has_country_flag = Oceania_claimed }
 			OR = {
 				AND = {
+					prestige = 20
 					war = no
-					prestige = 50
 					is_vassal = no
 					is_disarmed = no
-					war_policy = jingoism
 					OR = {
-						is_greater_power = yes
-						is_secondary_power = yes
+						war_policy = jingoism
+						rank = 16
 					}
 				}
 				ai = no
 			}
+            NOT = { has_country_flag = Oceania_claimed }
         }
         allow = {
             war = no
-            prestige = 50
+            prestige = 20
             is_vassal = no
             is_disarmed = no
-            war_policy = jingoism
 			OR = {
-				is_greater_power = yes
-				is_secondary_power = yes
+				war_policy = jingoism
+				rank = 16
 			}
         }
         effect = {
-            badboy = 11
-            prestige = 20
+            badboy = 10
             set_country_flag = Oceania_claimed
             AST = {
                 all_core = {
@@ -3412,29 +4033,6 @@ political_decisions = {
             factor = 1
         }
     }
-    Claim_VLG = {
-        potential = {
-            tag = VLG
-            NOT = { has_country_flag = VLG_claimed }
-			ai = no
-        }
-        allow = {
-            war = no
-            prestige = 20
-            is_vassal = no
-        }
-        effect = {
-            badboy = 1
-            prestige = 5
-            set_country_flag = VLG_claimed
-            1038 = {
-            add_core = VLG
-            }
-        }
-        ai_will_do = {
-            factor = 1
-        }
-    }
     Claim_Hessen = {
         potential = {
             OR = {
@@ -3445,14 +4043,14 @@ political_decisions = {
                 tag = NAS
             }
 			OR = {
-				ai = no
 				AND = {
-					war = no
 					prestige = 10
+					war = no
 					is_vassal = no
 					NOT = { in_sphere = PRU }
 					NOT = { in_sphere = AUS }
 				}
+				ai = no
 			}
             NOT = { has_country_flag = Hessen_claimed }
         }
@@ -3507,19 +4105,20 @@ political_decisions = {
     Become_SER = {
         potential = {
             tag = SRR
-			NOT = { has_global_flag = cleaning_up_ghosts }
 			OR = {
 				AND = {
-					war = no
 					exists = SER
+					war = no
 					is_vassal = no
 				}
 				ai = no
 			}
+			NOT = { has_global_flag = cleaning_up_ghosts }
         }
         allow = {
             war = no
             exists = SER
+			NOT = { government = prov_gov_liberal }
             is_vassal = no
         }
         effect = {
@@ -3562,29 +4161,29 @@ political_decisions = {
     Claim_DOM = {
         picture = dom_spa
         potential = {
-            OR = {
-                tag = SPA
-                tag = SPC
-            }
-            NOT = { has_country_flag = DOM_claimed }
             DOM = {
 				owns = 3403
                 owns = 2214
                 owns = 2216
 			}
+            OR = {
+                tag = SPA
+                tag = SPC
+            }
 			OR = {
 				exists = CSA
 				exists = FSA
 			}
 			OR = {
-				ai = no
 				AND = {
+					year = 1865
 					war = no
 					prestige = 20
 					is_vassal = no
-					year = 1865
 				}
+				ai = no
 			}
+            NOT = { has_country_flag = DOM_claimed }
         }
         allow = {
             war = no
@@ -3613,29 +4212,30 @@ political_decisions = {
     Become_SWH = {
         potential = {
             OR = {
-				tag = LAU
 				tag = SCH
 				tag = HOL
             }
 			OR = {
-				ai = no
 				AND = {
-					war = no
-					NOT = { exists = SWH }
-					is_vassal = no
 					owns = 529
 					owns = 369
 					owns = 370
+					owns = 3862
+					war = no
+					is_vassal = no
+					NOT = { exists = SWH }
 				}
+				ai = no
 			}
         }
         allow = {
-            war = no
-            NOT = { exists = SWH }
-            is_vassal = no
             owns = 529
             owns = 369
             owns = 370
+            owns = 3862
+            war = no
+            NOT = { exists = SWH }
+            is_vassal = no
         }
         effect = {
             prestige = 20
@@ -3650,29 +4250,29 @@ political_decisions = {
             tag = PAL
 			OR = {
 				AND = {
-					war = no
-					NOT = { exists = RHI }
-					is_vassal = no
 					owns = 572
 					owns = 573
 					owns = 574
 					owns = 575
 					owns = 576
 					owns = 577
+					war = no
+					is_vassal = no
+					NOT = { exists = RHI }
 				}
 				ai = no
 			}
         }
         allow = {
-            war = no
-            NOT = { exists = RHI }
-            is_vassal = no
             owns = 572
             owns = 573
             owns = 574
             owns = 575
             owns = 576
             owns = 577
+            war = no
+            NOT = { exists = RHI }
+            is_vassal = no
         }
         effect = {
             prestige = 20
@@ -3684,12 +4284,12 @@ political_decisions = {
     }
     set_sw = {
         potential = {
-            tag = ADO #time to play SW with Andorra
-			ai = yes
+            tag = ADO #time to play SW with Andorra (this is a bad design idea)
+            exists = TST
 			NOT = { has_country_flag = sw_has_been_set }
+			ai = yes
         }
         allow = {
-            NOT = { has_country_flag = sw_has_been_set }
             exists = TST
             exists = KAS
             exists = ARM
@@ -3723,15 +4323,13 @@ political_decisions = {
     unite_moldavia_wallachia_sw = {
         picture = create_romania
         potential = {
+            has_global_flag = sw_set
             OR = {
                 tag = WAL
                 tag = MOL
             }
             exists = WAL
             exists = MOL
-            NOT = { exists = ROM }
-            has_global_flag = sw_set
-			NOT = { has_global_flag = romanians_in_bfr }
 			OR = {
 				AND = {
 					year = 1848
@@ -3757,29 +4355,17 @@ political_decisions = {
 					}
 					WAL = {
 						war = no
-						OR = {
-							government = hms_government
-							government = prussian_constitutionalism
-							government = absolute_monarchy
-							government = absolute_empire
-							government = semi_constitutional_empire
-							government = constitutional_empire
-						}
+						has_country_flag = monarchy_government
 					}
 					MOL = {
 						war = no
-						OR = {
-							government = hms_government
-							government = prussian_constitutionalism
-							government = absolute_monarchy
-							government = absolute_empire
-							government = semi_constitutional_empire
-							government = constitutional_empire
-						}
+						has_country_flag = monarchy_government
 					}
 				}
 				ai = no
 			}
+            NOT = { exists = ROM }
+			NOT = { has_global_flag = romanians_in_bfr }
         }
 
         allow = {
@@ -3806,25 +4392,11 @@ political_decisions = {
             }
             WAL = {
                 war = no
-                OR = {
-                    government = hms_government
-                    government = prussian_constitutionalism
-                    government = absolute_monarchy
-                    government = absolute_empire
-                    government = semi_constitutional_empire
-                    government = constitutional_empire
-                }
+                has_country_flag = monarchy_government
             }
             MOL = {
                 war = no
-                OR = {
-                    government = hms_government
-                    government = prussian_constitutionalism
-                    government = absolute_monarchy
-                    government = absolute_empire
-                    government = semi_constitutional_empire
-                    government = constitutional_empire
-                }
+                has_country_flag = monarchy_government
             }
         }
 
@@ -3832,6 +4404,7 @@ political_decisions = {
             prestige = 10
             change_tag = ROM
             795 = { remove_core = SIE }
+			3932 = { remove_core = SIE }
             random_country = {
                 limit = {
                     tag = WAL
@@ -3873,7 +4446,7 @@ political_decisions = {
                 limit = { in_sphere = RUS }
                 relation = { who = THIS value = 200 }
             }
-            any_owned = {
+            any_land_province = {
 				limit = {
 					is_core = ROM
 					NOT = {
@@ -3919,17 +4492,17 @@ political_decisions = {
     }
     claim_UIL = {
         potential = {
-            tag = UIL
-			NOT = { has_country_flag = UIL_claimed }
-			NOT = { has_global_flag = UIL_claimedguh }
             has_global_flag = sw_set
+            tag = UIL
 			OR = {
-				ai = no
 				AND = {
 					owns = 232
 					owns = 2146
 				}
+				ai = no
 			}
+			NOT = { has_country_flag = UIL_claimed }
+			NOT = { has_global_flag = UIL_claimedguh }
         }
         allow = {
             owns = 232
@@ -3952,17 +4525,14 @@ political_decisions = {
     claim_Lugano = {
 		picture = lugano
         potential = {
-            OR = {
-                tag = ITA
-                tag = ITS
-            }
+			owns = 2669
+			tag = ITA
+			owns = 722
+			owns = 735
             SWI = {
                 owns = 2568
             }
 			NOT = { has_country_flag = Lugano_claimed }
-			owns = 2669
-			owns = 722
-			owns = 735
         }
         allow = {
             is_greater_power = yes
@@ -3991,16 +4561,42 @@ political_decisions = {
         }
     }
     Claim_GEO = {
+		picture = claim_geo_pic
         potential = {
-            tag = GEO
-            NOT = { has_country_flag = GEO_claimed }
+            OR = { 
+				tag = GEO
+				tag = TCA
+			}
+			OR = {
+				is_vassal = no
+				has_country_flag = viceroy_autonomy
+			}
 			OR = {
 				AND = {
+					owns = 3315
+					owns = 1096
+					owns = 3316
+					owns = 3274
+					owns = 1093
+					owns = 1090
+					owns = 1091
 					war = no
-					prestige = 50
-					is_vassal = no
 					is_disarmed = no
-					war_policy = jingoism
+				}
+				ai = no
+			}
+            NOT = { has_country_flag = GEO_claimed }
+        }
+        allow = {
+            war = no
+            OR = { 
+				is_vassal = no
+				has_country_flag = viceroy_autonomy
+			}
+            is_disarmed = no
+            war_policy = jingoism
+            OR = { 
+				AND = {
 					owns = 3315
 					owns = 1096
 					owns = 3316
@@ -4009,22 +4605,8 @@ political_decisions = {
 					owns = 1090
 					owns = 1091
 				}
-				ai = no
+				prestige = 50
 			}
-        }
-        allow = {
-            war = no
-            prestige = 50
-            is_vassal = no
-            is_disarmed = no
-            war_policy = jingoism
-            owns = 3315
-            owns = 1096
-            owns = 3316
-            owns = 3274
-            owns = 1093
-            owns = 1090
-            owns = 1091
         }
         effect = {
             badboy = 7
@@ -4032,120 +4614,195 @@ political_decisions = {
             set_country_flag = GEO_claimed
             1104 = {
                 add_core = GEO
+				add_core = THIS
             }
-            3391 = {
+            3315 = {
                 add_core = GEO
+				add_core = THIS
+            }
+            3536 = {
+                add_core = GEO
+				add_core = THIS
+            }
+            3537 = {
+                add_core = GEO
+				add_core = THIS
             }
             885 = {
                 add_core = GEO
+				add_core = THIS
             }
             886 = {
                 add_core = GEO
+				add_core = THIS
+            }
+            883 = {
+                add_core = GEO
+				add_core = THIS
+            }
+            1049 = {
+                add_core = GEO
+				add_core = THIS
+            }
+            966 = {
+                add_core = GEO
+				add_core = THIS
+            }
+            3439 = {
+                add_core = GEO
+				add_core = THIS
+            }
+            3438 = {
+                add_core = GEO
+				add_core = THIS
+            }
+            967 = {
+                add_core = GEO
+				add_core = THIS
+            }
+            1107 = {
+                add_core = GEO
+				add_core = THIS
+            }
+            3503 = {
+                add_core = GEO
+				add_core = THIS
+            }
+            3392 = {
+                add_core = GEO
+				add_core = THIS
             }
             1099 = {
                 add_core = GEO
+				add_core = THIS
             }
             2548 = {
                 add_core = GEO
+				add_core = THIS
             }
             1098 = {
                 add_core = GEO
+				add_core = THIS
             }
             3047 = {
                 add_core = GEO
+				add_core = THIS
             }
             1100 = {
                 add_core = GEO
+				add_core = THIS
             }
             1101 = {
                 add_core = GEO
+				add_core = THIS
             }
             1106 = {
                 add_core = GEO
+				add_core = THIS
             }
             3386 = {
                 add_core = GEO
+				add_core = THIS
             }
             1105 = {
                 add_core = GEO
+				add_core = THIS
             }
             882 = {
                 add_core = GEO
+				add_core = THIS
             }
             3293 = {
                 add_core = GEO
+				add_core = THIS
             }
             887 = {
                 add_core = GEO
+				add_core = THIS
+            }
+			884 = {
+                add_core = GEO
+				add_core = THIS
             }
             890 = {
                 add_core = GEO
+				add_core = THIS
             }
             891 = {
                 add_core = GEO
+				add_core = THIS
             }
             892 = {
                 add_core = GEO
+				add_core = THIS
+            }
+            1056 = {
+                add_core = GEO
+				add_core = THIS
+            }
+			1054 = {
+                add_core = GEO
+				add_core = THIS
+            }
+			1055 = {
+                add_core = GEO
+				add_core = THIS
+            }
+			3391 = {
+                add_core = GEO
+				add_core = THIS
             }
             1110 = {
                 add_core = GEO
+				add_core = THIS
             }
             1109 = {
                 add_core = GEO
+				add_core = THIS
+            }
+			3504 = {
+                add_core = GEO
+				add_core = THIS
             }
             1102 = {
                 add_core = GEO
+				add_core = THIS
             }
             1103 = {
                 add_core = GEO
+				add_core = THIS
             }
             3385 = {
                 add_core = GEO
+				add_core = THIS
             }
             3384 = {
                 add_core = GEO
+				add_core = THIS
             }
             3387 = {
                 add_core = GEO
+				add_core = THIS
             }
             1053 = {
                 add_core = GEO
+				add_core = THIS
             }
             1052 = {
                 add_core = GEO
+				add_core = THIS
             }
-            3388 = {
-                add_core = GEO
-            }
-			1107 = {
-				add_core = GEO
-			}
-			3503 = {
-				add_core = GEO
-			}
-			3504 = {
-				add_core = GEO
-			}
-			3315 = {
-				add_core = GEO
-			}
-			1055 = {
-				add_core = GEO
-			}
-			1054 = {
-				add_core = GEO
-			}
 			3535 = {
-				add_core = GEO
-			}
-			3537 = {
-				add_core = GEO
-			}
-			3536 = {
-				add_core = GEO
-			}
-			3348 = {
-				add_core = GEO
+                add_core = GEO
+				add_core = THIS
+            }
+            3348 = {
+                add_core = GEO
+				add_core = THIS
+            }
+			random_owned = {
+				limit = { owner = { vassal_of = RUS } }
+				RUS = { all_core = { remove_core = THIS } }
 			}
         }
         ai_will_do = {
@@ -4153,22 +4810,23 @@ political_decisions = {
         }
     }
     Accept_Armenians = {
+		picture = father_hayk
         potential = {
             tag = GEO
             civilized = yes
-            NOT = { has_country_flag = ARM_accepted }
 			OR = {
 				AND = {
+					biologism = 1
 					war = no
 					owns = 1098
-					biologism = 1
 				}
 				ai = no
 			}
+            NOT = { has_country_flag = ARM_accepted }
         }
         allow = {
-            war = no
             owns = 1098
+            war = no
 			biologism = 1
         }
         effect = {
@@ -4182,12 +4840,8 @@ political_decisions = {
     }
     Claim_JAP = {
         potential = {
-            OR = {
-                tag = JAP
-                tag = TKG
-            }
-            NOT = { has_country_flag = JAP_claimed }
             has_global_flag = sw_set
+            tag = JAP
 			OR = {
 				AND = {
 					war = no
@@ -4199,6 +4853,7 @@ political_decisions = {
 				}
 				ai = no
 			}
+            NOT = { has_country_flag = JAP_claimed }
         }
         allow = {
             war = no
@@ -4216,12 +4871,12 @@ political_decisions = {
                     add_core = THIS
                 }
             }
-            TKG = {
+            KAG = {
                 all_core = {
                     add_core = THIS
                 }
             }
-            KAG = {
+            OBM = {
                 all_core = {
                     add_core = THIS
                 }
@@ -4232,6 +4887,11 @@ political_decisions = {
                 }
             }
             SEN = {
+                all_core = {
+                    add_core = THIS
+                }
+            }
+			EZO = {
                 all_core = {
                     add_core = THIS
                 }
@@ -4261,15 +4921,6 @@ political_decisions = {
                     add_core = THIS
                 }
 			}
-            1642 = {
-                remove_core = EZO
-            }
-            1643 = {
-                remove_core = EZO
-            }
-            1644 = {
-                remove_core = EZO
-            }
         }
         ai_will_do = {
             factor = 1
@@ -4278,6 +4929,7 @@ political_decisions = {
 
     become_poland_sw = {
         potential = {
+            has_global_flag = sw_set
             primary_culture = polish
             NOT = {
 				tag = PLC
@@ -4287,21 +4939,15 @@ political_decisions = {
 				has_country_flag = i_am_wsf
 				has_country_flag = post_colonial_country
 			}
-            has_global_flag = sw_set
 			OR = {
 				AND = {
 					OR = {
 						prestige = 45
-						is_secondary_power = yes
+						rank = 16
 						AND = {
-							tag = CPL
 							exists = KRA KRA = { is_vassal = no }
 							exists = PZN PZN = { is_vassal = no }
 							exists = DZG DZG = { is_vassal = no }
-						}
-						AND = {
-							tag = CPL
-							year = 1900
 						}
 					}
 					war = no
@@ -4314,23 +4960,18 @@ political_decisions = {
         }
 
         allow = {
+            owns = 706
             OR = {
                 prestige = 45
-                is_secondary_power = yes
+                rank = 16
                 AND = {
-                    tag = CPL
                     exists = KRA KRA = { is_vassal = no }
                     exists = PZN PZN = { is_vassal = no }
                     exists = DZG DZG = { is_vassal = no }
                 }
-                AND = {
-                    tag = CPL
-                    year = 1900
-                }
             }
             war = no
             is_vassal = no
-            owns = 706
             year = 1840
         }
 
@@ -4346,7 +4987,7 @@ political_decisions = {
             random_owned = {
                 limit = { owner = { accepted_culture = czech } } owner = { remove_accepted_culture = czech }
             }
-            all_core = { remove_core = CPL remove_core = THIS }
+            all_core = { remove_core = THIS }
             change_tag = POL
             capital = 706
 
@@ -4359,13 +5000,13 @@ political_decisions = {
     SW_setup_1836 = {
         picture = constantinople
         potential = {
-            ai = yes
-            exists = yes
-            civilized = yes
             has_global_flag = sw_set
+            civilized = yes
+            exists = yes
             NOT = { rank = 17 }
             NOT = { year = 1838 }
             NOT = { has_global_flag = SW_setup_1836 }
+            ai = yes
         }
 
         allow = {
@@ -4494,24 +5135,24 @@ political_decisions = {
     Claim_CRI = {
         potential = {
             tag = CRI
-            NOT = { has_country_flag = CRI_claimed }
 			OR = {
 				AND = {
-					war = no
 					prestige = 40
+					state_n_government = 1
+					war = no
 					is_vassal = no
-					NOT = {
-						in_sphere = AUS
-					}
 					is_disarmed = no
 					OR = {
 						war_policy = pro_military
 						war_policy = jingoism
 					}
-					state_n_government = 1
+					NOT = {
+						in_sphere = AUS
+					}
 				}
 				ai = no
 			}
+            NOT = { has_country_flag = CRI_claimed }
         }
         allow = {
             war = no
@@ -4563,28 +5204,28 @@ political_decisions = {
     Nicobar_AUS_seize = {
         picture = Nicobar
         potential = {
+            has_global_flag = AUS_Nicobar
+            DEN = {
+                owns = 3264
+            }
             OR = {
                 tag = AUS
                 tag = KUK
                 tag = GCF
             }
-            NOT = { has_global_flag = Nic_AUS_seized }
-            has_global_flag = AUS_Nicobar
-            DEN = {
-                owns = 3264
-            }
 			OR = {
 				AND = {
-					war = no
 					prestige = 40
+					owns = 736
+					war = no
 					is_vassal = no
 					is_greater_power = yes
-					owns = 736
 					is_disarmed = no
 					state_n_government = 1
 				}
 				ai = no
 			}
+            NOT = { has_global_flag = Nic_AUS_seized }
         }
         allow = {
             war = no
@@ -4610,29 +5251,29 @@ political_decisions = {
     Nicobar_AUS_buy = {
         picture = Nicobar
         potential = {
+            has_global_flag = AUS_Nicobar
+            DEN = {
+                owns = 3264
+            }
             OR = {
                 tag = AUS
                 tag = KUK
                 tag = GCF
             }
-            NOT = { has_global_flag = Nic_AUS_bought }
-            has_global_flag = AUS_Nicobar
-            DEN = {
-                owns = 3264
-            }
 			OR = {
 				AND = {
-					war = no
-					prestige = 40
-					is_vassal = no
-					is_greater_power = yes
 					owns = 736
-					is_disarmed = no
+					prestige = 40
 					state_n_government = 1
 					money = 50000
+					war = no
+					is_vassal = no
+					is_greater_power = yes
+					is_disarmed = no
 				}
 				ai = no
 			}
+            NOT = { has_global_flag = Nic_AUS_bought }
         }
         allow = {
             war = no
@@ -4660,24 +5301,24 @@ political_decisions = {
                 tag = KUK
                 tag = GCF
             }
-            NOT = { has_global_flag = dela_gone }
-            GAZ = {
-                owns = 2049
-            }
+			GAZ = {
+				owns = 2049
+			}
 			OR = {
 				AND = {
-					war = no
+					state_n_government = 1
 					prestige = 40
+					owns = 736
+					war = no
 					is_vassal = no
 					is_greater_power = yes
-					owns = 736
 					is_disarmed = no
-					state_n_government = 1
 					war_policy = jingoism
 					total_amount_of_ships = 30
 				}
 				ai = no
 			}
+            NOT = { has_global_flag = dela_gone }
         }
         allow = {
             war = no
@@ -4689,9 +5330,6 @@ political_decisions = {
             state_n_government = 1
             war_policy = jingoism
             total_amount_of_ships = 30
-			GAZ = {
-                owns = 2049
-            }
         }
         effect = {
             2049 = { trade_goods = ivory } #ivory
@@ -4707,15 +5345,16 @@ political_decisions = {
     Rio_de_Oro_sold_AUS = {
         picture = rio_de_decision
         potential = {
+            owns = 1773
+            owns = 3833
+            owns = 1774
+            owns = 1696
+            owns = 3682
             OR = {
                 tag = SPA
                 tag = SPC
             }
-            exists = AUS
-            NOT = { has_global_flag = rio_de_sold }
-            owns = 1773
-            owns = 1774
-            owns = 1696
+            OR = { exists = AUS exists = KUK }
             NOT = { owns = 2209 }
             NOT = { owns = 1455 }
 			OR = {
@@ -4725,40 +5364,7 @@ political_decisions = {
 				}
 				ai = no
 			}
-        }
-        allow = {
-            war = no
-            is_vassal = no
-        }
-        effect = {
-            set_global_flag = rio_de_sold
-            AUS = { country_event = 123503 }
-        }
-        ai_will_do = {
-            factor = 1
-        }
-    }
-    Rio_de_Oro_sold_KUK = {
-        picture = rio_de_decision
-        potential = {
-            OR = {
-                tag = SPA
-                tag = SPC
-            }
-            exists = KUK
             NOT = { has_global_flag = rio_de_sold }
-            owns = 1773
-            owns = 1774
-            owns = 1696
-            NOT = { owns = 2209 }
-            NOT = { owns = 1455 }
-			OR = {
-				AND = {
-					war = no
-					is_vassal = no
-				}
-				ai = no
-			}
         }
         allow = {
             war = no
@@ -4766,7 +5372,20 @@ political_decisions = {
         }
         effect = {
             set_global_flag = rio_de_sold
-            KUK = { country_event = 123503 }
+            random_country = {
+                limit = {
+                    tag = AUS
+                    exists = yes
+                }
+                country_event = 123503
+            }
+            random_country = {
+                limit = {
+                    tag = KUK
+                    exists = yes
+                }
+                country_event = 123503
+            }
         }
         ai_will_do = {
             factor = 1
@@ -4775,14 +5394,14 @@ political_decisions = {
     Claim_QAS = {
         potential = {
             tag = QAS
-            NOT = { has_country_flag = QAS_claimed }
 			OR = {
 				AND = {
-					war = no
 					prestige = 20
+					war = no
 				}
 				ai = no
 			}
+            NOT = { has_country_flag = QAS_claimed }
         }
         allow = {
             war = no
@@ -4830,23 +5449,23 @@ political_decisions = {
     treaty_of_washington = {
         picture = washington_treaty
         potential = {
-            tag = USA
-            NOT = { has_country_flag = treaty_washington }
             year = 1836
+            tag = USA
             owns = 176
             owns = 177
 			OR = {
 				ai = no
 				money = 30000
 			}
+            NOT = { has_country_flag = treaty_washington }
         }
         allow = {
             money = 50000
         }
         effect = {
             USA = { set_country_flag = treaty_washington }
-            176 = { remove_province_modifier = indian_lands }
-            177 = { remove_province_modifier = indian_lands }
+            176 = { remove_province_modifier = indian_lands remove_core = INL }
+            177 = { remove_province_modifier = indian_lands remove_core = INL }
             treasury = -30000
             any_pop = {
                 limit = {
@@ -4882,23 +5501,23 @@ political_decisions = {
     treaty_of_la_pointe = {
         picture = lapointe
         potential = {
-            tag = USA
-            NOT = { has_country_flag = treaty_la_pointe }
             year = 1842
+            tag = USA
             owns = 160
             owns = 161
 			OR = {
 				ai = no
 				money = 50000
 			}
+            NOT = { has_country_flag = treaty_la_pointe }
         }
         allow = {
             money = 50000
         }
         effect = {
             USA = { set_country_flag = treaty_la_pointe }
-            161 = { remove_province_modifier = indian_lands }
-            160 = { remove_province_modifier = indian_lands }
+            161 = { remove_province_modifier = indian_lands remove_core = INL }
+            160 = { remove_province_modifier = indian_lands remove_core = INL }
             treasury = -30000
             any_pop = {
                 limit = {
@@ -4934,24 +5553,30 @@ political_decisions = {
     treaty_of_traverse_des_sioux = {
         picture = traverse_des
         potential = {
-            tag = USA
-            NOT = { has_country_flag = treaty_traverse_des_sioux }
             year = 1851
+            tag = USA
             owns = 154
             owns = 156
+            owns = 3321
 			OR = {
 				ai = no
 				money = 30000
 			}
+            NOT = { has_country_flag = treaty_traverse_des_sioux }
         }
         allow = {
             money = 50000
         }
         effect = {
             USA = { set_country_flag = treaty_traverse_des_sioux }
-            154 = { remove_province_modifier = indian_lands }
-            156 = { remove_province_modifier = indian_lands }
+            154 = { remove_province_modifier = indian_lands remove_core = INL }
+            156 = { remove_province_modifier = indian_lands remove_core = INL }
+            3321 = { remove_province_modifier = indian_lands remove_core = INL }
             treasury = -30000
+			USA_151 = { remove_core = CHE remove_core = INL } #Iowa
+			156 = { remove_core = CHE remove_core = INL } #Fort Renville
+			157 = { remove_core = CHE remove_core = INL } #Fort Ripley
+			3321 = { remove_core = CHE remove_core = INL } #Fort Ripley
             any_pop = {
                 limit = {
                     OR = {
@@ -5004,6 +5629,19 @@ political_decisions = {
                 consciousness = 4
                 move_pop = 122
             }
+            any_pop = {
+                limit = {
+                    OR = {
+                        has_pop_culture = native_american_minor
+                        has_pop_culture = dakota
+                    }
+                    location = {
+                        province_id = 3321
+                    }
+                }
+                consciousness = 4
+                move_pop = 122
+            }
         }
         ai_will_do = {
             factor = 1
@@ -5012,23 +5650,23 @@ political_decisions = {
     treaty_of_la_pointe_two = {
         picture = la_pointe_2
         potential = {
-            tag = USA
-            NOT = { has_country_flag = treaty_la_pointe_two }
             year = 1854
+            tag = USA
             owns = 155
             owns = 158
 			OR = {
 				ai = no
 				money = 30000
 			}
+            NOT = { has_country_flag = treaty_la_pointe_two }
         }
         allow = {
             money = 50000
         }
         effect = {
             USA = { set_country_flag = treaty_la_pointe_two }
-            155 = { remove_province_modifier = indian_lands }
-            158 = { remove_province_modifier = indian_lands }
+            155 = { remove_province_modifier = indian_lands remove_core = INL }
+            158 = { remove_province_modifier = indian_lands remove_core = INL }
             treasury = -30000
             any_pop = {
                 limit = {
@@ -5064,9 +5702,8 @@ political_decisions = {
     treaty_of_fort_laramie = {
         picture = laramie_one
         potential = {
-            tag = USA
-            NOT = { has_country_flag = treaty_laramie_one }
             year = 1851
+            tag = USA
             owns = 123
             owns = 120
             owns = 117
@@ -5075,16 +5712,18 @@ political_decisions = {
 				ai = no
 				money = 100000
 			}
+            NOT = { has_country_flag = treaty_laramie_one }
         }
         allow = {
             money = 150000
         }
         effect = {
             USA = { set_country_flag = treaty_laramie_one }
-            123 = { remove_province_modifier = indian_lands }
-            126 = { remove_province_modifier = indian_lands }
-            120 = { remove_province_modifier = indian_lands }
-            117 = { remove_province_modifier = indian_lands }
+            123 = { remove_province_modifier = indian_lands remove_core = CHE remove_core = INL }
+            126 = { remove_province_modifier = indian_lands remove_core = CHE remove_core = INL }
+            120 = { remove_province_modifier = indian_lands remove_core = CHE remove_core = INL }
+            117 = { remove_province_modifier = indian_lands remove_core = CHE remove_core = INL }
+            118 = { remove_core = CHE }
             treasury = -100000
             any_pop = {
                 limit = {
@@ -5146,21 +5785,21 @@ political_decisions = {
     treaty_of_fort_wise = {
         picture = fort_wise
         potential = {
-            tag = USA
-            NOT = { has_country_flag = treaty_fort_wise }
             year = 1861
+            tag = USA
             owns = 127
 			OR = {
 				ai = no
 				money = 50000
 			}
+            NOT = { has_country_flag = treaty_fort_wise }
         }
         allow = {
             money = 80000
         }
         effect = {
             USA = { set_country_flag = treaty_fort_wise }
-            127 = { remove_province_modifier = indian_lands }
+            127 = { remove_province_modifier = indian_lands remove_core = CHE remove_core = INL }
             treasury = -50000
             any_pop = {
                 limit = {
@@ -5183,23 +5822,23 @@ political_decisions = {
     treaty_of_fort_laramie_two = {
         picture = fort_laramie_two
         potential = {
-            tag = USA
-            NOT = { has_country_flag = treaty_fort_laramie_two }
             year = 1867
+            tag = USA
             owns = 119
             owns = 121
 			OR = {
 				ai = no
 				money = 50000
 			}
+            NOT = { has_country_flag = treaty_fort_laramie_two }
         }
         allow = {
             money = 80000
         }
         effect = {
             USA = { set_country_flag = treaty_fort_laramie_two }
-            119 = { remove_province_modifier = indian_lands }
-            121 = { remove_province_modifier = indian_lands }
+            119 = { remove_province_modifier = indian_lands remove_core = CHE remove_core = INL }
+            121 = { remove_province_modifier = indian_lands remove_core = CHE remove_core = INL }
             112 = { add_province_modifier = { name = indian_territory duration = -1 } }
 			3317 = { add_province_modifier = { name = indian_territory duration = -1 } }
             treasury = -50000
@@ -5237,23 +5876,23 @@ political_decisions = {
     treaty_of_medicine_lodge = {
         picture = medicine_lodge
         potential = {
-            tag = USA
-            NOT = { has_country_flag = treaty_medicine_lodge }
             year = 1868
+            tag = USA
             owns = 124
             owns = 125
 			OR = {
 				ai = no
 				money = 50000
 			}
+            NOT = { has_country_flag = treaty_medicine_lodge }
         }
         allow = {
             money = 80000
         }
         effect = {
             USA = { set_country_flag = treaty_medicine_lodge }
-            125 = { remove_province_modifier = indian_lands }
-            124 = { remove_province_modifier = indian_lands }
+            125 = { remove_province_modifier = indian_lands remove_core = CHE remove_core = INL }
+            124 = { remove_province_modifier = indian_lands remove_core = CHE remove_core = INL }
             treasury = -50000
             any_pop = {
                 limit = {
@@ -5289,23 +5928,23 @@ political_decisions = {
     treaty_with_the_blackfoot = {
         picture = blackfoot_treaty
         potential = {
-            tag = USA
-            NOT = { has_country_flag = treaty_blackfoot }
             year = 1896
+            tag = USA
             owns = 115
             owns = 113
 			OR = {
 				ai = no
 				money = 30000
 			}
+            NOT = { has_country_flag = treaty_blackfoot }
         }
         allow = {
             money = 50000
         }
         effect = {
             USA = { set_country_flag = treaty_blackfoot }
-            115 = { remove_province_modifier = indian_lands }
-            113 = { remove_province_modifier = indian_lands }
+            115 = { remove_province_modifier = indian_lands remove_core = CHE remove_core = INL }
+            113 = { remove_province_modifier = indian_lands remove_core = CHE remove_core = INL }
             any_pop = {
                 limit = {
                     OR = {
@@ -5328,15 +5967,15 @@ political_decisions = {
     indian_territory_end = {
         picture = disband_reservation
         potential = {
-            tag = USA
-            NOT = { has_country_flag = reservation_disbanded }
             year = 1907
+            tag = USA
             owns = 131
             owns = 130
 			OR = {
 				ai = no
 				money = 30000
 			}
+            NOT = { has_country_flag = reservation_disbanded }
         }
         allow = {
             money = 50000
@@ -5344,6 +5983,8 @@ political_decisions = {
         effect = {
 			any_owned = {
 				remove_province_modifier = indian_lands
+				remove_core = CHE
+				remove_core = INL
 			}
             USA = { set_country_flag = reservation_disbanded }
             130 = { remove_province_modifier = indian_territory }
@@ -5383,7 +6024,9 @@ political_decisions = {
     build_kra_canal = {
         picture = kracanal
         potential = {
+            year = 1855
 			ai = no
+            is_greater_power = yes
 			any_owned_province = {
 				OR = {
 					continent = asia
@@ -5391,13 +6034,11 @@ political_decisions = {
 					continent = indochina
 				}
 			}
-            year = 1855
 			num_of_ports = 3
             NOT = { owns = 1384 }
             NOT = { 1384 = { owner = { in_sphere = THIS } } }
             NOT = { is_canal_enabled = 9 }
             NOT = { has_global_flag = kra_canal_built }
-            is_greater_power = yes
         }
 
         allow = {
@@ -5444,14 +6085,50 @@ political_decisions = {
             }
         }
     }
+    build_tehuantepec_canal = {
+        picture = tehuantepec_dec
+        potential = {
+			ai = no
+            owns = 3975
+            owns = 2164
+            NOT = { is_canal_enabled = 67 }
+            NOT = { has_global_flag = tehuantepec_canal_built }
+            NOT = { has_global_flag = panama_under_construction }
+            is_canal_enabled = 3
+        }
+
+        allow = {
+            mechanized_mining = 1
+			steamers = 1
+			compound_steam_engines = 1
+            money = 13000000
+        }
+        effect = {
+            treasury = -1000000
+            treasury = -1000000
+            treasury = -1000000
+            treasury = -1000000
+            treasury = -1000000
+            treasury = -1000000
+            treasury = -1000000
+            treasury = -1000000
+            treasury = -1000000
+            treasury = -1000000
+            treasury = -1000000
+            treasury = -1000000
+            treasury = -1000000
+			2164 = { add_province_modifier = { name = tehuantepec_canal_modifier duration = 2920 } }
+			3975 = { add_province_modifier = { name = tehuantepec_canal_modifier duration = 2920 } }
+			set_global_flag = tehuantepec_canal_built
+        }
+    }
     build_white_canal = {
         picture = white_sea_canal
         potential = {
             year = 1890
             owns = 988
-            NOT = { is_canal_enabled = 11 }
-            NOT = { has_global_flag = white_canal_built }
             is_greater_power = yes
+            NOT = { is_canal_enabled = 11 }
 			OR = {
 				ai = no
 				AND = {
@@ -5460,7 +6137,6 @@ political_decisions = {
                 }
 			}
 			OR = {
-				ai = no
 				AND = {
 					invention = machine_tools
 					invention = nitroglycerin
@@ -5468,7 +6144,9 @@ political_decisions = {
 					money = 4000000
 					year = 1900
 				}
+				ai = no
 			}
+            NOT = { has_global_flag = white_canal_built }
         }
 
         allow = {
@@ -5480,7 +6158,10 @@ political_decisions = {
         }
         effect = {
             set_global_flag = white_canal_built
-            country_event = 123531
+            treasury = -1000000
+            treasury = -1000000
+            treasury = -1000000
+            treasury = -1000000
         }
 
         ai_will_do = {
@@ -5494,12 +6175,18 @@ political_decisions = {
     reconquer_algeria = {
         picture = alg_regency
         potential = {
+			has_country_flag = i_am_tur
+            TUN = {
+                all_core = {
+                    owned_by = THIS
+                }
+            }
 			OR = {
 				AND = {
+					prestige = 50
 					is_disarmed = no
 					is_greater_power = yes
 					is_vassal = no
-					prestige = 50
 					war = no
 					OR = {
 						nationalism_n_imperialism = 1
@@ -5512,51 +6199,78 @@ political_decisions = {
 							biologism = 1
 						}
 					}
+					AND = {
+						ALD = {
+							all_core = {
+								OR = {
+									owned_by = FRA
+									owned_by = BOR
+								}
+							}
+						}
+						1700 = { is_core = ALD }
+					}
+					AND = {
+						RGA = {
+							all_core = {
+								OR = {
+									owned_by = FRA
+									owned_by = BOR
+								}
+							}
+						}
+						1700 = { is_core = RGA }
+					}
+				}
+				ai = no
+			}
+			OR = {
+				AND = {
 					ALD = {
 						all_core = {
 							OR = {
 								owned_by = FRA
 								owned_by = BOR
+								empty = yes
 							}
 						}
 					}
+					1700 = { is_core = ALD }
 				}
-				ai = no
+				AND = {
+					RGA = {
+						all_core = {
+							OR = {
+								owned_by = FRA
+								owned_by = BOR
+								empty = yes
+							}
+						}
+					}
+					1700 = { is_core = RGA }
+				}
 			}
-            tag = TUR
 			NOT = { has_global_flag = oriental_crisis_sick_man }
-            TUN = {
-                all_core = {
-                    owned_by = THIS
-                }
-            }
+			NOT = { has_global_flag = fast_path_algeria }
             NOT = { has_global_flag = ott_algeria_conquered }
         }
 
         allow = {
+			owns = 1731
             is_disarmed = no
-            is_greater_power = yes
+            rank = 6
             is_vassal = no
-            prestige = 50
+            prestige = 100
             war = no
             OR = {
                 nationalism_n_imperialism = 1
                 AND = {
                     war_policy = jingoism
-                    total_amount_of_ships = 30
+                    total_amount_of_ships = 50
                     military_statistics = 1
 					breech_loaded_rifles = 1
 					army_decision_making = 1
 					biologism = 1
-                }
-            }
-            ALD = {
-                all_core = {
-                    OR = {
-						owned_by = FRA
-						owned_by = BOR
-						empty = yes
-					}
                 }
             }
         }
@@ -5589,6 +6303,7 @@ political_decisions = {
 				}
 			}
 			ALD = { primary_culture = maghrebi }
+			RGA = { primary_culture = maghrebi }
         }
 
         ai_will_do = {
@@ -5602,27 +6317,29 @@ political_decisions = {
     finish_off_dahomey = {
         picture = second_dahomey_war
         potential = {
-			NOT = { has_global_flag = colonial_railroading_disabled }
+			has_global_flag = berlin_conference
             owns = 1919
             DAH = {
-                owns = 1920
+                owns = 3849
             }
-			has_global_flag = berlin_conference
 			OR = {
 				AND = {
-					is_disarmed = no
 					is_greater_power = yes
+					is_disarmed = no
 					is_vassal = no
-					war = no
 				}
 				ai = no
 			}
+			NOT = { has_global_flag = colonial_railroading_disabled }
         }
         allow = {
             is_disarmed = no
             is_greater_power = yes
             is_vassal = no
-            war = no
+			OR = {
+				war = no
+				year = 1883
+			}
         }
         effect = {
             set_global_flag = dahomey_conquered
@@ -5631,6 +6348,63 @@ political_decisions = {
                 attacker_goal = { casus_belli = conquest_any }
                 defender_goal = { casus_belli = acquire_core_state state_province_id = 1919 }
             }
+			random_owned = {
+				limit = {
+					owner = {
+						1921 = { owned_by = BGU }
+						BGU = { capital = 1921 }
+						number_of_states = 2
+					}
+				}
+				owner = {
+					casus_belli = {
+						target = BGU
+						type = demand_concession_capital
+						months = 12
+					}
+					war = {
+						target = BGU
+						attacker_goal = { casus_belli = demand_concession_capital state_province_id = 1921 }
+						defender_goal = { casus_belli = humiliate_no_infamy }
+					}
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						1921 = { owned_by = BGU }
+						NOT = { number_of_states = 2 }
+					}
+				}
+				owner = {
+					war = {
+						target = BGU
+						attacker_goal = { casus_belli = annex_africa_full }
+						defender_goal = { casus_belli = humiliate_no_infamy }
+					}
+				}
+			}
+			random_owned = { limit = { owner = { 3848 = { OR = { empty = yes owner = { civilized = no ai = yes } } } } }
+				owner = { 3848 = { secede_province = THIS secede_province = DAH } }
+			}
+			random_owned = { limit = { owner = { 3847 = { OR = { empty = yes owner = { civilized = no ai = yes } } } } }
+				owner = { 3847 = { secede_province = THIS secede_province = DAH life_rating = 25 } }
+			}
+			any_country = { limit = {
+					OR = {
+						owns = 3830
+						owns = 1921
+						owns = 1922
+						owns = 3957
+						owns = 3847
+						owns = 1920
+						owns = 3848
+					}
+					civilized = yes
+				}
+				country_event = 18482493
+			}
+
         }
         ai_will_do = {
             factor = 1
@@ -5644,18 +6418,12 @@ political_decisions = {
         picture = chunnel
         potential = {
             year = 1860
+            is_greater_power = yes
+			invention = nitroglycerin
             OR = {
                 owns = 3314
                 owns = 301
             }
-            NOT = { is_canal_enabled = 13 }
-            NOT = { has_global_flag = chunnel_built }
-            is_greater_power = yes
-			OR = {
-				ai = no
-				year = 1875
-			}
-			invention = nitroglycerin
 			OR = {
 				AND = {
 					year = 1875
@@ -5666,6 +6434,8 @@ political_decisions = {
 				}
 				ai = no
 			}
+            NOT = { is_canal_enabled = 13 }
+            NOT = { has_global_flag = chunnel_built }
 			OR = {
 				NOT = { has_global_flag = you_are_playing_mp }
 				AND = {
@@ -5686,6 +6456,14 @@ political_decisions = {
             set_global_flag = chunnel_built
             set_country_flag = chunnel_builder
             country_event = 123536
+			random_list = {
+				10 = { CLN = { add_country_modifier = { name = chunnel_construction duration = 3285 } } }
+				15 = { CLN = { add_country_modifier = { name = chunnel_construction duration = 3650 } } }
+				20 = { CLN = { add_country_modifier = { name = chunnel_construction duration = 4015 } } }
+				35 = { CLN = { add_country_modifier = { name = chunnel_construction duration = 4380 } } }
+				15 = { CLN = { add_country_modifier = { name = chunnel_construction duration = 4725 } } }
+				10 = { CLN = { add_country_modifier = { name = chunnel_construction duration = 5110 } } }
+			}
         }
         ai_will_do = {
             factor = 0
@@ -5695,13 +6473,12 @@ political_decisions = {
         picture = ott_transyl
         potential = {
             tag = TUR
+            owns = 670
             WAL = {
                 all_core = {
                     owned_by = THIS
                 }
             }
-            owns = 670
-            NOT = { has_global_flag = ott_transyl_conquered }
             OR = {
                 AND = {
                     660 = {
@@ -5740,10 +6517,10 @@ political_decisions = {
             }
 			OR = {
 				AND = {
-					is_disarmed = no
-					is_greater_power = yes
-					is_vassal = no
 					prestige = 50
+					is_greater_power = yes
+					is_disarmed = no
+					is_vassal = no
 					war = no
 					OR = {
 						nationalism_n_imperialism = 1
@@ -5759,6 +6536,7 @@ political_decisions = {
 				}
 				ai = no
 			}
+            NOT = { has_global_flag = ott_transyl_conquered }
         }
         allow = {
             is_disarmed = no
@@ -5799,69 +6577,11 @@ political_decisions = {
             }
         }
     }
-    ITA_MNC = {
-        potential = {
-            OR = {
-                tag = ITA
-                tag = ITS
-            }
-            owns = 472
-            is_core = 472
-            civilized = yes
-            exists = MNC
-            NOT = { has_country_flag = ITA_MNC_claimed }
-			OR = {
-				AND = {
-					war = no
-					prestige = 100
-					is_greater_power = yes
-					war_policy = jingoism
-				}
-				ai = no
-			}
-        }
-        allow = {
-            war = no
-            prestige = 100
-            is_greater_power = yes
-            war_policy = jingoism
-        }
-        effect = {
-            badboy = 0.1
-            prestige = 3
-            set_country_flag = ITA_MNC_claimed
-            inherit = MNC
-        }
-        ai_will_do = {
-            factor = 1
-        }
-    }
-	noronha_concession = {
-        potential = {
-            BRZ = {
-                is_disarmed = yes
-                truce_with = THIS
-				owns = 3482
-                owns = 3666
-            }
-			total_amount_of_ships = 40
-        }
-        allow = {
-			war = no
-        }
-        effect = {
-            badboy = 0.3
-			3482 = { secede_province = THIS }
-            3666 = { secede_province = THIS }
-        }
-        ai_will_do = {
-            factor = 0
-        }
-    }
+
     conquer_lib_desert = {
         potential = {
-            civilized = yes
             owns = 1719
+            civilized = yes
             3394 = { empty = yes }
             3395 = { empty = yes }
 			3668 = { empty = no }
@@ -5873,22 +6593,21 @@ political_decisions = {
             3394 = { secede_province = THIS }
             3395 = { secede_province = THIS }
         }
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
+
     munich_coin_treaty = {
         picture = gulden
         potential = {
-            tag = BAV
             year = 1837
+            tag = BAV
             war = no
-            NOT = { year = 1840 }
-            NOT = { has_country_flag = mct_done }
 			OR = {
 				ai = no
 				private_bank_money_bill_printing = 1
 			}
+            NOT = { has_country_flag = mct_done }
+            NOT = { year = 1840 }
         }
         allow = {
 			private_bank_money_bill_printing = 1
@@ -5936,75 +6655,14 @@ political_decisions = {
                 }
             }
         }
-		ai_will_do = {
-            factor = 1
-        }
+		ai_will_do = { factor = 1 }
     }
-    russo_persian_border_convention = {
-        picture = treaty_of_turkmanchay
-        potential = {
-            tag = RUS
-            year = 1893
-            war = no
-            owns = 3498
-			owns = 3514
-			3369 = { owned_by = PER }
-			3499 = { owned_by = PER }
-            NOT = {
-                truce_with = PER
-            }
-            NOT = { has_country_flag = RUS_PER_border_convention }
-        }
-        allow = {
-            OR = {
-				relation = { who = PER value = 100 }
-				ai = yes
-			}
-        }
-        effect = {
-            PER = { country_event = 123715 }
-			random_owned = {
-				limit = { owner = { RUS = { owns = 356 } } }
-				owner = { CLN = { country_event = 12371569 } }
-			}
-        }
-        ai_will_do = {
-            factor = 1
-        }
-    }
-    incorporate_louisianna = {
-        picture = new_france_louisiana
-        potential = {
-            tag = MEX
-            ULA = {
-				exists = yes
-				is_vassal = yes
-			}
-			is_our_vassal = ULA
-            war = no
-            has_country_flag = puppet_ULA
-			OR = {
-				ai = no
-				NOT = { truce_with = USA }
-			}
-			ULA = { vassal_of = THIS }
-        }
-        allow = {
-			NOT = { truce_with = USA }
-        }
-        effect = {
-            clr_country_flag = puppet_ULA
-            inherit = ULA
-        }
-        ai_will_do = {
-            factor = 1
-        }
-    }
+
     lorraine_fra_nice = {
         picture = lorraine_treaty
         potential = {
-            tag = FRA
             has_global_flag = lorraine_war
+            tag = FRA
 			OR = {
 				ai = no
 				OR = {
@@ -6049,18 +6707,19 @@ political_decisions = {
                 secede_province = FRA
                 }
             }
-            412 = { secede_province = FRA }
-            409 = { secede_province = FRA }
-            410 = { secede_province = FRA }
-            3409 = { secede_province = FRA }
+            412 = { secede_province = THIS add_core = THIS }
+            409 = { secede_province = THIS add_core = THIS }
+            410 = { secede_province = THIS add_core = THIS }
+            3409 = { secede_province = THIS add_core = THIS }
         }
         ai_will_do = { factor = 1 }
     }
+
     lorraine_fra_mean = {
         picture = lorraine_treaty
         potential = {
-            tag = FRA
             has_global_flag = lorraine_war
+            tag = FRA
 			OR = {
 				OR = {
 					GER = {
@@ -6091,77 +6750,27 @@ political_decisions = {
             badboy = 5
             clr_global_flag = lorraine_war
             set_global_flag = ger_lorr_big_fail
-            GCF = {
-            any_owned = {
-                limit = {
-                    is_core = FRA
-                }
-                secede_province = FRA
-            }
-            }
-            GER = {
-            any_owned = {
-                limit = {
-                    is_core = FRA
-                }
-                secede_province = FRA
-            }
-            }
-            any_country = {
-                limit = {
-                    owns = 397
-                }
-                country_event = 123544
-            }
-            any_country = {
-                limit = {
-                    owns = 395
-                }
-                country_event = 123545
-            }
-            any_country = {
-                limit = {
-                    owns = 381
-                }
-                country_event = 123547
-            }
-            any_country = {
-                limit = {
-                    owns = 386
-                }
-                country_event = 123546
-            }
-            GER = { release = RHI }
-            GCF = { release = RHI }
-            any_country = {
-                limit = {
-                    owns = 583
-                }
-                country_event = 123548
-            }
-            573 = { secede_province = FRA }
-            412 = { secede_province = FRA }
-            409 = { secede_province = FRA }
-            410 = { secede_province = FRA }
-            3409 = { secede_province = FRA }
-            diplomatic_influence = {
-                who = RHI
-                value = 400
-            }
-            THIS = { create_vassal = RHI }
+            country_event = 800831
         }
         ai_will_do = { factor = 1 }
     }
+
     lorraine_ger_nice = {
         picture = lorraine_treaty
         potential = {
+            has_global_flag = lorraine_war
             OR = {
                 tag = GER
                 tag = GCF
             }
-            has_global_flag = lorraine_war
 			OR = {
 				FRA = {
+					exists = yes
+					is_disarmed = yes
+					truce_with = THIS
+				}
+				BOR = {
+					exists = yes
 					is_disarmed = yes
 					truce_with = THIS
 				}
@@ -6169,21 +6778,29 @@ political_decisions = {
 			}
         }
         allow = {
-            FRA = {
-                is_disarmed = yes
-                truce_with = THIS
-            }
+			OR = {
+				FRA = {
+					exists = yes
+					is_disarmed = yes
+					truce_with = THIS
+				}
+				BOR = {
+					exists = yes
+					is_disarmed = yes
+					truce_with = THIS
+				}
+			}
         }
         effect = {
             clr_global_flag = lorraine_war
-            411 = { secede_province = THIS }
-            414 = { secede_province = THIS }
-            413 = { secede_province = THIS }
-            405 = { secede_province = THIS }
-            397 = { secede_province = THIS }
-            398 = { secede_province = THIS }
-            395 = { secede_province = THIS }
-            381 = { secede_province = THIS }
+			411 = { secede_province = THIS add_core = THIS }
+            414 = { secede_province = THIS add_core = THIS }
+            413 = { secede_province = THIS add_core = THIS }
+            405 = { secede_province = THIS add_core = THIS }
+            397 = { secede_province = THIS add_core = THIS }
+            398 = { secede_province = THIS add_core = THIS }
+            395 = { secede_province = THIS add_core = THIS }
+            381 = { secede_province = THIS add_core = THIS }
             any_owned = {
                 limit = {
                     OR = {
@@ -6191,6 +6808,7 @@ political_decisions = {
                         owned_by = NET
                         owned_by = LUX
                         owned_by = FRA
+						owned_by = BOR
                     }
                     is_core = THIS
                 }
@@ -6199,16 +6817,23 @@ political_decisions = {
         }
         ai_will_do = { factor = 1 }
     }
+
     lorraine_ger_mean = {
         picture = lorraine_treaty
         potential = {
+            has_global_flag = lorraine_war
             OR = {
                 tag = GER
                 tag = GCF
             }
-            has_global_flag = lorraine_war
 			OR = {
 				FRA = {
+					exists = yes
+					is_disarmed = yes
+					truce_with = THIS
+				}
+				BOR = {
+					exists = yes
 					is_disarmed = yes
 					truce_with = THIS
 				}
@@ -6216,86 +6841,96 @@ political_decisions = {
 			}
         }
         allow = {
-            FRA = {
-                is_disarmed = yes
-                truce_with = THIS
-            }
+			OR = {
+				FRA = {
+					exists = yes
+					is_disarmed = yes
+					truce_with = THIS
+				}
+				BOR = {
+					exists = yes
+					is_disarmed = yes
+					truce_with = THIS
+				}
+			}
         }
         effect = {
             badboy = 5
             clr_global_flag = lorraine_war
-            411 = { secede_province = THIS }
-            414 = { secede_province = THIS }
-            413 = { secede_province = THIS }
-            405 = { secede_province = THIS }
-            397 = { secede_province = THIS }
-            398 = { secede_province = THIS }
-            395 = { secede_province = THIS }
-            381 = { secede_province = THIS }
+            411 = { secede_province = THIS add_core = THIS }
+            414 = { secede_province = THIS add_core = THIS }
+            413 = { secede_province = THIS add_core = THIS }
+            405 = { secede_province = THIS add_core = THIS }
+            397 = { secede_province = THIS add_core = THIS }
+            398 = { secede_province = THIS add_core = THIS }
+            395 = { secede_province = THIS add_core = THIS }
+            381 = { secede_province = THIS add_core = THIS }
             BEL = {
-            any_owned = {
-                limit = {
-                    is_core = THIS
-                }
-                secede_province = THIS
-            }
+				any_owned = {
+					limit = {
+						is_core = THIS
+					}
+					secede_province = THIS
+				}
             }
             NET = {
-            any_owned = {
-                limit = {
-                    is_core = THIS
-                }
-                secede_province = THIS
-            }
+				any_owned = {
+					limit = {
+						is_core = THIS
+					}
+					secede_province = THIS
+				}
             }
             LUX = {
-            any_owned = {
-                limit = {
-                    is_core = THIS
-                }
-                secede_province = THIS
-            }
+				any_owned = {
+					limit = {
+						is_core = THIS
+					}
+					secede_province = THIS
+				}
             }
             FRA = {
-            any_owned = {
-                limit = {
-                    is_core = THIS
-                }
-                secede_province = THIS
+				any_owned = {
+					limit = {
+						is_core = THIS
+					}
+					secede_province = THIS
+				}
             }
+            BOR = {
+				any_owned = {
+					limit = {
+						is_core = THIS
+					}
+					secede_province = THIS
+				}
             }
             LBG = {
-            any_owned = {
-                limit = {
-                    is_core = THIS
-                }
-                secede_province = THIS
+				any_owned = {
+					limit = {
+						is_core = THIS
+					}
+					secede_province = THIS
+				}
             }
-            }
-            FRA = { release = BRT }
-            THIS = { create_vassal = BRT }
-            BEL = { release = WLL }
-            NET = { release = WLL }
-            FRA = { release = WLL }
-            THIS = { create_vassal = WLL }
-			diplomatic_influence = {
-				who = WLL
-				value = 400
-			}
-            BEL = { release = FLA }
-            NET = { release = FLA }
-            FRA = { release = FLA }
-            THIS = { create_vassal = FLA }
-			diplomatic_influence = {
-				who = FLA
-				value = 400
+            FRA_420 = { add_core = BRT }
+			FRA = { release = BRT }
+            BOR = { release = BRT }
+            create_vassal = BRT
+			create_alliance = BRT
+			diplomatic_influence = { who = BRT value = 400 }
+			random_owned = {
+				limit = { owner = { BEL = { ai = yes } } }
+				owner = { country_event = 800830 }
 			}
         }
         ai_will_do = { factor = 1 }
     }
+
     refute_ger_lorraine = {
         picture = lorraine_treaty
         potential = {
+            has_global_flag = lorraine_integrated_into_ger
             OR = {
                 tag = LUX
                 tag = BEL
@@ -6321,8 +6956,6 @@ political_decisions = {
                 395 = { is_core = GCF }
                 381 = { is_core = GCF }
             }
-            has_global_flag = lorraine_integrated_into_ger
-            NOT = { has_global_flag = ger_lorr_refute }
 			OR = {
 				ai = no
 				OR = {
@@ -6335,6 +6968,7 @@ political_decisions = {
 					owns = 381
 				}
 			}
+            NOT = { has_global_flag = ger_lorr_refute }
         }
         allow = {
             OR = {
@@ -6395,6 +7029,7 @@ political_decisions = {
         }
         ai_will_do = { factor = 1 }
     }
+
     burn_white_house = {
         picture = whburn
         potential = {
@@ -6402,8 +7037,7 @@ political_decisions = {
             2146 = { controlled_by = THIS }
             NOT = { has_global_flag = whburnt }
         }
-        allow = {
-        }
+        allow = { }
         effect = {
             set_global_flag = whburnt
             badboy = 2
@@ -6416,25 +7050,18 @@ political_decisions = {
             factor = 1
         }
     }
+
     send_liman = {
         picture = liman_sent
         potential = {
+            year = 1910
             OR = {
 				tag = GER
 				tag = GCF
             }
-            year = 1910
-            OR = {
-                government = hms_government
-                government = prussian_constitutionalism
-                government = absolute_monarchy
-                government = absolute_empire
-                government = semi_constitutional_empire
-                government = constitutional_empire
-            }
+            has_country_flag = monarchy_government
             exists = TUR
             relation = { who = TUR value = 50 }
-            NOT = { has_global_flag = liman_has_been_sent }
 			OR = {
 				AND = {
 					war = no
@@ -6445,6 +7072,7 @@ political_decisions = {
 				}
 				ai = no
 			}
+            NOT = { has_global_flag = liman_has_been_sent }
         }
 
         allow = {
@@ -6463,10 +7091,9 @@ political_decisions = {
             create_alliance = TUR
             TUR = { country_event = 123582 }
         }
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
     }
+
     net_child_labor_law = {
         picture = van_houten
         potential = {
@@ -6474,12 +7101,8 @@ political_decisions = {
 				tag = NET
 				tag = BNF
 			}
-            NOT = { has_global_flag = net_child_passed }
-            NOT = { child_labor = child_labor_restricted }
-            NOT = { child_labor = child_labor_illegal }
 			OR = {
 				AND = {
-					NOT = { ruling_party_ideology = reactionary }
 					OR = {
 						upper_house = {
 							ideology = liberal
@@ -6490,9 +7113,13 @@ political_decisions = {
 							value = 0.3
 						}
 					}
+					NOT = { ruling_party_ideology = reactionary }
 				}
 				ai = no
 			}
+            NOT = { has_global_flag = net_child_passed }
+            NOT = { child_labor = child_labor_restricted }
+            NOT = { child_labor = child_labor_illegal }
         }
         allow = {
             year = 1874
@@ -6527,16 +7154,13 @@ political_decisions = {
     net_child_school_law = {
         picture = van_houten
         potential = {
+            has_global_flag = net_child_passed
             OR = {
 				tag = NET
 				tag = BNF
 			}
-            has_global_flag = net_child_passed
-            NOT = { has_global_flag = net_child_school_passed }
-            NOT = { child_labor = child_labor_illegal }
 			OR = {
 				AND = {
-					NOT = { ruling_party_ideology = reactionary }
 					OR = {
 						upper_house = {
 							ideology = liberal
@@ -6547,9 +7171,12 @@ political_decisions = {
 							value = 0.3
 						}
 					}
+					NOT = { ruling_party_ideology = reactionary }
 				}
 				ai = no
 			}
+            NOT = { has_global_flag = net_child_school_passed }
+            NOT = { child_labor = child_labor_illegal }
         }
         allow = {
             year = 1901
@@ -6575,7 +7202,7 @@ political_decisions = {
         effect = {
             set_global_flag = net_child_school_passed
             prestige = 3
-            child_labor = child_labor_illegal
+            social_reform = child_labor_illegal
             social_reform = good_schools
         }
         ai_will_do = {
@@ -6585,9 +7212,9 @@ political_decisions = {
     remove_outside_cores_sw = {
         potential = {
             has_global_flag = sw_set
+			ai = no
             NOT = { year = 1837 }
             NOT = { has_global_flag = outside_cores_removed }
-			ai = no
         }
         allow = {
         }
@@ -6654,12 +7281,12 @@ political_decisions = {
     bornean_interior = {
         picture = inner_borneo
         potential = {
+            year = 1885
             owns = 1423
             3275 = { empty = yes }
 			3540 = { empty = yes }
 			1422 = { empty = yes }
             civilized = yes
-            year = 1885
 			OR = {
 				ai = no
 				year = 1888
@@ -6681,10 +7308,10 @@ political_decisions = {
     become_SYC = {
         picture = become_naples
         potential = {
+            tag = SIC
             owns = 762
             owns = 763
 			owns = 764
-            tag = SIC
             NOT = {
                 owns = 759
                 owns = 760
@@ -6717,9 +7344,10 @@ political_decisions = {
     become_SRD = {
         picture = become_savoy
         potential = {
+            tag = SAR
             owns = 766
             owns = 765
-            tag = SAR
+            owns = 3946
             NOT = {
                 owns = 472
                 owns = 3434
@@ -6743,6 +7371,7 @@ political_decisions = {
             prestige = 5
             766 = { add_core = THIS }
             765 = { add_core = THIS }
+            3946 = { add_core = THIS }
         }
         ai_will_do = {
             factor = 1
@@ -6751,6 +7380,8 @@ political_decisions = {
     caribbean_rgo_normalization = {
         picture = coffee_in_colombia
         potential = {
+            year = 1870
+			has_country_flag = can_use_monthly
             OR = {
                 2220 = { owned_by = THIS NOT = { has_province_modifier = plantation } }
                 2219 = { owned_by = THIS NOT = { has_province_modifier = plantation } }
@@ -6768,7 +7399,6 @@ political_decisions = {
                 2229 = { owned_by = THIS NOT = { has_province_modifier = plantation } }
                 2233 = { owned_by = THIS NOT = { has_province_modifier = plantation } }
                 2235 = { owned_by = THIS NOT = { has_province_modifier = plantation } }
-                2234 = { owned_by = THIS NOT = { has_province_modifier = plantation } }
                 any_owned_province = {
                     is_core = FWI
                     NOT = { terrain = small_island }
@@ -6802,7 +7432,6 @@ political_decisions = {
                     NOT = { has_province_modifier = plantation }
                 }
             }
-            year = 1870
 			OR = {
 				ai = no
 				AND = {
@@ -6845,7 +7474,6 @@ political_decisions = {
                         province_id = 2409
                         province_id = 2229
                         province_id = 2233
-                        province_id = 2234
                         province_id = 2235
                     }
                 }
@@ -6902,42 +7530,41 @@ political_decisions = {
         picture = greenland_purchase
         potential = {
             tag = USA
-            owns = 5
-            DEN = { owns = 251 }
-            NOT = { has_global_flag = greenland_purchase }
+            owns = 3983
+			251 = { owner = { owns = 252 } }
 			OR = {
 				AND = {
 					money = 1000000
 					war = no
 					NOT = { has_country_modifier = recently_lost_war }
-					has_unclaimed_cores = no
+					all_core = { OR = { owned_by = THIS empty = yes } }
 					is_greater_power = yes
 				}
 				ai = no
+			}
+            NOT = {
+				has_global_flag = greenland_purchase
+				owns = 251
 			}
         }
         allow = {
             money = 1000000
             war = no
             NOT = { has_country_modifier = recently_lost_war }
-            has_unclaimed_cores = no
+            all_core = { OR = { owned_by = THIS empty = yes } }
             is_greater_power = yes
         }
         effect = {
             set_global_flag = greenland_purchase
-            DEN = { country_event = 123600 }
+            251 = { owner = { country_event = 123600 } }
         }
-        ai_will_do = {
-            factor = 0
-        }
+        ai_will_do = { factor = 0 }
     }
     dominican_ultimatum = {
         picture = dom_spa
         potential = {
             tag = USA
-            war = no
-			HAI_2214 = { 2214 = { owner = { has_country_flag = DOM_claimed } } }
-            NOT = { has_country_flag = dominican_ultimatum_sent }
+			2214 = { owner = { has_country_flag = DOM_claimed } }
 			OR = {
 				AND = {
 					war = no
@@ -6948,6 +7575,7 @@ political_decisions = {
 				}
 				ai = no
 			}
+            NOT = { has_country_flag = dominican_ultimatum_sent }
         }
         allow = {
             war = no
@@ -6970,47 +7598,6 @@ political_decisions = {
             factor = 1
         }
     }
-    greater_slovenia = {
-        picture = greater_slovenia
-        potential = {
-			OR = {
-				tag = SLO
-				tag = YUG
-			}
-            war = no
-            NOT = { has_country_flag = greater_slovenia_claimed }
-			OR = {
-				AND = {
-					war = no
-					NOT = { has_country_modifier = recently_lost_war }
-					has_unclaimed_cores = no
-					war_policy = jingoism
-				}
-				ai = no
-			}
-        }
-        allow = {
-            war = no
-            NOT = { has_country_modifier = recently_lost_war }
-            has_unclaimed_cores = no
-            war_policy = jingoism
-        }
-        effect = {
-            set_country_flag = greater_slovenia_claimed
-            770 = { add_core = THIS }
-            618 = { add_core = THIS }
-            778 = { add_core = THIS }
-            733 = { add_core = THIS }
-            3670 = { add_core = THIS }
-            623 = { add_core = THIS }
-            639 = { add_core = THIS }
-            3289 = { add_core = THIS }
-            3286 = { add_core = THIS }
-        }
-        ai_will_do = {
-            factor = 1
-        }
-    }
     rio_branco_law = {
         picture = Rio_Branco_Law
         potential = {
@@ -7018,17 +7605,7 @@ political_decisions = {
                 tag = BRZ
                 tag = UPB
             }
-            NOT = { has_country_flag = rio_branco_law_passed }
-            OR = {
-                government = hms_government
-                government = prussian_constitutionalism
-                government = absolute_monarchy
-                government = absolute_empire
-                government = semi_constitutional_empire
-                government = constitutional_empire
-            }
-            NOT = { slavery = no_slavery }
-            NOT = { slavery = freedom_of_womb }
+            has_country_flag = monarchy_government
 			OR = {
 				AND = {
 					invention = constitutionalism
@@ -7040,6 +7617,9 @@ political_decisions = {
 				}
 				ai = no
 			}
+            NOT = { slavery = no_slavery }
+            NOT = { slavery = freedom_of_womb }
+            NOT = { has_country_flag = rio_branco_law_passed }
         }
 
         allow = {
@@ -7062,17 +7642,14 @@ political_decisions = {
     south_georgia_whaling = {
         picture = grytviken
         potential = {
+			year = 1900
             owns = 2131
-            year = 1904
             NOT = { has_country_flag = s_georgia_colonized }
-			OR = {
-				war = no
-				ai = no
-			}
         }
 
         allow = {
             war = no
+            year = 1904
         }
 
         effect = {
@@ -7091,13 +7668,8 @@ political_decisions = {
         potential = {
             OR = {
                 tag = ITA
-                tag = ITS
                 tag = SAR
             }
-            NOT = { has_global_flag = bon_compagni_passed }
-            NOT = { school_reforms = low_schools }
-            NOT = { school_reforms = acceptable_schools }
-            NOT = { school_reforms = good_schools }
 			OR = {
 				AND = {
 					NOT = { ruling_party_ideology = reactionary }
@@ -7113,6 +7685,12 @@ political_decisions = {
 					}
 				}
 				ai = no
+			}
+            NOT = {
+				has_global_flag = bon_compagni_passed
+				school_reforms = low_schools
+				school_reforms = acceptable_schools
+				school_reforms = good_schools
 			}
         }
         allow = {
@@ -7132,73 +7710,14 @@ political_decisions = {
                 government = hms_government
                 government = prussian_constitutionalism
                 government = democracy
+				government = radical_republic
                 government = semi_constitutional_empire
                 government = constitutional_empire
             }
         }
         effect = {
             set_global_flag = bon_compagni_passed
-            prestige = 3
             social_reform = low_schools
-        }
-        ai_will_do = {
-            factor = 1
-        }
-    }
-    legge_del_giugno = {
-        picture = lanza
-        potential = {
-            OR = {
-                tag = ITA
-                tag = ITS
-                tag = SAR
-            }
-            has_global_flag = bon_compagni_passed
-            NOT = { has_global_flag = lanza_law_passed }
-            NOT = { school_reforms = acceptable_schools }
-            NOT = { school_reforms = good_schools }
-			OR = {
-				ai = no
-				AND = {
-					NOT = { ruling_party_ideology = reactionary }
-					OR = {
-						upper_house = {
-							ideology = liberal
-							value = 0.3
-						}
-						upper_house = {
-							ideology = socialist
-							value = 0.3
-						}
-					}
-				}
-			}
-        }
-        allow = {
-            NOT = { ruling_party_ideology = reactionary }
-            OR = {
-                upper_house = {
-                    ideology = liberal
-                    value = 0.3
-                }
-                upper_house = {
-                    ideology = socialist
-                    value = 0.3
-                }
-            }
-            year = 1857
-            OR = {
-                government = hms_government
-                government = prussian_constitutionalism
-                government = democracy
-                government = semi_constitutional_empire
-                government = constitutional_empire
-            }
-        }
-        effect = {
-            set_global_flag = lanza_law_passed
-            prestige = 3
-            social_reform = acceptable_schools
         }
         ai_will_do = {
             factor = 1
@@ -7209,13 +7728,10 @@ political_decisions = {
         potential = {
             OR = {
                 tag = ITA
-                tag = ITS
                 tag = SAR
             }
 			OR = {
-				ai = no
 				AND = {
-					NOT = { ruling_party_ideology = reactionary }
 					OR = {
 						upper_house = {
 							ideology = liberal
@@ -7226,13 +7742,18 @@ political_decisions = {
 							value = 0.3
 						}
 					}
+					NOT = { ruling_party_ideology = reactionary }
 				}
+				ai = no
 			}
-            has_global_flag = lanza_law_passed
-            NOT = { has_global_flag = casati_law_passed }
-            NOT = { school_reforms = good_schools }
+            NOT = {
+				has_global_flag = casati_law_passed
+				school_reforms = good_schools
+				school_reforms = acceptable_schools
+			}
         }
         allow = {
+            year = 1861
             NOT = { ruling_party_ideology = reactionary }
             OR = {
                 upper_house = {
@@ -7244,19 +7765,18 @@ political_decisions = {
                     value = 0.3
                 }
             }
-            year = 1861
             OR = {
                 government = hms_government
                 government = prussian_constitutionalism
                 government = democracy
+				government = radical_republic
                 government = semi_constitutional_empire
                 government = constitutional_empire
             }
         }
         effect = {
             set_global_flag = casati_law_passed
-            prestige = 3
-            social_reform = good_schools
+            social_reform = acceptable_schools
         }
         ai_will_do = {
             factor = 1
@@ -7265,15 +7785,14 @@ political_decisions = {
 	treaty_of_ayacucho = {
         picture = ayacucho
         potential = {
+			year = 1860
+			owns = 3652
             OR = {
                 tag = BRZ
                 tag = UPB
             }
-            NOT = { has_country_flag = ayacucho_treaty_negotiated }
-			year = 1860
 			OR = {
 				AND = {
-					war = no
 					year = 1867
 					nationalism_n_imperialism = 1
 					3381 = { owner = { war = no is_vassal = no } }
@@ -7283,7 +7802,7 @@ political_decisions = {
 				}
 				ai = no
 			}
-			owns = 3652
+            NOT = { has_country_flag = ayacucho_treaty_negotiated }
         }
         allow = {
             war = no
@@ -7330,15 +7849,14 @@ political_decisions = {
 	integrate_copts = {
 		picture = Coptic
 		potential = {
-			NOT = { has_country_flag = copts_integerated }
-			has_country_flag = muhammad_alis_reforms_enacted
             tag = EGY
+			has_country_flag = muhammad_alis_reforms_enacted
 			civilization_progress = 0.8
+			NOT = { has_country_flag = copts_integerated }
         }
 		allow = { civilization_progress = 0.8 }
 		effect = {
 			add_accepted_culture = copt
-			prestige = 15
 			set_country_flag = copts_integerated
 		}
 		ai_will_do = { factor = 1 }
@@ -7346,25 +7864,24 @@ political_decisions = {
 	ecuador_colombia_treaty = {
         picture = clm_border
         potential = {
+            owns = 2259
+			owns = 2263
             OR = {
 				tag = GCO
 				tag = CLM
 			}
-            owns = 2259
-			owns = 2263
+			exists = ECU
 			2259 = { is_core = ECU }
 			2263 = { is_core = ECU }
-			3359 = { is_core = ECU }
 			NOT = { 2260 = { is_core = ECU } }
 			NOT = { owns = 2288 }
 			3359 = { NOT = { owned_by = ECU } }
-			exists = ECU
         }
 
 		allow = {
-			NOT = { truce_with = ECU }
 			nationalism_n_imperialism = 1
 			war = no
+			NOT = { truce_with = ECU }
 		}
 
         effect = {
@@ -7389,16 +7906,15 @@ political_decisions = {
 	peru_colombia_treaty = {
         picture = clm_border
         potential = {
+			owns = 2263
 			OR = {
 				tag = GCO
 				tag = CLM
 			}
-			owns = 2263
-			3359 = { is_core = PEU }
+			exists = PEU
 			2263 = { is_core = PEU }
 			NOT = { owns = 2288 }
 			3359 = { NOT = { owned_by = PEU } }
-			exists = PEU
         }
 
 		allow = {
@@ -7428,7 +7944,12 @@ political_decisions = {
 	first_choshu_expedition = {
         picture = choshu_expedition_decision
         potential = {
-			tag = TKG
+			tag = JAP #Tokugawa
+			OR = {
+				government = absolute_monarchy
+				government = prussian_constitutionalism
+				government = hms_government
+			}
 			has_country_flag = kinmon_incident
 			has_country_flag = sonno_joi
 			NOT = { has_global_flag = boshin_war }
@@ -7454,22 +7975,27 @@ political_decisions = {
 	declare_caliphate = {
 		picture = allah
 	    potential = {
-			NOT = { has_global_flag = Caliphate_Declared }
-			NOT = { tag = TUR }
+			is_greater_power = yes
             OR = {
                 has_country_flag = sunni_country
                 has_country_flag = shiite_country
                 has_country_flag = ibadi_country
             }
-			is_greater_power = yes
-			TUR = { is_greater_power = no }
+			NOT = { tag = TUR }
+			NOT = { has_global_flag = Caliphate_Declared }
         }
 
 		allow = {
 			1151 = {
-                owned_by = THIS
+                OR = {
+					owned_by = THIS
+					owner = { vassal_of = THIS }
+				}
 			}
-			all_core = { OR = { owned_by = THIS empty = yes } }
+			OR = {
+				all_core = { OR = { owned_by = THIS empty = yes } }
+				ai = no
+			}
 			OR = {
                 government = theocracy
                 religious_policy = moralism
@@ -7483,10 +8009,7 @@ political_decisions = {
 			is_disarmed = no
 			is_vassal = no
 			civilized = yes
-			OR = {
-				is_secondary_power = yes
-				is_greater_power = yes
-			}
+			rank = 16
 		}
 		effect = {
 			relation = {
@@ -7528,8 +8051,8 @@ political_decisions = {
 	marine_murwik = {
         picture = murwik
         potential = {
-            tag = GER
 			year = 1900
+            tag = GER
 			NOT = { has_country_flag = murwik_built }
         }
 
@@ -7580,8 +8103,8 @@ political_decisions = {
 		picture = warekauri
         potential = {
 			owns = 528
-			NOT = { has_global_flag = no_chatham }
 			3494 = { empty = yes }
+			NOT = { has_global_flag = no_chatham }
         }
 
         allow = {

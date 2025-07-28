@@ -11,15 +11,14 @@ country_event = {
     desc = "Now that we have integrated Texas, we need to set some official borders for the state."
     picture = "texas"
 
+    fire_only_once = yes
+
     trigger = {
         tag = USA
-        war = no
-        NOT = { has_global_flag = texasborders }
+        103 = { is_core = TEX }
         TEX = {
             all_core = { OR = { owned_by = THIS empty = yes } }
         }
-        NOT = { exists = TEX }
-        103 = { is_core = TEX }
         105 = { is_core = TEX }
         3588 = { is_core = TEX }
         #3597 = { is_core = TEX }
@@ -27,9 +26,10 @@ country_event = {
         109 = { is_core = TEX }
         128 = { is_core = TEX }
         129 = { is_core = TEX }
+        war = no
+        NOT = { has_global_flag = texasborders }
+        NOT = { exists = TEX }
     }
-
-    fire_only_once = yes
 
     mean_time_to_happen = {
         days = 20
@@ -77,20 +77,21 @@ country_event = {
 
 #Mexican states gain increased militancy
 country_event = {
-
     id = 993887
     title = "Mexican Resistance Forming"
     desc = "A great many are angered by our annexation of Mexico."
     picture = "mexico_soldiers"
+    fire_only_once = yes
 
     trigger = {
         tag = USA
-        has_country_flag = mexico_annexation
+		OR = {
+			has_country_flag = mexico_vassalusa
+			has_country_flag = mexico_annexation
+		}
         MEX = { exists = no }
         NOT = { has_country_flag = mexico_resistance }
     }
-
-    fire_only_once = yes
 
     mean_time_to_happen = {
         days = 14
@@ -111,17 +112,19 @@ country_event = {
         USA_78 = { remove_core = MEX } #Washington
         USA_81 = { remove_core = MEX } #Portland
         USA_91 = { remove_core = MEX } #Idaho
+        111 = { remove_core = MEX } #Idaho
+        114 = { remove_core = MEX } #Idaho
         USA_111 = { remove_core = MEX } #Wyoming
         USA_126 = { remove_core = MEX } #Kansas
-        any_pop = {
-            limit = {
-                location = { is_core = MEX }
-            }
-            militancy = 5
-            consciousness = 5
-        }
         MEX = {
             set_country_flag = treaty_of_guadalupe_hidalgo
+			any_pop = {
+				limit = {
+					location = { is_core = MEX }
+				}
+				militancy = 4
+				consciousness = 6
+			}
             all_core = {
                 add_province_modifier = {
                     name = nationalist_agitation
@@ -129,67 +132,36 @@ country_event = {
                 }
             }
         }
-        ai_chance = {
-            factor = 85
-        }
-    }
-    option = {
-        name = "Grant them limited autonomy. §GLose 15 infamy§W"
-        badboy = -15
-        set_country_flag = mexico_resistance
-        set_country_flag = treaty_of_guadalupe_hidalgo
-        MEX_85 = { remove_core = MEX } #California
-        TEX_132 = { remove_core = MEX } #Texas
-        MEX_94 = { remove_core = MEX } #Nevada
-        MEX_97 = { remove_core = MEX } #Utah
-        MEX_100 = { remove_core = MEX } #Arizona
-        MEX_103 = { remove_core = MEX } #New Mexico
-        USA_129 = { remove_core = MEX } #Oklahoma
-        USA_106 = { remove_core = MEX } #Colorado
-        USA_78 = { remove_core = MEX } #Washington
-        USA_81 = { remove_core = MEX } #Portland
-        USA_91 = { remove_core = MEX } #Idaho
-        USA_111 = { remove_core = MEX } #Wyoming
-        USA_126 = { remove_core = MEX } #Kansas
-		any_owned = {
-			limit = {
-				is_core = MEX
-			}
-			secede_province = MEX
-		}
-        create_vassal = MEX
-        diplomatic_influence = { who = MEX value = 200 }
-        MEX = {
-            set_country_flag = treaty_of_guadalupe_hidalgo
-        }
-        ai_chance = {
-            factor = 15
-        }
+        ai_chance = { factor = 1 }
     }
 }
-#Mexico revolts along with CSA if not released as a vassal.
+#Mexico revolts along with CSA.
 country_event = {
-
     id = 993888
     title = "Mexican Freedom"
-    desc = "Our intelligence reports that, with the civil turmoil that looms over our nation, Mexican nationalists are considering whether to secede as well. We may be able to avoid their ambitions by granting a certain amount of autonomy to the Mexican provinces."
+    desc = "Our intelligence reports that, with the civil turmoil that looms over our nation, Mexican nationalists are considering whether to secede as well. We would be able to avoid conflict by granting the Mexican provinces independence."
     picture = "mexico_soldiers"
+    fire_only_once = yes
 
     trigger = {
+        has_global_flag = american_civil_war_has_happened
         tag = USA
         war_with = CSA
-        has_global_flag = american_civil_war_has_happened
-        has_country_flag = mexico_annexation
-		any_owned_province = { is_core = MEX }
+		OR = {
+			AND = {
+				has_country_flag = mexico_vassalusa
+				MEX = { vassal_of = THIS }
+			}
+			AND = {
+				has_country_flag = mexico_annexation
+				any_owned_province = { is_core = MEX }
+				MEX = { exists = no }
+			}
+		}
         NOT = { has_country_flag = mexico_independence }
-        NOT = { exists = MEX }
     }
 
-    fire_only_once = yes
-
-    mean_time_to_happen = {
-        days = 5
-    }
+    mean_time_to_happen = { days = 5 }
 
     option = {
         name = "This nation will not be divided."
@@ -199,16 +171,12 @@ country_event = {
                 is_core = MEX #Remove cores so USA can't just cheesily peace out nations and gobble them up later individually
             }
             remove_core = USA
-        }
-		any_owned = {
-			limit = {
-				is_core = MEX
-			}
 			secede_province = MEX
-		}
+        }
         create_vassal = MEX
         diplomatic_influence = { who = MEX value = 200 }
         MEX = {
+			capital = 2172
             leadership = 100
             small_arms = 750
             canned_food = 1500
@@ -216,26 +184,38 @@ country_event = {
             luxury_clothes = 250
             wine = 500
             liquor = 500
-            add_country_modifier = { name = neutrality duration = 120 }
+            add_country_modifier = { name = neutrality duration = 60 }
         }
-        country_event = { id = 993889 days = 120 }
-        ai_chance = {
-            factor = 75
-        }
+		random_owned = {
+			limit = {
+				owner = {
+					has_country_flag = mexico_annexation
+				}
+			}
+			owner = {
+				country_event = { id = 993889 days = 60 }
+			}
+		}
+        random_owned = {
+			limit = {
+				owner = {
+					has_country_flag = mexico_vassalusa
+				}
+			}
+			owner = {
+				country_event = { id = 9938891 days = 60 }
+			}
+		}
+        ai_chance = { factor = 3 }
     }
 
     option = {
         name = "Agreed."
         prestige = -15
-		any_owned = {
-			limit = {
-				is_core = MEX
-			}
-			secede_province = MEX
-		}
-        create_vassal = MEX
-        diplomatic_influence = { who = MEX value = 200 }
+		any_owned = { limit = { is_core = MEX } secede_province = MEX }
+		release_vassal = MEX
         MEX = {
+			capital = 2172
             leadership = 100
             small_arms = 750
             canned_food = 1500
@@ -244,34 +224,36 @@ country_event = {
             wine = 500
             liquor = 500
         }
-        ai_chance = {
-            factor = 25
-        }
+        ai_chance = { factor = 1 }
     }
 }
 
 country_event = {
-
     id = 993890
     title = "Mexican Freedom"
-    desc = "Our intelligence reports that, with the civil turmoil that looms over our nation, Mexican nationalists are considering whether to secede as well. We may be able to avoid their ambitions by granting a certain amount of autonomy to the Mexican provinces."
+    desc = "Our intelligence reports that, with the civil turmoil that looms over our nation, Mexican nationalists are considering whether to secede as well. We would be able to avoid conflict by granting the Mexican provinces independence."
     picture = "mexico_soldiers"
-
-    trigger = {
-        tag = USA
-        war_with = FSA
-        has_global_flag = alt_american_civil_war_has_happened
-        has_country_flag = mexico_annexation
-		any_owned_province = { is_core = MEX }
-        NOT = { has_country_flag = mexico_independence }
-        NOT = { exists = MEX }
-    }
-
     fire_only_once = yes
 
-    mean_time_to_happen = {
-        days = 5
+    trigger = {
+        has_global_flag = alt_american_civil_war_has_happened
+        tag = USA
+        war_with = FSA
+		OR = {
+			AND = {
+				has_country_flag = mexico_vassalusa
+				MEX = { vassal_of = THIS }
+			}
+			AND = {
+				has_country_flag = mexico_annexation
+				any_owned_province = { is_core = MEX }
+				MEX = { exists = no }
+			}
+		}
+        NOT = { has_country_flag = mexico_independence }
     }
+
+    mean_time_to_happen = { days = 5 }
 
     option = {
         name = "This nation will not be divided."
@@ -281,13 +263,8 @@ country_event = {
                 is_core = MEX #Remove cores so USA can't just cheesily peace out nations and gobble them up later individually
             }
             remove_core = USA
-        }
-		any_owned = {
-			limit = {
-				is_core = MEX
-			}
 			secede_province = MEX
-		}
+        }
         create_vassal = MEX
         diplomatic_influence = { who = MEX value = 200 }
         MEX = {
@@ -298,24 +275,36 @@ country_event = {
             luxury_clothes = 250
             wine = 500
             liquor = 500
+            add_country_modifier = { name = neutrality duration = 60 }
         }
-        country_event = 993889
-        ai_chance = {
-            factor = 75
-        }
+		random_owned = {
+			limit = {
+				owner = {
+					has_country_flag = mexico_annexation
+				}
+			}
+			owner = {
+				country_event = { id = 993889 days = 60 }
+			}
+		}
+        random_owned = {
+			limit = {
+				owner = {
+					has_country_flag = mexico_vassalusa
+				}
+			}
+			owner = {
+				country_event = { id = 9938891 days = 60 }
+			}
+		}
+        ai_chance = { factor = 3 }
     }
 
     option = {
         name = "Agreed."
         prestige = -15
-		any_owned = {
-			limit = {
-				is_core = MEX
-			}
-			secede_province = MEX
-		}
-        create_vassal = MEX
-        diplomatic_influence = { who = MEX value = 200 }
+		any_owned = { limit = { is_core = MEX } secede_province = MEX }
+		release_vassal = MEX
         MEX = {
             leadership = 100
             small_arms = 750
@@ -325,21 +314,17 @@ country_event = {
             wine = 500
             liquor = 500
         }
-        ai_chance = {
-            factor = 25
-        }
+        ai_chance = { factor = 1 }
     }
 }
 
-#Actual war declaration of MEX on USA
+#Actual war declaration of MEX on USA, if mexico_annexation
 country_event = {
     id = 993889
-    title = "Battle of Mexico City"
+    title = "The Battle of Mexico City"
     desc = "With the rising tide of nationalism in Mexico, our fort in Mexico City has been attacked."
     picture = "mexico_soldiers"
-
     is_triggered_only = yes
-
     fire_only_once = yes
 
     option = {
@@ -359,6 +344,52 @@ country_event = {
     }
 }
 
+#Actual war declaration of MEX on USA, if mexico_vassalusa
+country_event = {
+    id = 9938891
+    title = "The Battle of Mexico City"
+    desc = "With the rising tide of nationalism in Mexico, our fort in Mexico City has been attacked."
+    picture = "mexico_soldiers"
+    is_triggered_only = yes
+    fire_only_once = yes
+
+    option = {
+        name = "There is no choice but to declare war now."
+        release_vassal = MEX
+        diplomatic_influence = { who = MEX value = -200 }
+        relation = { who = MEX value = -200 }
+        war = {
+            target = MEX
+            attacker_goal = {
+                casus_belli = make_puppet_no_infamy
+            }
+            defender_goal = {
+                casus_belli = status_quo
+            }
+        }
+		ai_chance = { factor = 1 }
+    }
+
+    option = {
+        name = "We must annex Mexico once and for all! §RGain 15 infamy§!"
+		set_country_flag = mexico_annexation_2
+		badboy = 15
+        release_vassal = MEX
+        diplomatic_influence = { who = MEX value = -200 }
+        relation = { who = MEX value = -200 }
+        war = {
+            target = MEX
+            attacker_goal = {
+                casus_belli = civil_war
+            }
+            defender_goal = {
+                casus_belli = status_quo
+            }
+        }
+		ai_chance = { factor = 0 }
+    }
+}
+
 #Since the USA has been a bad boy annexing beyond historical amounts, the UK gets the option to dismantle the American upstarts.
 country_event = {
     id = 993891
@@ -366,10 +397,12 @@ country_event = {
     desc = "The Civil War in the USA presents us the opportunity to cut the Americans down to size. Should we add our support to those fighting for their freedom?"
     picture = "confederation"
 
+    fire_only_once = yes
+
     trigger = {
-        tag = ENG
-        ai = no
         has_global_flag = american_civil_war_has_happened
+        ai = no
+        tag = ENG
 		OR = {
 			USA = {
 				OR = {
@@ -392,8 +425,6 @@ country_event = {
 			}
 		}
     }
-
-    fire_only_once = yes
 
     mean_time_to_happen = {
         months = 1
@@ -432,87 +463,27 @@ country_event = {
     }
 }
 
-#USA control of Mexico confirmed
-country_event = {
-    id = 993895
-    title = "Civil War in Mexico Has Ended"
-    desc = "With our victory in the Civil War our control of Mexico is now uncontested."
-    picture = "mexico_soldiers"
-
-    trigger = {
-        tag = USA
-        war = no
-        has_country_flag = mexico_independence
-        has_global_flag = american_civil_war_has_happened
-        NOT = { exists = MEX }
-        NOT = { has_country_flag = mexico_cores }
-        NOT = { has_country_flag = no_mexico_cores }
-    }
-
-    fire_only_once = yes
-
-    mean_time_to_happen = {
-        days = 14
-    }
-
-    option = {
-        name = "Excellent! §RGain 10 infamy§W"
-        prestige = 15
-        any_owned = {
-			limit = {
-				is_core = MEX
-				NOT = {
-					is_core = CUB
-					is_core = HAI
-					is_core = DOM
-					is_core = PHL
-					province_id = 2190
-					province_id = 2189
-					province_id = 2188
-					province_id = 2187
-					province_id = 3410
-					province_id = 2186
-					province_id = 2628
-					is_core = ELS
-					is_core = HON
-					is_core = NIC
-					is_core = COS
-					is_core = PNM
-				}
-			}
-			add_core = THIS
-		}
-        set_country_flag = mexico_cores
-        badboy = 10
-    }
-    option = {
-        name = "Leave them autonomous"
-        prestige = -15
-        set_country_flag = mexico_cores
-    }
-}
-
 country_event = {
     id = 993892
-    title = "Civil War in Mexico Has Ended"
+    title = "The Civil War in Mexico Has Ended"
     desc = "With our loss in the Civil War our control of Mexico is now over."
     picture = "mexico_soldiers"
+    fire_only_once = yes
 
     trigger = {
         tag = USA
-        war = no
         has_country_flag = mexico_independence
-        has_global_flag = american_civil_war_has_happened
+        war = no
         exists = MEX
         truce_with = MEX
-        NOT = { has_country_flag = mexico_cores }
-        NOT = { has_country_flag = no_mexico_cores }
+        NOT = {
+			has_country_flag = no_mexico_cores
+			MEX = { vassal_of = THIS }
+		}
     }
 
-    fire_only_once = yes
-
     mean_time_to_happen = {
-        days = 14
+        days = 1
     }
 
     option = {
@@ -530,30 +501,32 @@ country_event = {
 country_event = {
     id = 993897
     title = "Out of Africa"
-    desc = "Holy shit what are you doing AI USA?"
+    desc = "EVTDESC993897"
 
     trigger = {
         capital_scope = {
-            continent = africa
+			OR = {
+				continent = africa
+				continent = south_africa
+				continent = west_africa
+				continent = east_africa
+				continent = central_africa
+			}
         }
-        NOT = {
-            tag = LIB
-        }
-        ai = yes
         civilized = no
-		OR = {
-			USA = {
-				ai = yes
-				OR = {
-					diplomatic_influence = {
-						who = THIS
-						value = 100
-					}
-					is_sphere_leader_of = THIS
-					alliance_with = THIS
+		USA = {
+			ai = yes
+			OR = {
+				diplomatic_influence = {
+					who = THIS
+					value = 100
 				}
+				is_sphere_leader_of = THIS
+				alliance_with = THIS
 			}
 		}
+        NOT = { tag = LIB }
+        ai = yes
     }
 
     mean_time_to_happen = {
@@ -577,503 +550,6 @@ country_event = {
     }
 }
 
-country_event = {
-    id = 993898
-    title = "Out of Africa"
-    desc = "Stop messing with Ethiopia's formation!"
-
-    trigger = {
-        capital_scope = {
-            continent = africa
-        }
-		OR = {
-			tag = GON
-			tag = AWS
-			tag = TIG
-			tag = WLO
-			tag = GJM
-			tag = SHW
-			tag = HAR
-			tag = KAF
-		}
-        ai = yes
-        civilized = no
-		NOT = { exists = ETH }
-		OR = {
-			USA = {
-				ai = yes
-				OR = {
-					diplomatic_influence = {
-						who = THIS
-						value = 40
-					}
-					is_sphere_leader_of = THIS
-				}
-			}
-			ENG = {
-				ai = yes
-				OR = {
-					diplomatic_influence = {
-						who = THIS
-						value = 40
-					}
-					is_sphere_leader_of = THIS
-				}
-			}
-			FRA = {
-				ai = yes
-				OR = {
-					diplomatic_influence = {
-						who = THIS
-						value = 40
-					}
-					is_sphere_leader_of = THIS
-				}
-			}
-			BOR = {
-				ai = yes
-				OR = {
-					diplomatic_influence = {
-						who = THIS
-						value = 40
-					}
-					is_sphere_leader_of = THIS
-				}
-			}
-			GER = {
-				ai = yes
-				OR = {
-					diplomatic_influence = {
-						who = THIS
-						value = 40
-					}
-					is_sphere_leader_of = THIS
-				}
-			}
-			PRU = {
-				ai = yes
-				OR = {
-					diplomatic_influence = {
-						who = THIS
-						value = 40
-					}
-					is_sphere_leader_of = THIS
-				}
-			}
-			NGF = {
-				ai = yes
-				OR = {
-					diplomatic_influence = {
-						who = THIS
-						value = 40
-					}
-					is_sphere_leader_of = THIS
-				}
-			}
-			SGF = {
-				ai = yes
-				OR = {
-					diplomatic_influence = {
-						who = THIS
-						value = 40
-					}
-					is_sphere_leader_of = THIS
-				}
-			}
-			RUS = {
-				ai = yes
-				OR = {
-					diplomatic_influence = {
-						who = THIS
-						value = 40
-					}
-					is_sphere_leader_of = THIS
-				}
-			}
-			TUR = {
-				ai = yes
-				OR = {
-					diplomatic_influence = {
-						who = THIS
-						value = 40
-					}
-					is_sphere_leader_of = THIS
-				}
-			}
-			ITA = {
-				ai = yes
-				OR = {
-					diplomatic_influence = {
-						who = THIS
-						value = 40
-					}
-					is_sphere_leader_of = THIS
-				}
-			}
-			ITS = {
-				ai = yes
-				OR = {
-					diplomatic_influence = {
-						who = THIS
-						value = 40
-					}
-					is_sphere_leader_of = THIS
-				}
-			}
-			AUS = {
-				ai = yes
-				OR = {
-					diplomatic_influence = {
-						who = THIS
-						value = 40
-					}
-					is_sphere_leader_of = THIS
-				}
-			}
-			KUK = {
-				ai = yes
-				OR = {
-					diplomatic_influence = {
-						who = THIS
-						value = 40
-					}
-					is_sphere_leader_of = THIS
-				}
-			}
-			AUB = {
-				ai = yes
-				OR = {
-					diplomatic_influence = {
-						who = THIS
-						value = 40
-					}
-					is_sphere_leader_of = THIS
-				}
-			}
-			DNB = {
-				ai = yes
-				OR = {
-					diplomatic_influence = {
-						who = THIS
-						value = 40
-					}
-					is_sphere_leader_of = THIS
-				}
-			}
-			SPA = {
-				ai = yes
-				OR = {
-					diplomatic_influence = {
-						who = THIS
-						value = 40
-					}
-					is_sphere_leader_of = THIS
-				}
-			}
-		}
-    }
-
-    mean_time_to_happen = {
-        days = 3
-    }
-
-    option = {
-        name = "Get out of Africa!"
-        random_owned = {
-			limit = {
-				owner = { USA = { exists = yes } }
-			}
-			owner = {
-				USA = {
-					diplomatic_influence = {
-						who = THIS
-						value = -100
-					}
-					relation = {
-						who = THIS
-						value = -50
-					}
-				}
-			}
-		}
-		random_owned = {
-			limit = {
-				owner = { ENG = { exists = yes } }
-			}
-			owner = {
-				ENG = {
-					diplomatic_influence = {
-						who = THIS
-						value = -100
-					}
-					relation = {
-						who = THIS
-						value = -50
-					}
-				}
-			}
-		}
-		random_owned = {
-			limit = {
-				owner = { FRA = { exists = yes } }
-			}
-			owner = {
-				FRA = {
-					diplomatic_influence = {
-						who = THIS
-						value = -100
-					}
-					relation = {
-						who = THIS
-						value = -50
-					}
-				}
-			}
-		}
-		random_owned = {
-			limit = {
-				owner = { BOR = { exists = yes } }
-			}
-			owner = {
-				BOR = {
-					diplomatic_influence = {
-						who = THIS
-						value = -100
-					}
-					relation = {
-						who = THIS
-						value = -50
-					}
-				}
-			}
-		}
-		random_owned = {
-			limit = {
-				owner = { GER = { exists = yes } }
-			}
-			owner = {
-				GER = {
-					diplomatic_influence = {
-						who = THIS
-						value = -100
-					}
-					relation = {
-						who = THIS
-						value = -50
-					}
-				}
-			}
-		}
-		random_owned = {
-			limit = {
-				owner = { PRU = { exists = yes } }
-			}
-			owner = {
-				PRU = {
-					diplomatic_influence = {
-						who = THIS
-						value = -100
-					}
-					relation = {
-						who = THIS
-						value = -50
-					}
-				}
-			}
-		}
-		random_owned = {
-			limit = {
-				owner = { NGF = { exists = yes } }
-			}
-			owner = {
-				NGF = {
-					diplomatic_influence = {
-						who = THIS
-						value = -100
-					}
-					relation = {
-						who = THIS
-						value = -50
-					}
-				}
-			}
-		}
-		random_owned = {
-			limit = {
-				owner = { SGF = { exists = yes } }
-			}
-			owner = {
-				SGF = {
-					diplomatic_influence = {
-						who = THIS
-						value = -100
-					}
-					relation = {
-						who = THIS
-						value = -50
-					}
-				}
-			}
-		}
-		random_owned = {
-			limit = {
-				owner = { AUS = { exists = yes } }
-			}
-			owner = {
-				AUS = {
-					diplomatic_influence = {
-						who = THIS
-						value = -100
-					}
-					relation = {
-						who = THIS
-						value = -50
-					}
-				}
-			}
-		}
-		random_owned = {
-			limit = {
-				owner = { KUK = { exists = yes } }
-			}
-			owner = {
-				KUK = {
-					diplomatic_influence = {
-						who = THIS
-						value = -100
-					}
-					relation = {
-						who = THIS
-						value = -50
-					}
-				}
-			}
-		}
-		random_owned = {
-			limit = {
-				owner = { AUB = { exists = yes } }
-			}
-			owner = {
-				AUB = {
-					diplomatic_influence = {
-						who = THIS
-						value = -100
-					}
-					relation = {
-						who = THIS
-						value = -50
-					}
-				}
-			}
-		}
-		random_owned = {
-			limit = {
-				owner = { DNB = { exists = yes } }
-			}
-			owner = {
-				DNB = {
-					diplomatic_influence = {
-						who = THIS
-						value = -100
-					}
-					relation = {
-						who = THIS
-						value = -50
-					}
-				}
-			}
-		}
-		random_owned = {
-			limit = {
-				owner = { ITA = { exists = yes } }
-			}
-			owner = {
-				ITA = {
-					diplomatic_influence = {
-						who = THIS
-						value = -100
-					}
-					relation = {
-						who = THIS
-						value = -50
-					}
-				}
-			}
-		}
-		random_owned = {
-			limit = {
-				owner = { ITS = { exists = yes } }
-			}
-			owner = {
-				ITS = {
-					diplomatic_influence = {
-						who = THIS
-						value = -100
-					}
-					relation = {
-						who = THIS
-						value = -50
-					}
-				}
-			}
-		}
-
-		random_owned = {
-			limit = {
-				owner = { SPA = { exists = yes } }
-			}
-			owner = {
-				SPA = {
-					diplomatic_influence = {
-						who = THIS
-						value = -100
-					}
-					relation = {
-						who = THIS
-						value = -50
-					}
-				}
-			}
-		}
-
-		random_owned = {
-			limit = {
-				owner = { TUR = { exists = yes } }
-			}
-			owner = {
-				TUR = {
-					diplomatic_influence = {
-						who = THIS
-						value = -100
-					}
-					relation = {
-						who = THIS
-						value = -50
-					}
-				}
-			}
-		}
-
-		random_owned = {
-			limit = {
-				owner = { RUS = { exists = yes } }
-			}
-			owner = {
-				RUS = {
-					diplomatic_influence = {
-						who = THIS
-						value = -100
-					}
-					relation = {
-						who = THIS
-						value = -50
-					}
-				}
-			}
-		}
-    }
-}
-
 #Resettle blacks in Liberia
 country_event = {
     id = 99400
@@ -1085,8 +561,6 @@ country_event = {
         is_culture_group = american_cultures
         slavery = no_slavery
         war = no
-        NOT = { citizenship_policy = full_citizenship }
-        NOT = { has_country_flag = resettle_in_liberia }
         OR = {
             has_global_flag = american_civil_war_has_happened
             has_global_flag = alt_american_civil_war_has_happened
@@ -1094,15 +568,18 @@ country_event = {
         any_owned_province = {
             any_pop = { is_culture_group = african_diaspora_cultures }
         }
+        LIB = {
+            exists = yes
+            is_vassal = no
+        }
+        NOT = { citizenship_policy = full_citizenship }
+        NOT = { has_country_flag = resettle_in_liberia }
         NOT = {
             OR = {
                 accepted_culture = afro_american
                 accepted_culture = afro_caribbean
                 accepted_culture = afro_brazilian
             }
-        }
-        LIB = {
-            exists = yes
         }
     }
 
@@ -1172,9 +649,9 @@ province_event = {
     trigger = {
         has_province_modifier = blacks_to_liberia
         LIB = {
-            exists = yes
-            war = no
             owns = 1887
+            is_vassal = no
+            war = no
         }
     }
 
@@ -1268,6 +745,526 @@ province_event = {
         }
     }
 }
+province_event = {
+    id = 99402696
+    title = "EVTNAME99402"
+    desc = "EVTDESC99402"
+
+    trigger = {
+        has_province_modifier = blacks_to_liberia
+        LIB = {
+            owns = 3852
+            is_vassal = no
+            war = no
+        }
+    }
+
+    mean_time_to_happen = {
+        months = 200
+        modifier = {
+            factor = 0.8
+            owner = { citizenship_policy = residency }
+        }
+        modifier = {
+            factor = 1.2
+            owner = { citizenship_policy = full_citizenship }
+        }
+    }
+
+    option = {
+        name = "Whoever wishes to go may leave."
+        remove_province_modifier = blacks_to_liberia
+        any_pop = {
+            limit = {
+                is_culture_group = african_diaspora_cultures
+            }
+            random = {
+                chance = 35
+                money = 5
+                move_pop = 3852
+            }
+        }
+        ai_chance = {
+            factor = 75
+        }
+    }
+
+    option = {
+        name = "Give them incentives to stay."
+        remove_province_modifier = blacks_to_liberia
+        owner = { treasury = -500 }
+        any_pop = {
+            limit = { is_culture_group = african_diaspora_cultures }
+            money = 50
+            consciousness = -3
+        }
+        ai_chance = {
+            factor = 20
+            modifier = {
+                factor = 0
+                owner = {
+                    NOT = { money = 1000 }
+                }
+            }
+        }
+    }
+
+    option = {
+        name = "Force them out. §RGain 0.5 infamy§W"
+        remove_province_modifier = blacks_to_liberia
+        owner = {
+            treasury = -5000
+            prestige = -2
+            plurality = -2
+            badboy = 0.5
+        }
+        any_pop = {
+            limit = {
+                is_culture_group = african_diaspora_cultures
+            }
+            money = 5
+            move_pop = 3852
+        }
+        owner = {
+            any_pop = {
+                limit = { is_culture_group = african_diaspora_cultures }
+                consciousness = 0.5
+                militancy = 0.5
+            }
+        }
+        ai_chance = {
+            factor = 5
+            modifier = {
+                factor = 0
+                owner = {
+                    NOT = { money = 10000 }
+                }
+            }
+            modifier = {
+                factor = 0
+                owner = {
+                    NOT = { badboy = 0.9 }
+                }
+            }
+        }
+    }
+}
+province_event = {
+    id = 99402695
+    title = "EVTNAME99402"
+    desc = "EVTDESC99402"
+
+    trigger = {
+        has_province_modifier = blacks_to_liberia
+        LIB = {
+            owns = 3774
+            is_vassal = no
+            war = no
+        }
+    }
+
+    mean_time_to_happen = {
+        months = 200
+        modifier = {
+            factor = 0.8
+            owner = { citizenship_policy = residency }
+        }
+        modifier = {
+            factor = 1.2
+            owner = { citizenship_policy = full_citizenship }
+        }
+    }
+
+    option = {
+        name = "Whoever wishes to go may leave."
+        remove_province_modifier = blacks_to_liberia
+        any_pop = {
+            limit = {
+                is_culture_group = african_diaspora_cultures
+            }
+            random = {
+                chance = 35
+                money = 5
+                move_pop = 3774
+            }
+        }
+        ai_chance = {
+            factor = 75
+        }
+    }
+
+    option = {
+        name = "Give them incentives to stay."
+        remove_province_modifier = blacks_to_liberia
+        owner = { treasury = -500 }
+        any_pop = {
+            limit = { is_culture_group = african_diaspora_cultures }
+            money = 50
+            consciousness = -3
+        }
+        ai_chance = {
+            factor = 20
+            modifier = {
+                factor = 0
+                owner = {
+                    NOT = { money = 1000 }
+                }
+            }
+        }
+    }
+
+    option = {
+        name = "Force them out. §RGain 0.5 infamy§W"
+        remove_province_modifier = blacks_to_liberia
+        owner = {
+            treasury = -5000
+            prestige = -2
+            plurality = -2
+            badboy = 0.5
+        }
+        any_pop = {
+            limit = {
+                is_culture_group = african_diaspora_cultures
+            }
+            money = 5
+            move_pop = 3774
+        }
+        owner = {
+            any_pop = {
+                limit = { is_culture_group = african_diaspora_cultures }
+                consciousness = 0.5
+                militancy = 0.5
+            }
+        }
+        ai_chance = {
+            factor = 5
+            modifier = {
+                factor = 0
+                owner = {
+                    NOT = { money = 10000 }
+                }
+            }
+            modifier = {
+                factor = 0
+                owner = {
+                    NOT = { badboy = 0.9 }
+                }
+            }
+        }
+    }
+}
+province_event = {
+    id = 99402694
+    title = "EVTNAME99402"
+    desc = "EVTDESC99402"
+
+    trigger = {
+        has_province_modifier = blacks_to_liberia
+        LIB = {
+            owns = 3773
+            is_vassal = no
+            war = no
+        }
+    }
+
+    mean_time_to_happen = {
+        months = 200
+        modifier = {
+            factor = 0.8
+            owner = { citizenship_policy = residency }
+        }
+        modifier = {
+            factor = 1.2
+            owner = { citizenship_policy = full_citizenship }
+        }
+    }
+
+    option = {
+        name = "Whoever wishes to go may leave."
+        remove_province_modifier = blacks_to_liberia
+        any_pop = {
+            limit = {
+                is_culture_group = african_diaspora_cultures
+            }
+            random = {
+                chance = 35
+                money = 5
+                move_pop = 3773
+            }
+        }
+        ai_chance = {
+            factor = 75
+        }
+    }
+
+    option = {
+        name = "Give them incentives to stay."
+        remove_province_modifier = blacks_to_liberia
+        owner = { treasury = -500 }
+        any_pop = {
+            limit = { is_culture_group = african_diaspora_cultures }
+            money = 50
+            consciousness = -3
+        }
+        ai_chance = {
+            factor = 20
+            modifier = {
+                factor = 0
+                owner = {
+                    NOT = { money = 1000 }
+                }
+            }
+        }
+    }
+
+    option = {
+        name = "Force them out. §RGain 0.5 infamy§W"
+        remove_province_modifier = blacks_to_liberia
+        owner = {
+            treasury = -5000
+            prestige = -2
+            plurality = -2
+            badboy = 0.5
+        }
+        any_pop = {
+            limit = {
+                is_culture_group = african_diaspora_cultures
+            }
+            money = 5
+            move_pop = 3773
+        }
+        owner = {
+            any_pop = {
+                limit = { is_culture_group = african_diaspora_cultures }
+                consciousness = 0.5
+                militancy = 0.5
+            }
+        }
+        ai_chance = {
+            factor = 5
+            modifier = {
+                factor = 0
+                owner = {
+                    NOT = { money = 10000 }
+                }
+            }
+            modifier = {
+                factor = 0
+                owner = {
+                    NOT = { badboy = 0.9 }
+                }
+            }
+        }
+    }
+}
+province_event = {
+    id = 99402693
+    title = "EVTNAME99402"
+    desc = "EVTDESC99402"
+
+    trigger = {
+        has_province_modifier = blacks_to_liberia
+        LIB = {
+            owns = 3772
+            is_vassal = no
+            war = no
+        }
+    }
+
+    mean_time_to_happen = {
+        months = 200
+        modifier = {
+            factor = 0.8
+            owner = { citizenship_policy = residency }
+        }
+        modifier = {
+            factor = 1.2
+            owner = { citizenship_policy = full_citizenship }
+        }
+    }
+
+    option = {
+        name = "Whoever wishes to go may leave."
+        remove_province_modifier = blacks_to_liberia
+        any_pop = {
+            limit = {
+                is_culture_group = african_diaspora_cultures
+            }
+            random = {
+                chance = 35
+                money = 5
+                move_pop = 3772
+            }
+        }
+        ai_chance = {
+            factor = 75
+        }
+    }
+
+    option = {
+        name = "Give them incentives to stay."
+        remove_province_modifier = blacks_to_liberia
+        owner = { treasury = -500 }
+        any_pop = {
+            limit = { is_culture_group = african_diaspora_cultures }
+            money = 50
+            consciousness = -3
+        }
+        ai_chance = {
+            factor = 20
+            modifier = {
+                factor = 0
+                owner = {
+                    NOT = { money = 1000 }
+                }
+            }
+        }
+    }
+
+    option = {
+        name = "Force them out. §RGain 0.5 infamy§W"
+        remove_province_modifier = blacks_to_liberia
+        owner = {
+            treasury = -5000
+            prestige = -2
+            plurality = -2
+            badboy = 0.5
+        }
+        any_pop = {
+            limit = {
+                is_culture_group = african_diaspora_cultures
+            }
+            money = 5
+            move_pop = 3772
+        }
+        owner = {
+            any_pop = {
+                limit = { is_culture_group = african_diaspora_cultures }
+                consciousness = 0.5
+                militancy = 0.5
+            }
+        }
+        ai_chance = {
+            factor = 5
+            modifier = {
+                factor = 0
+                owner = {
+                    NOT = { money = 10000 }
+                }
+            }
+            modifier = {
+                factor = 0
+                owner = {
+                    NOT = { badboy = 0.9 }
+                }
+            }
+        }
+    }
+}
+province_event = {
+    id = 99402692
+    title = "EVTNAME99402"
+    desc = "EVTDESC99402"
+
+    trigger = {
+        has_province_modifier = blacks_to_liberia
+        LIB = {
+            owns = 3771
+            is_vassal = no
+            war = no
+        }
+    }
+
+    mean_time_to_happen = {
+        months = 200
+        modifier = {
+            factor = 0.8
+            owner = { citizenship_policy = residency }
+        }
+        modifier = {
+            factor = 1.2
+            owner = { citizenship_policy = full_citizenship }
+        }
+    }
+
+    option = {
+        name = "Whoever wishes to go may leave."
+        remove_province_modifier = blacks_to_liberia
+        any_pop = {
+            limit = {
+                is_culture_group = african_diaspora_cultures
+            }
+            random = {
+                chance = 35
+                money = 5
+                move_pop = 3771
+            }
+        }
+        ai_chance = {
+            factor = 75
+        }
+    }
+
+    option = {
+        name = "Give them incentives to stay."
+        remove_province_modifier = blacks_to_liberia
+        owner = { treasury = -500 }
+        any_pop = {
+            limit = { is_culture_group = african_diaspora_cultures }
+            money = 50
+            consciousness = -3
+        }
+        ai_chance = {
+            factor = 20
+            modifier = {
+                factor = 0
+                owner = {
+                    NOT = { money = 1000 }
+                }
+            }
+        }
+    }
+
+    option = {
+        name = "Force them out. §RGain 0.5 infamy§W"
+        remove_province_modifier = blacks_to_liberia
+        owner = {
+            treasury = -5000
+            prestige = -2
+            plurality = -2
+            badboy = 0.5
+        }
+        any_pop = {
+            limit = {
+                is_culture_group = african_diaspora_cultures
+            }
+            money = 5
+            move_pop = 3771
+        }
+        owner = {
+            any_pop = {
+                limit = { is_culture_group = african_diaspora_cultures }
+                consciousness = 0.5
+                militancy = 0.5
+            }
+        }
+        ai_chance = {
+            factor = 5
+            modifier = {
+                factor = 0
+                owner = {
+                    NOT = { money = 10000 }
+                }
+            }
+            modifier = {
+                factor = 0
+                owner = {
+                    NOT = { badboy = 0.9 }
+                }
+            }
+        }
+    }
+}
 
 province_event = {
     id = 99403
@@ -1277,9 +1274,9 @@ province_event = {
     trigger = {
         has_province_modifier = blacks_to_liberia
         LIB = {
-            exists = yes
-            war = no
             owns = 1888
+            is_vassal = no
+            war = no
         }
     }
 
@@ -1382,9 +1379,9 @@ province_event = {
     trigger = {
         has_province_modifier = blacks_to_liberia
         LIB = {
-            exists = yes
-            war = no
             owns = 1889
+            is_vassal = no
+            war = no
         }
     }
 
@@ -1487,9 +1484,9 @@ province_event = {
     trigger = {
         has_province_modifier = blacks_to_liberia
         LIB = {
-            exists = yes
+            owns = 3851
+            is_vassal = no
             war = no
-            owns = 1890
         }
     }
 
@@ -1515,7 +1512,7 @@ province_event = {
             random = {
                 chance = 35
                 money = 5
-                move_pop = 1890
+                move_pop = 3851
             }
         }
         ai_chance = {
@@ -1557,7 +1554,7 @@ province_event = {
                 is_culture_group = african_diaspora_cultures
             }
             money = 5
-            move_pop = 1890
+            move_pop = 3851
         }
         owner = {
             any_pop = {
@@ -1592,9 +1589,9 @@ province_event = {
     trigger = {
         has_province_modifier = blacks_to_liberia
         LIB = {
-            exists = yes
-            war = no
             owns = 1891
+            is_vassal = no
+            war = no
         }
     }
 
@@ -1701,9 +1698,7 @@ country_event = {
         name = "We weep for our loss."
         prestige = -20
         war_exhaustion = 10
-        remove_country_modifier = the_statue_of_liberty
-        232 = {
-            remove_province_modifier = gateway_to_america
-        }
+        232 = { remove_province_modifier = gateway_to_america }
+        233 = { remove_province_modifier = gateway_to_america }
     }
 }

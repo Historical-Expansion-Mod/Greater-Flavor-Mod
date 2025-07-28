@@ -1,0 +1,227 @@
+political_decisions = {
+	abolish_scutari_pashalik = {
+        picture = scutari_pashalik
+		potential = {
+			tag = TUR
+			ALB = { vassal_of = TUR }
+			NOT = { has_country_flag = beys_massacred }
+		}
+
+		allow = {
+			OR = {
+				AND = {
+					year = 1830
+					month = 7
+				}
+				year = 1831
+			}
+		}
+
+		effect = {
+			set_country_flag = beys_massacred
+			country_event = 16051844
+		}
+	}
+
+	abolish_ayan = {
+        picture = tanzimat_reforms
+		potential = {
+			tag = TUR
+			has_country_modifier = ayan_system
+		}
+
+		allow = {
+			war = no
+			NOT = { ruling_party_ideology = reactionary }
+			prestige = 15
+			year = 1831
+		}
+
+		effect = {
+			remove_country_modifier = ayan_system
+			any_pop = { limit = { has_pop_culture = bosniak } militancy = 1 consciousness = 1 }
+		}
+	}
+
+	soran_je_ottoman = {
+        picture = soran_je_ottoman
+        potential = {
+            tag = TUR
+			has_country_flag = zakho_kurdistan
+			SRN = { exists = yes }
+            NOT = { 928 = { is_core = THIS } }
+        }
+
+        allow = {
+            war = no
+			year = 1836
+			SRN = {
+				is_vassal = no
+			}
+        }
+
+        effect = {
+			928 = { add_core = THIS }
+			925 = { add_core = THIS }
+			892 = { add_core = THIS }
+			war = {
+				target = SRN
+				attacker_goal = { casus_belli = conquest_any }
+				defender_goal = { casus_belli = status_quo }
+				call_ally = no
+			}
+			random_owned = { limit = { owner = { ai = yes owns = 923 SRN = { ai = yes } } } owner = {
+				923 = {
+					sub_unit = { type = irregular value = current }
+					sub_unit = { type = infantry value = current }
+					sub_unit = { type = cavalry value = current }
+				}
+			} }
+        }
+        ai_will_do = { factor = 1 }
+    }
+
+	samoa_imean_samos = {
+        picture = samos_bar_samoa
+        potential = {
+			year = 1834
+			has_country_flag = i_am_tur
+			SAM = { owns = 843 }
+			NOT = { has_global_flag = samoa_imean_samos }
+        }
+
+        allow = { war = no }
+
+        effect = {
+			set_global_flag = samoa_imean_samos
+			create_vassal = SAM
+			SAM = { government = colonial_company }
+        }
+
+        ai_will_do = { factor = 1 }
+	}
+
+	ottoman_invasion_iraq = {
+        picture = baghdad_mosque
+        potential = {
+			tag = TUR
+			IRQ = { vassal_of = TUR }
+			NOT = { war_with = IRQ }
+			NOT = { has_global_flag = ottoman_invasion_iraq }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			year = 1831
+        }
+
+        effect = {
+			set_global_flag = ottoman_invasion_iraq
+			release_vassal = IRQ
+			war = {
+				target = IRQ
+				attacker_goal = { casus_belli = conquest_any }
+				defender_goal = { casus_belli = humiliate_no_infamy }
+				call_ally = no
+			}
+			IRQ = { country_event = 16051936 }
+        }
+
+        ai_will_do = { factor = 1 }
+	}
+
+	ottoman_invasion_tripoli = {
+        picture = tripoli_flag
+        potential = {
+			tag = TUR
+			TRI = { OR = { vassal_of = TUR war_with = CYR } exists = yes }
+			OR = {
+				NOT = { year = 1845 }
+				has_global_flag = no_more_ghuma
+			}
+			NOT = { war_with = TRI }
+			NOT = { has_global_flag = ottoman_invasion_tripoli }
+        }
+
+        allow = {
+			is_disarmed = no
+			is_vassal = no
+			military_score = 20
+			year = 1835
+			OR = {
+				NOT = { year = 1845 }
+				has_global_flag = no_more_ghuma
+			}
+        }
+
+        effect = {
+			set_global_flag = ottoman_invasion_tripoli
+			release_vassal = TRI
+			casus_belli = {
+                target = TRI
+                type = establish_protectorate_casus_belli
+                months = 120
+			}
+			war = {
+				target = TRI
+				attacker_goal = { casus_belli = establish_protectorate_casus_belli }
+				defender_goal = { casus_belli = status_quo }
+				call_ally = no
+			}
+			random_owned = {
+				limit = { owner = { CYR = { exists = yes } } }
+				owner = {
+				release_vassal = CYR
+				casus_belli = {
+					target = CYR
+					type = establish_protectorate_casus_belli
+					months = 120
+				}
+				war = {
+					target = CYR
+					attacker_goal = { casus_belli = establish_protectorate_casus_belli }
+					defender_goal = { casus_belli = status_quo }
+					call_ally = no
+				}
+			} }
+			military_access = EGY
+			military_access = TUN
+			create_alliance = TUN
+			TUN = {
+				# Audax Validator "." Ignore_NEXT
+				war = { attacker_goal = { casus_belli = call_allies_cb } call_ally = yes }
+			}
+        }
+
+        ai_will_do = { factor = 1 }
+	}
+
+	ottos_cry_to_russia = {
+        picture = ottos_cry_to_russia
+        potential = {
+			has_global_flag = invade_syria_egypt
+			tag = TUR
+			war_with = EGY
+			NOT = { year = 1836 }
+			NOT = { has_global_flag = ottos_cry_to_russia }
+        }
+        allow = {
+			war = yes
+			OR = {
+				NOT = { total_amount_of_divisions = 3 }
+				war_exhaustion = 60
+				national_provinces_occupied = 0.35
+				873 = { controlled_by = EGY }
+			}
+			NOT = { truce_with = RUS war_with = RUS }
+        }
+        effect = {
+			set_global_flag = ottos_cry_to_russia
+			prestige = -20
+			RUS = { country_event = 16051965 }
+        }
+
+        ai_will_do = { factor = 1 }
+	}
+}

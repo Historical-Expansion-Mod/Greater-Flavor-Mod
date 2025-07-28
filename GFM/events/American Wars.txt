@@ -62,18 +62,16 @@ country_event = {
     }
 }
 
-#Mexican-American War
+#Mexican-American War: Initial event to Mexico
 country_event = {
     id = 44126
     title = "EVTNAME44126" #USA Demands Northwest Territories!
     desc = "EVTDESC44126"
     picture = "treaty"
-
     is_triggered_only = yes
 
     option = {
         name = "EVT44126OPTA"
-        set_country_flag = mexico_refused_usa_once
 		USA = { country_event = 44127 }
         any_pop = { militancy = -1 }
         ai_chance = {
@@ -87,6 +85,7 @@ country_event = {
 
 	option = {
         name = "EVT44126OPTB"
+		set_global_flag = no_mexican_american_war
         set_country_flag = treaty_of_guadalupe_hidalgo
         all_core = {
             limit = {
@@ -135,8 +134,9 @@ country_event = {
 					province_id = 3460
 				}
 			}
-			secede_province = USA
+			secede_province = UTI
 		}
+		USA = { inherit = UTI }
         MEX = { treasury = 500000 }
         country_event = 44128
         MEX_85 = { add_core = USA } #California
@@ -159,53 +159,16 @@ country_event = {
 		101 = { add_core = USA }
 		100 = { add_core = USA }
 		3460 = { add_core = USA }
-		random_owned = {
-			limit = {
-				owner = {
-					has_global_flag = uor_compromise
-				}
-			}
-			owner = {
-				UOR = {
-					all_core = {
-						remove_core = USA
-					}
-				}
-			}
-		}
+		random_owned = { limit = { owner = { has_global_flag = uor_compromise } } owner = { UOR = { all_core = { remove_core = USA } } } }
         ai_chance = {
             factor = 10
-			modifier = {
-				factor = 0
-				has_global_flag = railroaded_yes_mexican_american_war
-			}
-			modifier = {
-				factor = 0
-				has_global_flag = railroaded_mex_keeps_north_mexico
-			}
-            modifier = {
-                factor = 0
-                is_greater_power = yes
-            }
-            modifier = {
-                factor = 0
-                NOT = { in_sphere = USA }
-                part_of_sphere = yes
-            }
-            modifier = {
-                factor = 2
-                USA = { brigades_compare = 2 }
-            }
-            modifier = {
-                factor = 0.5
-                NOT = {
-                    USA = { brigades_compare = 1 }
-                }
-            }
-            modifier = {
-                factor = 0.5
-                war_policy = jingoism
-            }
+			modifier = { factor = 0 has_global_flag = railroaded_yes_mexican_american_war }
+			modifier = { factor = 0 has_global_flag = railroaded_mex_keeps_north_mexico }
+            modifier = { factor = 0 is_greater_power = yes }
+            modifier = { factor = 0 NOT = { in_sphere = USA } part_of_sphere = yes }
+            modifier = { factor = 2 USA = { brigades_compare = 2 } }
+            modifier = { factor = 0.5 NOT = { USA = { brigades_compare = 1 } } }
+            modifier = { factor = 0.5 war_policy = jingoism }
         }
     }
 }
@@ -215,28 +178,17 @@ country_event = {
     title = "EVTNAME44127" #Mexico Has Refused!
     desc = "EVTDESC44127"
     picture = "treaty"
-
     is_triggered_only = yes
 
     option = {
         name = "EVT44127OPTA"
         set_global_flag = mexican_american_war
-        war_exhaustion = -20
         relation = { who = MEX value = -200 }
         diplomatic_influence = { who = MEX value = -400 }
         leave_alliance = MEX
-		any_country = {
-			limit = {
-				alliance_with = THIS
-			}
-			leave_alliance = THIS
-		}
-		any_country = {
-			limit = {
-				alliance_with = MEX
-			}
-			leave_alliance = MEX
-		}
+		random_owned = { limit = { owner = { USA = { ai = yes } MEX = { ai = yes } } } owner = { any_country = { limit = { alliance_with = THIS } leave_alliance = THIS } any_country = { limit = { alliance_with = MEX } leave_alliance = MEX } } }
+		random_owned = { limit = { owner = { USA = { ai = yes } MEX = { ai = no } } } owner = { any_country = { limit = { alliance_with = THIS } leave_alliance = THIS } } }
+		random_owned = { limit = { owner = { USA = { ai = no } MEX = { ai = yes } } } owner = { any_country = { limit = { alliance_with = MEX } leave_alliance = MEX } } }
 		war = {
 			target = MEX
 			attacker_goal = {
@@ -253,34 +205,21 @@ country_event = {
             limit = { has_pop_culture = mexican }
             militancy = 6
         }
-        ai_chance = {
-            factor = 99
-			modifier = {
-				factor = 0
-				has_global_flag = railroaded_mex_keeps_north_mexico
-			}
-        }
+        ai_chance = { factor = 95 modifier = { factor = 0 has_global_flag = railroaded_mex_keeps_north_mexico } }
     }
 
     option = {
         name = "EVT44127OPTB"
         set_global_flag = no_mexican_american_war
         any_pop = {
-            consciousness = 1
-            militancy = 1
+            consciousness = -1
+            militancy = -1
         }
-        ai_chance = {
-            factor = 1
-			modifier = {
-				factor = 0
-				NOT = { has_global_flag = railroaded_mex_keeps_north_mexico }
-			}
-        }
+        ai_chance = { factor = 5 }
     }
 }
 
 country_event = {
-
     id = 44128
     title = "EVTNAME44826" #Mexico Agrees
     desc = "EVTDESC44826"
@@ -290,20 +229,13 @@ country_event = {
     news_desc_medium = "EVTDESC44826_NEWS_MEDIUM"
     news_desc_short = "EVTDESC44826_NEWS_SHORT"
     picture = "treaty"
-
     is_triggered_only = yes
 
     option = {
         name = "EVT44147OPTA"
         set_country_flag = treaty_of_guadalupe_hidalgo
         prestige = 20
-
         random_owned = { limit = { owner = { ai = no } } owner = { treasury = -500000 } }
-        random_owned = {
-            limit = { owner = { ai = yes } }
-            owner = { set_variable = { which = owed_cash_money value = 100 } }
-        }
-
         relation = {
             who = FROM
             value = 200
@@ -511,6 +443,7 @@ country_event = {
     fire_only_once = yes
 
     trigger = {
+        year = 1845
         tag = USA
         79 = {
             empty = no
@@ -569,11 +502,33 @@ country_event = {
                 }
             }
         }
+		OR = {
+			RPL = { owns = 13 vassal_of = ENG }
+			CAN = { owns = 13 vassal_of = ENG }
+			ENG = { owns = 13 }
+			RPL = { owns = 14 vassal_of = ENG }
+			CAN = { owns = 14 vassal_of = ENG }
+			ENG = { owns = 14 }
+			RPL = { owns = 15 vassal_of = ENG }
+			CAN = { owns = 15 vassal_of = ENG }
+			ENG = { owns = 15 }
+			RPL = { owns = 17 vassal_of = ENG }
+			CAN = { owns = 17 vassal_of = ENG }
+			ENG = { owns = 17 }
+			RPL = { owns = 21 vassal_of = ENG }
+			CAN = { owns = 21 vassal_of = ENG }
+			ENG = { owns = 21 }
+			RPL = { owns = 27 vassal_of = ENG }
+			CAN = { owns = 27 vassal_of = ENG }
+			ENG = { owns = 27 }
+			RPL = { owns = 20 vassal_of = ENG }
+			CAN = { owns = 20 vassal_of = ENG }
+			ENG = { owns = 20 }
+		}
         NOT = {
             war_with = ENG
             has_country_flag = oregon_treaty
         }
-        year = 1845
         COL = { exists = no }
     }
 
@@ -651,10 +606,6 @@ country_event = {
 			modifier = {
 				factor = 0
 				has_global_flag = railroaded_columbia_oregon
-			}
-			modifier = {
-				factor = 0
-				has_global_flag = railroaded_uk_oregon
 			}
 			modifier = {
 				factor = 0
@@ -870,11 +821,13 @@ country_event = {
         }
         114 = {
             remove_core = COL
+            remove_core = ENG
             remove_core = CAN
             remove_core = RPL
         }
         111 = {
             remove_core = COL
+            remove_core = ENG
             remove_core = CAN
             remove_core = RPL
         }
@@ -916,6 +869,8 @@ country_event = {
 					region = USA_78
 					region = USA_81
 					region = USA_91
+					province_id = 111
+					province_id = 114
 				}
 				is_core = USA
 			}
@@ -934,6 +889,10 @@ country_event = {
         3465 = { add_province_modifier = { name = indian_lands duration = -1 } }
         ai_chance = {
             factor = 95
+			modifier = {
+				factor = 0
+				has_global_flag = railroaded_uk_oregon
+			}
         }
     }
 
@@ -1008,11 +967,13 @@ country_event = {
         }
         114 = {
             remove_core = COL
+            remove_core = ENG
             remove_core = CAN
             remove_core = RPL
         }
         111 = {
             remove_core = COL
+            remove_core = ENG
             remove_core = CAN
             remove_core = RPL
         }
@@ -1066,6 +1027,8 @@ country_event = {
 					province_id = 14
 					region = USA_81
 					region = USA_91
+					province_id = 111
+					province_id = 114
 				}
 				is_core = USA
 			}
@@ -1259,11 +1222,14 @@ country_event = {
 		set_global_flag = uor_compromise
 		# Audax Validator "." Ignore_NEXT
 		any_land_province = {
+			# Audax Validator "." Ignore_NEXT
 			limit = {
 				is_core = UOR
 				OR = { owned_by = THIS owned_by = ENG owned_by = RPL owned_by = COL }
 			}
+			# Audax Validator "." Ignore_NEXT
 			secede_province = THIS
+			# Audax Validator "." Ignore_NEXT
 			secede_province = UOR
 		}
 		UOR = {
@@ -1287,6 +1253,7 @@ country_event = {
         3600 = { add_province_modifier = { name = indian_lands duration = -1 } }
         3464 = { add_province_modifier = { name = indian_lands duration = -1 } }
         3465 = { add_province_modifier = { name = indian_lands duration = -1 } }
+		ai_chance = { factor = 1 }
     }
 
     option = {
@@ -1426,11 +1393,14 @@ country_event = {
 		set_global_flag = uor_compromise
 		# Audax Validator "." Ignore_NEXT
 		any_land_province = {
+			# Audax Validator "." Ignore_NEXT
 			limit = {
 				is_core = UOR
 				OR = { owned_by = THIS owned_by = ENG owned_by = RPL owned_by = COL }
 			}
+			# Audax Validator "." Ignore_NEXT
 			secede_province = THIS
+			# Audax Validator "." Ignore_NEXT
 			secede_province = UOR
 		}
 		UOR = {
@@ -1455,6 +1425,7 @@ country_event = {
         3464 = { add_province_modifier = { name = indian_lands duration = -1 } }
         3465 = { add_province_modifier = { name = indian_lands duration = -1 } }
 		change_tag_no_core_switch = UOR
+		ai_chance = { factor = 0 }
     }
 }
 
@@ -2253,8 +2224,8 @@ country_event = {
             remove_core = ENG
             remove_core = COL
         }
-        114 = { remove_core = COL }
-        111 = { remove_core = COL }
+        114 = { remove_core = COL remove_core = ENG }
+        111 = { remove_core = COL remove_core = ENG }
         any_pop = {
             scaled_consciousness = {
                 issue = jingoism
@@ -2291,13 +2262,15 @@ country_event = {
 			add_core = USA
 			remove_core = COL
 		}
+		111 = {
+			add_core = USA
+			remove_core = COL
+		}
+		114 = {
+			add_core = USA
+			remove_core = COL
+		}
 		USA = { country_event = 441523 }
-        114 = {
-            remove_core = COL
-        }
-        111 = {
-            remove_core = COL
-        }
         80 = {
             remove_core = COL
         }

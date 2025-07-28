@@ -4,6 +4,29 @@
 #                                                                                    #
 #####################################################################################
 
+country_event = {
+	id = 2113000
+	title = "The Tozama Daimyo"
+	desc = "TOZAMADAIMYO"
+	picture = "sekigahara"
+	is_triggered_only = yes
+
+	option = {
+		name = "We will have our revenge!"
+	}
+}
+
+country_event = {
+	id = 2113001
+	title = "The Fudai Daimyo"
+	desc = "FUDAIDAIMYO"
+	picture = "sekigahara"
+	is_triggered_only = yes
+
+	option = {
+		name = "A cushy position."
+	}
+}
 
 #The Great Tenpo Famine events
 country_event = {
@@ -12,17 +35,20 @@ country_event = {
 	desc = "EVTDESC21130"
 	picture = "tenpo_famine"
 
+	mean_time_to_happen = { days = 1 }
+
 	trigger = {
 		OR = {
-				tag = TKG
-				tag = JAP
-				tag = SAT
-				tag = SEN
-				tag = KAG
-				tag = TOS
-				tag = YZW
-				tag = CHO
-				tag = SOC
+			tag = JAP
+			tag = SAT
+			tag = SEN
+			tag = EZO
+			tag = KAG
+			tag = OBM
+			tag = TOS
+			tag = YZW
+			tag = CHO
+			tag = SOC
 		}
 		OR = {
 			year = 1836
@@ -42,8 +68,6 @@ country_event = {
 		}
 		set_country_flag = tenpo_famine_ongoing
 	}
-
-	mean_time_to_happen = { days = 1 }
 }
 
 country_event = {
@@ -53,26 +77,21 @@ country_event = {
 	picture = "tenpo_famine_end"
 
 	trigger = {
+		year = 1837
+		has_country_flag = tenpo_famine_ongoing
 		OR = {
-			tag = TKG
 			tag = JAP
 			tag = SAT
 			tag = SEN
+			tag = EZO
 			tag = KAG
+			tag = OBM
 			tag = TOS
 			tag = YZW
 			tag = CHO
 			tag = SOC
 		}
-		has_country_flag = tenpo_famine_ongoing
-		year = 1837
 		NOT = { has_country_flag = tenpo_famine_ended }
-	}
-
-	option = {
-		name = "EVT21131OPTA"
-		remove_country_modifier = tenpo_famine
-		set_country_flag = tenpo_famine_ended
 	}
 
 	mean_time_to_happen = {
@@ -94,18 +113,32 @@ country_event = {
 			factor = 0.3
 		}
 	}
+
+	option = {
+		name = "EVT21131OPTA"
+		remove_country_modifier = tenpo_famine
+		set_country_flag = tenpo_famine_ended
+	}
 }
 
 country_event = {
 	id = 21143
-	title = "EVTNAME21143" #Morrison Incident, TKG popup
+	title = "EVTNAME21143" #Morrison Incident, JAP popup
 	desc = "EVTDESC21143"
 	picture = "morrison_incident"
+	
 	fire_only_once = yes
+	mean_time_to_happen = { days = 1 }
 
 	trigger = {
-		tag = TKG
 		year = 1837
+		month = 7
+		tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
 		has_country_modifier = uncivilized_isolationism
 		has_country_modifier = sakoku
 		USA = { diplomatic_influence = { who = THIS value = 30 } exists = yes }
@@ -125,8 +158,6 @@ country_event = {
 		relation = { who = THIS value = 30 }
 		ai_chance = { factor = 5 }
 	}
-
-	mean_time_to_happen = { months = 4 }
 }
 
 country_event = {
@@ -297,11 +328,18 @@ country_event = {
 	desc = "EVTDESC21138"
 	picture = "hijikata_toshizo"
 
+	mean_time_to_happen = { months = 1 }
+
 	trigger = {
-		tag = TKG
+		has_global_flag = order_to_expel_barbarians
+		tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
 		civilization_progress = 0.75
 		has_country_flag = sonno_joi
-		has_global_flag = order_to_expel_barbarians
 		NOT = { has_global_flag = boshin_war }
 		NOT = { has_global_flag = boshin_war_has_happened }
 		NOT = { has_country_flag = formed_shinsengumi }
@@ -310,30 +348,13 @@ country_event = {
 
 	option = {
 		name = "EVT21138OPTA"
-		relation = { who = JAP value = -100 }
-		JAP = { country_event = 21139 }
-		set_country_flag = formed_shinsengumi
-	}
-
-	mean_time_to_happen = { months = 1 }
-}
-
-country_event = {
-	id = 21139
-	title = "EVTNAME21139" #Imperial Japan receives Shinsengumi
-	desc = "EVTDESC21139"
-	picture = "shinsengumi_patrol"
-
-	is_triggered_only = yes
-
-	option = {
-		name = "EVT21139OPTA"
-		any_owned = {
+		1657 = {
 			add_province_modifier = {
 				name = shinsengumi_policing
 				duration = -1
 			}
 		}
+		set_country_flag = formed_shinsengumi
 	}
 }
 
@@ -342,21 +363,31 @@ country_event = {
 	title = "EVTNAME899089" #Formation of the Shishi
 	desc = "EVTDESC899089"
 	picture = "shishi_warriors"
+	fire_only_once = yes
 
 	trigger = {
-		tag = JAP
-		has_country_flag = sonno_joi
 		has_global_flag = order_to_expel_barbarians
-		any_owned_province = { has_province_modifier = shinsengumi_policing }
-		NOT = { has_country_flag = ikedaya_incident }
+		OR = { tag = CHO tag = SAT tag = TOS }
+		has_country_flag = sonno_joi
+		NOT = { has_global_flag = ikedaya_incident }
 		NOT = { has_global_flag = boshin_war }
 		NOT = { has_global_flag = boshin_war_has_happened }
 		NOT = { has_global_flag = shishi_formed }
+	}
+	
+	mean_time_to_happen = {
+		months = 2
+		modifier = {
+			civilized = yes
+			JAP = { civilized = no }
+			factor = 0.5
+		}
 	}
 
 	option = {
 		name = "EVT899089OPTA"
 		any_pop = {
+			limit = { is_primary_culture = yes }
 			consciousness = 0.3
 		}
 		any_country = {
@@ -368,14 +399,6 @@ country_event = {
 		}
 		set_global_flag = shishi_formed
 	}
-	mean_time_to_happen = {
-		months = 2
-		modifier = {
-			civilized = yes
-			TKG = { civilized = no }
-			factor = 0.5
-		}
-	}
 }
 
 country_event = {
@@ -383,8 +406,8 @@ country_event = {
 	title = "EVTNAME899090" #Shishi Formation, popup for rest of Japan
 	desc = "EVTDESC899090"
 	picture = "shishi_warriors"
-
 	is_triggered_only = yes
+	allow_multiple_instances = yes
 
 	option = {
 		name = "EVT899090OPTA"
@@ -398,19 +421,26 @@ country_event = {
 country_event = {
 	id = 899091
 	title = "EVTNAME899091" #The Ikedaya Incident
-	desc = "EVTDESC899091"
+	desc = "EVTDESC899092"
 	picture = "ikedaya_incident"
+	fire_only_once = yes
 
 	trigger = {
-		tag = JAP
 		has_global_flag = order_to_expel_barbarians
 		has_global_flag = shishi_formed
+		tag = JAP
 		has_country_flag = sonno_joi
 		any_owned_province = { has_province_modifier = shinsengumi_policing }
 		NOT = { has_global_flag = boshin_war }
 		NOT = { has_global_flag = boshin_war_has_happened }
-		NOT = { has_country_flag = ikedaya_incident }
-		NOT = { has_country_modifier = ikedaya_aftermath }
+	}
+
+	mean_time_to_happen = {
+		months = 4
+		modifier = {
+			has_country_modifier = protest_dances
+			factor = 1.5
+		}
 	}
 
 	option = {
@@ -424,45 +454,22 @@ country_event = {
 				name = ikedaya_aftermath
 				duration = 100
 			}
-
 		}
-		relation = { who = TKG value = -50 }
-		TKG = { country_event = 899092 }
+		relation = { who = TOS value = -50 }
+		relation = { who = CHO value = -50 }
+		relation = { who = SAT value = -50 }
+		relation = { who = SOC value = -50 }
+		relation = { who = KAG value = -50 }
+		JAP = { country_event = 899092 }
 		any_country = {
 			limit = {
 				primary_culture = japanese
 				NOT = { tag = RYU }
-				NOT = { tag = TKG }
+				NOT = { tag = JAP }
 			}
 			country_event = 899093
 		}
-		set_country_flag = ikedaya_incident
-	}
-
-	mean_time_to_happen = {
-		months = 4
-		modifier = {
-			civilized = yes
-			TKG = { civilized = no }
-			factor = 0.5
-		}
-		modifier = {
-			has_country_modifier = protest_dances
-			factor = 1.5
-		}
-	}
-}
-
-country_event = {
-	id = 899092 #Ikedaya Incident TKG popup
-	title = "EVTNAME899092"
-	desc = "EVTDESC899092"
-	picture = "ikedaya_incident"
-
-	is_triggered_only = yes
-
-	option = {
-		name = "EVT899092OPTA"
+		set_global_flag = ikedaya_incident
 		any_pop = {
 			scaled_consciousness = {
 				ideology = reactionary
@@ -503,12 +510,13 @@ country_event = {
     id = 97606
     title = "EVTNAME97606" #Commodore Perry Successful
     desc = "EVTDESC97606"
+    picture = "commodore_perry"
+	
     news = yes
     news_title = "EVTNAME97606_NEWS_TITLE"
     news_desc_long = "EVTDESC97606_NEWS_LONG"
     news_desc_medium = "EVTDESC97606_NEWS_MEDIUM"
     news_desc_short = "EVTDESC97606_NEWS_SHORT"
-    picture = "commodore_perry"
 
     is_triggered_only = yes
 
@@ -517,13 +525,13 @@ country_event = {
         prestige = 20
         random_country = {
             limit = {
-                is_sphere_leader_of = TKG
+                is_sphere_leader_of = JAP
                 NOT = { tag = THIS }
             }
-            diplomatic_influence = { who = TKG value = -100 }
+            diplomatic_influence = { who = JAP value = -100 }
         }
-        diplomatic_influence = { who = TKG value = 100 }
-        relation = { who = TKG value = 100 }
+        diplomatic_influence = { who = JAP value = 100 }
+        relation = { who = JAP value = 100 }
 		add_country_modifier = {
 			name = pressuring_japan
 			duration = 1460
@@ -547,9 +555,9 @@ country_event = {
                 value = jingoism
             }
         }
-        diplomatic_influence = { who = TKG value = -200 }
+        diplomatic_influence = { who = JAP value = -200 }
         war = {
-            target = TKG
+            target = JAP
             attacker_goal = {
                 casus_belli = add_to_sphere
             }
@@ -637,30 +645,31 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		tag = JAP
 		has_global_flag = boshin_war
-		war_with = TKG
-		TKG = {
-			war_exhaustion = 10
-			national_provinces_occupied = 0.30
+		primary_culture = japanese
+		war_with = JAP
+		OR = {
+			JAP = {
+				war_exhaustion = 10
+				national_provinces_occupied = 0.20
+			}
+			1652 = { owned_by = JAP controlled_by = THIS }
 		}
-		1652 = { controlled_by = THIS }
 		NOT = { has_country_flag = shinsengumi_defeated }
 	}
 
 	option = {
 		name = "EVT21140OPTA"
-		TKG = { country_event = 21141 }
+		JAP = { country_event = 21141 }
 		set_country_flag = shinsengumi_defeated
 	}
 }
 
 country_event = {
 	id = 21141
-	title = "EVTNAME21141" #Shinsengumi defeated, popup for TKG
+	title = "EVTNAME21141" #Shinsengumi defeated, popup for JAP
 	desc = "EVTDESC21141"
 	picture = "battle_of_katsunuma"
-
 	is_triggered_only = yes
 
 	option = {
@@ -668,7 +677,6 @@ country_event = {
 		prestige = -2
 		set_country_flag = shinsengumi_defeated
 	}
-
 }
 
 country_event = {
@@ -676,29 +684,21 @@ country_event = {
 	title = "EVTNAME899095" #Sakuma Shozan's Assassination
 	desc = "EVTDESC899095"
 	picture = "sakuma_shozan"
-
 	fire_only_once = yes
 
 	trigger = {
-		tag = JAP
-		TKG = {
-			NOT = { has_country_modifier = sakoku }
-			NOT = { has_country_modifier = uncivilized_isolationism }
-		}
 		has_global_flag = order_to_expel_barbarians
+		tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
 		has_country_flag = sonno_joi
+		NOT = { has_country_modifier = sakoku }
+		NOT = { has_country_modifier = uncivilized_isolationism }
 		NOT = { has_global_flag = boshin_war }
 		NOT = { has_global_flag = boshin_war_has_happened }
-	}
-
-	option = {
-		name = "EVT899095OPTA"
-		any_pop = {
-			consciousness = 1
-			militancy = 0.03
-		}
-		# Audax Validator "." Ignore_NEXT
-		research_points = -300
 	}
 
 	mean_time_to_happen = {
@@ -715,6 +715,16 @@ country_event = {
 				consciousness = 1.5
 			}
 		}
+	}
+
+	option = {
+		name = "EVT899095OPTA"
+		any_pop = {
+			consciousness = 1
+			militancy = 0.03
+		}
+		# Audax Validator "." Ignore_NEXT
+		research_points = -300
 	}
 }
 
@@ -750,14 +760,13 @@ country_event = {
 
 	option = {
 		name = "EVT21133OPTA"
-		set_country_flag = negotiated_ansei_treaty
-		diplomatic_influence = { who = THIS value = 50 }
-		relation = { who = THIS value = 100 }
+		diplomatic_influence = { who = FROM value = 50 }
+		relation = { who = FROM value = 100 }
 		prestige = 5
 		add_country_modifier = {
-				name = pressuring_japan
-				duration = 60
-			}
+			name = pressuring_japan
+			duration = 60
+		}
 	}
 }
 
@@ -785,7 +794,7 @@ country_event = {
 	option = {
 		name = "EVT21134OPTB" #Back off
 		prestige = -10
-		TKG = { prestige = 10 }
+		JAP = { prestige = 10 }
 		set_country_flag = failed_ansei_treaty
 		ai_chance = { factor = 5 }
 	}
@@ -865,7 +874,7 @@ country_event = {
 	option = {
 		name = "EVT21137OPTB"
 		prestige = -10
-		TKG = { prestige = 10 }
+		JAP = { prestige = 10 }
 		set_country_flag = french_japan_unequal_treaty_failed
 		ai_chance = { factor = 5 }
 	}
@@ -909,7 +918,7 @@ country_event = {
     option = {
         name = "EVT97610OPTA"
         prestige = -5
-        FROM = { clr_country_flag = negotiate_unequal_treaty_TKG }
+        FROM = { clr_country_flag = negotiate_unequal_treaty_JAP }
     }
 }
 
@@ -923,8 +932,13 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		tag = TKG
 		has_global_flag = first_japanese_embassy_sent
+		tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
 		has_country_modifier = sending_embassy
 		NOT = {
 			has_global_flag = successful_first_embassy
@@ -937,7 +951,6 @@ country_event = {
 		SPA = { relation = { who = THIS value = -10 } }
 		IBR = { relation = { who = THIS value = -10 } }
 		ITA = { relation = { who = THIS value = -10 } }
-		ITS = { relation = { who = THIS value = -10 } }
 		PRU = { relation = { who = THIS value = -10 } }
 		NGF = { relation = { who = THIS value = -10 } }
 		SGF = { relation = { who = THIS value = -10 } }
@@ -949,6 +962,81 @@ country_event = {
 		DNB = { relation = { who = THIS value = -10 } }
 		TUR = { relation = { who = THIS value = -10 } }
 		RUS = { relation = { who = THIS value = -10 } }
+	}
+	
+	mean_time_to_happen = {
+		days = 100
+		modifier = {
+			factor = 0.75
+			OR = {
+				ENG = { relation = { who = THIS value = 150 } }
+				ENL = { relation = { who = THIS value = 150 } }
+				FRA = { relation = { who = THIS value = 150 } }
+				BOR = { relation = { who = THIS value = 150 } }
+				SPA = { relation = { who = THIS value = 150 } }
+				IBR = { relation = { who = THIS value = 150 } }
+				ITA = { relation = { who = THIS value = 150 } }
+				PRU = { relation = { who = THIS value = 150 } }
+				NGF = { relation = { who = THIS value = 150 } }
+				SGF = { relation = { who = THIS value = 150 } }
+				GER = { relation = { who = THIS value = 150 } }
+				GCF = { relation = { who = THIS value = 150 } }
+				AUS = { relation = { who = THIS value = 150 } }
+				AUB = { relation = { who = THIS value = 150 } }
+				KUK = { relation = { who = THIS value = 150 } }
+				DNB = { relation = { who = THIS value = 150 } }
+				TUR = { relation = { who = THIS value = 150 } }
+				RUS = { relation = { who = THIS value = 150 } }
+			}
+
+		}
+		modifier = {
+			factor = 0.5
+			OR = {
+				ENG = { relation = { who = THIS value = 175 } }
+				ENL = { relation = { who = THIS value = 175 } }
+				FRA = { relation = { who = THIS value = 175 } }
+				BOR = { relation = { who = THIS value = 175 } }
+				SPA = { relation = { who = THIS value = 175 } }
+				IBR = { relation = { who = THIS value = 175 } }
+				ITA = { relation = { who = THIS value = 175 } }
+				PRU = { relation = { who = THIS value = 175 } }
+				NGF = { relation = { who = THIS value = 175 } }
+				SGF = { relation = { who = THIS value = 175 } }
+				GER = { relation = { who = THIS value = 175 } }
+				GCF = { relation = { who = THIS value = 175 } }
+				AUS = { relation = { who = THIS value = 175 } }
+				AUB = { relation = { who = THIS value = 175 } }
+				KUK = { relation = { who = THIS value = 175 } }
+				DNB = { relation = { who = THIS value = 175 } }
+				TUR = { relation = { who = THIS value = 175 } }
+				RUS = { relation = { who = THIS value = 175 } }
+			}
+		}
+		modifier = {
+			factor = 0.25
+			OR = {
+				ENG = { relation = { who = THIS value = 200 } }
+				ENL = { relation = { who = THIS value = 200 } }
+				FRA = { relation = { who = THIS value = 200 } }
+				BOR = { relation = { who = THIS value = 200 } }
+				SPA = { relation = { who = THIS value = 200 } }
+				IBR = { relation = { who = THIS value = 200 } }
+				ITA = { relation = { who = THIS value = 200 } }
+				PRU = { relation = { who = THIS value = 200 } }
+				NGF = { relation = { who = THIS value = 200 } }
+				SGF = { relation = { who = THIS value = 200 } }
+				GER = { relation = { who = THIS value = 200 } }
+				GCF = { relation = { who = THIS value = 200 } }
+				AUS = { relation = { who = THIS value = 200 } }
+				AUB = { relation = { who = THIS value = 200 } }
+				KUK = { relation = { who = THIS value = 200 } }
+				DNB = { relation = { who = THIS value = 200 } }
+				TUR = { relation = { who = THIS value = 200 } }
+				RUS = { relation = { who = THIS value = 200 } }
+			}
+
+		}
 	}
 
 	option = {
@@ -989,83 +1077,6 @@ country_event = {
 				}
 			}
 	}
-	mean_time_to_happen = {
-		days = 100
-		modifier = {
-			factor = 0.75
-			OR = {
-				ENG = { relation = { who = THIS value = 150 } }
-				ENL = { relation = { who = THIS value = 150 } }
-				FRA = { relation = { who = THIS value = 150 } }
-				BOR = { relation = { who = THIS value = 150 } }
-				SPA = { relation = { who = THIS value = 150 } }
-				IBR = { relation = { who = THIS value = 150 } }
-				ITA = { relation = { who = THIS value = 150 } }
-				ITS = { relation = { who = THIS value = 150 } }
-				PRU = { relation = { who = THIS value = 150 } }
-				NGF = { relation = { who = THIS value = 150 } }
-				SGF = { relation = { who = THIS value = 150 } }
-				GER = { relation = { who = THIS value = 150 } }
-				GCF = { relation = { who = THIS value = 150 } }
-				AUS = { relation = { who = THIS value = 150 } }
-				AUB = { relation = { who = THIS value = 150 } }
-				KUK = { relation = { who = THIS value = 150 } }
-				DNB = { relation = { who = THIS value = 150 } }
-				TUR = { relation = { who = THIS value = 150 } }
-				RUS = { relation = { who = THIS value = 150 } }
-			}
-
-		}
-		modifier = {
-			factor = 0.5
-			OR = {
-				ENG = { relation = { who = THIS value = 175 } }
-				ENL = { relation = { who = THIS value = 175 } }
-				FRA = { relation = { who = THIS value = 175 } }
-				BOR = { relation = { who = THIS value = 175 } }
-				SPA = { relation = { who = THIS value = 175 } }
-				IBR = { relation = { who = THIS value = 175 } }
-				ITA = { relation = { who = THIS value = 175 } }
-				ITS = { relation = { who = THIS value = 175 } }
-				PRU = { relation = { who = THIS value = 175 } }
-				NGF = { relation = { who = THIS value = 175 } }
-				SGF = { relation = { who = THIS value = 175 } }
-				GER = { relation = { who = THIS value = 175 } }
-				GCF = { relation = { who = THIS value = 175 } }
-				AUS = { relation = { who = THIS value = 175 } }
-				AUB = { relation = { who = THIS value = 175 } }
-				KUK = { relation = { who = THIS value = 175 } }
-				DNB = { relation = { who = THIS value = 175 } }
-				TUR = { relation = { who = THIS value = 175 } }
-				RUS = { relation = { who = THIS value = 175 } }
-			}
-		}
-		modifier = {
-			factor = 0.25
-			OR = {
-				ENG = { relation = { who = THIS value = 200 } }
-				ENL = { relation = { who = THIS value = 200 } }
-				FRA = { relation = { who = THIS value = 200 } }
-				BOR = { relation = { who = THIS value = 200 } }
-				SPA = { relation = { who = THIS value = 200 } }
-				IBR = { relation = { who = THIS value = 200 } }
-				ITA = { relation = { who = THIS value = 200 } }
-				ITS = { relation = { who = THIS value = 200 } }
-				PRU = { relation = { who = THIS value = 200 } }
-				NGF = { relation = { who = THIS value = 200 } }
-				SGF = { relation = { who = THIS value = 200 } }
-				GER = { relation = { who = THIS value = 200 } }
-				GCF = { relation = { who = THIS value = 200 } }
-				AUS = { relation = { who = THIS value = 200 } }
-				AUB = { relation = { who = THIS value = 200 } }
-				KUK = { relation = { who = THIS value = 200 } }
-				DNB = { relation = { who = THIS value = 200 } }
-				TUR = { relation = { who = THIS value = 200 } }
-				RUS = { relation = { who = THIS value = 200 } }
-			}
-
-		}
-	}
 
 }
 
@@ -1079,8 +1090,13 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		tag = TKG
 		has_global_flag = first_japanese_embassy_sent
+		tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
 		has_country_modifier = sending_embassy
 		NOT = {
 			has_global_flag = successful_first_embassy
@@ -1094,7 +1110,6 @@ country_event = {
 			NOT = { SPA = { relation = { who = THIS value = -10 } } }
 			NOT = { IBR = { relation = { who = THIS value = -10 } } }
 			NOT = { ITA = { relation = { who = THIS value = -10 } } }
-			NOT = { ITS = { relation = { who = THIS value = -10 } } }
 			NOT = { PRU = { relation = { who = THIS value = -10 } } }
 			NOT = { NGF = { relation = { who = THIS value = -10 } } }
 			NOT = { SGF = { relation = { who = THIS value = -10 } } }
@@ -1106,26 +1121,6 @@ country_event = {
 			NOT = { DNB = { relation = { who = THIS value = -10 } } }
 			NOT = { TUR = { relation = { who = THIS value = -10 } } }
 			NOT = { RUS = { relation = { who = THIS value = -10 } } }
-		}
-	}
-
-	option = {
-		name = "EVT91171OPTA"
-		research_points = 500
-		prestige = -10
-		set_global_flag = failed_first_embassy
-		remove_country_modifier = sending_embassy
-		any_pop = { consciousness = 0.5 }
-		any_pop = { militancy = 0.5 }
-		any_greater_power = {
-			limit = {
-				NOT = {
-					tag = USA
-					casus_belli = THIS
-					war_with = THIS
-				}
-			}
-			relation = { who = THIS value = -30 }
 		}
 	}
 
@@ -1141,7 +1136,6 @@ country_event = {
 				NOT = { SPA = { relation = { who = THIS value = -50 } } }
 				NOT = { IBR = { relation = { who = THIS value = -50 } } }
 				NOT = { ITA = { relation = { who = THIS value = -50 } } }
-				NOT = { ITS = { relation = { who = THIS value = -50 } } }
 				NOT = { PRU = { relation = { who = THIS value = -50 } } }
 				NOT = { NGF = { relation = { who = THIS value = -50 } } }
 				NOT = { SGF = { relation = { who = THIS value = -50 } } }
@@ -1166,7 +1160,6 @@ country_event = {
 				NOT = { SPA = { relation = { who = THIS value = -75 } } }
 				NOT = { IBR = { relation = { who = THIS value = -75 } } }
 				NOT = { ITA = { relation = { who = THIS value = -75 } } }
-				NOT = { ITS = { relation = { who = THIS value = -75 } } }
 				NOT = { PRU = { relation = { who = THIS value = -75 } } }
 				NOT = { NGF = { relation = { who = THIS value = -75 } } }
 				NOT = { SGF = { relation = { who = THIS value = -75 } } }
@@ -1190,7 +1183,6 @@ country_event = {
 				NOT = { SPA = { relation = { who = THIS value = -100 } } }
 				NOT = { IBR = { relation = { who = THIS value = -100 } } }
 				NOT = { ITA = { relation = { who = THIS value = -100 } } }
-				NOT = { ITS = { relation = { who = THIS value = -100 } } }
 				NOT = { PRU = { relation = { who = THIS value = -100 } } }
 				NOT = { NGF = { relation = { who = THIS value = -100 } } }
 				NOT = { SGF = { relation = { who = THIS value = -100 } } }
@@ -1205,6 +1197,26 @@ country_event = {
 			}
 		}
 	}
+
+	option = {
+		name = "EVT91171OPTA"
+		research_points = 500
+		prestige = -10
+		set_global_flag = failed_first_embassy
+		remove_country_modifier = sending_embassy
+		any_pop = { consciousness = 0.5 }
+		any_pop = { militancy = 0.5 }
+		any_greater_power = {
+			limit = {
+				NOT = {
+					tag = USA
+					casus_belli = THIS
+					war_with = THIS
+				}
+			}
+			relation = { who = THIS value = -30 }
+		}
+	}
 }
 
 # Good Outcome for the Second Japanese Embassy to Europe
@@ -1217,9 +1229,15 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		tag = TKG
+		ai = no #Do you really want AI Japan languishing with Sakoku larp for the rest of the game?
 		has_global_flag = first_japanese_embassy_sent
 		has_global_flag = second_japanese_embassy_sent
+		tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
 		has_country_modifier = sending_embassy
 		NOT = {
 			has_global_flag = successful_second_embassy
@@ -1233,7 +1251,6 @@ country_event = {
 		SPA = { relation = { who = THIS value = 10 } }
 		IBR = { relation = { who = THIS value = 10 } }
 		ITA = { relation = { who = THIS value = 10 } }
-		ITS = { relation = { who = THIS value = 10 } }
 		PRU = { relation = { who = THIS value = 10 } }
 		NGF = { relation = { who = THIS value = 10 } }
 		SGF = { relation = { who = THIS value = 10 } }
@@ -1246,37 +1263,7 @@ country_event = {
 		TUR = { relation = { who = THIS value = 10 } }
 		RUS = { relation = { who = THIS value = 10 } }
 	}
-
-	option = {
-		name = "EVT91172OPTA"
-		research_points = 500
-		prestige = 10
-		remove_country_modifier = sending_embassy
-		add_country_modifier = {
-			name = sakoku
-			duration = -1
-		}
-		set_global_flag = successful_second_embassy
-		any_greater_power = {
-			limit = {
-				NOT = {
-					tag = USA
-				}
-			NOT = {
-				casus_belli = TKG
-				war_with = TKG
-			}
-		}
-			relation = { who = THIS value = 50 }
-			diplomatic_influence = {
-				who = TKG
-				value = -50
-			}
-		}
-		1649 = { remove_province_modifier = port_opening_delayed }
-		1657 = { remove_province_modifier = port_opening_delayed }
-		1645 = { remove_province_modifier = port_opening_delayed }
-	}
+	
 	mean_time_to_happen = {
 		days = 100
 		modifier = {
@@ -1289,7 +1276,6 @@ country_event = {
 				SPA = { relation = { who = THIS value = 150 } }
 				IBR = { relation = { who = THIS value = 150 } }
 				ITA = { relation = { who = THIS value = 150 } }
-				ITS = { relation = { who = THIS value = 150 } }
 				PRU = { relation = { who = THIS value = 150 } }
 				NGF = { relation = { who = THIS value = 150 } }
 				SGF = { relation = { who = THIS value = 150 } }
@@ -1313,7 +1299,6 @@ country_event = {
 				SPA = { relation = { who = THIS value = 175 } }
 				IBR = { relation = { who = THIS value = 175 } }
 				ITA = { relation = { who = THIS value = 175 } }
-				ITS = { relation = { who = THIS value = 175 } }
 				PRU = { relation = { who = THIS value = 175 } }
 				NGF = { relation = { who = THIS value = 175 } }
 				SGF = { relation = { who = THIS value = 175 } }
@@ -1337,7 +1322,6 @@ country_event = {
 				SPA = { relation = { who = THIS value = 200 } }
 				IBR = { relation = { who = THIS value = 200 } }
 				ITA = { relation = { who = THIS value = 200 } }
-				ITS = { relation = { who = THIS value = 200 } }
 				PRU = { relation = { who = THIS value = 200 } }
 				NGF = { relation = { who = THIS value = 200 } }
 				SGF = { relation = { who = THIS value = 200 } }
@@ -1352,6 +1336,35 @@ country_event = {
 			}
 		}
 	}
+
+	option = {
+		name = "EVT91172OPTA"
+		research_points = 500
+		prestige = 10
+		remove_country_modifier = sending_embassy
+		add_country_modifier = {
+			name = sakoku
+			duration = -1
+		}
+		set_global_flag = successful_second_embassy
+		any_greater_power = {
+			limit = {
+				NOT = {
+					tag = USA
+					casus_belli = JAP
+					war_with = JAP
+				}
+			}
+			relation = { who = THIS value = 50 }
+			diplomatic_influence = {
+				who = JAP
+				value = -50
+			}
+		}
+		1649 = { remove_province_modifier = port_opening_delayed }
+		1657 = { remove_province_modifier = port_opening_delayed }
+		1645 = { remove_province_modifier = port_opening_delayed }
+	}
 }
 
 # Bad Outcome for the Second Japanese Embassy to Europe
@@ -1364,9 +1377,14 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		tag = TKG
 		has_global_flag = first_japanese_embassy_sent
 		has_global_flag = second_japanese_embassy_sent
+		tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
 		has_country_modifier = sending_embassy
 		NOT = {
 			has_global_flag = successful_second_embassy
@@ -1381,7 +1399,6 @@ country_event = {
 			NOT = { SPA = { relation = { who = THIS value = 10 } } }
 			NOT = { IBR = { relation = { who = THIS value = 10 } } }
 			NOT = { ITA = { relation = { who = THIS value = 10 } } }
-			NOT = { ITS = { relation = { who = THIS value = 10 } } }
 			NOT = { PRU = { relation = { who = THIS value = 10 } } }
 			NOT = { NGF = { relation = { who = THIS value = 10 } } }
 			NOT = { SGF = { relation = { who = THIS value = 10 } } }
@@ -1393,6 +1410,79 @@ country_event = {
 			NOT = { DNB = { relation = { who = THIS value = 10 } } }
 			NOT = { TUR = { relation = { who = THIS value = 10 } } }
 			NOT = { RUS = { relation = { who = THIS value = 10 } } }
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 100
+		modifier = {
+			factor = 0.75
+			OR = {
+				NOT = { ENG = { relation = { who = THIS value = -50 } } }
+				NOT = { ENL = { relation = { who = THIS value = -50 } } }
+				NOT = { FRA = { relation = { who = THIS value = -50 } } }
+				NOT = { BOR = { relation = { who = THIS value = -50 } } }
+				NOT = { SPA = { relation = { who = THIS value = -50 } } }
+				NOT = { IBR = { relation = { who = THIS value = -50 } } }
+				NOT = { ITA = { relation = { who = THIS value = -50 } } }
+				NOT = { PRU = { relation = { who = THIS value = -50 } } }
+				NOT = { NGF = { relation = { who = THIS value = -50 } } }
+				NOT = { SGF = { relation = { who = THIS value = -50 } } }
+				NOT = { GER = { relation = { who = THIS value = -50 } } }
+				NOT = { GCF = { relation = { who = THIS value = -50 } } }
+				NOT = { AUS = { relation = { who = THIS value = -50 } } }
+				NOT = { AUB = { relation = { who = THIS value = -50 } } }
+				NOT = { KUK = { relation = { who = THIS value = -50 } } }
+				NOT = { DNB = { relation = { who = THIS value = -50 } } }
+				NOT = { TUR = { relation = { who = THIS value = -50 } } }
+				NOT = { RUS = { relation = { who = THIS value = -50 } }	}
+			}
+		}
+		modifier = {
+			factor = 0.5
+			OR = {
+				NOT = { ENG = { relation = { who = THIS value = -75 } } }
+				NOT = { ENL = { relation = { who = THIS value = -75 } } }
+				NOT = { FRA = { relation = { who = THIS value = -75 } } }
+				NOT = { BOR = { relation = { who = THIS value = -75 } } }
+				NOT = { SPA = { relation = { who = THIS value = -75 } } }
+				NOT = { IBR = { relation = { who = THIS value = -75 } } }
+				NOT = { ITA = { relation = { who = THIS value = -75 } } }
+				NOT = { PRU = { relation = { who = THIS value = -75 } } }
+				NOT = { NGF = { relation = { who = THIS value = -75 } } }
+				NOT = { SGF = { relation = { who = THIS value = -75 } } }
+				NOT = { GER = { relation = { who = THIS value = -75 } } }
+				NOT = { GCF = { relation = { who = THIS value = -75 } } }
+				NOT = { AUS = { relation = { who = THIS value = -75 } } }
+				NOT = { AUB = { relation = { who = THIS value = -75 } } }
+				NOT = { KUK = { relation = { who = THIS value = -75 } } }
+				NOT = { DNB = { relation = { who = THIS value = -75 } } }
+				NOT = { TUR = { relation = { who = THIS value = -75 } } }
+				NOT = { RUS = { relation = { who = THIS value = -75 } }	}
+			}
+		}
+		modifier = {
+			factor = 0.25
+			OR = {
+				NOT = { ENG = { relation = { who = THIS value = -100 } } }
+				NOT = { ENL = { relation = { who = THIS value = -100 } } }
+				NOT = { FRA = { relation = { who = THIS value = -100 } } }
+				NOT = { BOR = { relation = { who = THIS value = -100 } } }
+				NOT = { SPA = { relation = { who = THIS value = -100 } } }
+				NOT = { IBR = { relation = { who = THIS value = -100 } } }
+				NOT = { ITA = { relation = { who = THIS value = -100 } } }
+				NOT = { PRU = { relation = { who = THIS value = -100 } } }
+				NOT = { NGF = { relation = { who = THIS value = -100 } } }
+				NOT = { SGF = { relation = { who = THIS value = -100 } } }
+				NOT = { GER = { relation = { who = THIS value = -100 } } }
+				NOT = { GCF = { relation = { who = THIS value = -100 } } }
+				NOT = { AUS = { relation = { who = THIS value = -100 } } }
+				NOT = { AUB = { relation = { who = THIS value = -100 } } }
+				NOT = { KUK = { relation = { who = THIS value = -100 } } }
+				NOT = { DNB = { relation = { who = THIS value = -100 } } }
+				NOT = { TUR = { relation = { who = THIS value = -100 } } }
+				NOT = { RUS = { relation = { who = THIS value = -100 } } }
+			}
 		}
 	}
 
@@ -1421,82 +1511,6 @@ country_event = {
 			}
 		}
 	}
-
-	mean_time_to_happen = {
-		days = 100
-		modifier = {
-			factor = 0.75
-			OR = {
-				NOT = { ENG = { relation = { who = THIS value = -50 } } }
-				NOT = { ENL = { relation = { who = THIS value = -50 } } }
-				NOT = { FRA = { relation = { who = THIS value = -50 } } }
-				NOT = { BOR = { relation = { who = THIS value = -50 } } }
-				NOT = { SPA = { relation = { who = THIS value = -50 } } }
-				NOT = { IBR = { relation = { who = THIS value = -50 } } }
-				NOT = { ITA = { relation = { who = THIS value = -50 } } }
-				NOT = { ITS = { relation = { who = THIS value = -50 } } }
-				NOT = { PRU = { relation = { who = THIS value = -50 } } }
-				NOT = { NGF = { relation = { who = THIS value = -50 } } }
-				NOT = { SGF = { relation = { who = THIS value = -50 } } }
-				NOT = { GER = { relation = { who = THIS value = -50 } } }
-				NOT = { GCF = { relation = { who = THIS value = -50 } } }
-				NOT = { AUS = { relation = { who = THIS value = -50 } } }
-				NOT = { AUB = { relation = { who = THIS value = -50 } } }
-				NOT = { KUK = { relation = { who = THIS value = -50 } } }
-				NOT = { DNB = { relation = { who = THIS value = -50 } } }
-				NOT = { TUR = { relation = { who = THIS value = -50 } } }
-				NOT = { RUS = { relation = { who = THIS value = -50 } }	}
-			}
-		}
-		modifier = {
-			factor = 0.5
-			OR = {
-				NOT = { ENG = { relation = { who = THIS value = -75 } } }
-				NOT = { ENL = { relation = { who = THIS value = -75 } } }
-				NOT = { FRA = { relation = { who = THIS value = -75 } } }
-				NOT = { BOR = { relation = { who = THIS value = -75 } } }
-				NOT = { SPA = { relation = { who = THIS value = -75 } } }
-				NOT = { IBR = { relation = { who = THIS value = -75 } } }
-				NOT = { ITA = { relation = { who = THIS value = -75 } } }
-				NOT = { ITS = { relation = { who = THIS value = -75 } } }
-				NOT = { PRU = { relation = { who = THIS value = -75 } } }
-				NOT = { NGF = { relation = { who = THIS value = -75 } } }
-				NOT = { SGF = { relation = { who = THIS value = -75 } } }
-				NOT = { GER = { relation = { who = THIS value = -75 } } }
-				NOT = { GCF = { relation = { who = THIS value = -75 } } }
-				NOT = { AUS = { relation = { who = THIS value = -75 } } }
-				NOT = { AUB = { relation = { who = THIS value = -75 } } }
-				NOT = { KUK = { relation = { who = THIS value = -75 } } }
-				NOT = { DNB = { relation = { who = THIS value = -75 } } }
-				NOT = { TUR = { relation = { who = THIS value = -75 } } }
-				NOT = { RUS = { relation = { who = THIS value = -75 } }	}
-			}
-		}
-		modifier = {
-			factor = 0.25
-			OR = {
-				NOT = { ENG = { relation = { who = THIS value = -100 } } }
-				NOT = { ENL = { relation = { who = THIS value = -100 } } }
-				NOT = { FRA = { relation = { who = THIS value = -100 } } }
-				NOT = { BOR = { relation = { who = THIS value = -100 } } }
-				NOT = { SPA = { relation = { who = THIS value = -100 } } }
-				NOT = { IBR = { relation = { who = THIS value = -100 } } }
-				NOT = { ITA = { relation = { who = THIS value = -100 } } }
-				NOT = { ITS = { relation = { who = THIS value = -100 } } }
-				NOT = { PRU = { relation = { who = THIS value = -100 } } }
-				NOT = { NGF = { relation = { who = THIS value = -100 } } }
-				NOT = { SGF = { relation = { who = THIS value = -100 } } }
-				NOT = { GER = { relation = { who = THIS value = -100 } } }
-				NOT = { GCF = { relation = { who = THIS value = -100 } } }
-				NOT = { AUS = { relation = { who = THIS value = -100 } } }
-				NOT = { AUB = { relation = { who = THIS value = -100 } } }
-				NOT = { KUK = { relation = { who = THIS value = -100 } } }
-				NOT = { DNB = { relation = { who = THIS value = -100 } } }
-				NOT = { TUR = { relation = { who = THIS value = -100 } } }
-				NOT = { RUS = { relation = { who = THIS value = -100 } } }
-			}
-		}
-	}
 }
 
 #Good Outcome for the Japanese Embassy to the United States
@@ -1507,12 +1521,17 @@ country_event = {
 	picture = "japanese_american_embassy"
 
 	fire_only_once = yes
-
+	
 	trigger = {
-		tag = TKG
 		has_global_flag = first_japanese_embassy_sent
 		has_global_flag = second_japanese_embassy_sent
 		has_global_flag = third_japanese_embassy_sent
+		tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
 		has_country_modifier = sending_embassy
 		NOT = {
 			has_global_flag = successful_third_embassy
@@ -1520,20 +1539,6 @@ country_event = {
 			war_with = USA
 		}
 		relation = { who = USA value = 25 }
-	}
-
-	option = {
-		name = "EVT91174OPTA"
-		prestige = 5
-		research_points = 500
-		remove_country_modifier = sending_embassy
-		USA = {
-			relation = { who = THIS value = 50 }
-			diplomatic_influence = {
-				who = TKG
-				value = 10
-			}
-		}
 	}
 
 	mean_time_to_happen = {
@@ -1551,6 +1556,20 @@ country_event = {
 			relation = { who = USA value = 200 }
 		}
 	}
+
+	option = {
+		name = "EVT91174OPTA"
+		prestige = 5
+		research_points = 500
+		remove_country_modifier = sending_embassy
+		USA = {
+			relation = { who = THIS value = 50 }
+			diplomatic_influence = {
+				who = JAP
+				value = 10
+			}
+		}
+	}
 }
 
 #Bad Outcome for the Japanese Embassy to the United States
@@ -1561,12 +1580,17 @@ country_event = {
 	picture = "japanese_american_embassy"
 
 	fire_only_once = yes
-
+	
 	trigger = {
-		tag = TKG
 		has_global_flag = first_japanese_embassy_sent
 		has_global_flag = second_japanese_embassy_sent
 		has_global_flag = third_japanese_embassy_sent
+		tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
 		has_country_modifier = sending_embassy
 		NOT = {
 			has_global_flag = successful_third_embassy
@@ -1574,14 +1598,6 @@ country_event = {
 			war_with = USA
 			relation = { who = USA value = 25 }
 		}
-	}
-
-	option = {
-		name = "EVT91175OPTA"
-		prestige = -2
-		research_points = 500
-		remove_country_modifier = sending_embassy
-		USA = { relation = { who = THIS value = -30 } }
 	}
 
 	mean_time_to_happen = {
@@ -1599,6 +1615,14 @@ country_event = {
 			relation = { who = USA value = -100 }
 		}
 	}
+
+	option = {
+		name = "EVT91175OPTA"
+		prestige = -2
+		research_points = 500
+		remove_country_modifier = sending_embassy
+		USA = { relation = { who = THIS value = -30 } }
+	}
 }
 
 #First Embassy Terminated
@@ -1608,10 +1632,17 @@ country_event = {
 	desc = "EVTDESC91176"
 	picture = "greatpowers"
 
+	mean_time_to_happen = { days = 7 }
+	
 	trigger = {
-		tag = TKG
-		has_country_modifier = sending_embassy
 		has_global_flag = first_japanese_embassy_sent
+		tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
+		has_country_modifier = sending_embassy
 		OR = {
 			NOT = { ENG = { relation = { who = THIS value = -150 } } }
 			NOT = { ENL = { relation = { who = THIS value = -150 } } }
@@ -1620,7 +1651,6 @@ country_event = {
 			NOT = { SPA = { relation = { who = THIS value = -150 } } }
 			NOT = { IBR = { relation = { who = THIS value = -150 } } }
 			NOT = { ITA = { relation = { who = THIS value = -150 } } }
-			NOT = { ITS = { relation = { who = THIS value = -150 } } }
 			NOT = { PRU = { relation = { who = THIS value = -150 } } }
 			NOT = { NGF = { relation = { who = THIS value = -150 } } }
 			NOT = { SGF = { relation = { who = THIS value = -150 } } }
@@ -1641,8 +1671,6 @@ country_event = {
 		name = "EVT91176OPTA"
 		remove_country_modifier = sending_embassy
 	}
-
-	mean_time_to_happen = { days = 7 }
 }
 
 
@@ -1654,8 +1682,15 @@ country_event = {
 	desc = "EVTDESC91177"
 	picture = "greatpowers"
 
+	mean_time_to_happen = { days = 7 }
+	
 	trigger = {
-		tag = TKG
+		tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
 		has_country_modifier = sending_embassy
 		has_global_flag = second_japanese_embassy_sent
 		OR = {
@@ -1666,7 +1701,6 @@ country_event = {
 			NOT = { SPA = { relation = { who = THIS value = -150 } } }
 			NOT = { IBR = { relation = { who = THIS value = -150 } } }
 			NOT = { ITA = { relation = { who = THIS value = -150 } } }
-			NOT = { ITS = { relation = { who = THIS value = -150 } } }
 			NOT = { PRU = { relation = { who = THIS value = -150 } } }
 			NOT = { NGF = { relation = { who = THIS value = -150 } } }
 			NOT = { SGF = { relation = { who = THIS value = -150 } } }
@@ -1687,8 +1721,6 @@ country_event = {
 		name = "EVT91177OPTA"
 		remove_country_modifier = sending_embassy
 	}
-
-	mean_time_to_happen = { days = 7 }
 }
 
 #Third Embassy Terminated
@@ -1698,10 +1730,17 @@ country_event = {
 	desc = "EVTDESC91178"
 	picture = "greatpowers"
 
+	mean_time_to_happen = { days = 7 }
+	
 	trigger = {
-		tag = TKG
-		has_country_modifier = sending_embassy
 		has_global_flag = third_japanese_embassy_sent
+		tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
+		has_country_modifier = sending_embassy
 		USA = {
 			OR = {
 				NOT = { relation = { who = THIS value = -150 } }
@@ -1717,8 +1756,6 @@ country_event = {
 		remove_country_modifier = sending_embassy
 		prestige = -10
 	}
-
-	mean_time_to_happen = { days = 7 }
 }
 
 
@@ -1734,33 +1771,42 @@ country_event = {
     title = "EVTNAME97615" #Sonno Joi
     desc = "EVTDESC97615"
     picture = "sonno_joi"
+	fire_only_once = yes
+	allow_multiple_instances = yes
 
+    mean_time_to_happen = {
+        months = 1
+    }
+	
     trigger = {
-        primary_culture = japanese
-        OR = {
-            tag = TKG
-            substate_of = TKG
-            vassal_of = TKG
-        }
-        TKG = {
-            OR = {
-                has_country_modifier = western_influences
-                civilized = yes
-            }
-        }
+		tag = JAP
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
+		OR = {
+			has_country_modifier = western_influences
+			civilized = yes
+		}
         NOT = { has_country_flag = sonno_joi }
         NOT = { has_global_flag = boshin_war }
         NOT = { has_global_flag = boshin_war_has_happened }
     }
 
-    mean_time_to_happen = {
-        months = 1
-    }
-
     option = {
         name = "EVT97615OPTA"
         set_country_flag = sonno_joi
-        remove_country_modifier = sakoku
+		random_owned = {
+			limit = {
+				owner = {
+					NOT = { has_country_flag = idiot_wants_sakoku }
+				}
+			}
+			owner = {
+				remove_country_modifier = sakoku
+			}
+		}
         remove_country_modifier = rangaku
         aristocrats = {
             consciousness = 2
@@ -1772,6 +1818,12 @@ country_event = {
         any_pop = {
             militancy = 2
         }
+		any_country = {
+			limit = {
+				substate_of = THIS
+			}
+			country_event = 97615
+		}
     }
 }
 
@@ -1779,38 +1831,6 @@ province_event = {
     id = 97616
     title = "EVTNAME97616" #Rebellion against foreigners
     desc = "EVTDESC97616"
-
-    trigger = {
-        owner = {
-            has_country_flag = sonno_joi
-            war = no
-        }
-        owner = { any_neighbor_country = { primary_culture = japanese } }
-        TKG = { exists = yes }
-        is_core = TKG
-        controlled_by = THIS
-        OR = {
-            has_province_modifier = western_presence
-            has_province_modifier = foreign_smugglers
-            has_province_modifier = foreign_trading_post
-            has_province_modifier = local_opium_habit
-            has_province_modifier = european_military_mission
-            has_province_modifier = extraterritoriality_granted
-            has_province_modifier = legation_quarter
-            any_neighbor_province = { has_province_modifier = peasant_revolt }
-            AND = {
-                owner = { has_global_flag = order_to_expel_barbarians }
-                port = yes
-            }
-            owner = { civilized = yes }
-        }
-        NOT = {
-            owner = { has_global_flag = boshin_war }
-            owner = { has_global_flag = boshin_war_has_happened }
-            has_province_modifier = peasant_revolt
-            average_militancy = 6
-        }
-    }
 
     mean_time_to_happen = {
         months = 250
@@ -1856,6 +1876,38 @@ province_event = {
         }
     }
 
+    trigger = {
+        owner = {
+            has_country_flag = sonno_joi
+            war = no
+        }
+        is_core = JAP
+        controlled_by = THIS
+        owner = { any_neighbor_country = { primary_culture = japanese } }
+        JAP = { exists = yes }
+        OR = {
+            has_province_modifier = western_presence
+            has_province_modifier = foreign_smugglers
+            has_province_modifier = foreign_trading_post
+            has_province_modifier = local_opium_habit
+            has_province_modifier = european_military_mission
+            has_province_modifier = extraterritoriality_granted
+            has_province_modifier = legation_quarter
+            any_neighbor_province = { has_province_modifier = peasant_revolt }
+            AND = {
+                owner = { has_global_flag = order_to_expel_barbarians }
+                port = yes
+            }
+            owner = { civilized = yes }
+        }
+        NOT = {
+            owner = { has_global_flag = boshin_war }
+            owner = { has_global_flag = boshin_war_has_happened }
+            has_province_modifier = peasant_revolt
+            average_militancy = 6
+        }
+    }
+
     option = {
         name = "EVT97616OPTA"
         owner = { prestige = -2 }
@@ -1875,7 +1927,7 @@ province_event = {
         }
         random_country = {
             limit = { is_greater_power = yes }
-            relation = { who = TKG value = -20 }
+            relation = { who = JAP value = -20 }
         }
     }
 }
@@ -1889,13 +1941,50 @@ country_event = {
     news_desc_medium = "EVTDESC97617_NEWS_MEDIUM"
     news_desc_short = "EVTDESC97617_NEWS_SHORT"
     picture = "sonno_joi"
+	fire_only_once = yes
+    
+	trigger = {
+		tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
+		NOT = { has_global_flag = order_to_expel_barbarians }
+		NOT = { has_global_flag = boshin_war }
+		NOT = { has_global_flag = boshin_war_has_happened }
+		OR = {
+			AND = {
+				year = 1863
+				month = 3
+				civilization_progress = 0.4
+				has_country_flag = sonno_joi
+			}
+			civilized = yes
+		}
+		war = no
+	}
 
-    is_triggered_only = yes
+	mean_time_to_happen = { days = 1 }
 
     option = {
         name = "EVT97617OPTA"
-        relation = { who = FROM value = -100 }
         prestige = -5
+		set_global_flag = order_to_expel_barbarians
+		any_country = {
+			limit = {
+				primary_culture = japanese
+				OR = {
+					substate_of = JAP
+					vassal_of = JAP
+				}
+			}
+			country_event = 97618
+		}
+		any_pop = {
+			limit = { is_primary_culture = yes }
+			consciousness = 1
+		}
     }
 }
 
@@ -1904,19 +1993,18 @@ country_event = {
     title = "EVTNAME97617" #Order to Expel the Barbarians - Response from Substates
     desc = "EVTDESC97618"
     picture = "sonno_joi"
-
-    is_triggered_only = yes
+	is_triggered_only = yes
 
     option = {
         name = "EVT97618OPTA"
         set_country_flag = supports_imperial_edict
-        relation = { who = FROM value = 50 }
+        relation = { who = FROM value = -50 }
         ruling_party_ideology = conservative
         ai_chance = {
             factor = 50
             modifier = {
                 factor = 1.5
-                TKG = { has_country_modifier = recently_lost_war }
+                JAP = { has_country_modifier = recently_lost_war }
             }
             modifier = {
                 factor = 1.5
@@ -1938,13 +2026,13 @@ country_event = {
     option = {
         name = "EVT97618OPTB"
         set_country_flag = opposes_imperial_edict
-        relation = { who = FROM value = -50 }
+        relation = { who = FROM value = 50 }
         ruling_party_ideology = reactionary
         ai_chance = {
             factor = 50
             modifier = {
                 factor = 1.5
-                TKG = { has_country_flag = rejected_commodore_perry }
+                JAP = { has_country_flag = rejected_commodore_perry }
             }
             modifier = {
                 factor = 0.5
@@ -1965,27 +2053,25 @@ country_event = {
     id = 97620
     title = "EVTNAME97620" #The Death of Iesada
     desc = "EVTDESC97620"
-    picture = "emperor_funeral"
+    picture = "iesada"
+	fire_only_once = yes
 
+    mean_time_to_happen = { days = 1 }
+	
     trigger = {
-        tag = TKG
         year = 1858
-        OR = {
-            government = hms_government
-            government = prussian_constitutionalism
-            government = absolute_monarchy
-            government = absolute_empire
-            government = semi_constitutional_empire
-            government = constitutional_empire
-        }
+		month = 8
+		tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
+        has_country_flag = monarchy_government
         NOT = { has_global_flag = yoshinobu_shogun }
         NOT = { has_global_flag = iemochi_shogun }
         NOT = { has_global_flag = boshin_war }
         NOT = { has_global_flag = boshin_war_has_happened }
-    }
-
-    mean_time_to_happen = {
-        months = 6
     }
 
     option = {
@@ -2003,14 +2089,14 @@ country_event = {
         }
         any_country = {
             limit = {
-                substate_of = TKG
+				OR = { substate_of = JAP vassal_of = JAP }
                 has_country_flag = tozama_daimyo
             }
             country_event = 97621
         }
         any_country = {
             limit = {
-                substate_of = TKG
+                OR = { substate_of = JAP vassal_of = JAP }
                 has_country_flag = fudai_daimyo
             }
             country_event = 97622
@@ -2048,14 +2134,14 @@ country_event = {
         }
         any_country = {
             limit = {
-                substate_of = TKG
+                OR = { substate_of = JAP vassal_of = JAP }
                 has_country_flag = tozama_daimyo
             }
             country_event = 97623
         }
         any_country = {
             limit = {
-                substate_of = TKG
+                OR = { substate_of = JAP vassal_of = JAP }
                 has_country_flag = fudai_daimyo
             }
             country_event = 97624
@@ -2078,13 +2164,13 @@ country_event = {
     id = 97621
     title = "EVTNAME97621" #Tokugawa Yoshinobu is Shogun - Tozama
     desc = "EVTDESC97621"
-    picture = "emperor_funeral"
+    picture = "yoshinobu"
 
     is_triggered_only = yes
 
     option = {
         name = "EVT97624OPTA"
-        relation = { who = TKG value = 50 }
+        relation = { who = JAP value = 50 }
         any_pop = {
             scaled_militancy = {
                 ideology = conservative
@@ -2098,14 +2184,14 @@ country_event = {
     id = 97622
     title = "EVTNAME97621" #Tokugawa Yoshinobu is Shogun - Fudai
     desc = "EVTDESC97622"
-    picture = "emperor_funeral"
+    picture = "yoshinobu"
 
     is_triggered_only = yes
 
     option = {
         name = "EVT97623OPTA"
         set_country_flag = angered_by_bakufu
-        relation = { who = TKG value = -50 }
+        relation = { who = JAP value = -50 }
         any_pop = {
             scaled_militancy = {
                 ideology = reactionary
@@ -2119,14 +2205,14 @@ country_event = {
     id = 97623
     title = "EVTNAME97623" #Tokugawa Iemochi is Shogun - Tozama
     desc = "EVTDESC97623"
-    picture = "emperor_funeral"
+    picture = "iemochi"
 
     is_triggered_only = yes
 
     option = {
         name = "EVT97623OPTA"
         set_country_flag = angered_by_bakufu
-        relation = { who = TKG value = -50 }
+        relation = { who = JAP value = -50 }
         any_pop = {
             scaled_militancy = {
                 ideology = conservative
@@ -2140,13 +2226,13 @@ country_event = {
     id = 97624
     title = "EVTNAME97623" #Tokugawa Iemochi is Shogun - Fudai
     desc = "EVTDESC97624"
-    picture = "emperor_funeral"
+    picture = "iemochi"
 
     is_triggered_only = yes
 
     option = {
         name = "EVT97624OPTA"
-        relation = { who = TKG value = 50 }
+        relation = { who = JAP value = 50 }
         any_pop = {
             scaled_militancy = {
                 ideology = reactionary
@@ -2162,9 +2248,10 @@ country_event = {
     title = "EVTNAME97625" #Sakuradamon Incident
     desc = "EVTDESC97625"
     picture = "sakuradamon"
+	major = yes
 
     trigger = {
-        tag = TKG
+        tag = JAP
         has_country_modifier = ansei_purge
         OR = {
             average_militancy = 2
@@ -2172,13 +2259,15 @@ country_event = {
             SAT = { average_militancy = 4 }
             TOS = { average_militancy = 4 }
             KAG = { average_militancy = 4 }
+            OBM = { average_militancy = 4 }
             SEN = { average_militancy = 4 }
+            EZO = { average_militancy = 4 }
             YZW = { average_militancy = 4 }
 			SOC = { average_militancy = 4 }
             JAP = { average_militancy = 4 }
         }
         NOT = { has_country_flag = sakuradamon_incident }
-        NOT = { has_country_flag = emperor_meiji }
+        NOT = { has_global_flag = emperor_meiji }
         NOT = { has_global_flag = boshin_war }
         NOT = { has_global_flag = boshin_war_has_happened }
     }
@@ -2222,7 +2311,6 @@ country_event = {
         }
         any_country = {
             limit = {
-                NOT = { tag = TKG }
                 has_country_modifier = ansei_purge
             }
             country_event = 97626
@@ -2237,7 +2325,7 @@ country_event = {
         set_country_flag = sakuradamon_incident
         any_country = {
             limit = {
-                NOT = { tag = TKG }
+                NOT = { tag = JAP }
                 has_country_modifier = ansei_purge
             }
             country_event = 97627
@@ -2253,7 +2341,6 @@ country_event = {
     title = "EVTNAME97625" #Sakuradamon Incident
     desc = "EVTDESC97626"
     picture = "sakuradamon"
-
     is_triggered_only = yes
 
     option = {
@@ -2271,12 +2358,33 @@ country_event = {
     title = "EVTNAME97625" #Sakuradamon Incident
     desc = "EVTDESC97627"
     picture = "sakuradamon"
-    major = yes
     is_triggered_only = yes
 
     option = {
         name = "EVT97627OPTA"
     }
+}
+
+# The Death of Emperor Ninko
+country_event = {
+	id = 2211334
+	title = "NINKODEATH"
+	desc = "NINKODEATH2"
+	picture = "ninko"
+	fire_only_once = yes
+
+	trigger = {
+		year = 1846
+		tag = JAP
+		month = 2
+        has_country_flag = monarchy_government
+	}
+
+	mean_time_to_happen = { days = 1 }
+
+	option = {
+		name = "He will be missed."
+	}
 }
 
 #The Death of Komei
@@ -2288,63 +2396,51 @@ country_event = {
     news_desc_long = "EVTDESC97630_NEWS_LONG"
     news_desc_medium = "EVTDESC97630_NEWS_MEDIUM"
     news_desc_short = "EVTDESC97630_NEWS_SHORT"
-    picture = "emperor_funeral"
+    picture = "komei"
 
     trigger = {
-        tag = TKG
-        year = 1860
-        OR = {
-            government = hms_government
-            government = prussian_constitutionalism
-            government = absolute_monarchy
-            government = absolute_empire
-            government = semi_constitutional_empire
-            government = constitutional_empire
-        }
+        tag = JAP
+        year = 1867
+        has_country_flag = monarchy_government
         OR = {
             has_country_modifier = kobu_gattai
             has_country_flag = sakuradamon_incident
             has_global_flag = order_to_expel_barbarians
             JAP = { is_vassal = no }
             KAG = { is_vassal = no }
+            OBM = { is_vassal = no }
 			SOC = { is_vassal = no }
             YZW = { is_vassal = no }
             SEN = { is_vassal = no }
+            EZO = { is_vassal = no }
             CHO = { is_vassal = no }
             TOS = { is_vassal = no }
             SAT = { is_vassal = no }
         }
-        NOT = { has_country_flag = emperor_meiji }
+		NOT = { has_country_flag = dead_komei }
+        NOT = { has_global_flag = emperor_meiji }
         NOT = { has_global_flag = boshin_war }
         NOT = { has_global_flag = boshin_war_has_happened }
     }
 
-    mean_time_to_happen = {
-        months = 12
-        modifier = {
-            factor = 0.5
-            year = 1864
-        }
-        modifier = {
-            factor = 0.1
-            year = 1868
-        }
-    }
+    mean_time_to_happen = { days = 1 }
 
     option = {
         name = "EVT97630OPTA"
-        set_country_flag = emperor_meiji
+        set_global_flag = emperor_meiji
+		set_country_flag = dead_komei
         remove_country_modifier = kobu_gattai
-        JAP = { all_core = { add_core = TKG } }
-        SAT = { all_core = { add_core = TKG } }
-        CHO = { all_core = { add_core = TKG } }
-		SOC = { all_core = { add_core = TKG } }
-        SEN = { all_core = { add_core = TKG } }
-        YZW = { all_core = { add_core = TKG } }
-        TOS = { all_core = { add_core = TKG } }
-        KAG = { all_core = { add_core = TKG } }
+        SAT = { all_core = { add_core = JAP } }
+        CHO = { all_core = { add_core = JAP } }
+		SOC = { all_core = { add_core = JAP } }
+        SEN = { all_core = { add_core = JAP } }
+        EZO = { all_core = { add_core = JAP } }
+        YZW = { all_core = { add_core = JAP } }
+        TOS = { all_core = { add_core = JAP } }
+        KAG = { all_core = { add_core = JAP } }
+        OBM = { all_core = { add_core = JAP } }
         any_country = {
-            limit = { substate_of = TKG }
+            limit = { OR = { substate_of = JAP AND = { vassal_of = JAP primary_culture = japanese } } }
             country_event = 97631
         }
     }
@@ -2354,13 +2450,12 @@ country_event = {
     id = 97631
     title = "EVTNAME97630" #The Death of Emperor Komei
     desc = "EVTDESC97630"
-    picture = "emperor_funeral"
-
+    picture = "komei"
     is_triggered_only = yes
 
     option = {
         name = "EVT97630OPTA"
-        set_country_flag = emperor_meiji
+        set_global_flag = emperor_meiji
         remove_country_modifier = kobu_gattai
     }
 }
@@ -2373,16 +2468,8 @@ country_event = {
     picture = "meiji_parliament"
 
     trigger = {
-        tag = TKG
+		tag = JAP #Tokugawa
 		government = absolute_monarchy
-		SOC = { exists = yes }
-		JAP = { exists = yes }
-		SAT = { exists = yes }
-		CHO = { exists = yes }
-		KAG = { exists = yes }
-		SEN = { exists = yes }
-		YZW = { exists = yes }
-		TOS = { exists = yes }
         OR = {
             has_country_flag = caved_to_commodore_perry
             has_country_flag = surrendered_to_perry
@@ -2400,6 +2487,16 @@ country_event = {
                 }
             }
         }
+		SOC = { exists = yes }
+		JAP = { exists = yes }
+		SAT = { exists = yes }
+		CHO = { exists = yes }
+		KAG = { exists = yes }
+		OBM = { exists = yes }
+		SEN = { exists = yes }
+		EZO = { exists = yes }
+		YZW = { exists = yes }
+		TOS = { exists = yes }
         NOT = { has_country_flag = consulted_fudai }
         NOT = { has_country_flag = consulted_tozama }
         NOT = { has_global_flag = boshin_war }
@@ -2408,7 +2505,7 @@ country_event = {
     }
 
     mean_time_to_happen = {
-        months = 12
+        months = 6
     }
 
     option = {
@@ -2416,7 +2513,7 @@ country_event = {
         set_country_flag = consulted_tozama
         any_country = {
             limit = {
-                substate_of = TKG
+                OR = { substate_of = JAP vassal_of = JAP }
                 has_country_flag = fudai_daimyo
             }
             country_event = 97636
@@ -2437,11 +2534,9 @@ country_event = {
     option = {
         name = "EVT97635OPTB"
         set_country_flag = consulted_fudai
-        1643 = { secede_province = THIS any_pop = { limit = { is_primary_culture = no } literacy = -0.99 } }
-        1644 = { secede_province = THIS any_pop = { limit = { is_primary_culture = no } literacy = -0.99 } }
         any_country = {
             limit = {
-                substate_of = TKG
+                OR = { substate_of = JAP vassal_of = JAP }
                 has_country_flag = tozama_daimyo
             }
             country_event = 97637
@@ -2470,7 +2565,6 @@ country_event = {
     title = "EVTNAME97635" #Opposition to the Bakufu - Fudai
     desc = "EVTDESC97636"
     picture = "meiji_parliament"
-
     is_triggered_only = yes
 
     option = {
@@ -2500,21 +2594,30 @@ country_event = {
 	title = "EVTNAME21142"
 	desc = "EVTDESC21142"
 	picture = "ee_ja_nai_ka"
-
+	fire_only_once = yes
 
 	trigger = {
-		primary_culture = japanese
-		TKG = { civilized = yes }
+		has_global_flag = order_to_expel_barbarians
+		tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
+		OR = {
+			civilized = yes
+			year = 1867
+		}
+		has_country_flag = sonno_joi
 		average_consciousness = 1.5
 		average_militancy = 1.5
-		has_global_flag = order_to_expel_barbarians
-		has_country_flag = sonno_joi
 		NOT = { has_global_flag = boshin_war }
 		NOT = { has_global_flag = boshin_war_has_happened }
-		NOT = { tag = RYU }
 		NOT = { has_country_flag = protest_dances }
 		NOT = { has_country_modifier = protest_dances }
 	}
+	
+	mean_time_to_happen = { months = 1 }
 
 	option = {
 		name = "EVT21142OPTA"
@@ -2524,7 +2627,6 @@ country_event = {
 		}
 		set_country_flag = protest_dances
 	}
-	mean_time_to_happen = { months = 1 }
 }
 
 #####################################################################################
@@ -2539,16 +2641,28 @@ country_event = {
     title = "EVTNAME97640" #The Meiji Rebellion - Other Substates
     desc = "EVTDESC97640"
     picture = "boshin_war"
-
     is_triggered_only = yes
 
     option = {
         name = "EVT97640OPTA"
+		random_owned = {
+			limit = {
+				owner = {
+					has_global_flag = emperor_meiji
+				}
+			}
+			owner = {
+				add_country_modifier = {
+					name = imperial_approval
+					duration = 730
+				}
+			}
+		}
         set_country_flag = supports_emperor
         remove_country_modifier = sakoku
         remove_country_modifier = rangaku
         remove_country_modifier = ansei_purge
-        leave_alliance = TKG
+        leave_alliance = JAP
         random_country = {
             limit = { has_country_flag = imperial_war_leader }
             relation = { who = THIS value = 100 }
@@ -2562,115 +2676,52 @@ country_event = {
         ai_chance = {
             factor = 50
             modifier = {
-                factor = 2
-                tag = SAT
+                factor = 0
+                tag = OBM
             }
             modifier = {
-                factor = 2
-                tag = CHO
+                factor = 0
+                tag = SEN
             }
-            modifier = {
-                factor = 1.5
-                has_country_flag = angered_by_bakufu
+			modifier = {
+                factor = 0
+                tag = EZO
             }
-            modifier = {
-                factor = 0.5
-                has_country_flag = tozama_daimyo
-                TKG = { has_country_flag = consulted_tozama }
-            }
-            modifier = {
-                factor = 0.5
-                has_country_flag = fudai_daimyo
-                TKG = { has_country_flag = consulted_fudai }
-            }
-            modifier = {
-                factor = 1.25
-                has_country_modifier = ansei_purge
-            }
-            modifier = {
-                factor = 0.5
-                has_global_flag = iemochi_shogun
-                has_country_flag = fudai_daimyo
-            }
-            modifier = {
-                factor = 0.5
-                has_global_flag = yoshinobu_shogun
-                has_country_flag = tozama_daimyo
-            }
-            modifier = {
-                factor = 1.5
-                has_country_flag = supports_imperial_edict
-            }
-            modifier = {
-                factor = 1.2
-                TKG = { has_country_flag = caved_to_commodore_perry }
-            }
-            modifier = {
-                factor = 0.8
-                has_country_flag = fudai_daimyo
-            }
-            modifier = {
-                factor = 1.2
-                has_country_flag = tozama_daimyo
+			modifier = {
+                factor = 0
+                tag = YZW
             }
         }
     }
 
     option = {
         name = "EVT97640OPTB"
+		random_owned = {
+			limit = {
+				owner = {
+					has_global_flag = emperor_meiji
+				}
+			}
+			owner = {
+				add_country_modifier = {
+					name = imperial_disapproval
+					duration = 730
+				}
+			}
+		}
         set_country_flag = supports_shogun
         remove_country_modifier = sakoku
         remove_country_modifier = rangaku
         remove_country_modifier = ansei_purge
         leave_alliance = FROM
-        create_alliance = TKG
-        relation = { who = TKG value = 100 }
+        create_alliance = JAP
+        relation = { who = JAP value = 100 }
         any_owned = {
             remove_province_modifier = peasant_revolt
             any_pop = { militancy = -6 }
         }
         ai_chance = {
             factor = 50
-            modifier = {
-                factor = 0.5
-                has_country_flag = angered_by_bakufu
-            }
-            modifier = {
-                factor = 1.5
-                has_country_flag = tozama_daimyo
-                TKG = { has_country_flag = consulted_tozama }
-            }
-            modifier = {
-                factor = 1.5
-                has_country_flag = fudai_daimyo
-                TKG = { has_country_flag = consulted_fudai }
-            }
-            modifier = {
-                factor = 1.5
-                has_global_flag = iemochi_shogun
-                has_country_flag = fudai_daimyo
-            }
-            modifier = {
-                factor = 1.5
-                has_global_flag = yoshinobu_shogun
-                has_country_flag = tozama_daimyo
-            }
-            modifier = {
-                factor = 1.5
-                has_country_flag = opposes_imperial_edict
-            }
-            modifier = {
-                factor = 1.2
-                TKG = { has_country_flag = rejected_commodore_perry }
-            }
-            modifier = {
-                factor = 1.2
-                has_country_flag = fudai_daimyo
-            }
-            modifier = {
-                factor = 0.8
-                has_country_flag = tozama_daimyo
-            }
             modifier = {
                 factor = 0
                 tag = SAT
@@ -2680,9 +2731,17 @@ country_event = {
                 tag = CHO
             }
 			modifier = {
-				factor = 0
-				tag = KAG
-			}
+                factor = 0
+                tag = TOS
+            }
+			modifier = {
+                factor = 0
+                tag = SOC
+            }
+			modifier = {
+                factor = 0
+                tag = KAG
+            }
         }
     }
 }
@@ -2701,18 +2760,6 @@ country_event = {
 
     option = {
         name = "EVT97641OPTA"
-        random_owned = {
-            limit = {
-                owner = { civilized = no }
-                FROM = { civilized = yes }
-            }
-            owner = {
-                add_country_modifier = {
-                    name = taiping_draft
-                    duration = 365
-                }
-            }
-        }
         war = {
             target = FROM
             attacker_goal = {
@@ -2722,6 +2769,19 @@ country_event = {
                 casus_belli = civil_war
             }
         }
+		random_owned = {
+			limit = {
+				owner = {
+					has_global_flag = emperor_meiji
+				}
+			}
+			owner = {
+				add_country_modifier = {
+					name = imperial_disapproval
+					duration = 730
+				}
+			}
+		}
     }
 }
 
@@ -2730,11 +2790,23 @@ country_event = {
     title = "EVTNAME97640" #The Meiji Rebellion - Imperial Japan
     desc = "EVTDESC97640"
     picture = "boshin_war"
-
     is_triggered_only = yes
 
     option = {
         name = "EVT97642OPTA"
+		random_owned = {
+			limit = {
+				owner = {
+					has_global_flag = emperor_meiji
+				}
+			}
+			owner = {
+				add_country_modifier = {
+					name = imperial_approval
+					duration = 730
+				}
+			}
+		}
         set_country_flag = supports_emperor
         remove_country_modifier = sakoku
         remove_country_modifier = rangaku
@@ -2742,7 +2814,7 @@ country_event = {
         random_owned = {
             limit = {
                 owner = { civilized = no }
-                TKG = { civilized = yes }
+                JAP = { civilized = yes }
             }
             owner = {
                 add_country_modifier = {
@@ -2754,7 +2826,7 @@ country_event = {
         random_owned = {
             limit = {
                 owner = { civilized = no }
-                TKG = { civilized = no }
+                JAP = { civilized = no }
             }
             owner = {
                 add_country_modifier = {
@@ -2763,13 +2835,13 @@ country_event = {
                 }
             }
         }
-        leave_alliance = TKG
+        leave_alliance = JAP
         relation = { who = FROM value = 100 }
         random_owned = {
             limit = {
                 owner = { has_country_flag = imperial_war_leader }
             }
-            TKG = { release_vassal = THIS }
+            JAP = { release_vassal = THIS }
             THIS = {
                 create_vassal = FROM
                 create_alliance = FROM
@@ -2777,10 +2849,10 @@ country_event = {
             any_country = {
                 limit = {
                     OR = {
-                        substate_of = TKG
+                        substate_of = JAP
                         AND = {
                             primary_culture = japanese
-                            vassal_of = TKG
+                            vassal_of = JAP
                         }
                     }
                     NOT = { tag = FROM }
@@ -2788,7 +2860,6 @@ country_event = {
                 }
                 country_event = 97640
             }
-            TKG = { country_event = 97641 }
         }
         random_owned = {
             limit = {
@@ -2803,6 +2874,7 @@ country_event = {
             remove_province_modifier = peasant_revolt
             any_pop = { militancy = -6 }
         }
+		JAP = { country_event = 97641 }
     }
 }
 
@@ -2814,14 +2886,22 @@ country_event = {
     picture = "boshin_war"
 
     trigger = {
-        tag = TKG
         has_global_flag = boshin_war
+        tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
         war = yes
+        war_exhaustion = 20
         OR = {
             any_owned_province = {
                 is_capital = yes
-                NOT = { controlled_by = TKG }
-                NOT = { controlled_by = REB }
+                NOT = {
+					controlled_by = JAP
+					controlled_by = REB
+				}
                 province_control_days = 90
             }
             NOT = { total_amount_of_divisions = 3 }
@@ -2829,13 +2909,13 @@ country_event = {
         }
         1657 = {
             NOT = {
-                controlled_by = TKG
-                controller = { alliance_with = TKG }
-                controller = { vassal_of = TKG }
-                controller = { substate_of = TKG }
+                controlled_by = JAP
+                controller = { alliance_with = JAP }
+                controller = { vassal_of = JAP }
+                controller = { substate_of = JAP }
+                controller = { vassal_of = JAP }
             }
         }
-        war_exhaustion = 20
     }
 
     mean_time_to_happen = {
@@ -2866,8 +2946,8 @@ country_event = {
     picture = "meiji_coronation"
 
     trigger = {
-        has_country_flag = imperial_war_leader
         has_global_flag = boshin_war
+        has_country_flag = imperial_war_leader
         OR = {
             AND = {
                 owns = 1649
@@ -2886,8 +2966,8 @@ country_event = {
                     }
                 }
                 war = no
-                TKG = { war = no }
-                truce_with = TKG
+                JAP = { war = no }
+                truce_with = JAP
             }
         }
     }
@@ -2903,42 +2983,15 @@ country_event = {
         prestige = 20
         random_country = {
             limit = {
-                tag = TKG
-                civilized = no
-                THIS = { civilized = yes }
-            }
-            civilized = yes
-        }
-        inherit = TKG
-        TKG = {
-            all_core = {
-                add_core = JAP
-                remove_core = TKG
-            }
-        }
-        random_country = {
-            limit = {
                 tag = JAP
-                NOT = { tag = THIS }
                 civilized = no
                 THIS = { civilized = yes }
             }
             civilized = yes
         }
-        random_owned = {
-            limit = {
-                owner = {
-                    NOT = { tag = JAP }
-                    ai = no
-                }
-                JAP = { ai = yes }
-            }
-            owner = {
-                inherit = JAP
-                capital = 1657
-                change_tag = JAP
-            }
-        }
+        inherit = JAP
+		change_tag = JAP
+		capital = 1657
         JAP = {
             political_reform = regionalism
 			random_owned = {
@@ -2980,29 +3033,19 @@ country_event = {
             limit = {
                 OR = {
                     tag = SEN
+                    tag = EZO
                     tag = YZW
                     tag = CHO
                     tag = SAT
                     tag = TOS
                     tag = KAG
+                    tag = OBM
 					tag = SOC
                 }
                 exists = yes
             }
             end_war = THIS
             country_event = 97647
-        }
-        random_country = {
-            limit = {
-                tag = JAP
-                OR = {
-                    JAP = { ai = no }
-                    THIS = {
-                        ai = yes
-                    }
-                }
-            }
-            inherit = THIS
         }
         random_owned = {
 			limit = {
@@ -3022,8 +3065,8 @@ country_event = {
     title = "EVTNAME97646" #The Meiji Restoration - Substates
     desc = "EVTDESC97647"
     picture = "meiji_parliament"
-
     is_triggered_only = yes
+	allow_multiple_instances = yes
 
     option = {
         name = "EVT97647OPTA"
@@ -3039,9 +3082,7 @@ country_event = {
             secede_province = JAP
         }
         JAP = { inherit = THIS }
-        ai_chance = {
-            factor = 100
-        }
+        ai_chance = { factor = 1 }
     }
 
     option = {
@@ -3057,9 +3098,7 @@ country_event = {
         leave_alliance = JAP
         relation = { who = JAP value = -200 }
         release_vassal = THIS
-        ai_chance = {
-            factor = 0
-        }
+        ai_chance = { factor = 0 }
     }
 }
 
@@ -3068,15 +3107,19 @@ country_event = {
     title = "EVTNAME97648" #A New Capital in the East?
     desc = "EVTDESC97648"
     picture = "emperor_move_capital"
+	fire_only_once = yes
 
     trigger = {
-        tag = JAP
-        war = no
+		NOT = { has_country_flag = japan_growth }
+        tag = JAP #Empire
+		OR = {
+			government = absolute_empire
+			government = semi_constitutional_empire
+			government = constitutional_empire
+		}
         owns = 1649
-        NOT = {
-            capital = 1649
-            has_country_flag = capital_in_the_east
-        }
+        war = no
+        NOT = { capital = 1649 }
     }
 
     mean_time_to_happen = {
@@ -3084,49 +3127,29 @@ country_event = {
     }
 
     immediate = {
+		remove_country_modifier = ansei_purge
         1651 = {
             add_province_modifier = {
                 name = gateway_to_harbor
                 duration = 14600
             }
-            add_province_modifier = {
-                name = baby_boom
-                duration = 1825
-            }
-            life_rating = 7
+            life_rating = 5
         }
         1655 = {
             add_province_modifier = {
                 name = gateway_to_harbor
                 duration = 14600
             }
-            add_province_modifier = {
-                name = baby_boom
-                duration = 1825
-            }
-            life_rating = 10
         }
         add_country_modifier = {
             name = global_baby_boom
             duration = 3650
         }
-        random_owned = {
-            limit = {
-                owner = { ai = yes }
-            }
-            owner = {
-                machine_parts = 300
-                steel = 400 #was iron
-                cement = 400
-                build_factory_in_capital_state = canned_food_factory
-                build_factory_in_capital_state = liquor_distillery
-            }
-        }
     }
 
     option = {
         name = "EVT97648OPTA"
-        set_country_flag = capital_in_the_east
+		set_country_flag = japan_growth
         prestige = 5
         capital = 1649
         1649 = {
@@ -3134,58 +3157,24 @@ country_event = {
                 name = gateway_to_harbor
                 duration = 14600
             }
-            add_province_modifier = {
-                name = small_baby_boom
-                duration = 14600
-            }
-            add_province_modifier = {
-                name = baby_boom
-                duration = 1825
-            }
             change_province_name = "Tokyo"
             life_rating = 8
         }
-        add_country_modifier = {
-            name = global_baby_boom_small
-            duration = 5475
-        }
-        add_country_modifier = {
-            name = global_baby_boom
-            duration = 1825
-        }
-        ai_chance = {
-            factor = 100
-        }
+        ai_chance = { factor = 1 }
     }
 
     option = {
         name = "EVT97648OPTB"
-        set_country_flag = capital_in_the_east
+		set_country_flag = japan_growth
+        prestige = 5
         1657 = {
             add_province_modifier = {
                 name = gateway_to_harbor
                 duration = 14600
             }
-            add_province_modifier = {
-                name = small_baby_boom
-                duration = 14600
-            }
-            add_province_modifier = {
-                name = baby_boom
-                duration = 1825
-            }
+            life_rating = 8
         }
-        add_country_modifier = {
-            name = global_baby_boom_small
-            duration = 5475
-        }
-        add_country_modifier = {
-            name = global_baby_boom
-            duration = 1825
-        }
-        ai_chance = {
-            factor = 0
-        }
+        ai_chance = { factor = 0 }
     }
 }
 
@@ -3197,9 +3186,9 @@ country_event = {
     picture = "boshin_war"
 
     trigger = {
-        has_country_flag = imperial_war_leader
         has_global_flag = boshin_war
-        war = yes
+        has_country_flag = imperial_war_leader
+        war_with = JAP
         OR = {
             any_owned_province = {
                 is_capital = yes
@@ -3226,7 +3215,7 @@ country_event = {
 
     option = {
         name = "EVT97650OPTA"
-        TKG = { country_event = 97651 }
+        JAP = { country_event = 97651 }
     }
 }
 
@@ -3242,15 +3231,16 @@ country_event = {
     major = yes
 
     trigger = {
-        tag = TKG
-        war = no
+		NOT = { has_country_flag = japan_growth }
         has_global_flag = boshin_war
+        tag = JAP
         any_owned_province = {
             any_core = {
                 has_country_flag = imperial_war_leader
                 exists = no
             }
         }
+        war = no
     }
 
     mean_time_to_happen = {
@@ -3271,7 +3261,6 @@ country_event = {
                 name = gateway_to_harbor
                 duration = 14600
             }
-            life_rating = 10
         }
         add_country_modifier = {
             name = global_baby_boom
@@ -3281,27 +3270,17 @@ country_event = {
 
     option = {
         name = "EVT97651OPTA"
+		set_country_flag = japan_growth
+        prestige = 5
+		remove_country_modifier = imperial_disapproval
         clr_global_flag = boshin_war
         set_global_flag = boshin_war_has_happened
-        prestige = 20
         1649 = {
             add_province_modifier = {
                 name = gateway_to_harbor
                 duration = 14600
             }
-            add_province_modifier = {
-                name = small_baby_boom
-                duration = 5475
-            }
-            add_province_modifier = {
-                name = baby_boom
-                duration = 1825
-            }
             life_rating = 8
-        }
-        add_country_modifier = {
-            name = global_baby_boom_small
-            duration = 5475
         }
 		add_country_modifier = {
 			name = resistance_to_new_regime
@@ -3313,15 +3292,6 @@ country_event = {
                 NOT = { tag = JAP }
                 civilized = no
                 exists = yes
-                THIS = { civilized = yes }
-            }
-            civilized = yes
-        }
-        random_country = {
-            limit = {
-                tag = JAP
-                exists = yes
-                civilized = no
                 THIS = { civilized = yes }
             }
             civilized = yes
@@ -3345,11 +3315,13 @@ country_event = {
             limit = {
                 OR = {
                     tag = SEN
+                    tag = EZO
                     tag = YZW
                     tag = CHO
                     tag = SAT
                     tag = TOS
                     tag = KAG
+                    tag = OBM
 					tag = SOC
                 }
                 exists = yes
@@ -3375,45 +3347,40 @@ country_event = {
     title = "EVTNAME97651" #Tokugawa Victory - Substates
     desc = "EVTDESC97652"
     picture = "meiji_parliament"
-
     is_triggered_only = yes
 
     option = {
         name = "EVT97652OPTA"
         random_country = {
             limit = {
-                tag = TKG
+                tag = JAP
                 civilized = yes
                 THIS = { civilized = no }
             }
             THIS = { civilized = yes }
         }
-        TKG = { inherit = THIS }
-        ai_chance = {
-            factor = 100
-        }
+        JAP = { inherit = THIS }
+        ai_chance = { factor = 1 }
     }
 
     option = {
         name = "EVT97652OPTB"
         random_country = {
             limit = {
-                tag = TKG
+                tag = JAP
                 civilized = yes
                 THIS = { civilized = no }
             }
             THIS = { civilized = yes }
         }
         release_vassal = THIS
-        leave_alliance = TKG
-        relation = { who = TKG value = -200 }
+        leave_alliance = JAP
+        relation = { who = JAP value = -200 }
         add_country_modifier = {
             name = taiping_draft
             duration = 365
         }
-        ai_chance = {
-            factor = 0
-        }
+        ai_chance = { factor = 0 }
     }
 }
 
@@ -3432,18 +3399,17 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		OR = {
-			tag = JAP
-			tag = TKG
-		}
+		year = 1886
+		month = 10
+		tag = JAP
 		war = no
-		year = 1880
-		is_greater_power = no
+		is_vassal = no
 		NOT = {
 			relation = { who = ENG value = 200 }
 		}
 	}
-	mean_time_to_happen = { months = 20 }
+
+	mean_time_to_happen = { days = 1 }
 
 	option = {
 		name = "EVT91179OPTA" #Discuss Incident with Britain
@@ -3548,7 +3514,7 @@ country_event = {
 		ai_chance = {
 			factor = 25
 			modifier = {
-				FROM = { is_secondary_power = yes }
+				FROM = { rank = 16 }
 				factor = 2
 			}
 			modifier = {
@@ -3636,7 +3602,7 @@ country_event = {
 				duration = 150
 			}
 		}
-		1659 = {
+		1655 = {
 			add_province_modifier = {
 				name = opened_port
 				duration = 150
@@ -3717,6 +3683,7 @@ country_event = {
     picture = "demonstration"
 
     trigger = {
+		year = 1879
         tag = JAP
         war = no
         OR = {
@@ -3733,7 +3700,6 @@ country_event = {
             has_country_flag = taisho_democracy
             num_of_revolts = 1
         }
-		year = 1879
     }
 
     mean_time_to_happen = {
@@ -3794,31 +3760,59 @@ country_event = {
     title = "EVTNAME97661"
     desc = "EVTDESC97661"
     picture = "asian_administration"
+	fire_only_once = yes
+	allow_multiple_instances = yes
 
     trigger = {
-        civilized = no
+        OR = {
+			substate_of = JAP #Tokugawa
+			vassal_of = JAP #Tokugawa
+		}
+		OR = {
+			JAP = { government = absolute_monarchy }
+			JAP = { government = prussian_constitutionalism }
+			JAP = { government = hms_government }
+		}
         OR = {
             tag = KAG
+            tag = OBM
             tag = SEN
+            tag = EZO
             tag = YZW
             tag = CHO
             tag = TOS
 			tag = SOC
             tag = SAT
         }
-        substate_of = TKG
-        TKG = { civilized = yes }
+        civilized = no
+        JAP = { civilized = yes }
         NOT = { has_country_flag = shogunate_westernizes }
     }
 
-    mean_time_to_happen = {
-        days = 3
-    }
+    mean_time_to_happen = { days = 1 }
+	
+	immediate = { civilized = yes }
 
     option = {
         name = "EVT97661OPTA"
         set_country_flag = shogunate_westernizes
-        civilized = yes
+		any_country = {
+			limit = {
+				OR = {
+					tag = KAG
+					tag = OBM
+					tag = SEN
+					tag = EZO
+					tag = YZW
+					tag = CHO
+					tag = TOS
+					tag = SOC
+					tag = SAT
+				}
+				civilized = no
+			}
+			country_event = 97661
+		}
     }
 }
 
@@ -3835,17 +3829,18 @@ country_event = {
     fire_only_once = yes
 
     trigger = {
-        war = no
         tag = JAP
+        has_country_flag = han_system_abolished
         OR = {
             government = absolute_monarchy
             government = prussian_constitutionalism
             government = absolute_empire
             government = semi_constitutional_empire
         }
-        has_country_flag = han_system_abolished
-        owns = 1662
+        war = no
         SAT = { exists = no }
+		owns = 1662
+		owns = 1661
     }
 
     mean_time_to_happen = {
@@ -3910,14 +3905,24 @@ country_event = {
                 duration = 365
             }
         }
-        release = SAT
+        any_owned = {
+			limit = {
+				OR = {
+					province_id = 1662
+					province_id = 1663
+					province_id = 1664
+				}
+			}
+			secede_province = SAT
+		}
         war = {
             target = SAT
             attacker_goal = {
-                casus_belli = civil_war
+                casus_belli = conquest_any
             }
             defender_goal = {
-                casus_belli = status_quo
+                casus_belli = acquire_core_state
+				state_province_id = 1661
             }
         }
         ai_chance = {
@@ -3973,10 +3978,10 @@ country_event = {
 
     trigger = {
         tag = JAP
-        war = no
         has_country_flag = satsuma_rebellion_happened
-        SAT = { exists = no }
         owns = 1660
+        war = no
+        SAT = { exists = no }
     }
 
     mean_time_to_happen = {
@@ -4014,11 +4019,8 @@ country_event = {
     picture = "kurils"
 
     trigger = {
-        OR = {
-            tag = TKG
-            tag = JAP
-        }
         owns = 1642
+        tag = JAP
         war = no
         OR = {
             AND = {
@@ -4118,12 +4120,10 @@ country_event = {
     picture = "asian_administration"
 
     trigger = {
-		OR = {
-			tag = JAP
-			tag = TKG
-		}
-        war = no
         has_country_modifier = line_of_advantage
+		tag = JAP
+		plurality = 20
+        war = no
         OR = {
             ruling_party_ideology = liberal
 			ruling_party_ideology = socialist
@@ -4132,7 +4132,6 @@ country_event = {
 			anti_military = 10
 			pacifism = 10
 		}
-		plurality = 20
     }
 
     mean_time_to_happen = {
@@ -4167,12 +4166,11 @@ country_event = {
     picture = "asian_administration"
 
     trigger = {
-		OR = {
-			tag = JAP
-			tag = TKG
-		}
-        war = no
         has_country_modifier = line_of_advantage
+		tag = JAP
+		plurality = 20
+		has_country_flag = monarchy_government
+        war = no
         OR = {
 			ruling_party_ideology = radical
 			ruling_party_ideology = communist
@@ -4182,15 +4180,6 @@ country_event = {
 		OR = {
 			anti_military = 10
 			pacifism = 10
-		}
-		plurality = 20
-		OR = {
-			government = absolute_empire
-			government = semi_constitutional_empire
-			government = constitutional_empire
-			government = absolute_monarchy
-			government = prussian_constitutionalism
-			government = hms_government
 		}
     }
 
@@ -4286,12 +4275,9 @@ country_event = {
     picture = "asian_administration"
 
     trigger = {
-		OR = {
-			tag = JAP
-			tag = TKG
-		}
-        war = no
         has_country_modifier = no_line_of_advantage
+		tag = JAP
+        war = no
         OR = {
 			ruling_party_ideology = conservative
 			ruling_party_ideology = reactionary
@@ -4335,8 +4321,6 @@ country_event = {
     picture = "warlords"
 
     trigger = {
-        war = no
-        is_disarmed = no
         has_global_flag = warlord_era_has_begun
         has_country_modifier = line_of_advantage
         OR = {
@@ -4359,6 +4343,8 @@ country_event = {
                 NOT = { brigades_compare = 3 }
             }
         }
+        war = no
+        is_disarmed = no
         NOT = {
             badboy = 0.8
             num_of_revolts = 1
@@ -4582,17 +4568,18 @@ country_event = {
 
     trigger = {
         has_country_modifier = line_of_advantage
-        is_disarmed = no
-        war = no
         KOR = {
-            exists = yes
-            is_vassal = no
-            war = no
             OR = {
                 civilized = yes
                 has_country_flag = tonghak_rebellion_happened
             }
+			is_greater_power = no
+            exists = yes
+            is_vassal = no
+            war = no
         }
+        is_disarmed = no
+        war = no
         NOT = {
             has_country_flag = korea_line_of_advantage
             badboy = 0.8
@@ -4667,13 +4654,7 @@ country_event = {
             type = make_puppet_no_add_wargoal
             months = 240
         }
-        random_country = {
-            limit = {
-                tag = KOR
-                THIS = { ai = yes }
-            }
-            country_event = 97676
-        }
+		KOR = { country_event = 97676 }
         ai_chance = {
             factor = 100
         }
@@ -4704,12 +4685,10 @@ country_event = { ##rework
     picture = "ship_attacked"
 
     trigger = {
-		OR = {
-			tag = JAP
-			tag = TKG
-		}
-        is_greater_power = yes
+        year = 1874
         has_country_modifier = line_of_advantage
+		tag = JAP
+        is_greater_power = yes
         is_disarmed = no
         war = no
 		OR = {
@@ -4737,7 +4716,6 @@ country_event = { ##rework
                 }
             }
         }
-        year = 1874
         NOT = {
             has_country_flag = taiwan_line_of_advantage
             badboy = 0.8
@@ -4822,7 +4800,7 @@ country_event = {
             factor = 10
             modifier = {
                 factor = 1.5
-                is_secondary_power = yes
+                rank = 16
             }
             modifier = {
                 factor = 0.1
@@ -4881,14 +4859,13 @@ country_event = {
                 factor = 2
                 FROM = {
                     is_greater_power = no
-                    is_secondary_power = yes
+                    rank = 16
                 }
             }
             modifier = {
                 factor = 3
                 FROM = {
-                    is_greater_power = no
-                    is_secondary_power = no
+                    NOT = { rank = 16 }
                 }
             }
         }
@@ -4903,11 +4880,12 @@ country_event = {
 
     trigger = {
         tag = JAP
-        crisis_exist = no
         has_country_modifier = line_of_advantage
+        owns = 1644
         is_greater_power = yes
-        is_disarmed = no
+        crisis_exist = no
         war = no
+        is_disarmed = no
         nationalism_n_imperialism = 1
         1086 = { #Pogobi
             owner = {
@@ -4916,7 +4894,6 @@ country_event = {
                 NOT = { alliance_with = THIS }
             }
         }
-        owns = 1644
         OR = {
             NOT = { any_greater_power = { alliance_with = RUS } }
             any_greater_power = { alliance_with = THIS }
@@ -5021,7 +4998,7 @@ country_event = {
             }
             modifier = {
                 factor = 5
-                is_secondary_power = no
+                NOT = { rank = 16 }
             }
             modifier = {
                 factor = 5
@@ -5123,35 +5100,31 @@ country_event = {
 }
 
 country_event = {
-	id = 21146 #The Otsu Incident, JAP
+	id = 21146 #The Otsu Incident, Imperial
 	title = "EVTNAME21146"
 	desc = "EVTDESC21146"
 	picture = "otsu_incident"
+	fire_only_once = yes
 
 	trigger = {
-		OR = {
-			tag = JAP
-			tag = TKG
-		}
-		RUS = {
-			OR = {
-				government = hms_government
-                government = prussian_constitutionalism
-                government = absolute_monarchy
-                government = absolute_empire
-                government = semi_constitutional_empire
-                government = constitutional_empire
-			}
-			OR = {
-				owns = 1086
-				owns = 1088
-			}
-		}
 		year = 1891
+		month = 5
+		tag = JAP #Empire
+		NOT = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
 		civilized = yes
+		RUS = {
+			has_country_flag = monarchy_government
+			relation = { who = THIS value = 0 }
+		}
 		NOT = { has_country_flag = otsu_incident }
-		NOT = { war_with = RUS }
+		NOT = { truce_with = RUS vassal_of = RUS }
 	}
+
+	mean_time_to_happen = { days = 1 }
 
 	option = {
 		name = "EVT21146OPTA"
@@ -5173,56 +5146,34 @@ country_event = {
 		}
 		set_country_flag = otsu_incident
 	}
-
-	mean_time_to_happen = {
-		months = 3
-		modifier = {
-			relation = { who = RUS value = 100 }
-			factor = 2
-		}
-		modifier = {
-			relation = { who = RUS value = 150 }
-			factor = 3
-		}
-		modifier = {
-			has_country_flag = sakhalin_line_of_advantage
-			factor = 0.5
-		}
-	}
 }
 
 country_event = {
-	id = 21147 #The Otsu Incident, TKG
+	id = 21147 #The Otsu Incident, Tokugawa
 	title = "EVTNAME21147"
 	desc = "EVTDESC21147"
 	picture = "otsu_incident"
+	fire_only_once = yes
 
 	trigger = {
-		tag = TKG
-		RUS = {
-			OR = {
-				government = hms_government
-                government = prussian_constitutionalism
-                government = absolute_monarchy
-                government = absolute_empire
-                government = semi_constitutional_empire
-                government = constitutional_empire
-			}
-			OR = {
-				owns = 1086
-				owns = 1088
-			}
-			has_country_flag = build_the_tsr
-			relation = { who = THIS value = 0 }
-			NOT = { relation = { who = THIS value = 200 } }
-		}
 		year = 1891
+		month = 5
+		tag = JAP
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
 		civilized = yes
-		is_disarmed = no
-		has_country_flag = has_line_of_advantage
+		RUS = {
+			has_country_flag = monarchy_government
+			relation = { who = THIS value = 0 }
+		}
 		NOT = { has_country_flag = otsu_incident }
-		NOT = { war_with = RUS }
+		NOT = { truce_with = RUS vassal_of = RUS }
 	}
+
+	mean_time_to_happen = { days = 1 }
 
 	option = {
 		name = "EVT21147OPTA"
@@ -5244,22 +5195,6 @@ country_event = {
 		}
 		set_country_flag = otsu_incident
 	}
-
-	mean_time_to_happen = {
-		months = 3
-			modifier = {
-			relation = { who = RUS value = 100 }
-			factor = 2
-		}
-		modifier = {
-			relation = { who = RUS value = 150 }
-			factor = 3
-		}
-		modifier = {
-			has_country_flag = sakhalin_line_of_advantage
-			factor = 0.5
-		}
-	}
 }
 
 country_event = {
@@ -5267,7 +5202,6 @@ country_event = {
 	title = "EVTNAME21148"
 	desc = "EVTDESC21148"
 	picture = "otsu_incident"
-
 	is_triggered_only = yes
 
 	option = {
@@ -5276,7 +5210,7 @@ country_event = {
 			consciousness = 0.6
 			militancy = 0.3
 		}
-		ai_chance = { factor = 75 }
+		ai_chance = { factor = 1 }
 	}
 
 	option = {
@@ -5284,7 +5218,10 @@ country_event = {
 		war = {
 			target = FROM
 			attacker_goal = {
-				casus_belli = cut_down_to_size
+				casus_belli = cut_down_to_size_no_add_wargoal_2
+			}
+			defender_goal = {
+				casus_belli = cut_down_to_size_no_add_wargoal_2
 			}
 		}
 		any_pop = {
@@ -5294,7 +5231,7 @@ country_event = {
 				value = jingoism
 			}
 		}
-		ai_chance = { factor = 25 }
+		ai_chance = { factor = 0 }
 	}
 }
 
@@ -5303,12 +5240,11 @@ country_event = {
     title = "EVTNAME97682" #The Ezo Republic
     desc = "EVTDESC97682"
     picture = "ezo_republic"
-
     fire_only_once = yes
 
     trigger = {
-        tag = JAP
         has_global_flag = boshin_war_has_happened
+        tag = JAP
         civilized = yes
         NOT = { has_country_flag = peaceful_transition_to_japan }
         EZO = {
@@ -5342,29 +5278,32 @@ country_event = {
     }
     option = {
         name = "EVT97683OPTB" #Set them completely free and play as them
-            EZO = { all_core = { remove_core = JAP remove_core = TKG } }
-            all_core = { limit = { state_id = 1086 } remove_core = TKG remove_core = JAP add_core = EZO }
-            any_owned = { limit = { is_core = EZO } secede_province = EZO }
-            relation = { who = EZO value = 400 }
-            diplomatic_influence = { who = EZO value = 400 }
-            change_tag_no_core_switch = EZO
+		EZO = { all_core = { remove_core = JAP } }
+		all_core = { limit = { state_id = 1086 } remove_core = JAP add_core = EZO }
+		any_owned = { limit = { is_core = EZO } secede_province = EZO }
+		relation = { who = EZO value = 400 }
+		diplomatic_influence = { who = EZO value = 400 }
+		change_tag_no_core_switch = EZO
         ai_chance = { factor = 0 }
-        }
-    }
+	}
+}
 
 country_event = {
     id = 97683
     title = "EVTNAME97683" #The Ezo Republic - Cores
     desc = "EVTDESC97683"
     picture = "ezo_request"
-
     fire_only_once = yes
 
     trigger = {
-        tag = JAP
-        owns = 1642
-        TKG = { exists = no }
         has_global_flag = boshin_war_has_happened
+        tag = JAP #Empire
+		OR = {
+			government = absolute_empire
+			government = semi_constitutional_empire
+			government = constitutional_empire
+		}
+        owns = 1642
         civilized = yes
         NOT = { has_country_flag = peaceful_transition_to_japan }
         EZO = {
@@ -5391,7 +5330,7 @@ country_event = {
             government = democracy
             political_reform = population_equal_weight
             political_reform = wealth_voting
-            political_reform = yes_meeting
+            political_reform = restricted_meeting
             political_reform = censored_press
             political_reform = no_trade_unions
             political_reform = non_secret_ballots
@@ -5417,23 +5356,20 @@ country_event = {
     title = "EVTNAME97684" #The Ezo Republic - Remove Cores
     desc = "EVTDESC97684"
     picture = "ezo_end"
-
     fire_only_once = yes
 
     trigger = {
-        OR = {
-            tag = JAP
-            tag = TKG
-            }
-        owns = 1642
         has_global_flag = boshin_war_has_happened
+        owns = 1642
+        tag = JAP
         civilized = yes
         NOT = { has_country_flag = peaceful_transition_to_japan }
         EZO = {
             is_core = 1642
             exists = no
-            }
         }
+		has_country_flag = ezo_republic
+    }
 
     mean_time_to_happen = { days = 5 }
 
@@ -5443,72 +5379,29 @@ country_event = {
     }
 }
 
-#The Death of Komei
+# The Death of Emperor Meiji
 country_event = {
-    id = 69002
-    title = "EVTNAME97630" #The Death of Emperor Komei
-    desc = "EVTDESC97630"
-    news = yes
-    news_desc_long = "EVTDESC97630_NEWS_LONG"
-    news_desc_medium = "EVTDESC97630_NEWS_MEDIUM"
-    news_desc_short = "EVTDESC97630_NEWS_SHORT"
-    picture = "emperor_funeral"
+	id = 2211335
+	title = "MEIJIDEATH"
+	desc = "MEIJIDEATH2"
+	picture = "emperor_funeral"
+	major = yes
+	fire_only_once = yes
 
-    trigger = {
-        tag = JAP
-        TKG = { exists = no }
-        year = 1860
-        OR = {
-            government = hms_government
-            government = prussian_constitutionalism
-            government = absolute_monarchy
-            government = absolute_empire
-            government = semi_constitutional_empire
-            government = constitutional_empire
-        }
-        OR = {
-            has_country_modifier = kobu_gattai
-            has_country_flag = sakuradamon_incident
-            has_global_flag = order_to_expel_barbarians
-            JAP = { is_vassal = no }
-            KAG = { is_vassal = no }
-            YZW = { is_vassal = no }
-            SEN = { is_vassal = no }
-            CHO = { is_vassal = no }
-            TOS = { is_vassal = no }
-			SOC = { is_vassal = no }
-            SAT = { is_vassal = no }
-        }
-        NOT = { has_country_flag = emperor_meiji }
-        NOT = { has_global_flag = boshin_war }
-        NOT = { has_global_flag = boshin_war_has_happened }
-    }
+	trigger = {
+		year = 1912
+		tag = JAP
+		has_global_flag = emperor_meiji
+		month = 7
+        has_country_flag = monarchy_government
+	}
 
-    mean_time_to_happen = {
-        months = 12
-        modifier = {
-            factor = 0.5
-            year = 1864
-        }
-        modifier = {
-            factor = 0.1
-            year = 1868
-        }
-    }
+	mean_time_to_happen = { days = 1 }
 
-    option = {
-        name = "EVT97630OPTA"
-        set_country_flag = emperor_meiji
-        remove_country_modifier = kobu_gattai
-        TKG = { all_core = { add_core = JAP } }
-		SOC = { all_core = { add_core = JAP } }
-        SAT = { all_core = { add_core = JAP } }
-        CHO = { all_core = { add_core = JAP } }
-        SEN = { all_core = { add_core = JAP } }
-        YZW = { all_core = { add_core = JAP } }
-        TOS = { all_core = { add_core = JAP } }
-        KAG = { all_core = { add_core = JAP } }
-    }
+	option = {
+		name = "The rising sun of a new Japan has set."
+		clr_global_flag = emperor_meiji
+	}
 }
 
 country_event = {
@@ -5551,28 +5444,24 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
+		has_country_modifier = resistance_to_new_regime
+		tag = JAP
 		civilized = yes
 		OR = {
-			tag = TKG
-			tag = JAP
-		}
-		OR = {
+			has_country_flag = boshin_war_has_happened
 			AND = {
-				tag = TKG
+				OR = {
+					government = absolute_monarchy
+					government = prussian_constitutionalism
+					government = hms_government
+				}
 				has_country_flag = daimyos_united
 			}
-			AND = {
-				tag = JAP
-				has_country_flag = boshin_war_has_happened
-			}
-			AND = {
-				tag = TKG
-				has_country_flag = boshin_war_has_happened
-			}
 		}
-		has_country_modifier = resistance_to_new_regime
 		NOT = { has_country_flag = new_regime_accepted }
 	}
+
+	mean_time_to_happen = { months = 4 }
 
 	option = {
 		name = "EVT7749112OPTA"
@@ -5586,8 +5475,6 @@ country_event = {
         }
 		prestige = -2
 	}
-
-	mean_time_to_happen = { months = 4 }
 }
 
 country_event = {
@@ -5595,31 +5482,27 @@ country_event = {
 	title = "EVTNAME7749113"
 	desc = "EVTDESC7749113"
 	picture = "meiji_coronation"
-
+	fire_only_once = yes
 
 	trigger = {
+		tag = JAP
 		civilized = yes
-			OR = {
-				tag = TKG
-				tag = JAP
+		OR = {
+			has_country_flag = boshin_war_has_happened
+			AND = {
+				OR = {
+					government = absolute_monarchy
+					government = prussian_constitutionalism
+					government = hms_government
+				}
+				has_country_flag = daimyos_united
 			}
-			OR = {
-				AND = {
-					tag = TKG
-					has_country_flag = daimyos_united
-				}
-				AND = {
-					tag = JAP
-					has_country_flag = boshin_war_has_happened
-				}
-				AND = {
-					tag = TKG
-					has_country_flag = boshin_war_has_happened
-				}
-			}
+		}
 		NOT = { has_country_flag = new_regime_accepted }
 		NOT = { has_country_modifier = resistance_to_new_regime }
 	}
+
+	mean_time_to_happen = { days = 1 }
 
 	option = {
 		name = "EVT7749113OPTA"
@@ -5630,8 +5513,6 @@ country_event = {
 			consciousness = -2
 		}
 	}
-
-	mean_time_to_happen = { days = 1 }
 }
 
 country_event = {
@@ -5641,7 +5522,7 @@ country_event = {
 	picture = "kizoku_in"
 
 	trigger = {
-		tag = TKG
+		tag = JAP #Tokugawa
 		OR = {
 			government = prussian_constitutionalism
 			government = hms_government
@@ -5650,6 +5531,14 @@ country_event = {
 		NOT = { has_country_modifier = rights_suspended }
 		NOT = { has_country_flag = first_rojuin_session }
 		NOT = { ruling_party_ideology = liberal }
+	}
+
+	mean_time_to_happen = {
+		days = 20
+		modifier = {
+			factor = 0.5
+			election = yes
+		}
 	}
 
 	immediate = { set_country_flag = first_rojuin_session }
@@ -5714,14 +5603,6 @@ country_event = {
 			}
 		}
 	}
-
-	mean_time_to_happen = {
-		days = 20
-		modifier = {
-			factor = 0.5
-			election = yes
-		}
-	}
 }
 
 
@@ -5730,14 +5611,20 @@ country_event = {
 	title = "EVTNAME7749116"
 	desc = "EVTDESC7749116"
 	picture = "kirisute_gomen"
-
 	fire_only_once = yes
 
 	trigger = {
-		tag = TKG
-		civilized = yes
+		tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
 		has_country_flag = daimyos_united
+		civilized = yes
 	}
+
+	mean_time_to_happen = { months = 14 }
 
 	option = {
 		name = "The samurai was well within his rights."
@@ -5772,8 +5659,6 @@ country_event = {
 			}
 		}
 	}
-
-	mean_time_to_happen = { months = 14 }
 }
 
 country_event = {
@@ -5783,6 +5668,7 @@ country_event = {
 	picture = "japonisme"
 
 	fire_only_once = yes
+	mean_time_to_happen = { months = 1 }
 
 	trigger = {
 		primary_culture = japanese
@@ -5810,8 +5696,6 @@ country_event = {
 			relation = { who = THIS value = 30 }
 		}
 	}
-
-	mean_time_to_happen = { months = 1 }
 }
 
 country_event = {
@@ -5822,16 +5706,17 @@ country_event = {
 	major = yes
 
 	fire_only_once = yes
+	mean_time_to_happen = { months = 1 }
 
 	trigger = {
-		tag = TKG
-		civilized = yes
 		year = 1870
+		tag = JAP #Tokugawa
 		OR = {
-			government = prussian_constitutionalism
 			government = absolute_monarchy
+			government = prussian_constitutionalism
 			government = hms_government
 		}
+		civilized = yes
 		OR = {
 			AND = {
 				upper_house = {
@@ -5866,8 +5751,6 @@ country_event = {
 			}
 		}
 	}
-
-	mean_time_to_happen = { months = 1 }
 }
 
 
@@ -5879,15 +5762,17 @@ country_event = {
 	major = yes
 
 	fire_only_once = yes
+	mean_time_to_happen = { months = 1 }
 
 	trigger = {
-		tag = TKG
-		civilized = yes
+		tag = JAP #Tokugawa
 		OR = {
-			government = prussian_constitutionalism
 			government = absolute_monarchy
+			government = prussian_constitutionalism
 			government = hms_government
 		}
+		has_country_flag = shinsengumi_revolt_warning
+		civilized = yes
 		OR = {
 			AND = {
 				upper_house = {
@@ -5906,7 +5791,6 @@ country_event = {
 			ruling_party_ideology = communist
 		}
 		any_pop = { agree_with_ruling_party = 0.40 }
-		has_country_flag = shinsengumi_revolt_warning
 	}
 
 	option = {
@@ -5930,8 +5814,6 @@ country_event = {
 		}
 		set_country_flag = shinsengumi_coup
 	}
-
-	mean_time_to_happen = { months = 1 }
 }
 
 country_event = {
@@ -5939,14 +5821,20 @@ country_event = {
 	title = "EVTNAME756227"
 	desc = "EVTDESC756227"
 	picture = "shinsengumi_troops"
-
 	fire_only_once = yes
 
 	trigger = {
-		tag = TKG
+		tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
 		war_with = EZO
 		has_country_flag = shinsengumi_coup
 	}
+
+	mean_time_to_happen = { days = 1 }
 
 	option = {
 		name = "Let's put an end to the militancy against the government."
@@ -5975,8 +5863,6 @@ country_event = {
 		name = "Traitors have only one certain fate: absolute defeat."
 		war_exhaustion = 5
 	}
-
-	mean_time_to_happen = { days = 1 }
 }
 
 country_event = {
@@ -5986,12 +5872,19 @@ country_event = {
 	picture = "shinsengumi_troops"
 
 	trigger = {
-		tag = TKG
-		NOT = { war_with = EZO }
+		tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
 		has_country_flag = shinsengumi_coup
+		NOT = { war_with = EZO }
 		NOT = { has_country_flag = shinsengumi_coup_ended }
 		NOT = { has_global_flag = boshin_war }
 	}
+
+	mean_time_to_happen = { days = 5 }
 
 	option = {
 		name = "Good riddance."
@@ -6023,8 +5916,6 @@ country_event = {
 			}
 		}
 	}
-
-	mean_time_to_happen = { days = 5 }
 }
 
 country_event = {
@@ -6034,11 +5925,17 @@ country_event = {
 	picture = "meiji_tenno"
 
 	fire_only_once = yes
+	mean_time_to_happen = { months = 10 }
 
 	trigger = {
-		tag = TKG
-		JAP = { exists = no }
+		tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
 		has_country_flag = shinsengumi_coup_ended
+		JAP = { exists = no }
 		NOT = { government = absolute_empire }
 		NOT = { ruling_party_ideology = reactionary }
 		NOT = { has_country_flag = ceremonial_emperor }
@@ -6048,23 +5945,21 @@ country_event = {
 
 	option = {
 		name = "The best we can do for him is keep him as Speaker."
-		country_event = { id = 756254 days = 0 }
+		country_event = 756254
 		set_country_flag = emperor_status_quo
 	}
 
 	option = {
 		name = "Perhaps we should elevate him to consul."
-		country_event = { id = 756255 days = 0 }
+		country_event = 756255
 		set_country_flag = emperor_appointed_consul
 	}
 
 	option = {
 		name = "He is too much of a nuisance. He'd best be relegated to a ceremonial role again."
-		country_event = { id = 756256 days = 0 }
+		country_event = 756256
 		set_country_flag = ceremonial_emperor
 	}
-
-	mean_time_to_happen = { months = 10 }
 }
 
 country_event = {
@@ -6140,8 +6035,15 @@ country_event = {
 	desc = "EVTDESC756257"
 	picture = "japanese_army"
 
+	mean_time_to_happen = { months = 2 }
+
 	trigger = {
-		tag = TKG
+		tag = JAP #Tokugawa
+		OR = {
+			government = absolute_monarchy
+			government = prussian_constitutionalism
+			government = hms_government
+		}
 		civilized = yes
 		has_country_modifier = bushiguntai_enacted
 		NOT = { has_country_flag = new_imperialists_embraced }
@@ -6185,8 +6087,6 @@ country_event = {
 			}
 		}
 	}
-
-	mean_time_to_happen = { months = 2 }
 }
 
 country_event = {
@@ -6197,18 +6097,28 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		OR = {
-			tag = TKG
-			tag = JAP
-		}
-		OR = {
-			is_secondary_power = yes
-			is_greater_power = yes
-		}
 		year = 1870
+		tag = JAP
+		rank = 16
 		NOT = {
 			ruling_party_ideology = communist
 			ruling_party_ideology = socialist
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 12
+		modifier = {
+			factor = 0.7
+			ruling_party_ideology = liberal
+		}
+		modifier = {
+			factor = 1.2
+			ruling_party_ideology = conservative
+		}
+		modifier = {
+			factor = 2
+			ruling_party_ideology = reactionary
 		}
 	}
 
@@ -6237,10 +6147,6 @@ country_event = {
 			}
 		}
 	}
-
-	mean_time_to_happen = {
-		months = 1
-	}
 }
 
 country_event = {
@@ -6251,16 +6157,10 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		OR = {
-			tag = TKG
-			tag = JAP
-		}
-		OR = {
-			is_secondary_power = yes
-			is_greater_power = yes
-		}
-		owns = 2681
 		year = 1915
+		owns = 2681
+		tag = JAP
+		rank = 16
 		month = 3
 	}
 
@@ -6282,25 +6182,24 @@ country_event = {
 	trigger = {
 		OR = {
 			AND = {
-				tag = TKG
-				JAP = { exists = yes }
-				NOT = { has_global_flag = boshin_war }
-				NOT = { has_global_flag = boshin_war_has_happened }
-				OR = {
-					has_country_flag = consulted_fudai
-					has_country_flag = consulted_tozama
-				}
+				year = 1862
+				tag = JAP
+			}
+			AND = {
+				NOT = { tag = JAP }
+				primary_culture = japanese
 			}
 			AND = {
 				tag = JAP
-				TKG = { exists = no }
-				has_global_flag = boshin_war
-				has_global_flag = boshin_war_has_happened
+				NOT = { government = absolute_monarchy }
+				NOT = { government = prussian_constitutionalism }
+				NOT = { government = hms_government }
 			}
 		}
-		year = 1862
 		owns = 1649
 	}
+
+	mean_time_to_happen = { months = 7 }
 
 	option = {
 		name = "These men are free to live their lives as they please."
@@ -6308,7 +6207,6 @@ country_event = {
 			aristocrats = { reduce_pop = 0.5 }
 		}
 	}
-	mean_time_to_happen = { months = 7 }
 }
 
 country_event = { 
@@ -6319,18 +6217,24 @@ country_event = {
 	fire_only_once = yes 
 
 	trigger = {
-		tag = JAP
-		is_vassal = no
-		war = no
+		year = 1873
+		NOT = { year = 1876 }
+		tag = JAP #Empire
+		OR = {
+			government = absolute_empire
+			government = semi_constitutional_empire
+			government = constitutional_empire
+		}
 		civilized = yes 
 		all_core = { owned_by = THIS } 
-		year = 1873
+		is_vassal = no
+		is_disarmed = no
+		war = no
 		OR = {
 			QNG = { is_our_vassal = KOR }
 			TPG = { is_our_vassal = KOR }
 		}
 		NOT = {
-			exists = TKG
 			KOR = {
 				any_core = { owned_by = THIS } 
 			}
@@ -6341,7 +6245,7 @@ country_event = {
 		}
 	}
 
-	mean_time_to_happen = { months = 3 } 
+	mean_time_to_happen = { months = 1 } 
 
 	immediate = { 
 		relation = { who = KOR value = -20 } 
@@ -6350,18 +6254,44 @@ country_event = {
 	option = { 
 		name = "We can certainly mete out punishment for the Koreans."
 		KOR = { country_event = 60205626 }
+		# Audax Validator "." Ignore_NEXT
 		scaled_consciousness = {
 			issue = jingoism
 			factor = -4
+		}
+		scaled_consciousness = {
+			issue = pro_military
+			factor = -1
+		}
+		scaled_consciousness = {
+			issue = anti_military
+			factor = 1
+		}
+		scaled_consciousness = {
+			issue = pacifism
+			factor = 4
 		}
 		ai_chance = { factor = 0 } 
 	}
 
 	option = { 
 		name = "These nobles need to get over themselves."
+		# Audax Validator "." Ignore_NEXT
 		scaled_consciousness = {
 			issue = jingoism
 			factor = 4
+		}
+		scaled_consciousness = {
+			issue = pro_military
+			factor = 1
+		}
+		scaled_consciousness = {
+			issue = anti_military
+			factor = -1
+		}
+		scaled_consciousness = {
+			issue = pacifism
+			factor = -4
 		}
 		ai_chance = { factor = 1 } 
 	}
@@ -6378,45 +6308,12 @@ country_event = {
 	option = { 
 		name = "The honor of our King must be defended. Let them do their worst!"
 		FROM = { 
+			casus_belli = { target = THIS type = treaty_port_casus_belli months = 36 }
 			war = { 
 				target = THIS 
-				attacker_goal = { casus_belli = treaty_port_casus_belli_no_infamy } 
+				attacker_goal = { casus_belli = treaty_port_casus_belli } 
 				defender_goal = { casus_belli = status_quo } 
 			}
 		}
 	}
-}
-
-country_event = { 
-	id = 60205627 
-	title = "Tondenhei" 
-	desc = "TONDENHEI" 
-	picture = "tondenhei"
-	
-	trigger = { 
-		primary_culture = japanese 
-		owns = 1642
-		owns = 1643
-		owns = 1644
-		has_country_flag = establish_the_kaitakushi 
-	}
-
-	option = { 
-		name = "Soldiers are the best settlers: they guard their land fiercely."
-		random_pop = { 
-			limit = {
-				type = soldiers 
-				location = { is_core = THIS } 
-				NOT = { 
-					location = { province_id = 1642 } 
-					location = { province_id = 1643 } 
-					location = { province_id = 1644 } 
-				}
-			}
-			move_pop = 1643
-		}
-	}
-		
-	mean_time_to_happen = { years = 4 } 
-
 }

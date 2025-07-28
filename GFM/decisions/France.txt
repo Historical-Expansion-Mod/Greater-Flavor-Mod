@@ -1,13 +1,97 @@
 political_decisions = {
+	french_intervention_in_mexico = {
+		picture = invade_mexico_as_france
+		potential = {
+			has_global_flag = conservatives_lost_reform_war
+			tag = FRA
+			has_country_flag = 2nd_empire
+			has_country_modifier = louis_napoleon_iii
+			NOT = { MEX = { is_greater_power = yes } }
+			NOT = { has_global_flag = french_intervention_in_mexico }
+			exists = MEX
+			exists = USA
+		}
+
+		allow = {
+			exists = CSA
+			war = no
+			is_vassal = no
+			is_greater_power = yes
+			NOT = { war_with = MEX truce_with = MEX is_sphere_leader_of = MEX alliance_with = MEX }
+		}
+
+		effect = {
+			any_country = {
+				limit = {
+					OR = {
+						tag = ENG
+						tag = SPA
+						tag = SPC
+					}
+					NOT = {
+						war_with = MEX
+						truce_with = MEX
+						alliance_with = MEX
+						is_sphere_leader_of = MEX
+					}
+					exists = yes
+				}
+				country_event = 111012
+			}
+			set_global_flag = french_intervention_in_mexico
+			country_event = { id = 111015 days = 7 }
+			random_country = {
+				limit = {
+					OR = {
+						tag = AUS
+						tag = AUB
+						tag = DNB
+					}
+					exists = yes
+				}
+				relation = { who = THIS value = 75 }
+			}
+		}
+	}
+
+	install_max = {
+		picture = emperor_max
+		potential = {
+			has_global_flag = conservatives_lost_reform_war
+			tag = FRA
+			has_country_flag = 2nd_empire
+			has_country_modifier = louis_napoleon_iii
+			has_country_flag = installing_max
+			has_global_flag = french_intervention_in_mexico
+			exists = MEX
+			OR = {
+				exists = MEE
+				NOT = { has_global_flag = max_dead }
+			}
+			MEX = { has_country_modifier = recently_lost_war truce_with = THIS }
+		}
+
+		allow = {
+			is_greater_power = yes
+			war = no
+			is_vassal = no
+			NOT = { war_with = MEX }
+		}
+
+		effect = {
+			clr_country_flag = installing_max
+			MEX = { annex_to = MEE }
+			prestige = 25
+			create_vassal = MEE
+		}
+	}
+
     liberty_enlightening_the_world = {
         potential = {
-            NOT = {
-                has_global_flag = statue_of_liberty_has_been_built
-                has_global_flag = treaty_of_new_york
-            }
+            year = 1850
+            capital = 425
             primary_culture = french
             is_greater_power = yes
-            capital = 425
 			USA = {
 				exists = yes
 				government = democracy
@@ -18,7 +102,10 @@ political_decisions = {
                 government = hms_government
                 government = democracy
             }
-            year = 1850
+            NOT = {
+                has_global_flag = statue_of_liberty_has_been_built
+                has_global_flag = treaty_of_new_york
+            }
         }
 
         allow = {
@@ -49,10 +136,10 @@ political_decisions = {
     support_french_foreign_legion = {
 		picture = support_french_foreign_legion
         potential = {
+            owns = 1700
+            capital = 425
             primary_culture = french
             is_greater_power = yes
-            capital = 425
-            owns = 1700
             NOT = { has_country_modifier = the_french_foreign_legion }
         }
         allow = {
@@ -72,17 +159,27 @@ political_decisions = {
     french_military_mission_to_japan = {
         picture = french_military_exp_japan
         potential = {
+            capital = 425
             primary_culture = french
             is_greater_power = yes
-            capital = 425
-            exists = TKG
-            TKG = { civilized = no }
+            JAP = {
+				capital = 1649
+				civilized = no
+				exists = yes
+				OR = {
+					government = absolute_monarchy
+					government = prussian_constitutionalism
+					government = hms_government
+				}
+			}
             NOT = { has_country_flag = military_mission_in_japan }
 			NOT = {
-				TKG = {
+				JAP = {
 					foreign_training = yes_foreign_training
 					foreign_officers = yes_foreign_officers
 					foreign_naval_officers = yes_foreign_naval_officers
+					foreign_weapons = yes_foreign_weapons
+					foreign_artillery = yes_foreign_artillery
 				}
 			}
         }
@@ -92,29 +189,26 @@ political_decisions = {
             NOT = {
 				war_with = JAP
 				truce_with = JAP
-				war_with = TKG
-				truce_with = TKG
 			}
-			TKG = { civilization_progress = 0.7 }
+			JAP = { civilization_progress = 0.5 }
         }
 
         effect = {
             prestige = 5
             any_country = {
                 limit = {
-					tag = TKG
+					tag = JAP
                     exists = yes
 					NOT = {
 						foreign_training = yes_foreign_training
 					}
                 }
-                relation = { who = THIS value = 50 }
-                military_reform = yes_foreign_training
 				set_country_flag = only_one_tech_for_you_tkg
+                military_reform = yes_foreign_training
             }
             any_country = {
                 limit = {
-					tag = TKG
+					tag = JAP
                     exists = yes
 					NOT = {
 						foreign_officers = yes_foreign_officers
@@ -122,23 +216,53 @@ political_decisions = {
 					}
                 }
 				set_country_flag = only_one_tech_for_you_tkg
-                relation = { who = THIS value = 50 }
                 military_reform = yes_foreign_officers
+                activate_technology = military_staff_system
             }
             any_country = {
                 limit = {
-					tag = TKG
+					tag = JAP
                     exists = yes
 					NOT = {
 						foreign_naval_officers = yes_foreign_naval_officers
 						has_country_flag = only_one_tech_for_you_tkg
 					}
                 }
-                relation = { who = THIS value = 50 }
+				set_country_flag = only_one_tech_for_you_tkg
                 military_reform = yes_foreign_naval_officers
+            }
+            any_country = {
+                limit = {
+					tag = JAP
+                    exists = yes
+					NOT = {
+						foreign_weapons = yes_foreign_weapons
+						has_country_flag = only_one_tech_for_you_tkg
+					}
+                }
+				set_country_flag = only_one_tech_for_you_tkg
+                military_reform = yes_foreign_weapons
+				activate_technology = flintlock_rifles
+				set_country_flag = using_foreign_weapons
+            }
+            any_country = {
+                limit = {
+					tag = JAP
+                    exists = yes
+					NOT = {
+						foreign_artillery = yes_foreign_artillery
+						has_country_flag = only_one_tech_for_you_tkg
+					}
+                }
+				set_country_flag = only_one_tech_for_you_tkg
+                military_reform = yes_foreign_artillery
+				activate_technology = bronze_muzzle_loaded_artillery
+				set_country_flag = using_foreign_artillery
             }
             FRA = { set_country_flag = military_mission_in_japan }
             BOR = { set_country_flag = military_mission_in_japan }
+			relation = { who = JAP value = 50 }
+			diplomatic_influence = { who = JAP value = 50 }
         }
         ai_will_do = { factor = 1 }
     }
@@ -146,16 +270,15 @@ political_decisions = {
     the_rhine_crisis = {
         picture = adolphe_thiers
         potential = {
-            primary_culture = french
-			NOT = { accepted_culture = greek }
-			NOT = { tag = BOR }
-            is_greater_power = yes
-            capital = 425
-            exists = PRU
             PRU = {
                 owns = 572
                 owns = 575
             }
+            primary_culture = french
+            is_greater_power = yes
+			NOT = { accepted_culture = greek }
+			NOT = { tag = BOR }
+			NOT = { tag = BOE }
             NOT = {
                 has_country_flag = crisis_on_the_rhine
             }
@@ -210,9 +333,13 @@ political_decisions = {
     build_the_eiffel_tower = {
         picture = build_the_eiffel_tower
         potential = {
+            capital = 425
             primary_culture = french
             is_greater_power = yes
-            capital = 425
+            OR = {
+                has_country_flag = world_fair_planner
+                year = 1887
+            }
             NOT = {
                 has_global_flag = the_eiffel_tower_was_built
 				has_global_flag = catalan_tower
@@ -223,19 +350,15 @@ political_decisions = {
 				IBR = { has_country_modifier = eiffel_torre_construction }
 				CAT = { has_country_modifier = eiffel_torre_construction }
 			}
-            OR = {
-                has_country_flag = world_fair_planner
-                year = 1887
-            }
         }
 
         allow = {
-            war = no
             regenerative_furnaces = 1
             OR = {
                 money = 30000
                 ai = yes
             }
+            war = no
         }
 
         effect = {
@@ -249,15 +372,15 @@ political_decisions = {
     haussmanns_renovations = {
         picture = haussmanns_renovations
         potential = {
+            year = 1852
+            capital = 425
             primary_culture = french
             is_greater_power = yes
-            capital = 425
-            NOT = { has_country_flag = extreme_home_makeover }
             OR = {
                 realism = 1
                 early_railroad = 1
             }
-            year = 1852
+            NOT = { has_global_flag = extreme_home_makeover }
         }
 
         allow = {
@@ -281,8 +404,7 @@ political_decisions = {
             }
             425 = { life_rating = 5 add_province_modifier = { name = haussmanns_renovations duration = -1 } }
             prestige = 10
-            FRA = { set_country_flag = extreme_home_makeover }
-            BOR = { set_country_flag = extreme_home_makeover }
+            set_global_flag = extreme_home_makeover
         }
         ai_will_do = { factor = 1 }
     }
@@ -290,12 +412,11 @@ political_decisions = {
     annex_mayotte = {
         picture = annex_mayotte
         potential = {
+            capital = 425
             primary_culture = french
             is_greater_power = yes
-            capital = 425
+			CMS = { exists = yes ai = yes }
             2123 = { empty = yes }
-			CMS = { owns = 2124 }
-			CMS = { ai = yes }
 			NOT = { has_global_flag = colonial_railroading_disabled }
         }
 
@@ -316,12 +437,6 @@ political_decisions = {
 				trade_goods = sugar
             }
 			3281 = { add_core = CMS }
-			set_global_flag = colonial_rename_mayotte
-			clr_global_flag = arab_rename_mayotte
-			clr_global_flag = slavic_rename_mayotte
-			clr_global_flag = catocc_rename_mayotte
-			clr_global_flag = kreolnfrisian_rename_mayotte
-			clr_global_flag = baltic_rename_mayotte
         }
 
         ai_will_do = { factor = 1 }
@@ -330,9 +445,9 @@ political_decisions = {
     claim_savoy = {
         picture = form_italy
         potential = {
+            capital = 425
             primary_culture = french
             is_greater_power = yes
-            capital = 425
             OR = {
                 has_global_flag = plombieres
                 revolution_n_counterrevolution = 1
@@ -350,15 +465,9 @@ political_decisions = {
                 war_policy = jingoism
                 war_policy = pro_military
             }
-            OR = {
-                ITA = {
-                    exists = yes
-                    NOT = { in_sphere = THIS }
-                }
-                ITS = {
-                    exists = yes
-                    NOT = { in_sphere = THIS }
-                }
+            ITA = {
+                exists = yes
+                NOT = { in_sphere = THIS }
             }
             NOT = {
                 has_country_modifier = punitive_effects
@@ -385,14 +494,14 @@ political_decisions = {
     claim_aosta = {
         picture = claim_aosta
         potential = {
-            primary_culture = french
-            is_greater_power = yes
+            owns = 472 #Nice
             capital = 425
+            primary_culture = french
             OR = {
                 owns = 412 #Metz
                 owns = 720 #Turin
             }
-            owns = 472 #Nice
+            is_greater_power = yes
             NOT = { 721 = { is_core = THIS } }
         }
 
@@ -401,15 +510,9 @@ political_decisions = {
                 war_policy = jingoism
                 war_policy = pro_military
             }
-            OR = {
-                ITA = {
-                    exists = yes
-                    NOT = { in_sphere = THIS }
-                }
-                ITS = {
-                    exists = yes
-                    NOT = { in_sphere = THIS }
-                }
+            ITA = {
+                exists = yes
+                NOT = { in_sphere = THIS }
             }
             NOT = {
                 has_country_modifier = punitive_effects
@@ -423,6 +526,10 @@ political_decisions = {
             badboy = 1
             721 = { add_core = THIS }
             3434 = { add_core = THIS }
+            466 = { add_core = THIS }
+            465 = { add_core = THIS }
+            3681 = { add_core = THIS }
+            472 = { add_core = THIS }
             random_country = {
                 limit = { owns = 721 }
                 leave_alliance = THIS
@@ -434,10 +541,7 @@ political_decisions = {
             factor = 1
             modifier = {
                 factor = 0
-                OR = {
-                    466 = { NOT = { is_core = ITA } }
-                    466 = { NOT = { is_core = ITS } }
-                }
+                466 = { NOT = { is_core = ITA } }
             }
 
             modifier = {
@@ -450,12 +554,12 @@ political_decisions = {
     annex_new_caledonia = {
         picture = annex_new_caledonia
         potential = {
+            capital = 425
+            state_n_government = 1
             primary_culture = french
             is_greater_power = yes
-            capital = 425
-			NOT = { has_global_flag = colonial_railroading_disabled }
-            state_n_government = 1
             1097 = { empty = yes }
+			NOT = { has_global_flag = colonial_railroading_disabled }
         }
 
         allow = {
@@ -473,16 +577,16 @@ political_decisions = {
     st_barths_question = {
         picture = map_caribbean
         potential = {
-            primary_culture = french
-            is_greater_power = yes
             capital = 425
-            NOT = { owns = 3246 }
-            NOT = { has_country_flag = st_barths_referendum }
+            primary_culture = french
             OR = {
                 owns = 45
                 owns = 2230
                 owns = 2228
             }
+            is_greater_power = yes
+            NOT = { owns = 3246 }
+            NOT = { has_country_flag = st_barths_referendum }
         }
 
         allow = {
@@ -500,7 +604,6 @@ political_decisions = {
         }
         ai_will_do = { factor = 1 }
     }
-
     french_iron_mines = {
         picture = normandie_mine
         potential = {
@@ -536,13 +639,13 @@ political_decisions = {
 	devil_island = {
 		picture = FRA_devils_island
 		potential = {
+			year = 1852
+			owns = 2241 #Cayenne
+			capital = 425
 			primary_culture = french
 			is_greater_power = yes
-			capital = 425
-			RIG = { exists = no }
-			owns = 2241 #Cayenne
-			year = 1852
 			penal_system = colonial_transportation
+			RIG = { exists = no }
 			NOT = { has_country_flag = devil_island }
 			NOT = { has_country_modifier = penal_colonies }
 		}

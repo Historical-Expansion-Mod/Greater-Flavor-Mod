@@ -6,26 +6,21 @@ political_decisions = {
     abdication_of_ferdinand_i = {
         picture = ferdinand_i
         potential = {
-            tag = AUS
             has_global_flag = hungarian_revolution_occurred
+            tag = AUS
             war_with = HUN
-            OR = {
-                ai = no
-                war_exhaustion = 10
-            }
-            OR = {
-                government = hms_government
-                government = prussian_constitutionalism
-                government = absolute_monarchy
-                government = absolute_empire
-                government = semi_constitutional_empire
-                government = constitutional_empire
-            }
+            has_country_flag = monarchy_government
             NOT = { has_global_flag = franz_joseph_i }
             NOT = { year = 1870 }
         }
 
-        allow = { war_with = HUN }
+        allow = {
+			war_with = HUN 
+            OR = {
+                war_exhaustion = 10
+                ai = no
+            }
+		}
 
         effect = {
             set_global_flag = franz_joseph_i
@@ -39,11 +34,10 @@ political_decisions = {
     request_russian_intervention = {
         picture = military_aid
         potential = {
-            tag = AUS
             has_global_flag = franz_joseph_i
             has_global_flag = hungarian_revolution_occurred
+            tag = AUS
             war_with = HUN
-            exists = HUN
             NOT = { has_country_flag = austria_let_hungary_go }
             NOT = { has_country_flag = called_russian_intervention }
         }
@@ -55,6 +49,8 @@ political_decisions = {
                 OR = {
                     government = absolute_empire
                     government = semi_constitutional_empire
+                    government = absolute_monarchy
+                    government = prussian_constitutionalism
                 }
                 is_greater_power = yes
                 NOT = { truce_with = HUN }
@@ -72,26 +68,19 @@ political_decisions = {
     embraced_jews_in_austria = {
 		picture = embrace_the_jews
         potential = {
+            has_global_flag = franz_joseph_i
             OR = {
                 tag = AUS
                 tag = KUK
                 tag = DNB
             }
-            has_global_flag = franz_joseph_i
             NOT = { has_country_flag = embraced_jews }
         }
 
         allow = {
             war = no
             year = 1850
-            OR = {
-                government = hms_government
-                government = prussian_constitutionalism
-                government = absolute_monarchy
-                government = absolute_empire
-                government = semi_constitutional_empire
-                government = constitutional_empire
-            }
+            has_country_flag = monarchy_government
         }
 
         effect = {
@@ -133,6 +122,12 @@ political_decisions = {
         potential = {
             tag = AUS
             OR = {
+                BAV = { in_sphere = THIS }
+				owns = 599
+                BAD = { in_sphere = THIS }
+				owns = 587
+            }
+            OR = {
                 SGM = { vassal_of = THIS }
                 owns = 594
                 SGM = {
@@ -155,21 +150,17 @@ political_decisions = {
                 exists = GCF
                 has_country_flag = brothers_war_loser
             }
-            OR = {
-                BAV = { in_sphere = THIS }
-                BAD = { in_sphere = THIS }
-            }
             NOT = { has_country_flag = ai_demand_sigmaringen }
         }
 
         allow = {
-            war = no
             truce_with = PRU
             PRU = { has_country_modifier = recently_lost_war }
             OR = {
                 has_country_modifier = brothers_war_aggressor
                 has_country_flag = brothers_war_winner
             }
+            war = no
             NOT = { exists = NGF }
         }
 
@@ -210,4 +201,287 @@ political_decisions = {
         }
         ai_will_do = { factor = 1 }
     }
+	
+	welcome_the_yugoslavs = {
+		picture = embrace_minority
+		
+		potential = {
+			OR = {	
+				tag = AUB
+				tag = DNB
+			}
+			accepted_culture = croat
+			is_greater_power = yes
+			NOT = { has_country_flag = yugoslavia_danube has_country_flag = wait_for_it }
+			OR = {
+				SER = { in_sphere = THIS ai = yes }
+				MON = { in_sphere = THIS ai = yes }
+				MCD = { in_sphere = THIS ai = yes }
+				BUL = { in_sphere = THIS ai = yes }
+				YUG = { in_sphere =  THIS ai = yes }
+			}
+		}
+		
+		allow = {
+			citizens_rights = all_voting_pops
+			YUG = {
+				exists = yes
+				all_core = {
+					OR = {
+                        owned_by = THIS
+                        owner = {
+							in_sphere = THIS
+							OR = {
+								is_vassal = no
+								vassal_of = THIS
+							}
+							war = no
+							is_greater_power = no
+                        }
+                    }
+				}
+			}
+			CRO = { 
+				all_core = {
+					OR = {
+                        owned_by = THIS
+                        owner = {
+							in_sphere = THIS
+							OR = {
+								is_vassal = no
+								vassal_of = THIS
+							}
+							war = no
+							is_greater_power = no
+                        }
+                    }
+				}
+			}
+			BOS = {
+				all_core = {
+					OR = {
+                        owned_by = THIS
+                        owner = {
+							in_sphere = THIS
+							OR = {
+								is_vassal = no
+								vassal_of = THIS
+							}
+							war = no
+							is_greater_power = no
+                        }
+                    }
+				}
+			}
+			nationalism_n_imperialism = 1
+			NOT = { has_country_flag = danubian_integration }
+		}
+		
+		effect = {
+			prestige = 5
+			badboy = 6
+			random_owned = {
+				limit = {
+					owner = { YUG = { NOT = { vassal_of = THIS } } }
+				}
+				owner = { create_vassal = YUG create_alliance = YUG }
+			}
+			AUS_736 = { remove_core = CRO remove_core = YUG }
+			AUS_768 = { remove_core = CRO remove_core = YUG }
+			AUS_2538 = { add_core = YUG }
+			CRO = { all_core = { add_core = YUG } }
+			BOS = { all_core = { add_core = YUG } }
+			MON = { all_core = { add_core = YUG } }
+			inherit = BOS
+			inherit = CRO
+			inherit = MON
+			YUG = { 
+				all_core = {
+					limit = {
+						NOT = {
+							is_core = CRO
+							is_core = BOS
+							is_core = MON
+							is_core = SER
+						}
+					}
+					remove_core = YUG
+				}
+			}
+			any_owned = {
+				limit = { is_core = YUG }
+				secede_province = YUG
+			}
+			set_country_flag = yug_target
+			set_country_flag = yugoslavia_danube
+			set_country_flag = wait_for_it
+			random_list = {
+				10 = { add_country_modifier = { name = international_negotiations duration = 1460 } }
+				20 = { add_country_modifier = { name = international_negotiations duration = 1825 } } 
+				30 = { add_country_modifier = { name = international_negotiations duration = 2190 } } 
+				20 = { add_country_modifier = { name = international_negotiations duration = 2555 } }
+				20 = { add_country_modifier = { name = international_negotiations duration = 2920 } } 
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+		
+	}
+	
+	welcome_the_romanians = {
+		picture = embrace_minority
+		
+		potential = { 
+			tag = DNB
+			accepted_culture = romanian
+			NOT = { has_country_flag = romania_danube has_country_flag = wait_for_it }
+			is_greater_power = yes
+			OR = {
+				WAL = { in_sphere = THIS ai = yes }
+				MOL = { in_sphere = THIS ai = yes }
+				SIE = { in_sphere = THIS ai = yes }
+				ROM = { in_sphere = THIS ai = yes }
+				660 = { owned_by = THIS }
+			}
+		}
+		
+		allow = {
+			citizens_rights = all_voting_pops
+			war = no
+			ROM = {
+				exists = yes
+				all_core = {
+					OR = {
+                        owned_by = THIS
+                        owner = {
+							in_sphere = THIS
+							OR = {
+								is_vassal = no
+								vassal_of = THIS
+							}
+							war = no
+							is_greater_power = no
+                        }
+                    }
+				}
+			}
+			nationalism_n_imperialism = 1
+			NOT = { has_country_modifier = international_negotiations }
+		}
+		
+		effect = {
+			prestige = 5
+			badboy = 4
+			random_owned = {
+				limit = {
+					owner = { ROM = { NOT = { vassal_of = THIS } } }
+				}
+				owner = { create_vassal = ROM create_alliance = ROM }
+			}
+			any_owned = {
+				limit = { is_core = ROM }
+				secede_province = ROM
+			}
+			set_country_flag = romanian_target
+			set_country_flag = romania_danube
+			set_country_flag = wait_for_it
+			random_list = {
+				10 = { add_country_modifier = { name = international_negotiations duration = 1460 } }
+				20 = { add_country_modifier = { name = international_negotiations duration = 1825 } } 
+				30 = { add_country_modifier = { name = international_negotiations duration = 2190 } } 
+				20 = { add_country_modifier = { name = international_negotiations duration = 2555 } }
+				20 = { add_country_modifier = { name = international_negotiations duration = 2920 } } 
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+		
+	}
+	
+	welcome_the_polish = {
+		picture = embrace_minority
+		
+		potential = { 
+			OR = {	
+				tag = AUB
+				tag = DNB
+			}
+			accepted_culture = polish
+			NOT = { has_country_flag = polish_danube has_country_flag = wait_for_it }
+			is_greater_power = yes
+			OR = {
+				POL = { in_sphere = THIS ai = yes }
+				PZN = { in_sphere = THIS ai = yes }
+				703 = { owned_by = THIS }
+			}
+		}
+		
+		allow = {
+			citizens_rights = all_voting_pops
+			war = no
+			POL = {
+				all_core = {
+					OR = {
+                        owned_by = THIS
+                        owner = {
+							in_sphere = THIS
+							OR = {
+								is_vassal = no
+								vassal_of = THIS
+							}
+							war = no
+							is_greater_power = no
+                        }
+                    }
+				}
+			}
+			nationalism_n_imperialism = 1
+			NOT = { has_country_modifier = international_negotiations }
+		}
+		
+		effect = {
+			prestige = 5
+			badboy = 8
+			any_country = {
+				limit = {
+					in_sphere = THIS
+					OR = { vassal_of = THIS is_vassal = NO }
+					any_owned_province = { is_core = POL }
+				}
+				any_owned = { limit = { is_core = POL } secede_province = THIS }
+			}
+			PRU_685 = { remove_core = POL }
+			random_owned = {
+				limit = {
+					owner = { POL = { exists = yes } }
+				}
+				owner = { 
+					create_vassal = POL 
+					create_alliance = POL
+					any_owned = {
+						limit = { is_core = POL }
+						secede_province = POL
+					}
+				}
+			}
+			random_owned = {
+				limit = { owner = { POL = { exists = NO } } }
+				owner = { release_vassal = POL create_alliance = POL diplomatic_influence = { who = POL value = 400 } }
+			}
+			
+			set_country_flag = polish_target
+			set_country_flag = polish_danube
+			set_country_flag = wait_for_it
+			random_list = {
+				10 = { add_country_modifier = { name = international_negotiations duration = 1460 } }
+				20 = { add_country_modifier = { name = international_negotiations duration = 1825 } } 
+				30 = { add_country_modifier = { name = international_negotiations duration = 2190 } } 
+				20 = { add_country_modifier = { name = international_negotiations duration = 2555 } }
+				20 = { add_country_modifier = { name = international_negotiations duration = 2920 } } 
+			}
+		}
+		
+		ai_will_do = { factor = 1 }
+		
+	}
 }

@@ -9,25 +9,26 @@ country_event = { ##rework
     id = 85000
     title = "EVTNAME85000" #Catholics Slain in Korea
     desc = "EVTDESC85000"
+    picture = "missionaries"
+	
     news = yes
     news_desc_long = "EVTDESC85000_NEWS_LONG"
     news_desc_medium = "EVTDESC85000_NEWS_MEDIUM"
     news_desc_short = "EVTDESC85000_NEWS_SHORT"
-    picture = "missionaries"
 
     fire_only_once = yes
 
     trigger = {
+        capital = 425
+        year = 1866
         primary_culture = french
         is_greater_power = yes
-        capital = 425
         war = no
-        year = 1866
         is_disarmed = no
         KOR = {
+            vassal_of = QNG
             exists = yes
             civilized = no
-            vassal_of = QNG
         }
         NOT = {
             truce_with = KOR
@@ -263,31 +264,34 @@ country_event = {
     id = 85010
     title = "EVTNAME85010" #The Ganghwa Incident
     desc = "EVTDESC85010"
+    picture = "ship_attacked"
+	
     news = yes
     news_desc_long = "EVTDESC85010_NEWS_LONG"
     news_desc_medium = "EVTDESC85010_NEWS_MEDIUM"
     news_desc_short = "EVTDESC85010_NEWS_SHORT"
-    picture = "ship_attacked"
 
     fire_only_once = yes
 
 	immediate = { set_global_flag = ganghwa_incident }
 
     trigger = {
-        OR = {
-            AND = {
-                tag = JAP
-                NOT = { exists = TKG }
-            }
-            AND = {
-                tag = TKG
-                NOT = { exists = JAP }
-            }
-        }
         owns = 1657
-        owns = 1649
-        war = no
         civilized = yes
+        owns = 1649
+		tag = JAP
+		NOT = {
+			exists = SAT
+			exists = CHO
+			exists = TOS
+			exists = OBM
+			exists = KAG
+			exists = YZW
+			exists = SEN
+			exists = SOC
+			exists = EZO
+		}
+        war = no
         KOR = {
             exists = yes
             civilized = no
@@ -422,10 +426,7 @@ country_event = {
         name = "EVT85012OPTA"
         random_country = {
             limit = {
-                OR = {
-                    tag = JAP
-                    tag = TKG
-                }
+				tag = JAP
                 exists = yes
             }
             relation = { who = THIS value = -100 }
@@ -595,7 +596,15 @@ country_event = {
     picture = "tonghak_rebellion"
 
     trigger = {
+		has_global_flag = ganghwa_treaty_signed
         tag = KOR
+        government = absolute_monarchy
+        OR = {
+            part_of_sphere = yes
+            has_country_modifier = western_influences
+            is_vassal = yes
+        }
+		JAP = { civilized = yes rank = 16 }
         OR = {
             AND = {
                 civilized = no
@@ -603,24 +612,11 @@ country_event = {
             }
             year = 1894
         }
-		NOT = { year = 1895 }
-        government = absolute_monarchy
-        OR = {
-            part_of_sphere = yes
-            has_country_modifier = western_influences
-            is_vassal = yes
-        }
         NOT = {
             has_country_flag = angry_rioters_victorious
             has_country_flag = tonghak_rebellion_happened
         }
-		OR = {
-			TKG = { civilized = yes is_secondary_power = yes }
-			JAP = { civilized = yes is_secondary_power = yes }
-			TKG = { civilized = yes is_greater_power = yes }
-			JAP = { civilized = yes is_greater_power = yes }
-		}
-		has_global_flag = ganghwa_treaty_signed
+		NOT = { year = 1895 }
     }
 
     mean_time_to_happen = {
@@ -705,12 +701,9 @@ country_event = {
     picture = "tonghak_rebellion"
 
     trigger = {
-        is_culture_group = east_asian
         owns = 1616
-        OR = {
-            exists = JAP
-            exists = TKG
-        }
+        is_culture_group = east_asian
+		exists = JAP
         KOR = {
             war = no
             exists = yes
@@ -737,10 +730,7 @@ country_event = {
         prestige = 20
         random_country = {
             limit = {
-                OR = {
-                    tag = TKG
-                    tag = JAP
-                }
+				tag = JAP
                 exists = yes
             }
             country_event = 85026
@@ -772,10 +762,7 @@ country_event = {
         prestige = -10
         random_country = {
             limit = {
-                OR = {
-                    tag = TKG
-                    tag = JAP
-                }
+				tag = JAP
                 exists = yes
             }
             country_event = 85030
@@ -1028,6 +1015,7 @@ country_event = {
                         owns = 1569 #Weihaiwei
                         owns = 1606 #Jiaxing
 						owns = 3364 #Sanmen
+						owns = 1961 #Chusan
                         owns = 2562 #Tainan
                         owns = 1499 #Hainan
                         owns = 2632 #Kwangchowan
@@ -1257,23 +1245,19 @@ country_event = {
     desc = "EVTDESC85031"
     picture = "tonghak_rebellion"
 
+    fire_only_once = yes
+
     trigger = {
+		JAP = { exists = yes has_country_flag = claimed_korea NOT = { has_country_modifier = foreign_claims } }
         exists = yes
-        ai = yes
         war = no
-        OR = {
-            JAP = { exists = yes has_country_flag = claimed_korea NOT = { has_country_modifier = foreign_claims } }
-            TKG = { exists = yes has_country_flag = claimed_korea NOT = { has_country_modifier = foreign_claims } }
-        }
     }
 
     mean_time_to_happen = { months = 3 }
 
-    fire_only_once = yes
-
     option = {
         name = "EVT85031OPTA"
-        KOR = { all_core = { remove_core = JAP remove_core = TKG } }
+        KOR = { all_core = { limit = { NOT = { province_id = 2589 } } remove_core = JAP } }
     }
 }
 
@@ -1283,19 +1267,13 @@ country_event = {
 	title = "The March 1st Movement"
 	desc = "MARCH1STMOVEMENT"
 	picture = "korean_revolt"
-
 	fire_only_once = yes
 
 	trigger = {
-		OR = {
-			tag = JAP
-			tag = TKG
-		}
-		KOR = {
-			exists = no
-		}
 		owns = 1624
 		year = 1919
+		tag = JAP
+		KOR = { exists = no }
 		month = 3
 	}
 
@@ -1331,25 +1309,25 @@ country_event = {
 	fire_only_once = yes
 	
 	trigger = {
-		tag = KOR 
-		OR = { 
-			year = 1881 
-			AND = { 
-				civilized = yes 
-				KOR = { all_core = { owned_by = THIS } } 
-			}
-		} 	
+		tag = KOR
 		owns = 1621
-		owns = 1622 
-		owns = 1623 
-		owns = 1629 
-		NOT = { owns = 3440 } 
-		NOT = { 3440 = { is_core = KOR } } 
+		owns = 1622
+		owns = 1623
+		owns = 1629
 		3440 = { 
 			owner = { 
 				is_culture_group = east_asian 
 			}
-		}	
+		}
+		OR = {
+			year = 1881
+			AND = {
+				civilized = yes
+				KOR = { all_core = { owned_by = THIS } }
+			}
+		}
+		NOT = { owns = 3440 } 
+		NOT = { 3440 = { is_core = KOR } }
 	}
 
 	mean_time_to_happen = { months = 2 }
@@ -1362,7 +1340,7 @@ country_event = {
 				move_pop = 3440 
 			}
 		}
-		any_country = { 
+		any_country = {
 			limit = { 
 				OR = { 
 					owns = 3440 

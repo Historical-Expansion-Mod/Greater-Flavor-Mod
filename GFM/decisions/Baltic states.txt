@@ -8,15 +8,10 @@ political_decisions = {
         }
 
         allow = {
-			NOT = { vassal_of = RUS }
-            war = no
 			OR = {
 				is_greater_power = yes
 				AND = {
-					OR = {
-						is_secondary_power = yes
-						is_greater_power = yes
-					}
+					rank = 16
 					has_global_flag = you_are_playing_mp
 				}
 			}
@@ -51,6 +46,24 @@ political_decisions = {
                 349 = { owned_by = THIS }
                 349 = { owner = { in_sphere = THIS } }
             }
+			OR = {
+                tag = LIT
+                LIT = {
+                    exists = yes
+					NOT = { vassal_of = RUS }
+                    part_of_sphere = no
+                    relation = { who = THIS value = 100 }
+                }
+                LIT = {
+                    exists = yes
+					NOT = { vassal_of = RUS }
+                    has_country_flag = newly_released_nation
+                }
+                361 = { owned_by = THIS }
+                361 = { owner = { in_sphere = THIS } }
+            }
+            war = no
+			NOT = { vassal_of = RUS }
         }
 
         effect = {
@@ -58,11 +71,13 @@ political_decisions = {
             prestige = 10
             LAT = { all_core = { add_core = UBD } }
             EST = { all_core = { add_core = UBD } }
-            add_accepted_culture = estonian
+            LIT = { all_core = { add_core = UBD } }
+            change_tag = UBD
+			add_accepted_culture = estonian
             add_accepted_culture = latvian
+            add_accepted_culture = lithuanian
             remove_accepted_culture = russian
             remove_accepted_culture = north_german
-            change_tag = UBD
             random_country = {
                 limit = {
                     tag = LAT
@@ -79,6 +94,14 @@ political_decisions = {
                 }
                 annex_to = THIS
             }
+			random_country = {
+                limit = {
+                    tag = LIT
+                    NOT = { in_sphere = THIS }
+                    NOT = { tag = THIS }
+                }
+                annex_to = THIS
+            }
             any_country = {
                 limit = {
                     in_sphere = THIS
@@ -89,7 +112,209 @@ political_decisions = {
                     secede_province = THIS
                 }
             }
+			UBD = { 
+				random_owned = { limit = { owner = { government = absolute_monarchy } } owner = { government = absolute_empire } }
+				random_owned = { limit = { owner = { government = prussian_constitutionalism } } owner = { government = semi_constitutional_empire } }
+				random_owned = { limit = { owner = { government = hms_government } } owner = { government = constitutional_empire } }
+			}
         }
         ai_will_do = { factor = 1 }
     }
+	
+	UBD_strenghten_governorship = {
+		picture = annex_united_baltic_duchy
+		potential = { 
+			tag = UBD
+			UBD = { substate_of = RUS }
+			LAT = { substate_of = RUS }
+			EST = { substate_of = RUS }
+			NOT = { owns = 349 owns = 357 }
+			NOT = { has_country_flag = baltic_governorship }
+		}
+		
+		allow = { 
+			state_n_government = 1
+			OR = {
+				total_amount_of_ships = 25
+				ai = yes
+			}
+			relation = { who = RUS value = 200 }
+			353 = { has_building = naval_base }
+		}
+		
+		effect = { 
+			RUS = { country_event = 31502002 }
+			set_country_flag = baltic_governorship
+		}
+		
+		ai_will_do = { factor = 0 }
+	}
+	
+	UBD_secret_treaty = {
+		picture = treaty_signing
+		potential = { 
+			tag = UBD
+			UBD = { substate_of = RUS }
+			owns = 349
+			owns = 357
+			NOT = { has_country_flag = secret_treaty }
+		}
+		
+		allow = { 
+			nationalism_n_imperialism = 1
+			OR = { 
+				total_amount_of_ships = 40
+				ai = yes
+			}
+			549 = { owner = { is_greater_power = yes is_culture_group = germanic relation = { who = THIS value = 150 } NOT = { relation = { who = RUS value = 50 } } war_policy = jingoism } }
+		}
+		
+		effect = { 
+			set_country_flag = secret_treaty
+			549 = { owner = { country_event = 31502003 } }
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	UBD_strike_first = {
+		picture = baltic_governates
+		potential = {
+			has_country_flag = UBD_germans_agreed
+			vassal_of = RUS
+		}
+	
+		allow = {
+			is_vassal = yes
+			overlord = {
+				owns = 356
+				owns = 3367 
+			}
+		}
+		
+		effect = {
+			RUS = { release_vassal = UBD }
+			RUS = { country_event = { id = 31502008 days = 2 } }
+			UBD = { government = prov_gov_conservative }
+			356 = { 
+				secede_province = THIS
+			}
+			3367 = {
+				secede_province = THIS
+			}
+			549 = {
+				owner = {
+					diplomatic_influence = { who = UBD value = 500 }
+					relation = { who = UBD value = 200 }
+					create_alliance = UBD
+				}
+			}
+			549 = { owner = { country_event = 31502021 } }
+		}
+		ai_will_do = { 
+			factor = 1 
+			modifier = {
+				factor = 0
+				NOT = { RUS = { war_exhaustion = 25 } }
+			}
+		}
+	}
+	
+	UBD_claim_ingria = {
+		picture = petrograd_city
+		potential = {
+			tag = UBD 
+			NOT = { has_country_flag = UBD_ingria }
+		}
+		
+		allow = {
+			is_vassal = no
+			revolution_n_counterrevolution = 1
+			war_policy = jingoism
+			EST = { all_core = { owned_by = THIS } }
+			LAT = { all_core = { owned_by = THIS } }
+		}
+		
+		effect = {
+            RUS_994 = { add_core = UBD }
+			prestige = 5
+			badboy = 8
+			set_country_flag = UBD_ingria
+		}
+	}
+	
+	subdue_baltic = {
+		picture = baltic_governates
+		potential = {
+			tag = RUS
+			OR = {
+				EST = { any_core = { NOT = { is_core = RUS } } }
+				LAT = { any_core = { NOT = { is_core = RUS } } }
+			}
+			NOT = { has_country_flag = baltic_reconquest }
+		}
+		
+		allow = {
+			war = no
+			NOT = { has_country_modifier = recently_lost_war }
+			nationalism_n_imperialism = 1
+			war_policy = jingoism
+			OR = { 
+				owns = 349 #Reval
+				owns = 354 #Riga
+				AND = {
+					owns = 361 #Kovno
+					has_global_flag = lithuania_in_the_UBD
+				}
+			}
+		}
+		
+		effect = {
+			prestige = 5
+			set_country_flag = baltic_reconquest
+			EST = { all_core = { add_core = THIS } }
+			LAT = { all_core = { add_core = THIS } }
+			LIT = { 
+				all_core = { 
+					limit = { NOT = { province_id = 698 province_id = 697 province_id = 695 } } 
+					add_core = THIS 
+				}
+			}
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	truly_baltic = {
+		picture = danzig_imperial_shipyard
+		potential = {
+			tag = UBD
+			OR = {
+				government = radical_republic
+				government = proletarian_dictatorship
+				government = fascist_dictatorship
+			}
+			has_global_flag = lithuania_in_the_UBD
+			NOT = { has_country_flag = truly_baltic }
+		}
+		
+		allow = {
+			all_core = { owned_by = THIS }
+			war = no
+			nationalism_n_imperialism = 1
+			695 = { owner = { NOT = { relation = { who = THIS value = 50 } } } }
+		}
+		
+		effect = {
+			badboy = 10
+			random_country = {
+				limit = { owns = 695 is_sphere_leader_of = THIS }
+				diplomatic_influence = { who = THIS value = -400 }
+				relation = { who = THIS value = -400 }
+			}
+			PRU_690 = { add_core = THIS }
+			PRU_695 = { add_core = THIS }
+		}
+		ai_will_do = { factor = 1 }
+	}
+
 }

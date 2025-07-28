@@ -5,7 +5,6 @@ country_event = {
     picture = "administration"
 
     trigger = {
-        NOT = { is_culture_group = germanic }
         war_with = SWH
         OR = {
             AND = {
@@ -25,6 +24,7 @@ country_event = {
                 PRU = { NOT = { war_with = SWH } }
             }
         }
+        NOT = { is_culture_group = germanic }
     }
 
     mean_time_to_happen = {
@@ -85,18 +85,22 @@ country_event = {
     desc = "EVTDESC90052"
     picture = "tropper_1849"
 
-    trigger = {
-        OR = {
-            tag = DEN
-            tag = SCA
-        }
-        war = no
-        has_country_flag = annex_schleswig_holstein
-        owns = 369
-        owns = 371
-    }
-
     fire_only_once = yes
+
+    trigger = {
+        owns = 369
+        has_country_flag = annex_schleswig_holstein
+        owns = 371
+        OR = { 
+				tag = DEN
+				AND = { 
+					tag = DNN
+					primary_culture = danish 
+				}
+				tag = SCA
+			}
+        war = no
+    }
 
     mean_time_to_happen = {
         days = 3
@@ -104,9 +108,10 @@ country_event = {
 
     option = {
         name = "EVT90052OPTA"
+        prestige = -10
         set_country_flag = schleswig_holstein_restored
-        prestige = 10
         badboy = -3
+		set_country_flag = first_schlewsig_war
         release_vassal = SWH
         create_alliance = SWH
         any_country = {
@@ -122,6 +127,8 @@ country_event = {
     option = {
         name = "EVT90052OPTB"
         badboy = 2
+		set_country_flag = first_schlewsig_war
+        CLN = { set_country_flag = danish_schlewig }
         SWH = { all_core = { remove_core = SWH } }
         SCH = { all_core = { remove_core = SCH } }
         371 = {
@@ -129,6 +136,10 @@ country_event = {
             remove_core = GCF
         }
         370 = {
+            remove_core = GER
+            remove_core = GCF
+        }
+        3862 = {
             remove_core = GER
             remove_core = GCF
         }
@@ -160,8 +171,9 @@ country_event = {
     }
     option = {
         name = "EVT90052OPTC"
-        prestige = -10
+        prestige = 10
         badboy = 5
+		set_country_flag = first_schlewsig_war
         any_pop = {
             limit = { has_pop_culture = north_german }
             militancy = 3
@@ -198,17 +210,27 @@ country_event = {
 country_event = {
 
     id = 90053 # The November Constitution
-
     title = "EVTNAME90053"
     desc = "EVTDESC90053"
+    picture = "danishgovernment"
+	
     news = yes
     news_desc_long = "EVTDESC90053_NEWS_LONG"
     news_desc_medium = "EVTDESC90053_NEWS_MEDIUM"
     news_desc_short = "EVTDESC90053_NEWS_SHORT"
-    picture = "danishgovernment"
+
+    fire_only_once = yes
 
     trigger = {
+        year = 1863
         tag = DEN
+        has_country_flag = schleswig_holstein_restored
+        SWH = {
+            owns = 370
+            owns = 3862
+            owns = 371
+            vassal_of = DEN
+        }
         OR = {
             government = prussian_constitutionalism
             government = hms_government
@@ -217,17 +239,8 @@ country_event = {
         }
         war = no
         exists = SWH
-        year = 1863
-        has_country_flag = schleswig_holstein_restored
-        SWH = {
-            owns = 370
-            owns = 371
-            vassal_of = DEN
-        }
         NOT = { has_global_flag = november_constitution }
     }
-
-    fire_only_once = yes
 
     mean_time_to_happen = {
         months = 6
@@ -251,7 +264,6 @@ country_event = {
             all_core = { remove_core = GER }
         }
         release = HOL
-        release = LAU
         any_country = {
             limit = { primary_culture = north_german }
             leave_alliance = THIS
@@ -295,48 +307,46 @@ country_event = {
 }
 
 country_event = {
-
     id = 90054 # Schleswig-Holstein Rebellion
-
     title = "EVTNAME90054"
     desc = "EVTDESC90054"
+    picture = "schleswig_independence"
+    major = yes
     news = yes
     news_title = "EVTNAME90054_NEWS_TITLE"
     news_desc_long = "EVTDESC90054_NEWS_LONG"
     news_desc_medium = "EVTDESC90054_NEWS_MEDIUM"
     news_desc_short = "EVTDESC90054_NEWS_SHORT"
-
-    major = yes
-    picture = "schleswig_independence"
 	fire_only_once = yes
 
 	trigger = {
-        tag = DEN
-        OR = {
-            government = absolute_monarchy
-            government = prussian_constitutionalism
-            government = hms_government
-            government = absolute_empire
-            government = semi_constitutional_empire
-            government = constitutional_empire
-        }
-        war = no
-        exists = SWH
         year = 1848
-        NOT = { has_country_flag = annex_schleswig_holstein }
+		OR = {
+			tag = DEN
+			AND = {
+				tag = DNN
+				has_country_flag = danish_dnn
+			}
+		}
+		has_country_flag = danish_chaos
+        exists = SWH
         SWH = {
             owns = 370
+            owns = 3862
             owns = 371
-            vassal_of = DEN
+			vassal_of = THIS
         }
-		has_country_flag = danish_chaos
+        has_country_flag = monarchy_government
+        war = no
+        NOT = { has_country_flag = annex_schleswig_holstein }
 	}
 
     option = {
         name = "EVT90054OPTA"
         set_country_flag = annex_schleswig_holstein
-        370 = { add_core = DEN }
-        371 = { add_core = DEN }
+        370 = { add_core = DEN add_core = THIS }
+        3862 = { add_core = DEN add_core = THIS }
+        371 = { add_core = DEN add_core = THIS }
         any_pop = {
             limit = { has_pop_culture = danish }
             militancy = -2
@@ -371,10 +381,9 @@ country_event = {
             }
             call_ally = no
         }
-        ai_chance = {
-            factor = 95
-        }
+        ai_chance = { factor = 19 }
     }
+
     option = {
         name = "EVT90054OPTB"
 		release_vassal = SWH
@@ -384,9 +393,7 @@ country_event = {
             militancy = 4
             consciousness = 2
         }
-        ai_chance = {
-            factor = 5
-        }
+        ai_chance = { factor = 1 }
     }
 }
 
@@ -394,35 +401,37 @@ country_event = {
 country_event = {
 
     id = 90055
-
     title = "EVTNAME90054"
     desc = "EVTDESC90055"
+    picture = "tropper_1849"
+	
     news = yes
     news_desc_long = "EVTDESC90055_NEWS_LONG"
     news_desc_medium = "EVTDESC90055_NEWS_MEDIUM"
     news_desc_short = "EVTDESC90055_NEWS_SHORT"
-    picture = "tropper_1849"
+
+    fire_only_once = yes
 
     trigger = {
-        NOT = { tag = GCF }
-        NOT = { tag = GER }
-        primary_culture = north_german
         is_greater_power = yes
+        primary_culture = north_german
         OR = {
             nationalism_n_imperialism = 1
             tag = PRU
-            }
+        }
         war = no
 		SWH = { NOT = { vassal_of = SWE } }
         OR = {
             AND = {
                 owns = 370
+                owns = 3862
                 owns = 371
                 NOT = { tag = SWH }
                 NOT = { tag = HOL }
             }
             SWH = {
                 owns = 370
+                owns = 3862
                 owns = 371
 				OR = {
 					is_vassal = no
@@ -433,6 +442,7 @@ country_event = {
             }
             HOL = {
                 owns = 370
+                owns = 3862
                 owns = 371
 				OR = {
 					is_vassal = no
@@ -442,9 +452,9 @@ country_event = {
                 war = no
             }
         }
+        NOT = { tag = GCF }
+        NOT = { tag = GER }
     }
-
-    fire_only_once = yes
 
     mean_time_to_happen = {
         months = 1
@@ -454,6 +464,7 @@ country_event = {
     option = {
         name = "EVT90055OPTA"
         #370 = { remove_core = DEN }
+        #3862 = { remove_core = DEN }
         #371 = { remove_core = DEN }
         prestige = 10
         badboy = -5
@@ -475,7 +486,6 @@ country_event = {
             country_event = 90056
         }
         SWH = {
-            release = LAU
             release = HOL
             change_tag = SCH
         }
@@ -483,12 +493,6 @@ country_event = {
             who = SCH
             value = 400
         }
-        diplomatic_influence = {
-            who = LAU
-            value = 400
-        }
-        create_vassal = LAU
-        create_alliance = LAU
         create_vassal = SCH
         create_alliance = SCH
     }
@@ -497,7 +501,6 @@ country_event = {
 country_event = {
 
     id = 90056 # Austrian Response
-
     title = "EVTNAME90054"
     desc = "EVTDESC90056"
     picture = "danishgovernment"
@@ -523,7 +526,6 @@ country_event = {
 country_event = {
 
     id = 90057 # Minors Response
-
     title = "EVTNAME90057"
     desc = "EVTDESC90057"
     picture = "danishgovernment"
