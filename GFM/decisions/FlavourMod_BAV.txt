@@ -1,5 +1,6 @@
 political_decisions = {
     claim_tyrol = {
+    picture = tyrol
         potential = {
             tag = BAV
             NOT = { has_country_flag = bav_claims_tyrol }
@@ -23,12 +24,12 @@ political_decisions = {
             set_country_flag = bav_claims_tyrol
 			prestige = 5
 			badboy = 2
-			THIS = {
+			random_owned = {
 			    limit = { AUS = { rank = 16 } }
-				badboy = 3
+				owner = { badboy = 5 }
 			}
 			AUS_612 = { add_core = THIS }
-			AUS_614 = { add_core = THIS }
+			AUS_734 = { add_core = THIS }
         }
         ai_will_do = { 
 		    factor = 1
@@ -44,6 +45,7 @@ political_decisions = {
     }
 
     reclaim_austria = {
+    picture = archduchy_of_austria
         potential = {
             OR = { AND = { tag = SGF capital = 599 } has_country_flag = bav_claims_tyrol }
             NOT = { has_country_flag = bav_claims_austria }
@@ -68,19 +70,16 @@ political_decisions = {
             set_country_flag = bav_claims_austria
 			prestige = 20
 			badboy = 5
-			THIS = {
+			random_owned = {
 			    limit = { AUS = { rank = 16 } }
-				badboy = 15
+				owner = { badboy = 15 }
 			}
-			612 = { add_core = THIS }
-			613 = { add_core = THIS }
-			614 = { add_core = THIS }
-			615 = { add_core = THIS }
-			623 = { add_core = THIS }
-			624 = { add_core = THIS }
+			AUS_612 = { add_core = THIS }
 			AUS_613 = { add_core = THIS }
 			AUS_619 = { add_core = THIS }
 			AUS_734 = { add_core = THIS }
+			623 = { add_core = THIS }
+			624 = { add_core = THIS }
         }
         ai_will_do = { 
 		    factor = 1
@@ -96,7 +95,8 @@ political_decisions = {
     }
 
     claim_northern_slovenia_n_southern_sudeten = {
-        potential = {
+    picture = steiermark
+		potential = {
             AND = { tag = SGF capital = 599 }
             has_country_flag = bav_claims_austria
             OR = {
@@ -108,7 +108,7 @@ political_decisions = {
             }
 			619 = { owned_by = THIS }
 			3670 = { owned_by = THIS }
-			NOT = { has_country_flag = reclaim_slovenia_n_istrien }
+			NOT = { has_country_flag = claim_northern_slovenia_n_southern_sudeten }
         }
 
         allow = {
@@ -128,5 +128,64 @@ political_decisions = {
 			630 = { add_core = THIS }
 			629 = { add_core = THIS }
         }
+    }
+
+    peace_of_bayern = { #Lets Bavaria Take Sigmaringen if they win brother's war/white peace AI Prussia
+        picture = gtfo
+        potential = {
+            tag = BAV
+            OR = {
+                WUR = { in_sphere = THIS }
+				owns = 589
+                BAD = { in_sphere = THIS }
+				owns = 587
+            }
+            OR = {
+                SGM = { vassal_of = THIS }
+                owns = 594
+                SGM = {
+                    exists = yes
+                    vassal_of = PRU
+                }
+                SGM = {
+                    exists = yes
+                    is_vassal = no
+                }
+                AND = {
+                    NOT = { exists = SGM }
+                    594 = { owned_by = PRU } #Sigmaringen
+                }
+            }
+            NOT = {
+                exists = NGF
+                AND = { exists = SGF NOT = { owns = 594 } }
+                exists = GER
+                exists = GCF
+                has_country_flag = brothers_war_loser
+            }
+            NOT = { has_country_flag = ai_demand_sigmaringen }
+        }
+
+        allow = {
+            truce_with = PRU
+            PRU = { has_country_modifier = recently_lost_war }
+            OR = {
+                has_country_modifier = brothers_war_aggressor
+                has_country_flag = brothers_war_winner
+            }
+            war = no
+            NOT = { exists = NGF }
+        }
+
+        effect = {
+            set_country_flag = ai_demand_sigmaringen
+			relation = { who = PRU value = -400 }
+			diplomatic_influence = { who = PRU value = -400 }
+            war_exhaustion = -25
+            badboy = 5
+            remove_country_modifier = brothers_war_aggressor
+			PRU = { country_event = 9988900 }
+        }
+        ai_will_do = { factor = 1 }
     }
 }
