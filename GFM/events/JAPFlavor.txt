@@ -6374,8 +6374,13 @@ country_event = {
 	
 	trigger = {
 		tag = JAP
-		is_our_vassal = MCK
-		has_country_flag = mck_organized
+		OR = { 
+			AND = { 
+				is_our_vassal = MCK
+				has_country_flag = mck_organized
+			}
+			has_country_modifier = mantetsu_jap
+		}
 		iron_railroad = 1
 		money = 225000
 	}
@@ -6383,10 +6388,13 @@ country_event = {
 	option = {
 		name = "Manchuria shall become our crown jewel!"
 		treasury = -200000
-			add_country_modifier = { name = mantetsu_jap duration = -1 }
+		random_owned = {
+			limit = { owner = NOT = { has_country_modifier = mantetsu_jap } }
+			owner = { add_country_modifier = { name = mantetsu_jap duration = 9125 } }
+		}
 		MCK = {
 			research_points = 5000
-			add_country_modifier = { name = mantetsu_mck duration = -1 }
+			add_country_modifier = { name = mantetsu_mck duration = 9125 }
 			activate_technology = experimental_railroad
 			activate_technology = early_railroad
 			activate_technology = iron_railroad
@@ -6425,6 +6433,7 @@ country_event = {
 	
 	trigger = {
 		tag = JAP
+		has_global_flag = mantetsu_established
 		MCK = {
 			NOT = {
 				all_core = { owner = { in_sphere = THIS } }
@@ -6439,10 +6448,16 @@ country_event = {
 	option = {
 		name = "Oh, our crown jewel..."
 		remove_country_modifier = mantetsu_jap
+		remove_country_modifier = mantetsu_jap_improved
 		1622 = { remove_province_modifier = sentetsu }
+		1481 = { 
+			remove_province_modifier = mantetsu_integration 
+			remove_province_modifier = mantetsu_settling 
+		}
 		MCK = {
 			remove_country_modifier = mantetsu_mck
 		}
+		clr_global_flag = mantetsu_established
 		ai_chance = { factor = 1 }
 	}
 }
@@ -6457,7 +6472,7 @@ country_event = {
 	
 	trigger = {
 		tag = MCK
-		has_country_modifier = mantetsu_mck
+		has_global_flag = mantetsu_established
 		has_country_flag = mantetsu_research_wing
 		any_owned_province = {
 			is_core = THIS
@@ -6509,21 +6524,6 @@ country_event = {
 			limit = { is_core = MCK NOT = { province_id = 1481 } }
 			secede_province = MCK
 		}
-		random_owned = {
-			limit = { 
-				owner = {
-					 MCK = { any_owned_province = { has_province_modifier = mantetsu_farms_mines } }
-				}
-			}
-			owner = {
-				MCK = { 
-					any_owned = {
-						limit = { is_core = THIS }
-						add_province_modifier = { name = mantetsu_farms_mines duration = -1 }
-					}
-				}
-			}
-		}
 		ai_chance = { factor = 1 }
 	}
 	
@@ -6536,21 +6536,6 @@ country_event = {
 			limit = { is_core = MCK NOT = { province_id = 1481 } }
 			secede_province = MCK
 		}
-		random_owned = {
-			limit = { 
-				owner = {
-					 MCK = { any_owned_province = { has_province_modifier = mantetsu_farms_mines } }
-				}
-			}
-			owner = {
-				MCK = { 
-					any_owned = {
-						limit = { is_core = THIS }
-						add_province_modifier = { name = mantetsu_farms_mines duration = -1 }
-					}
-				}
-			}
-		}
 		ai_chance = { factor = 1 }
 	}
 	
@@ -6561,47 +6546,20 @@ country_event = {
 			limit = { is_core = MCK NOT = { province_id = 1481 } }
 			secede_province = MCK
 		}
-		random_owned = {
-			limit = { 
-				owner = {
-					 MCK = { any_owned_province = { has_province_modifier = mantetsu_farms_mines } }
-				}
-			}
-			owner = {
-				MCK = { 
-					any_owned = {
-						limit = { is_core = THIS }
-						add_province_modifier = { name = mantetsu_farms_mines duration = -1 }
-					}
-				}
-			}
-		}
 		ai_chance = { factor = 1 }
 	}
 }
 
 country_event = {
 	id = 800863
-	title = "Mantetsu Hegemony over Manchuria!"
+	title = "Mangyo takes Mantetsu's place in Manchuria!"
 	desc = "EVTDESC800863"
 	picture = "mantetsu_profits"
 	
-	fire_only_once = yes
-	
-	mean_time_to_happen = { months = 72 }
-	
-	trigger = {
-		tag = JAP
-		has_country_modifier = mantetsu_jap
-		MCK = { 
-			vassal_of = THIS 
-			industrial_score = 100
-			in_sphere = THIS
-		}
-	}
+	is_triggered_only = yes
 	
 	option = {
-		name = "Who knew that we could profit from Manchuria and call it nation-building?"
+		name = "The Mantetsu served its purpose. It is now time for the Mangyo to take the lead!"
 		prestige = 5
 		remove_country_modifier = mantetsu_jap
 		add_country_modifier = { name = mantetsu_jap_improved duration = -1 }
@@ -6620,7 +6578,7 @@ country_event = {
 	
 	trigger = {
 		tag = MCK
-		has_country_modifier = mantetsu_mck
+		has_global_flag = mantetsu_established
 		industrial_score = 5
 	}
 	
@@ -6645,15 +6603,7 @@ country_event = {
 	trigger = {
 		tag = JAP
 		steel_railroad = 1
-		OR = {
-			has_country_modifier = mantetsu_jap
-			has_country_modifier = mantetsu_jap_improved
-		}
-		MCK = { 
-			vassal_of = THIS 
-			has_country_modifier = mantetsu_mck
-			in_sphere = THIS
-		}
+		has_global_flag = mantetsu_established
 	}
 	
 	option = {
@@ -6663,7 +6613,7 @@ country_event = {
 			add_province_modifier = { name = sentetsu_merge duration = 2920 }
 		}
 		1622 = {
-			add_province_modifier = { name = sentetsu duration = -1 }
+			add_province_modifier = { name = sentetsu_merge duration = -1 }
 		}
 		set_country_flag = mantetsu_sentetsu_integration
 	}
@@ -6684,15 +6634,7 @@ country_event = {
 	trigger = {
 		tag = JAP
 		integral_rail_system = 1
-		OR = {
-			has_country_modifier = mantetsu_jap
-			has_country_modifier = mantetsu_jap_improved
-		}
-		MCK = { 
-			vassal_of = THIS 
-			has_country_modifier = mantetsu_mck
-			in_sphere = THIS
-		}
+		has_global_flag = mantetsu_established
 		1481 = { OR = { owned_by = THIS owned_by = MCK } }
 		1479 = { OR = { owned_by = THIS owned_by = MCK } }
 		1555 = { OR = { owned_by = THIS owned_by = MCK } }
@@ -6709,5 +6651,30 @@ country_event = {
 			activate_technology = integral_rail_system
 			any_pop = {	consciousness = -1 }
 		}
+	}
+}
+
+country_event = {
+	id = 800867
+	title = "The Manchurian Industrial Development Company"
+	desc = "EVTDESC800867"
+	picture = "zaibatsu"
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = { months = 60 }
+	
+	trigger = {
+		tag = MCK
+		vassal_of = JAP
+		has_global_flag = mantetsu_established
+		war = no
+	}
+	
+	option = {
+		name = "Aikawa shall bring $COUNTRY$ into the Modern Age!"
+		remove_country_modifier = mantetsu_mck
+		add_country_modifier = { name = mantetsu_mck_improved duration = -1 }
+		JAP = { country_event = 800863 }
 	}
 }
