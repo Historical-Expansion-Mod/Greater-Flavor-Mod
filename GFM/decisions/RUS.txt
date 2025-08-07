@@ -283,15 +283,67 @@ political_decisions = {
 		}
 		
 		allow = {
-			OR = { is_our_vassal = MGL AND = { CHI_1465 = { owned_by = THIS } CHI_1468 = { owned_by = THIS } } }
-			OR = { is_our_vassal = IMG CHI_1532 = { owned_by = THIS } }
+			MGL = { 
+				all_core = {
+					OR = { 
+						owned_by = THIS
+						owner = {
+							AND = {
+								in_sphere = THIS
+								OR = {
+									vassal_of = THIS
+									is_vassal = no
+								}
+							}
+						}
+					}
+				}
+			}
+			IMG = { 
+				all_core = {
+					OR = { 
+						owned_by = THIS
+						owner = {
+							AND = {
+								in_sphere = THIS
+								OR = {
+									vassal_of = THIS
+									is_vassal = no
+								}
+							}
+						}
+					}
+				}
+			} 
 		}
 		
 		effect = {
-			inherit = IMG
-			inherit = MGL
+			any_country = {
+				limit = {
+					in_sphere = THIS
+					OR = {
+						vassal_of = THIS
+						is_vassal = no
+					}
+					any_owned_province = { OR = { region = CHI_1465 region = CHI_1468 region = CHI_1532 } }
+				}
+				any_owned = {
+					limit = {
+						OR = {
+							region = CHI_1465 region = CHI_1468 region = CHI_1532
+						}
+					}
+					secede_province = THIS 
+					add_core = MCK
+				}
+			}
 			any_owned = {
-				limit = { OR = { region = CHI_1465 region = CHI_1468 region = CHI_1532 } }
+				limit = {
+					OR = {
+						is_core = MCK
+						region = CHI_1465 region = CHI_1468 region = CHI_1532
+					}
+				}
 				add_core = MCK
 				secede_province = MCK
 			}
@@ -313,18 +365,51 @@ political_decisions = {
 		}
 			
 		allow = {
-			OR = {
-				is_our_vassal = XIN
-				CHI_1600 = { owned_by = THIS }
-				CHI_1594 = { owned_by = THIS }
+			XIN = { 
+				all_core = {
+					OR = { 
+						owned_by = THIS
+						owner = {
+							AND = {
+								in_sphere = THIS
+								OR = {
+									vassal_of = THIS
+									is_vassal = no
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 		
 		effect = {
-			inherit = XIN
+			any_country = {
+				limit = {
+					in_sphere = THIS
+					OR = {
+						vassal_of = THIS
+						is_vassal = no
+					}
+					any_owned_province = {
+						OR = { region = CHI_1600 region = CHI_1594 }
+					}
+				}
+				any_owned = {
+					limit = {
+						OR = {
+							region = CHI_1600
+							region = CHI_1594
+						}
+					}
+					secede_province = THIS 
+					add_core = MCK
+				}
+			}
 			any_owned = {
 				limit = {
 					OR = {
+						is_core = MCK
 						region = CHI_1600
 						region = CHI_1594
 					}
@@ -349,19 +434,22 @@ political_decisions = {
 		}
 		
 		allow = {
-			OR = {
-				is_our_vassal = XIN
-				1488 = { OR = { owner = { tag = THIS vassal_of = THIS } } }
-				1490 = { OR = { owner = { tag = THIS vassal_of = THIS } } }
-				1491 = { OR = { owner = { tag = THIS vassal_of = THIS } } }
-			}
+			1488 = { owner = { OR = { tag = THIS AND = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } } } }
+			1490 = { owner = { OR = { tag = THIS AND = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } } } }
+			1491 = { owner = { OR = { tag = THIS AND = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } } } }
 		}
 		
 		effect = {
 			any_country = {
 				limit = {
-					vassal_of = THIS
-					OR = { owns = 1488 owns = 1490 owns = 1491 }
+					in_sphere = THIS
+					OR = {
+						vassal_of = THIS
+						is_vassal = no
+					}
+					any_owned_province = { 
+						OR = { province_id = 1488 province_id = 1490 province_id = 1491 }
+					}
 				}
 				any_owned = {
 					limit = { OR = { province_id = 1488 province_id = 1490 province_id = 1491 } }
@@ -1791,5 +1879,37 @@ political_decisions = {
 				random_owned = { limit = { owner = { government = constitutional_empire } } owner = { government = hms_government } }
 			}
 		}
+	}
+	
+	settlement_of_the_steppe = {
+		picture = commodities_in_central_asia
+		potential = {
+			tag = RUS
+			year = 1800
+			any_owned_province = { is_core = KAZ }
+			NOT = { has_country_flag = settlement_of_the_steppe }
+		}
+		
+		allow = {
+			invention = the_dark_continent
+			KAZ = { all_core = { owned_by = THIS } }
+		}
+		
+		effect = {
+			set_country_flag = settlement_of_the_steppe
+			prestige = 5
+			KAZ = { 
+				all_core = { 
+					limit = { 
+						NOT = { is_core = RUS } 
+					} 
+					add_province_modifier = { name = core_integration duration = -1 }
+					add_province_modifier = { name = russoification duration = -1 } 
+				}
+			}
+			any_pop = { limit = { has_pop_culture = kazak } militancy = 2 consciousness = 4 }
+			political_reform = settlement
+		}
+		ai_will_do = { factor = 1 }	
 	}
 }
