@@ -56,6 +56,7 @@ political_decisions = {
             OR = {
                 tag = CLM
                 tag = ECU
+				tag = ECM
                 tag = VNZ
             }
             NOT = {
@@ -75,6 +76,7 @@ political_decisions = {
             set_country_flag = we_shall_unite_by_sword
             CLM = { all_core = { add_core = THIS } }
             ECU = { all_core = { add_core = THIS } }
+            ECM = { all_core = { add_core = THIS } }
             VNZ = { all_core = { add_core = THIS } }
         }
         ai_will_do = { factor = 1 }
@@ -86,6 +88,7 @@ political_decisions = {
             OR = {
                 tag = CLM
                 tag = ECU
+                tag = ECM
                 tag = VNZ
             }
             NOT = { exists = GCO }
@@ -105,12 +108,15 @@ political_decisions = {
 							owner = { in_sphere = THIS }
                             owned_by = THIS
                             province_id = 2243
+                            province_id = 4088
                             province_id = 2242
                             province_id = 2287
+                            province_id = 4011
 							province_id = 2291
 							province_id = 3568
 							province_id = 830
 							province_id = 1723
+							empty = yes
                         }
                     }
                 }
@@ -125,14 +131,42 @@ political_decisions = {
 							owner = { in_sphere = THIS }
                             owned_by = THIS
                             province_id = 2243
+                            province_id = 4088
                             province_id = 2242
                             province_id = 2287
+                            province_id = 4011
 							province_id = 2291
 							province_id = 3568
 							province_id = 830
 							province_id = 1723
+							empty = yes
                         }
                     }
+					NOT = { any_land_province = { is_core = ECU } }
+                }
+            }
+            ECM = {
+                OR = {
+                    in_sphere = THIS
+                    vassal_of = THIS
+                    all_core = {
+                        OR = {
+							owner = { vassal_of = THIS }
+							owner = { in_sphere = THIS }
+                            owned_by = THIS
+                            province_id = 2243
+                            province_id = 4088
+                            province_id = 2242
+                            province_id = 2287
+                            province_id = 4011
+							province_id = 2291
+							province_id = 3568
+							province_id = 830
+							province_id = 1723
+							empty = yes
+                        }
+                    }
+					NOT = { any_land_province = { is_core = ECM } }
                 }
             }
             VNZ = {
@@ -145,12 +179,15 @@ political_decisions = {
 							owner = { in_sphere = THIS }
                             owned_by = THIS
                             province_id = 2243
+                            province_id = 4088
                             province_id = 2242
                             province_id = 2287
+                            province_id = 4011
 							province_id = 2291
 							province_id = 3568
 							province_id = 830
 							province_id = 1723
+							empty = yes
                         }
                     }
                 }
@@ -162,25 +199,20 @@ political_decisions = {
 
         effect = {
             prestige = 10
-            CLM = {
-                all_core = { add_core = GCO }
-            }
-            ECU = {
-                all_core = { add_core = GCO }
-            }
-            VNZ = {
-                all_core = { add_core = GCO }
-            }
-            PNM = {
-                all_core = { add_core = GCO }
-            }
+            CLM = { all_core = { add_core = GCO } }
+            ECU = { all_core = { add_core = GCO } }
+            ECM = { all_core = { add_core = GCO } }
+            VNZ = { all_core = { add_core = GCO } }
+            PNM = { all_core = { add_core = GCO } }
             # some early claims we can roll with for future colombian expansion
             2401 = { add_core = GCO }
             3567 = { add_core = GCO }
+            3998 = { add_core = GCO } 
+            2404 = { add_core = GCO } 
 			3359 = { add_core = GCO }
 			2532 = { add_core = GCO }
 			1977 = { add_core = GCO }
-			3750 = { add_core = GCO }
+			3999 = { add_core = GCO }
 			3359 = { add_core = GCO }
             any_country = {
                 limit = {
@@ -213,6 +245,14 @@ political_decisions = {
             }
             random_country = {
                 limit = {
+                    tag = ECM
+                    exists = yes
+                    ai = no
+                }
+                country_event = 11101
+            }
+            random_country = {
+                limit = {
                     tag = VNZ
                     exists = yes
                     ai = no
@@ -224,4 +264,229 @@ political_decisions = {
         }
         ai_will_do = { factor = 1 }
     }
+    choose_capital_GCO = {
+		picture = BolivarSA2
+        potential = {
+            tag = GCO
+			year = 1840
+	    	OR = { is_secondary_power = yes is_greater_power = yes } 
+			war = no
+            NOT = { has_country_flag = GCO_chooses_capital }
+        }
+
+        allow = {
+            owns = 3748
+            owns = 2270
+			owns = 2264
+			owns = 2279
+			owns = 2247
+			money = 20000
+        }
+
+        effect = {
+            set_country_flag = GCO_chooses_capital
+            country_event = 62026
+        }
+		ai_will_do = { factor = 1 }
+	}
+	#Hispanics buying Guyana from the British or whoever own it. I will eventually make this apply to more than just GCO.
+    guyana_purchase_GCO = {
+        picture = map_guyana
+        potential = {
+            2239 = { NOT = { owned_by = THIS } owner = { NOT = { capital_scope = { continent = north_america } } } }
+            AMA = { exists = no }
+			OR = { tag = GCO tag = FGC }
+            NOT = { has_country_flag = accepted_guyana_purchase }
+        }
+
+        allow = {
+            war = no
+            money = 80000
+			rank = 8
+        }
+
+        effect = {
+            set_country_flag = guyana_purchase
+            2239 = { owner = { country_event = 97071 } }
+        }
+        ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { 2408 = { is_core = GCO } }
+			}
+		}
+    }
+	
+#GCO claiming Cuba, migrated decision from sitka file	
+	Claim_CUB = {
+		picture = gco_cuba
+        potential = {
+			tag = GCO
+			NOT = { 2209 = { is_core = THIS } }
+			NOT = { has_country_flag = cub_claimed }
+			DOM = { all_core = { owned_by = THIS } }
+			year = 1845
+        }
+        allow = {
+			year = 1878
+			rank = 12
+            OR = {
+				war = no
+				2209 = { owner = { war_with = THIS } }
+			}
+			nationalism_n_imperialism = 1
+            is_vassal = no
+			is_disarmed = no
+			NOT = { has_country_modifier = recently_lost_war }
+        }
+        effect = {
+            badboy = 3
+			CUB = { all_core = { add_core = THIS } }
+			PRI = { all_core = { add_core = THIS } }
+			add_accepted_culture = caribeno
+			set_country_flag = cub_claimed
+        }
+        ai_will_do = {
+            factor = 1
+        }
+    }
+	
+#Buying Suriname
+	suriname_purchase_GCO = {
+        picture = map_guyana
+        potential = {
+            2240 = { NOT = { owned_by = THIS } owner = { NOT = { capital_scope = { continent = north_america } } } }
+            2239 = { owned_by = THIS }
+            GUY = { exists = no }
+			OR = { tag = GCO tag = FGC }
+            has_country_flag = guyana_purchase
+            NOT = { has_country_flag = accepted_suriname_purchase }
+        }
+
+        allow = {
+            war = no
+            money = 80000
+			rank = 8
+        }
+
+        effect = {
+            set_country_flag = suriname_purchase
+            2240 = { owner = { country_event = 97071 } }
+        }
+        ai_will_do = { factor = 1 }
+    }
+#Buying French Guiana (abomination)
+	french_guyana_purchase_GCO = {
+        picture = map_guyana
+        potential = {
+            2241 = { NOT = { owned_by = THIS } owner = { NOT = { capital_scope = { continent = north_america } } } }
+            2240 = { owned_by = THIS }
+			OR = { tag = GCO tag = FGC }
+            RIG = { exists = no }
+            NOT = { has_country_flag = accepted_french_guyana_purchase }
+        }
+
+        allow = {
+            war = no
+            money = 80000
+            has_country_flag = suriname_purchase
+			rank = 8
+        }
+
+        effect = {
+            set_country_flag = french_guyana_purchase
+            2241 = { owner = { country_event = 97071 } }
+        }
+        ai_will_do = { factor = 1 }
+	}
+    
+	second_congress_of_panama = {
+		potential = {
+			tag = GCO
+			NOT = { exists = FGC }
+			year = 1836
+		}
+		allow = {
+			year = 1880
+			OR = {
+				has_country_flag = greater_colombia
+				has_global_flag = PEU_partition
+			}
+			war = no
+			is_greater_power = yes
+			PEU = { capital_scope = { is_core = THIS owned_by = THIS } }
+			BOL = { capital_scope = { is_core = THIS owned_by = THIS } }
+			2264 = { is_core = THIS owned_by = THIS }
+			2279 = { is_core = THIS owned_by = THIS }
+			2209 = { is_core = THIS owned_by = THIS }
+			2214 = { is_core = THIS owned_by = THIS }
+			2222 = { is_core = THIS owned_by = THIS }
+		}
+		
+		effect = {
+			set_global_flag = congress_of_panama_2
+			prestige = 10
+			2322 = { add_core = GCO }
+			2322 = { add_core = BOL }
+			4182 = { add_core = GCO }
+			4182 = { add_core = BOL }
+			2415 = { add_core = GCO }
+			2407 = { add_core = GCO }
+			4076 = { add_core = GCO }
+			2412 = { add_core = GCO }
+			2408 = { add_core = GCO }
+			4109 = { add_core = GCO }
+			2402 = { add_core = GCO }
+			3994 = { add_core = GCO }
+			2404 = { add_core = GCO }
+			3998 = { add_core = GCO }
+			2404 = { add_core = GCO }
+			3651 = { add_core = GCO }
+			4186 = { add_core = GCO }
+			3652 = { add_core = GCO }
+			3996 = { add_core = GCO }
+			3995 = { add_core = GCO }
+			3652 = { add_core = GCO }
+			3993 = { add_core = GCO }
+			3567 = { add_core = GCO }
+			2403 = { add_core = GCO }
+			3992 = { add_core = GCO }
+			3435 = { add_core = GCO }
+			4187 = { add_core = GCO }
+			3381 = { add_core = GCO }
+			3382 = { add_core = GCO }
+			BRZ_2401 = { add_core = GCO }
+			GCO = { all_core = { add_core = FGC } }
+			PEU = { all_core = { add_core = FGC } }
+			BOL = { all_core = { add_core = FGC } }
+			PNM = { all_core = { add_core = FGC } }
+			DOM = { all_core = { add_core = FGC } }
+			COS = { all_core = { add_core = FGC } }
+			NIC = { all_core = { add_core = FGC } }
+			HON = { all_core = { add_core = FGC } }
+			ELS = { all_core = { add_core = FGC } }
+			GUA = { all_core = { add_core = FGC } }
+			UCA = { all_core = { add_core = FGC } }
+			any_country = {
+				limit = {
+					OR = { in_sphere = THIS vassal_of = THIS }
+				}
+				any_owned = {
+					limit = {
+						is_core = FGC
+					}
+					secede_province = THIS
+				}
+			}
+			any_country = {
+				limit = { is_culture_group = latin_american_cultures }
+				relation = { who = THIS value = 100 }
+			}
+			change_tag = FGC
+			capital = 2204
+			2204 = { change_province_name = "Colombo" add_country_modifier = { name = recently_built_city duration = 364 } }
+		}
+		ai_will_do = { factor = 0 }
+	}
 }
