@@ -1198,6 +1198,7 @@ country_event = {
 	
 	option = {
 		name = "Bolivia is a integral part of Bolivar's project.§RGain 10 infamy§"
+		set_country_flag = gco_bol_aggression
 		prestige = 10
 		badboy = 10
 		GCO = { release_vassal = BOL }
@@ -1996,6 +1997,145 @@ country_event = {
 		}
 		BRZ_2416 = { remove_core = BRZ }
 		PRG_2343 = { remove_core = BRZ }
+	}
+}
+country_event = {
+	id = 6422038
+	title = "The Provisional Government of Ladario" 
+	desc = "6422038_desc"
+	picture = "treaty_of_petropolis"
+	fire_only_once = yes
+
+	trigger = {
+		tag = BOL
+		has_global_flag = GCO_DESTROYED_BRZ
+		OR = { GCO = { has_country_flag = gco_bol_aggression } FGC = { has_country_flag = gco_bol_aggression } }
+		OR = { war_with = GCO war_with = FGC }
+		national_provinces_occupied = 0.01
+		MGO = { exists = no }
+		owns = 2317
+		owns = 4191
+	}
+
+	mean_time_to_happen = { days = 1 }
+
+	option = { 
+		name = "How dare they!"
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 4191
+					province_id = 3380
+					province_id = 3990
+				}
+			}
+			secede_province = MGO
+		}
+		MGO = {
+			country_event = 6422039
+			capital = 4191
+		}
+		random_owned = { limit = { owner = { war_with = GCO } } GCO = { country_event = 6422040 } }
+		random_owned = { limit = { owner = { war_with = FGC } } FGC = { country_event = 6422040 } }
+		random_owned = {
+			limit = { owner = { 4115 = { owned_by = BRZ } } }
+			BRZ = { create_vassal = MGO }
+		}
+		random_owned = {
+			limit = { owner = { 4115 = { owned_by = UPB } } }
+			UPB = { create_vassal = MGO }
+		}
+	}
+}
+country_event = {
+	id = 6422039
+	title = "The Provisional Government of Ladario" 
+	desc = "\n\nThis is our new independent state, under the city of Ladário, in oppose to the Colombian invasion of Bolivia."
+	picture = "treaty_of_petropolis"
+	is_triggered_only = yes
+
+	option = { 
+		name = "We are Brazilians, not Colombians!"
+		government = prov_gov_conservative
+		ruling_party_ideology = conservative
+		set_country_flag = ladario_independent_state
+		capital = 4191
+	}
+}
+country_event = {
+	id = 6422040
+	title = "The Provisional Government of Ladario" 
+	desc = "6422040_desc"
+	picture = "treaty_of_petropolis"
+	is_triggered_only = yes
+
+	option = { 
+		name = "How dare they!"
+	}
+}
+
+country_event = {
+	id = 6422041
+	title = "The end of the Provisional Government of Ladario" 
+	desc = "\n\nIt's over, the Brazilian government refuses to accept us and our state cannot survive any longer, we have to reintegrate us into the Bolivian state."
+	picture = "treaty_of_petropolis"
+	fire_only_once = yes
+
+	trigger = {
+		tag = MGO
+		year = 1874
+		government = prov_gov_conservative
+		NOT = { owns = 2317 }
+	}
+	option = { 
+		name = "What a shame..."
+		clr_country_flag = ladario_independent_state
+		2317 = {
+			owner = {
+				country_event = 6422042
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 6422042
+	title = "The end of the Provisional Government of Ladario" 
+	desc = "\n\nThe independent state of Ladario has decided to join us once again, they seems to have been abandoned by the Brazilian government."
+	picture = "treaty_of_petropolis"
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = { 
+		name = "Huzzah!"
+		MGO = { capital = 2418 }
+		random_owned = {
+			limit = {
+				3584 = {
+					owner = {
+						has_country_flag = monarchy_government
+					}
+				}
+			}
+			MGO = { government = hms_government }
+		}
+		random_owned = {
+			limit = {
+				3584 = {
+					owner = {
+						NOT = {
+							government = absolute_empire
+							government = semi_constitutional_empire
+							government = constitutional_empire
+							government = absolute_monarchy
+							government = prussian_constitutionalism
+							government = hms_government
+						}
+					}
+				}
+			}
+			MGO = { government = democracy }
+		}
+		inherit = MGO
 	}
 }
 
