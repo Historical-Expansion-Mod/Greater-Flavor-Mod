@@ -1,4 +1,4 @@
-### AT 52069
+### AT 52073
 ### PROVINCE CLEANUP
 
 country_event = {
@@ -410,6 +410,7 @@ country_event = {
 				defender_goal = { casus_belli = status_quo } 
 			}
 		}
+		1193 = { secede_province = KOK }
     }
 }
 
@@ -622,7 +623,7 @@ country_event = {
 		}
 		relation = {
 			who = KAZ
-			value = -50
+			value = -25
 		}
 		diplomatic_influence = {
 			who = KSJ
@@ -2426,12 +2427,14 @@ country_event = {
 	trigger = {
 		tag = PER
 		year = 1832
+		owns = 1147
 		month = 6
 		KHI = { owns = 3498 }
+		KHR = { exists = no }
 	}
 	
 	option = {
-		name = "The Nayeb-al-Saltaneh marches towards Sarakhs! §RGain 2 infamy§W"
+		name = "The Nayeb al-Saltaneh marches towards Sarakhs! §RGain 2 infamy§W"
 		prestige = 3
 		badboy = 2
 		KHI = { country_event = 52007 }
@@ -2446,8 +2449,9 @@ country_event = {
 				1147 = { any_pop = { limit = { has_pop_culture = turkmen } reduce_pop = 0.60 } }
 			}
 		}
+		HRT = { country_event = { id = 52070 days = 30 } treasury = 15000 }
 		686 = { add_core = PER }
-		1147 = { add_core = PER }
+		1147 = { add_core = PER reduce_pop = .98 }
 		1150 = { add_core = PER }
 		1204 = { add_core = PER }
 		3498 = { add_core = PER }
@@ -2455,6 +2459,7 @@ country_event = {
 		3501 = { add_core = PER }
 		3502 = { add_core = PER }
 		3514 = { add_core = PER }
+		KHR = { government = absolute_monarchy primary_culture = persian remove_accepted_culture = turkmen }
 	}
 	
 	mean_time_to_happen = { months = 3 }
@@ -2529,12 +2534,129 @@ country_event = {
 
 	option = {
 		name = "Allah Quli Khan stands truimphant!"
-		prestige = 2
+		prestige = 5
+		1147 = { secede_province = KHI }
 		1150 = { secede_province = KHI }
 		3500 = { secede_province = KHI }
 	}
 	
 	mean_time_to_happen = { days = 1 }
+}
+
+country_event = {
+	id = 52070
+	title = "Abbas Mirza's Ultimatum"
+	desc = "1833HERATSIEGE1"
+	picture = "abbasmirza1"
+	is_triggered_only = yes
+	
+	option = {
+		name = "Offer a gift to placate the Shah."
+		prestige = 5
+		treasury = -1500
+		PER = { country_event = 52071 }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "We must accept our place under the Peacock Throne."
+		prestige = -10
+		PER = { create_vassal = HRT }
+		HRT = { all_core = { add_core = PER } }
+		4194 = { add_core = PER }
+		3528 = { add_core = PER }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 52071
+	title = "Herat Defies Us!"
+	desc = "1833HERATSIEGE2"
+	picture = "siege_of_herat2"
+	is_triggered_only = yes
+	
+	option = {
+		name = "Accept the gift. Herat may remain free."
+		prestige = -5
+		treasury = 15000
+		ai_chance = { factor = 0 }
+	}
+	
+	option = {
+		name = "Does Herat's insolence know no bounds? Prepare for war! §RDeclare war on Herat§W"
+		set_country_flag = heratsiege33
+		prestige = 2.5
+		war = {
+				target = HRT
+				attacker_goal = { casus_belli = make_puppet_no_add_wargoal }
+				defender_goal = { casus_belli = humiliate_no_infamy }
+				call_ally = no
+			}
+		HRT = {
+			create_alliance = MYN
+			create_alliance = HAZ
+			# Audax Validator "." Ignore_NEXT
+			war = { attacker_goal = { casus_belli = call_allies_cb } call_ally = yes }
+		}
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 52072
+	title = "The Death of Abbas Mirza"
+	desc = "1833HERATSIEGE3"
+	picture = "abbasmirza2"
+	fire_only_once = yes
+	
+	trigger = {
+		year = 1833
+		tag = PER
+		month = 10
+		has_country_flag = monarchy_government
+	}
+	
+	option = {
+		name = "A peace must be made in haste!"
+		clr_country_flag = heratsiege33
+		prestige = -2
+		end_war = HRT
+		war = {
+			target = HRT
+			attacker_goal = { casus_belli = test_end_war }
+			call_ally = no
+		}
+		create_vassal = HRT
+		treasury = 15000
+		kill_leader = 247
+		ENG = { diplomatic_influence = { who = HRT value = 200 } }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Mohammad Mirza will continue the siege! §RGain 4 infamy§W"
+		clr_country_flag = heratsiege33
+		badboy = 4
+		war_exhaustion = 25
+		end_war = HRT
+		war = {
+			target = HRT
+			attacker_goal = { casus_belli = conquest_any }
+			call_ally = no
+		}
+		HRT = {
+			create_alliance = AFG
+			create_alliance = KND
+			# Audax Validator "." Ignore_NEXT
+			war = { attacker_goal = { casus_belli = call_allies_cb } call_ally = yes }
+		}
+		kill_leader = 247
+		ENG = { diplomatic_influence = { who = HRT value = 200 } }
+		ai_chance = { factor = 0 }
+	}
+	
+	mean_time_to_happen = { days = 10 }
 }
 
 country_event = {
