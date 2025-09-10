@@ -71,6 +71,7 @@ GFM owes its existence to:
 * ElYisusKing
 * Trigori
 * Valerus9
+* Sneaky Deer
 * Pagaes
 * EtherealTamakii
 
