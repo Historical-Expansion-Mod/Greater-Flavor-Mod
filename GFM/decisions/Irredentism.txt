@@ -548,10 +548,11 @@ political_decisions = {
     }
 
     unite_with_ukraine = {
-        picture = greater_ukraine
+        picture = ukraine_coa_proposal
         potential = {
             tag = RUT
             exists = UKR
+			OR = { ai = yes UKR = { ai = yes } }
             NOT = { has_country_flag = unite_with_ukraine }
             NOT = { has_global_flag = sw_set }
         }
@@ -564,7 +565,10 @@ political_decisions = {
             UKR = {
                 war = no
                 neighbour = THIS
-                is_vassal = no
+                OR = {
+					is_vassal = no
+					UKR = { overlord = { is_sphere_leader_of = THIS } }
+				}
             }
             war = no
             is_vassal = no
@@ -582,8 +586,7 @@ political_decisions = {
             705 = { add_core = UKR }
             random_country = {
                 limit = {
-                    tag = UKR
-                    ai = yes
+					tag = UKR
                     THIS = { ai = yes }
                 }
                 inherit = THIS
@@ -591,13 +594,13 @@ political_decisions = {
             random_country = {
                 limit = {
                     tag = UKR
-                    ai = yes
+					is_vassal = no
                     THIS = { ai = no }
                 }
-                any_owned = { secede_province = THIS }
                 THIS = {
+					inherit = UKR
                     random_owned = {
-                        limit = { province_id = 958 }
+                        limit = { owner = { owns = = 958 } }
                         owner = { capital = 958 }
                     }
                     change_tag = UKR
@@ -606,9 +609,23 @@ political_decisions = {
             random_country = {
                 limit = {
                     tag = UKR
-                    ai = no
+                    is_vassal = yes
+                    THIS = { ai = no }
                 }
-                country_event = 60130
+                UKR = { 
+					overlord = {
+						create_vassal = THIS
+						create_alliance = THIS
+					}
+				}
+				THIS = {
+					inherit = UKR
+                    random_owned = {
+                        limit = { owner = { owns = = 958 } }
+                        owner = { capital = 958 }
+                    }
+                    change_tag = UKR
+                }
             }
         }
 

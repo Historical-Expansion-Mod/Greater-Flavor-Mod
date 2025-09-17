@@ -314,6 +314,7 @@ political_decisions = {
         potential = {
             exists = ROM
             is_culture_group = pan_romanian
+			OR = { ai = yes ROM = { ai = yes } }
             NOT = {
                 has_country_flag = unite_with_romania
                 tag = ROM
@@ -325,31 +326,32 @@ political_decisions = {
 
         allow = {
             OR = {
-                is_vassal = no
-                overlord = { is_our_vassal = ROM }
-            }
-            OR = {
                 part_of_sphere = no
                 sphere_owner = { is_sphere_leader_of = ROM }
             }
             ROM = {
                 war = no
                 neighbour = THIS
+				OR = {
+					is_vassal = no
+					ROM = { overlord = { is_sphere_leader_of = THIS } }
+				}
             }
             war = no
+			is_vassal = no
             NOT = { is_mobilised = yes }
         }
 
         effect = {
             set_country_flag = unite_with_romania
+			all_core = { add_core = ROM }
             random_owned = {
                 limit = { owner = { accepted_culture = hungarian } }
                 owner = { remove_accepted_culture = hungarian }
-            }
+            }			
             random_country = {
                 limit = {
-                    tag = ROM
-                    ai = yes
+					tag = ROM
                     THIS = { ai = yes }
                 }
                 inherit = THIS
@@ -357,26 +359,42 @@ political_decisions = {
             random_country = {
                 limit = {
                     tag = ROM
-                    ai = yes
+					is_vassal = no
                     THIS = { ai = no }
                 }
-                any_owned = { secede_province = THIS }
                 THIS = {
+					inherit = ROM
                     random_owned = {
-                        limit = { province_id = 664 }
+                        limit = { owner = { owns = 664 } }
                         owner = { capital = 664 }
                     }
-                    change_tag = ROM
-                    795 = { remove_core = SIE }
+					795 = { remove_core = SIE }
 					3932 = { remove_core = SIE }
+                    change_tag = ROM
                 }
             }
             random_country = {
                 limit = {
                     tag = ROM
-                    ai = no
+                    is_vassal = yes
+                    THIS = { ai = no }
                 }
-                country_event = 60130
+                ROM = { 
+					overlord = {
+						create_vassal = THIS
+						create_alliance = THIS
+					}
+				}
+				THIS = {
+					inherit = ROM
+                    random_owned = {
+                        limit = { owner = { owns = 664 } }
+                        owner = { capital = 664 }
+                    }
+					795 = { remove_core = SIE }
+					3932 = { remove_core = SIE }
+                    change_tag = ROM
+                }
             }
             ROM = {
 				any_owned = {
@@ -606,16 +624,13 @@ political_decisions = {
     unite_with_croatia = {
         picture = gtfo
         potential = {
-            exists = CRO
             tag = DLM
+            exists = CRO
+			OR = { ai = yes CRO = { ai = yes } }
             NOT = { has_country_flag = unite_with_croatia }
         }
 
         allow = {
-            OR = {
-                is_vassal = no
-                overlord = { is_our_vassal = CRO }
-            }
             OR = {
                 part_of_sphere = no
                 sphere_owner = { is_sphere_leader_of = CRO }
@@ -623,21 +638,23 @@ political_decisions = {
             CRO = {
                 war = no
                 neighbour = THIS
-                OR = {
-                    is_vassal = no
-                    overlord = { is_our_vassal = DLM }
-                }
+				OR = {
+					is_vassal = no
+					CRO = { overlord = { is_sphere_leader_of = THIS } }
+				}
             }
+			is_vassal = no
             war = no
             NOT = { has_global_flag = sw_set }
         }
 
         effect = {
             set_country_flag = unite_with_croatia
-            all_core = { remove_core = DLM }
+            all_core = { add_core = CRO }
+            
             random_country = {
                 limit = {
-                    tag = CRO
+					tag = POL
                     THIS = { ai = yes }
                 }
                 inherit = THIS
@@ -645,13 +662,34 @@ political_decisions = {
             random_country = {
                 limit = {
                     tag = CRO
-                    ai = yes
+					is_vassal = no
                     THIS = { ai = no }
                 }
                 THIS = {
-                    inherit = CRO
+					inherit = CRO
                     random_owned = {
-                        limit = { province_id = 771 }
+                        limit = { owner = { owns = 771 } }
+                        owner = { capital = 771 }
+                    }
+                    change_tag = CRO
+                }
+            }
+            random_country = {
+                limit = {
+                    tag = CRO
+                    is_vassal = yes
+                    THIS = { ai = no }
+                }
+                CRO = { 
+					overlord = {
+						create_vassal = THIS
+						create_alliance = THIS
+					}
+				}
+				THIS = {
+					inherit = CRO
+                    random_owned = {
+                        limit = { owner = { owns = 771 } }
                         owner = { capital = 771 }
                     }
                     change_tag = CRO
