@@ -1306,6 +1306,10 @@ political_decisions = {
 				tag = IMG
 			}
             exists = MGL
+			OR = {
+				THIS = { ai = yes }
+				MGL = { ai = yes }
+			}
             NOT = { has_country_flag = unite_with_mongolia }
             NOT = { has_global_flag = sw_set }
         }
@@ -1320,63 +1324,151 @@ political_decisions = {
             MGL = {
                 war = no
                 neighbour = THIS
-                is_vassal = no
+				OR = {
+					is_vassal = no
+					MGL = { overlord = { is_sphere_leader_of = THIS } }
+				}
             }
         }
 
         effect = {
             set_country_flag = unite_with_mongolia
-            BRY = { all_core = { add_core = MGL } }
-			IMG = { all_core = { add_core = MGL } }
+            THIS = { all_core = { add_core = MGL } }
 			MGL = { remove_country_modifier = uncivilized_isolationism }
-			IMG = { remove_country_modifier = uncivilized_isolationism }
-			BRY = { remove_country_modifier = uncivilized_isolationism }
+			THIS = { remove_country_modifier = uncivilized_isolationism }
             random_country = {
                 limit = {
                     tag = MGL
-                    ai = yes
-                    BRY = { ai = yes }
+                    THIS = { ai = yes }
                 } 
-                inherit = BRY
-				inherit = IMG
+                inherit = THIS
             }
             random_country = {
                 limit = {
                     tag = MGL
-                    ai = yes
-                    BRY = { ai = no }
+					is_vassal = yes
+                    THIS = { ai = no }
                 }
-                any_owned = { secede_province = BRY }
-                BRY = {
-                    random_owned = {
-                        limit = { province_id = 1465 }
-                        owner = { capital = 1465 }
+				MGL = { 
+					overlord = {
+						create_vassal = THIS
+						create_alliance = THIS
+					}
+				}
+				THIS = {
+					inherit = MGL
+					random_owned = {
+                        limit = { owner = { owns = 1468 } }
+                        owner = { capital = 1468 }
                     }
-                    change_tag = MGL
-                }
+					change_tag = MGL
+				}
             }
-            random_country = {
+			random_country = {
                 limit = {
                     tag = MGL
-                    ai = yes
-                    IMG = { ai = no }
+					is_vassal = no
+                    THIS = { ai = no }
                 }
-                any_owned = { secede_province = IMG }
-                IMG = {
+                annex_to = THIS
+                THIS = {
                     random_owned = {
-                        limit = { province_id = 1465 }
-                        owner = { capital = 1465 }
+                        limit = { owner = { owns = 1468 } }
+                        owner = { capital = 1468 }
                     }
                     change_tag = MGL
                 }
             }
+		}
 
-        }
-
-        ai_will_do = {
-            factor = 1
-        }
+        ai_will_do = { factor = 1 }
+	
     }
+	
+	unite_with_finland = {
+		picture = suur_suomi
+		potential = {
+			tag = KRL
+			exists = FIN
+			OR = {
+				FIN = { ai = yes }
+				KRL = { ai = yes }
+			}
+			NOT = {
+				has_country_flag = unite_with_finland
+				has_country_flag = ugrian_peoples_claimed
+				has_global_flag = sw_set
+			}
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+            OR = {
+                part_of_sphere = no
+                sphere_owner = { is_sphere_leader_of = FIN }
+            }
+            FIN = {
+                war = no
+                neighbour = THIS
+                OR = {
+					is_vassal = no
+					FIN = { overlord = { is_sphere_leader_of = THIS } }
+				}
+            }
+		}
+		
+		effect = {
+			set_country_flag = unite_with_finland
+            THIS = { all_core = { add_core = FIN } }
+            random_country = {
+                limit = {
+                    tag = FIN
+                    THIS = { ai = yes }
+                } 
+                inherit = THIS
+            }
+            random_country = {
+                limit = {
+                    tag = FIN
+					is_vassal = yes
+                    THIS = { ai = no }
+                }
+				FIN = { 
+					overlord = {
+						create_vassal = THIS
+						create_alliance = THIS
+					}
+				}
+				THIS = {
+					inherit = FIN
+					random_owned = {
+                        limit = { owner = { owns = 343 } }
+                        owner = { capital = 343 }
+                    }
+					change_tag = FIN
+				}
+            }
+			random_country = {
+                limit = {
+                    tag = FIN
+					is_vassal = no
+                    THIS = { ai = no }
+                }
+                annex_to = THIS
+                THIS = {
+                    random_owned = {
+                        limit = { owner = { owns = 343 } }
+                        owner = { capital = 343 }
+                    }
+                    change_tag = FIN
+                }
+            }
+		}
+		
+        ai_will_do = { factor = 1 }
+	
+	}
 
     form_indochina = {
         picture = map_east_indies
