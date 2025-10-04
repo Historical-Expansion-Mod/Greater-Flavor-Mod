@@ -57,8 +57,27 @@ political_decisions = {
 				limit = { AND = { ai = yes tag = KSJ } AND = { NOT = { vassal_of = RUS } ai = yes tag = BKY } AND = { ai = yes tag = KAZ } }
 				annex_to = THIS
 			}
-			change_tag = KAZ
+			change_tag_no_core_switch = KAZ
 			government = absolute_empire
+		}
+        ai_will_do = {
+            factor = 1
+        }
+    }
+	
+	kenesary_unite_kazakhstan = {
+		picture = kenesary
+        potential = {
+			tag = KAZ
+			owns = 1181
+			owns = 1193
+			owns = 1197
+			government = absolute_monarchy
+			NOT = { has_country_flag = kenesary_kazakh_khanate }
+        }
+        allow = {}
+        effect = {
+			KAZ = { country_event = 52013 }
 		}
         ai_will_do = {
             factor = 1
@@ -170,72 +189,7 @@ political_decisions = {
 				factor = 0 NOT = { year = 1847 }
 				}
         }
-    }
-	
-	rus_invade_kazakhs = {
-		picture = kenesary
-        potential = {
-			tag = RUS
-			OR = {
-				AND = { ai = yes year = 1845 }
-				AND = { ai = no KAZ = { has_country_flag = kenesary_rebellion } }
-			}
-			NOT = { has_country_flag = invaded_kazakhstan }
-        }
-        allow = {
-            is_vassal = no
-			KAZ = { is_vassal = no }
-			owns = 1044
-			NOT = { truce_with = KAZ }
-			OR = { state_n_government = 1 ai = yes}
-        }
-        effect = {
-			set_country_flag = invaded_kazakhstan
-			prestige = 2.5
-			badboy = 2.5
-			RUS = { country_event = 52021 }
-		}
-        ai_will_do = {
-            factor = 1
-        }
-    }
-	
-	kenesary_war_kaz_victory = {
-		picture = kenesary
-        potential = {
-			tag = KAZ
-			has_global_flag = kenesary_war 
-			RUS = { has_country_flag = lost_the_war }
-		}
-		allow = {}
-        effect = {
-			clr_global_flag = kenesary_war
-			RUS = { clr_country_flag = lost_the_war }
-			random_owned = { limit = { owner = { NOT = { has_country_flag = kenesary_dead } } } owner = { KAZ = { country_event = 52024 } } }
-			random_owned = { limit = { owner = { has_country_flag = kenesary_dead } } owner = { KAZ = { country_event = 52026 } } }
-		}
-        ai_will_do = {
-            factor = 1	
-        }
-    }
-	
-	kenesary_war_rus_victory = {
-		picture = kenesary
-        potential = {
-			tag = RUS
-			has_global_flag = kenesary_war
-			KAZ = { has_country_flag = lost_the_war }
-        }
-		allow = {}
-        effect = {
-			clr_global_flag = kenesary_war
-			KAZ = { clr_country_flag = lost_the_war }
-			RUS = { country_event = 52033 }
-		}
-        ai_will_do = {
-            factor = 1
-        }
-    }
+    } 
 	
 	kaz_conquer_kyrgyz = {
 		picture = ablai_khan
@@ -252,7 +206,7 @@ political_decisions = {
 				AND = { owns = 1185 owns = 1186 } 
 				KSJ = { is_vassal = THIS }
 			}
-			NOT = { relation = { who = KYR value = 0 } }
+			OR = { NOT = { KYR = exists } NOT = { relation = { who = KYR value = 0 } }
 			OR = { KYR = { exists = yes } owns = 1189 }
         }
         effect = {
@@ -277,14 +231,14 @@ political_decisions = {
 			tag = KAZ
 			NOT = { has_country_flag = kaz_conquered_kokand }
 			has_country_flag = kaz_conquered_kyrgyz
+			year = 1845
         }
         allow = {
 			prestige = 15
             war = no
             is_vassal = no
 			government = absolute_empire
-			KOK = { exists = yes }
-			year = 1845
+			OR = { owns = 1202 KOK = { exists = yes } }
         }
         effect = {
 			set_country_flag = kaz_conquered_kokand
@@ -388,6 +342,138 @@ political_decisions = {
         ai_will_do = { factor = 1 }
     }
 	
+	restore_faizabad_mines = {
+		picture = lapis_mines
+        potential = {
+			owns = 1210
+			1210 = { NOT = { produces = gems } }
+        }
+        allow = {
+			money = 30000
+            war = no
+            is_vassal = no
+			OR = {
+				civilized = yes
+				land_reform = yes_land_reform
+			}
+        }
+        effect = {
+			treasury = -25000
+            prestige = 5
+			1210 = { 
+				trade_goods = gems 
+				life_rating = 3
+				add_province_modifier = { name = switched_production duration = 365 }
+			}
+		}
+        ai_will_do = {
+            factor = 1
+        }
+    }
+	
+### RUSSIAN EXPANSION
+
+	rus_invade_kazakhs = {
+		picture = kenesary
+        potential = {
+			tag = RUS
+			OR = {
+				AND = { ai = yes year = 1845 }
+				AND = { ai = no KAZ = { has_country_flag = kenesary_rebellion } }
+			}
+			NOT = { has_country_flag = invaded_kazakhstan }
+        }
+        allow = {
+            is_vassal = no
+			KAZ = { is_vassal = no }
+			owns = 1044
+			NOT = { truce_with = KAZ }
+			OR = { state_n_government = 1 ai = yes}
+        }
+        effect = {
+			set_country_flag = invaded_kazakhstan
+			prestige = 2.5
+			badboy = 2.5
+			RUS = { country_event = 52021 }
+		}
+        ai_will_do = {
+            factor = 1
+        }
+    }
+	
+	kenesary_war_kaz_victory = {
+		picture = kenesary
+        potential = {
+			tag = KAZ
+			has_global_flag = kenesary_war 
+			RUS = { has_country_flag = lost_the_war }
+		}
+		allow = {}
+        effect = {
+			clr_global_flag = kenesary_war
+			RUS = { clr_country_flag = lost_the_war }
+			random_owned = { limit = { owner = { NOT = { has_country_flag = kenesary_dead } } } owner = { KAZ = { country_event = 52024 } } }
+			random_owned = { limit = { owner = { has_country_flag = kenesary_dead } } owner = { KAZ = { country_event = 52026 } } }
+		}
+        ai_will_do = {
+            factor = 1	
+        }
+    }
+	
+	kenesary_war_rus_victory = {
+		picture = kenesary
+        potential = {
+			tag = RUS
+			has_global_flag = kenesary_war
+			KAZ = { has_country_flag = lost_the_war }
+        }
+		allow = {}
+        effect = {
+			clr_global_flag = kenesary_war
+			KAZ = { clr_country_flag = lost_the_war }
+			RUS = { country_event = 52033 }
+		}
+        ai_will_do = {
+            factor = 1
+        }
+    }
+	
+	siege_akmechet = {
+        picture = akmechet_siege
+        potential = {
+			year = 1853
+			tag = RUS
+			owns = 4140
+			NOT = { owns = 1193 }
+			NOT = { has_country_flag = sieged_akmechet }
+        }
+
+        allow = {
+			money = 6000
+			war = no
+			iron_muzzle_loaded_artillery = 1
+			KOK = { NOT = { vassal_of = THIS } }
+		}
+
+        effect = {
+			set_country_flag = sieged_akmechet
+			badboy = 1
+			prestige = 5
+			treasury = -5000
+			1193 = {
+				owner = {
+					relation = {
+						who = RUS
+						value = -25
+					}
+					country_event = 52029
+				}
+			}
+        }
+
+        ai_will_do = { factor = 1 }
+    }
+	
 	found_kopal = {
         picture = kazakh_steppe
         potential = {
@@ -422,66 +508,5 @@ political_decisions = {
         }
 
         ai_will_do = { factor = 1 }
-    }
-	
-	settlement_of_the_steppe = {
-		picture = commodities_in_central_asia
-		potential = {
-			tag = RUS
-			year = 1840
-			any_owned_province = { is_core = KAZ }
-			NOT = { has_country_flag = settlement_of_the_steppe }
-		}
-		
-		allow = {
-			invention = manifest_destiny_invention
-			KAZ = { all_core = { owned_by = THIS } }
-		}
-		
-		effect = {
-			set_country_flag = settlement_of_the_steppe
-			prestige = 5
-			KAZ = { 
-				all_core = { 
-					limit = { 
-						NOT = { is_core = RUS } 
-					} 
-					add_province_modifier = { name = core_integration duration = -1 }
-					add_province_modifier = { name = russoification duration = -1 } 
-				}
-			}
-			any_pop = { limit = { has_pop_culture = kazak } militancy = 4 consciousness = 6 }
-			colonial_policy = settlement
-		}
-		ai_will_do = { factor = 1 }	
-	}
-	
-	restore_faizabad_mines = {
-		picture = lapis_mines
-        potential = {
-			owns = 1210
-			1210 = { NOT = { produces = gems } }
-        }
-        allow = {
-			money = 30000
-            war = no
-            is_vassal = no
-			OR = {
-				civilized = yes
-				land_reform = yes_land_reform
-			}
-        }
-        effect = {
-			treasury = -25000
-            prestige = 5
-			1210 = { 
-				trade_goods = gems 
-				life_rating = 3
-				add_province_modifier = { name = switched_production duration = 365 }
-			}
-		}
-        ai_will_do = {
-            factor = 1
-        }
     }
 }
