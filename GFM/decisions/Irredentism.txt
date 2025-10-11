@@ -107,6 +107,93 @@ political_decisions = {
         ai_will_do = { factor = 1 }
     }
 
+	claim_greater_sapmi = {
+		picture = claim_sapmi
+		potential = {
+			tag = SMI
+			NOT = { has_country_flag = greater_sapmi_claimed }
+		}
+		allow = {
+			rank = 16
+			is_vassal = no
+			has_unclaimed_cores = no
+			OR = {
+				war_policy = jingoism
+				war_policy = pro_military
+			}
+		}
+		effect = {
+			prestige = 10
+			badboy = 2.5
+			318 = {
+				add_core = SMI
+			}
+			319 = {
+				add_core = SMI
+			}
+			305 = {
+				add_core = SMI
+			}
+			set_country_flag = greater_sapmi_claimed
+		}
+		ai_will_do = { factor = 1 }
+	}
+
+	claim_western_karelia = {
+		picture = stamp_karelia
+		potential = {
+			tag = KRL
+			NOT = { has_country_flag = western_karelia_claimed }
+		}
+		allow = {
+			has_unclaimed_cores = no
+			rank = 16
+			is_vassal = no
+			OR = {
+				war_policy = jingoism
+				war_policy = pro_military
+			}
+		}
+		effect = {
+			prestige = 10
+			badboy = 1
+			set_country_flag = western_karelia_claimed
+			340 = {
+				add_core = KRL
+			}
+			339 = {
+				add_core = KRL
+			}
+		}
+		ai_will_do = { factor = 1 }
+	}
+
+	claim_ingria = {
+		picture = karelia_map
+		potential = {
+			tag = KRL
+			has_country_flag = western_karelia_claimed
+			NOT = { has_country_flag = ingria_claimed }
+		}
+		allow = {
+			has_unclaimed_cores = no
+			rank = 16
+			is_vassal = no
+			OR = {
+				war_policy = jingoism
+				war_policy = pro_military
+			}
+		}
+		effect = {
+			prestige = 20
+			badboy = 5
+			RUS_994 = {
+				add_core = KRL
+			}
+			set_country_flag = ingria_claimed
+		}
+		ai_will_do = { factor = 1 }
+	}
 
     greater_afghanistan = {
         picture = form_durrani_empire
@@ -228,15 +315,23 @@ political_decisions = {
         picture = greater_nepal
         potential = {
             tag = NEP
+			OR = {
+				government = fascist_dictatorship
+				ai = no
+				AND = {
+					ruling_party_ideology = reactionary
+					civilized = yes
+				}
+			}
             NOT = { has_country_flag = claimed_greater_nepal }
         }
 
         allow = {
-            government = fascist_dictatorship
             OR = {
-                NOT = { neighbour = ENG }
-                AND = {
-                    war_policy = jingoism
+                NOT = { neighbour = EIC neighbour = ENG }
+                war_policy = jingoism
+				AND = {
+                    war_policy = pro_military
                     civilized = yes
                 }
             }
@@ -460,10 +555,11 @@ political_decisions = {
     }
 
     unite_with_ukraine = {
-        picture = greater_ukraine
+        picture = ukraine_coa_proposal
         potential = {
             tag = RUT
             exists = UKR
+			OR = { ai = yes UKR = { ai = yes } }
             NOT = { has_country_flag = unite_with_ukraine }
             NOT = { has_global_flag = sw_set }
         }
@@ -476,7 +572,10 @@ political_decisions = {
             UKR = {
                 war = no
                 neighbour = THIS
-                is_vassal = no
+                OR = {
+					is_vassal = no
+					UKR = { overlord = { is_sphere_leader_of = THIS } }
+				}
             }
             war = no
             is_vassal = no
@@ -494,8 +593,7 @@ political_decisions = {
             705 = { add_core = UKR }
             random_country = {
                 limit = {
-                    tag = UKR
-                    ai = yes
+					tag = UKR
                     THIS = { ai = yes }
                 }
                 inherit = THIS
@@ -503,13 +601,13 @@ political_decisions = {
             random_country = {
                 limit = {
                     tag = UKR
-                    ai = yes
+					is_vassal = no
                     THIS = { ai = no }
                 }
-                any_owned = { secede_province = THIS }
                 THIS = {
+					inherit = UKR
                     random_owned = {
-                        limit = { province_id = 958 }
+                        limit = { owner = { owns = 958 } }
                         owner = { capital = 958 }
                     }
                     change_tag = UKR
@@ -518,12 +616,94 @@ political_decisions = {
             random_country = {
                 limit = {
                     tag = UKR
-                    ai = no
+                    is_vassal = yes
+                    THIS = { ai = no }
                 }
-                country_event = 60130
+                UKR = { 
+					overlord = {
+						create_vassal = THIS
+						create_alliance = THIS
+					}
+				}
+				THIS = {
+					inherit = UKR
+                    random_owned = {
+                        limit = { owner = { owns = 958 } }
+                        owner = { capital = 958 }
+                    }
+                    change_tag = UKR
+                }
             }
         }
 
+        ai_will_do = {
+            factor = 1
+        }
+    }
+	
+	Claim_CRI = {
+		picture = stamp_crimea
+        potential = {
+            tag = CRI
+			OR = {
+				AND = {
+					prestige = 40
+					state_n_government = 1
+					war = no
+					is_vassal = no
+					is_disarmed = no
+					OR = {
+						war_policy = pro_military
+						war_policy = jingoism
+					}
+					NOT = {
+						in_sphere = AUS
+					}
+				}
+				ai = no
+			}
+            NOT = { has_country_flag = CRI_claimed }
+        }
+        allow = {
+            war = no
+            prestige = 40
+            is_vassal = no
+            NOT = {
+                in_sphere = AUS
+            }
+            is_disarmed = no
+            OR = {
+                war_policy = pro_military
+                war_policy = jingoism
+            }
+            state_n_government = 1
+        }
+        effect = {
+            badboy = 7
+            prestige = 15
+            set_country_flag = CRI_claimed
+            1049 = {
+            add_core = CRI
+            }
+            1048 = {
+            add_core = CRI
+            }
+            1047 = {
+            add_core = CRI
+            }
+            979 = {
+            add_core = CRI
+            }
+            976 = {
+            add_core = CRI
+            }
+            RUS_973 = {
+            add_core = CRI
+            }
+            965 = {
+            add_core = CRI
+            }
+        }
         ai_will_do = {
             factor = 1
         }
@@ -562,11 +742,13 @@ political_decisions = {
             890 = { add_core = ASY }
             891 = { add_core = ASY }
             892 = { add_core = ASY }
+            3931 = { add_core = ASY }
             893 = { add_core = ASY }
             3405 = { add_core = ASY }
             2414 = { add_core = ASY }
             925 = { add_core = ASY }
             1111 = { add_core = ASY }
+            4000 = { add_core = ASY }
             928 = { add_core = ASY }
             927 = { add_core = ASY }
             3325 = { add_core = ASY }
@@ -721,12 +903,13 @@ political_decisions = {
             set_country_flag = claimed_greater_syria
             1756 = { add_core = SYR }
             1757 = { add_core = SYR }
+            3855 = { add_core = SYR }
             922 = { add_core = SYR }
             1131 = { add_core = SYR }
 			3351 = { add_core = SYR }
-			3389 = { add_core = SYR }
             1132 = { add_core = SYR }
             3351 = { add_core = SYR }
+			889 = { add_core = SYR }
             EGY_921 = { add_core = SYR }
             908 = { add_core = SYR }
 			909 = { add_core = SYR }
@@ -738,6 +921,7 @@ political_decisions = {
             TUR_931 = { add_core = SYR }
             TUR_935 = { add_core = SYR }
             TUR_893 = { add_core = SYR }
+			TUR_3300 = { add_core = SYR }
         }
         ai_will_do = { factor = 1 }
     }
@@ -1098,6 +1282,7 @@ political_decisions = {
             1756 = { add_core = ISR }
             1757 = { add_core = ISR }
             922 = { add_core = ISR }
+            3855 = { add_core = ISR }
             915 = { add_core = ISR }
 			3358 = { add_core = ISR }
             909 = { add_core = ISR }
@@ -1157,10 +1342,10 @@ political_decisions = {
             1751 = { add_core = ISR }
             1153 = { add_core = ISR }
             1154 = { add_core = ISR }
-            1152 = { add_core = ISR }
 			1156 = { add_core = ISR }
             1158 = { add_core = ISR }
             3690 = { add_core = ISR }
+            3997 = { add_core = ISR }
             1160 = { add_core = ISR }
 			3404 = { add_core = ISR }
 			3689 = { add_core = ISR }
@@ -1184,6 +1369,7 @@ political_decisions = {
             3292 = { add_core = ISR }
 			926 = { add_core = ISR }
             932 = { add_core = ISR }
+            3999 = { add_core = ISR }
             933 = { add_core = ISR }
             935 = { add_core = ISR }
             3406 = { add_core = ISR }
@@ -1195,6 +1381,7 @@ political_decisions = {
 			910 = { add_core = ISR }
 			911 = { add_core = ISR }
 			930 = { add_core = ISR }
+			4000 = { add_core = ISR }
 			931 = { add_core = ISR }
 			2639 = { add_core = ISR }
         }
@@ -1206,180 +1393,6 @@ political_decisions = {
                 badboy = 0.1
             }
         }
-    }
-
-	add_lithuania_baltic_states = {
-		picture = old_vilnius
-		potential = {
-			exists = UBD
-			OR = {
-				tag = UBD
-				is_our_vassal = UBD
-			}
-			NOT = {
-				exists = EST
-				exists = LAT
-				has_global_flag = lithuania_in_the_UBD
-				tag = RUS
-			}
-		}
-		
-		allow = {
-			war = no
-			nationalism_n_imperialism = 1
-			is_vassal = no
-			361 = {
-				OR = {
-					owned_by = THIS
-					owner = { vassal_of = THIS }
-				}
-			}
-		}
-		
-		effect = {
-			set_global_flag = lithuania_in_the_UBD
-			random_owned = {
-				limit = { owned_by = UBD }
-				random_country = {
-					limit = {
-						tag = LIT
-						exists = yes
-						ai = yes
-						war = no
-						vassal_of = THIS
-					}
-					annex_to = UBD
-				}
-				any_country = {
-					limit = {
-						NOT = { tag = UBD }
-						any_owned_province = { is_core = LIT }
-						OR = {
-							in_sphere = THIS
-							vassal_of = THIS
-						}
-						war = no
-					}
-					any_owned = { limit = { is_core = LIT } secede_province = THIS }
-				}
-				owner = {
-					badboy = 3
-					add_accepted_culture = lithuanian
-					any_pop = { limit = { has_pop_culture = lithuanian }  consciousness = 2 militancy = 3 }
-					any_owned = { limit = { is_core = LIT } add_province_modifier = { name = nationalist_agitation duration = 365 } }
-				}
-				LIT = { all_core = { add_core = UBD } }
-			}
-			random_owned = {
-				limit = { NOT = { owned_by = UBD } }
-				owner = {
-					badboy = 8
-					country_event = 800824
-				}
-			}
-		}
-		
-		ai_will_do = { factor = 1 }
-	}
-	annex_united_baltic_duchy = {
-        picture = annex_united_baltic_duchy
-        potential = {
-            OR = {
-                tag = GCF
-                tag = GER
-            }
-            is_greater_power = yes
-            has_country_flag = monarchy_government
-			OR = {
-				357 = { owner = { in_sphere = THIS vassal_of = THIS } }
-				354 = { owner = { in_sphere = THIS vassal_of = THIS } }
-				349 = { owner = { in_sphere = THIS vassal_of = THIS } }
-				owns = 357
-				owns = 354
-				owns = 349
-			}
-            NOT = { 
-				has_global_flag = annex_baltic_duchy 
-				360 = { is_core = UBD }
-				361 = { is_core = UBD }
-			}
-        }
-
-        allow = {
-			OR = {
-				EST = { all_core = { owner = { in_sphere = THIS vassal_of = THIS } } }
-				EST = { all_core = { owned_by = THIS } }
-			}
-			OR = {
-				LAT = { all_core = { owner = { in_sphere = THIS vassal_of = THIS } } }
-				LAT = { all_core = { owned_by = THIS } }
-			}
-            nationalism_n_imperialism = 1
-			invention = manifest_destiny_invention
-            war = no
-			is_vassal = no
-			is_disarmed = no
-            NOT = { has_country_modifier = recently_lost_war }
-            war_policy = jingoism
-        }
-
-        effect = {
-            badboy = 12
-            set_global_flag = annex_baltic_duchy
-            relation = { who = RUS value = -50 }
-			
-			random_country = {
-				limit = {
-					OR = { tag = UBD tag = EST tag = LAT }
-					exists = yes
-					ai = yes
-					war = no
-					vassal_of = THIS
-				}
-				annex_to = THIS
-			}
-			
-			any_country = {
-				limit = {
-					OR = {
-						in_sphere = THIS
-						vassal_of = THIS
-					}
-					war = no
-				}
-				any_owned = { limit = { OR = { is_core = UBD is_core = EST is_core = LAT } } secede_province = THIS }
-			}
-			
-			any_pop = {
-				limit = { 
-					location = { OR = { is_core = UBD is_core = EST is_core = LAT is_core = LIT } }
-					OR = { is_culture_group = baltic is_culture_group = finnougric }
-				}
-				consciousness = 10
-				militancy = 10
-			}
-			any_owned = { limit = { OR = { is_core = UBD is_core = EST is_core = LAT is_core = LIT } } add_province_modifier = { name = nationalist_agitation duration = 1095 } }
-            any_owned = {
-                limit = { OR = { is_core = UBD is_core = EST is_core = LAT is_core = LIT } }
-                add_core = THIS
-                add_province_modifier = {
-                    name = immigration_boom_baltic
-                    duration = 1825
-                }
-                add_province_modifier = {
-                    name = drang_nach_osten
-                    duration = -1
-                }
-            }
-            any_pop = {
-                limit = {
-                    location = { OR = { is_core = UBD is_core = EST is_core = LAT is_core = LIT } }
-                    is_culture_group = germanic
-                }
-                reduce_pop = 1.1
-            }
-        }
-        ai_will_do = { factor = 0 }
     }
 
     nor_provoke_swe = {
