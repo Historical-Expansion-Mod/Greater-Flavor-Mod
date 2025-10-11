@@ -98,6 +98,7 @@ country_event = {
         random_country = { limit = { exists = yes tag = JOR vassal_of = EGY } annex_to = EGY }
         random_country = { limit = { exists = yes tag = LBN vassal_of = EGY } annex_to = EGY }
         random_country = { limit = { exists = yes tag = SYR vassal_of = EGY } annex_to = EGY }
+        random_country = { limit = { exists = yes tag = JZR vassal_of = EGY } annex_to = EGY }
         random_country = { limit = { exists = yes tag = ASY vassal_of = EGY } annex_to = EGY }
         random_country = { limit = { exists = yes tag = KDS vassal_of = EGY } annex_to = EGY }
         random_country = { limit = { exists = yes tag = CRE vassal_of = EGY } annex_to = EGY }
@@ -165,7 +166,6 @@ country_event = {
             limit = {
                     is_core = NYE
             }
-            remove_core = EGY
 			# Audax Validator "." Ignore_NEXT
             secede_province = THIS
 			# Audax Validator "." Ignore_NEXT
@@ -183,6 +183,9 @@ country_event = {
         912 = { add_core = EGY }
         914 = { add_core = EGY }
 		922 = { add_core = EGY }
+		3855 = { add_core = EGY }
+		1757 = { add_core = EGY }
+		1154 = { add_core = EGY }
         TUR = { country_event = 90078 }
         remove_country_modifier = muhammad_alis_reforms
         any_pop = {
@@ -240,10 +243,24 @@ country_event = {
                 remove_core = TUR
             }
             release_vassal = HDJ
+            release_vassal = ASI
+            release_vassal = TSI
 			release_vassal = HAL
         }
         create_vassal = HDJ
-		922 = { add_core = EGY }
+		HDJ = { government = colonial_company_2 }
+		any_owned = {
+			limit = {
+				OR = { is_core = EGY }
+			}
+			secede_province = EGY
+		}
+		any_owned = {
+			limit = {
+				province_id = 3991
+			}
+			secede_province = HDJ
+		}
         any_pop = {
             limit = { is_primary_culture = no }
             militancy = 3
@@ -305,6 +322,7 @@ country_event = {
         random_country = { limit = { exists = yes tag = JOR vassal_of = EGY } annex_to = EGY }
         random_country = { limit = { exists = yes tag = LBN vassal_of = EGY } annex_to = EGY }
         random_country = { limit = { exists = yes tag = SYR vassal_of = EGY } annex_to = EGY }
+        random_country = { limit = { exists = yes tag = JZR vassal_of = EGY } annex_to = EGY }
         random_country = { limit = { exists = yes tag = ASY vassal_of = EGY } annex_to = EGY }
         random_country = { limit = { exists = yes tag = KDS vassal_of = EGY } annex_to = EGY }
         random_country = { limit = { exists = yes tag = CRE vassal_of = EGY } annex_to = EGY }
@@ -330,8 +348,14 @@ country_event = {
         TUR = { war_with = EGY }
         OR = {
             alliance_with = TUR
-            relation = { who = TUR value = 50 }
-            NOT = { relation = { who = EGY     value = -50 } }
+            relation = { who = TUR value = 20 }
+            NOT = { relation = { who = EGY value = -50 } }
+			AND = {
+				TUR = { ai = yes }
+				EGY = { ai = yes }
+				tag = ENG
+				ai = yes
+			}
         }
         EGY = { any_owned_province = { is_core = TUR } }
         NOT = {
@@ -357,6 +381,14 @@ country_event = {
             alliance_with = TUR
         }
         modifier = {
+            factor = 3
+            NOT = {
+				alliance_with = TUR
+				relation = { who = TUR value = 20 }
+				NOT = { relation = { who = EGY value = -50 } }
+			}
+        }
+        modifier = {
             factor = 4
             NOT = { TUR = { national_provinces_occupied = .01 } }
         }
@@ -379,10 +411,19 @@ country_event = {
         set_country_flag = oriental_crisis_support_OE
         diplomatic_influence = { who = EGY value = -50 }
         casus_belli = { target = EGY type = liberate_country months = 12 }
-        war = {
-            target = EGY
-            attacker_goal = { casus_belli = liberate_country country = TUR }
-        }
+		random_owned = { limit = { owner = { tag = ENG } } owner = {
+			war = {
+				target = EGY
+				attacker_goal = { casus_belli = liberate_country country = TUR }
+				defender_goal = { casus_belli = egyptian_british_war }
+			}
+		} }
+		random_owned = { limit = { owner = { NOT = { tag = ENG } } } owner = {
+			war = {
+				target = EGY
+				attacker_goal = { casus_belli = liberate_country country = TUR }
+			}
+		} }
         TUR = { country_event = 90086 }
         random_owned = {
             limit = { owner = { NOT = { alliance_with = TUR } } }
@@ -575,7 +616,7 @@ country_event = {
                 relation = { who = EGY value = 100 }
             }
             modifier = {
-                factor = 0.1
+                factor = 0.01
                 tag = RUS
             }
         }
@@ -594,7 +635,7 @@ country_event = {
                 relation = { who = EGY value = 100 }
             }
             modifier = {
-                factor = 2.5
+                factor = 10
                 tag = RUS
             }
         }
@@ -857,7 +898,10 @@ country_event = {
         HDJ = {
             all_core = { remove_core = TUR }
         }
-        TUR = { release_vassal = AZH }
+        ASI = {
+            all_core = { remove_core = TUR }
+        }
+        TUR = { release_vassal = JOR }
         TUR = { release_vassal = KWT }
         any_greater_power = {
             limit = { has_country_flag = leave_alliance_after_crisis }
@@ -882,7 +926,7 @@ country_event = {
 			AND = { has_global_flag = invade_syria_egypt NOT = { has_global_flag = ottos_cry_to_russia } NOT = { has_global_flag = youwonfirstwartur } }
 			AND = { has_global_flag = egyptno_defeating has_global_flag = ottos_cry_to_russia NOT = { has_global_flag = youwonfirstwartur } }
 		}
-        war = no
+        NOT = { war_with = RUS war_with = AUS war_with = FRA war_with = ENG war_with = EGY war_with = PRU war_with = SPA war_with = USA }
         NOT = { has_country_flag = egypt_rule_restored }
         NOT = { has_country_flag = egypt_restricted }
         NOT = { has_country_flag = egypt_limited_rule_agreed }
@@ -920,37 +964,24 @@ country_event = {
                     in_sphere = TUR
                 }
             }
-			any_owned = {
-				limit = {
-					OR = {
-						province_id = 1179
-						province_id = 3692
-					}
-				}
-				secede_province = NYE
-			}
             any_owned = { add_core = TUR }
             all_core = { add_core = TUR }
-            annex_to = THIS
-            government = absolute_monarchy
-        }
-		1179 = { remove_core = EGY }
-		3692 = { remove_core = EGY }
-		EGY = {
-			# Audax Validator "." Ignore_NEXT
+			TUR = { create_vassal = HDJ 
 			any_owned = {
 				limit = {
-					OR = {
-						province_id = 1179
-						province_id = 3692
-					}
+					province_id = 1154
 				}
-				# Audax Validator "." Ignore_NEXT
-				secede_province = THIS
-				# Audax Validator "." Ignore_NEXT
-				secede_province = NYE
-			}
-		}
+				secede_province = EGY
+			} 
+			any_owned = {
+				limit = {
+					is_core = HDJ
+				}
+				secede_province = HDJ
+			} }
+			HDJ = { government = colonial_company_2 }
+        }
+        TSI = { government = absolute_monarchy }
         set_country_flag = egypt_restricted
         random_country = {
             limit = {
@@ -978,8 +1009,8 @@ country_event = {
         EGY = {
             plurality = -10
             set_country_flag = surrendered_to_OE
-            all_core = { limit = { is_core = TUR } remove_core = EGY }
-            any_owned = { limit = { is_core = TUR } secede_province = TUR }
+            all_core = { limit = { is_core = TUR NOT = { province_id = 3855 province_id = 1756 province_id = 1757 province_id = 1154 } } remove_core = EGY }
+            any_owned = { limit = { is_core = TUR NOT = { province_id = 3855 province_id = 1756 province_id = 1757 province_id = 1154 } } secede_province = TUR }
             any_owned = {
                 limit = {
                     is_core = EGY
@@ -999,7 +1030,6 @@ country_event = {
 			release_vassal = HAL
         }
         #Return any Egyptian cores
-		922 = { add_core = EGY }
         any_owned = { limit = { is_core = EGY } secede_province = EGY }
         any_greater_power = {
             limit = { has_country_flag = leave_alliance_after_crisis }
@@ -1022,8 +1052,20 @@ country_event = {
 		# Audax Validator "." Ignore_NEXT
 		922 = { secede_province = THIS secede_province = TUR }
 		# Audax Validator "." Ignore_NEXT
-		1154 = { secede_province = THIS secede_province = EGY add_core = EGY }
+		1154 = { add_core = EGY }
+		any_owned = {
+			limit = {
+				OR = { is_core = EGY }
+			}
+			secede_province = EGY
+		}
 
+		any_owned = {
+			limit = {
+				province_id = 3991
+			}
+			secede_province = HDJ
+		}
         ai_chance = { factor = 1 }
     }
 
@@ -1034,7 +1076,7 @@ country_event = {
         prestige = 20
         EGY = {
             tech_school = developing_tech_school
-            all_core = { limit = { is_core = TUR NOT = { province_id = 922 province_id = 1154 } } remove_core = EGY }
+            all_core = { limit = { is_core = TUR NOT = { province_id = 3855 province_id = 1756 province_id = 1757 province_id = 1154 } } remove_core = EGY }
         }
         inherit = EGY
         random_country = {
@@ -1046,37 +1088,23 @@ country_event = {
                     in_sphere = TUR
                 }
             }
-			any_owned = {
-				limit = {
-					OR = {
-						province_id = 1179
-						province_id = 3692
-					}
-				}
-				secede_province = NYE
-			}
             any_owned = { add_core = TUR }
             all_core = { add_core = TUR }
-            annex_to = THIS
-            government = absolute_monarchy
-        }
-		1179 = { remove_core = EGY }
-		3692 = { remove_core = EGY }
-		EGY = {
-			# Audax Validator "." Ignore_NEXT
+			TUR = { create_vassal = HDJ 
 			any_owned = {
 				limit = {
-					OR = {
-						province_id = 1179
-						province_id = 3692
-					}
+					province_id = 1154
 				}
-				# Audax Validator "." Ignore_NEXT
-				secede_province = THIS
-				# Audax Validator "." Ignore_NEXT
-				secede_province = NYE
+				secede_province = EGY
 			}
-		}
+			any_owned = {
+				limit = {
+					is_core = HDJ
+				}
+				secede_province = HDJ
+			} }
+			HDJ = { government = colonial_company_2 }
+        }
 		1179 = {
 			remove_core = TUR
 		}
@@ -1103,6 +1131,12 @@ country_event = {
             leave_alliance = TUR
         }
 
+		any_owned = {
+			limit = {
+				province_id = 3991
+			}
+			secede_province = HDJ
+		}
         ai_chance = { factor = 0 }
     }
 }
@@ -1341,7 +1375,7 @@ country_event = {
             militancy = 2
         }
         all_core = {
-            limit = { is_core = TUR }
+            limit = { is_core = TUR NOT = { province_id = 3855 province_id = 1756 province_id = 1757 province_id = 1154 } }
             remove_core = EGY
         }
         TUR = { country_event = 90088 }
@@ -1408,37 +1442,22 @@ country_event = {
                     in_sphere = TUR
                 }
             }
-			any_owned = {
-				limit = {
-					OR = {
-						province_id = 1179
-						province_id = 3692
-					}
-				}
-				secede_province = NYE
-			}
             any_owned = { add_core = TUR }
             all_core = { add_core = TUR }
-            annex_to = THIS
-            government = absolute_monarchy
-        }
-		1179 = { remove_core = EGY }
-		3692 = { remove_core = EGY }
-		EGY = {
-			# Audax Validator "." Ignore_NEXT
+			TUR = { create_vassal = HDJ 
 			any_owned = {
 				limit = {
-					OR = {
-						province_id = 1179
-						province_id = 3692
-					}
+					province_id = 1154
 				}
-				# Audax Validator "." Ignore_NEXT
-				secede_province = THIS
-				# Audax Validator "." Ignore_NEXT
-				secede_province = NYE
+				secede_province = EGY
 			}
-		}
+			any_owned = {
+				limit = {
+					is_core = HDJ
+				}
+				secede_province = HDJ
+			} }
+        }
         relation = { who = EGY value = 100 }
         relation = { who = RUS value = -200 }
         leave_alliance = RUS
@@ -1446,7 +1465,7 @@ country_event = {
 			economic_reform = no_pre_indust
             set_country_flag = surrendered_to_OE
             any_owned = {
-                limit = { is_core = TUR }
+                limit = { is_core = TUR NOT = { province_id = 3855 province_id = 1756 province_id = 1757 province_id = 1154 } }
                 secede_province = TUR
             }
         }
@@ -1489,6 +1508,18 @@ country_event = {
 		
 		1179 = {
 			remove_core = TUR
+		}
+		any_owned = {
+			limit = {
+				OR = { is_core = EGY }
+			}
+			secede_province = EGY
+		}
+		any_owned = {
+			limit = {
+				province_id = 3991
+			}
+			secede_province = HDJ
 		}
 
         ai_chance = { factor = 100 }

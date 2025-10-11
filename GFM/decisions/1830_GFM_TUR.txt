@@ -11,7 +11,7 @@ political_decisions = {
 			OR = {
 				AND = {
 					year = 1830
-					month = 7
+					month = 6
 				}
 				year = 1831
 			}
@@ -31,7 +31,6 @@ political_decisions = {
 		}
 
 		allow = {
-			war = no
 			NOT = { ruling_party_ideology = reactionary }
 			prestige = 15
 			year = 1831
@@ -47,31 +46,97 @@ political_decisions = {
         picture = soran_je_ottoman
         potential = {
             tag = TUR
-			has_country_flag = zakho_kurdistan
-			SRN = { exists = yes }
-            NOT = { 928 = { is_core = THIS } }
+			SRN = { NOT = { war_with = TUR } owns = 893 is_vassal = no any_owned_province = { is_core = TUR } }
+			NOT = { year = 1845 }
+			NOT = { AND = { has_global_flag = soran_je_ottoman has_global_flag = soran_je_ottomantwo } }
         }
 
         allow = {
-            war = no
 			year = 1836
+			month = 6
 			SRN = {
+				owns = 893
 				is_vassal = no
 			}
+			NOT = { truce_with = SRN }
         }
 
         effect = {
-			928 = { add_core = THIS }
-			925 = { add_core = THIS }
-			892 = { add_core = THIS }
-			war = {
+			random_owned = { limit = { owner = { has_global_flag = soran_je_ottoman NOT = { has_global_flag = soran_je_ottomantwo } } } owner = {
+				set_global_flag = soran_je_ottomantwo
+			} }
+			random_owned = { limit = { owner = { NOT = { has_global_flag = soran_je_ottoman } } } owner = {
+				set_global_flag = soran_je_ottoman
+			} }
+			TUR = { war = {
 				target = SRN
-				attacker_goal = { casus_belli = conquest_any }
-				defender_goal = { casus_belli = status_quo }
+				attacker_goal = { casus_belli = soran_war_ottos_2_cb }
+				defender_goal = { casus_belli = soran_war_ottos_cb }
 				call_ally = no
+			} }
+			random_owned = { limit = { owner = { ai = yes owns = 927 SRN = { ai = yes } } } owner = {
+				927 = {
+					sub_unit = { type = irregular value = current }
+					sub_unit = { type = infantry value = current }
+					sub_unit = { type = cavalry value = current }
+				}
+			} }
+        }
+        ai_will_do = { factor = 1 }
+    }
+	make_vassals_kurds = {
+        picture = bitlis
+        potential = {
+            tag = TUR
+			has_global_flag = eighteenthirty_startdate
+			any_neighbor_country = {
+				NOT = { tag = SRN }
+				primary_culture = kurdish
+				in_sphere = TUR
+				is_vassal = no
 			}
-			random_owned = { limit = { owner = { ai = yes owns = 923 SRN = { ai = yes } } } owner = {
-				923 = {
+			NOT = { has_global_flag = make_vassals_kurds }
+        }
+
+        allow = {
+			is_disarmed = no
+			year = 1835
+			rank = 8
+        }
+
+        effect = {
+			set_global_flag = make_vassals_kurds
+			any_country = {
+				limit = {
+					NOT = { tag = SRN }
+					primary_culture = kurdish
+					in_sphere = TUR
+					is_vassal = no
+					NOT = { AND = { tag = BDN war_with = SRN SRN = { ai = no } } }
+				}
+				country_event = 89678465
+			}
+			any_country = {
+				limit = {
+					tag = MLN
+					primary_culture = kurdish
+					vassal_of = THIS
+				}
+				TUR = {
+				release_vassal = MLN war = {
+					target = MLN
+					attacker_goal = { casus_belli = conquest_any }
+					defender_goal = { casus_belli = humiliate_no_infamy }
+					call_ally = no
+				}
+				leave_alliance = MLN
+				diplomatic_influence = {
+					who = MLN
+					value = -600
+				} }
+			}
+			random_owned = { limit = { owner = { ai = yes owns = 3293 } } owner = {
+				3293 = {
 					sub_unit = { type = irregular value = current }
 					sub_unit = { type = infantry value = current }
 					sub_unit = { type = cavalry value = current }
@@ -101,6 +166,28 @@ political_decisions = {
         ai_will_do = { factor = 1 }
 	}
 
+	ottoman_invasion_jazira = {
+        picture = jazira
+        potential = {
+			tag = TUR
+			JZR = { vassal_of = TUR war = no }
+			NOT = { war_with = JZR }
+			NOT = { has_global_flag = ottoman_invasion_jazira }
+        }
+
+        allow = {
+			is_vassal = no
+			year = 1834
+			month = 11
+        }
+
+        effect = {
+			set_global_flag = ottoman_invasion_jazira
+			JZR = { country_event = { id = 16051937 days = 30 } }
+        }
+
+        ai_will_do = { factor = 1 }
+	}
 	ottoman_invasion_iraq = {
         picture = baghdad_mosque
         potential = {
@@ -111,21 +198,16 @@ political_decisions = {
         }
 
         allow = {
-			war = no
+			OR = { war = no AND = { war_with = ALB NOT = { war_with = EGY } month = 5 }AND = { war_with = BOS NOT = { war_with = EGY } month = 7 } }
 			is_vassal = no
 			year = 1831
+			month = 1
         }
 
         effect = {
 			set_global_flag = ottoman_invasion_iraq
-			release_vassal = IRQ
-			war = {
-				target = IRQ
-				attacker_goal = { casus_belli = conquest_any }
-				defender_goal = { casus_belli = humiliate_no_infamy }
-				call_ally = no
-			}
-			IRQ = { country_event = 16051936 }
+			IRQ = { country_event = { id = 16051936 days = 1 } }
+			TUR = { release_vassal = IRQ }
         }
 
         ai_will_do = { factor = 1 }
@@ -209,19 +291,291 @@ political_decisions = {
         allow = {
 			war = yes
 			OR = {
-				NOT = { total_amount_of_divisions = 3 }
-				war_exhaustion = 60
+				AND = { NOT = { total_amount_of_divisions = 2 } is_mobilised = yes }
+				war_exhaustion = 50
 				national_provinces_occupied = 0.35
 				873 = { controlled_by = EGY }
+				882 = { controlled_by = EGY }
+				893 = { controlled_by = EGY }
 			}
 			NOT = { truce_with = RUS war_with = RUS }
         }
         effect = {
 			set_global_flag = ottos_cry_to_russia
-			prestige = -20
+			prestige = -10
 			RUS = { country_event = 16051965 }
         }
 
         ai_will_do = { factor = 1 }
 	}
+	
+	ottos_cry_to_themselves = {
+        picture = bohtan
+        potential = {
+			has_global_flag = soran_got_intervened
+			tag = TUR
+			war_with = SRN
+			OR = { has_global_flag = eighteenthirty_startdate CLN = { has_country_flag = eighteenthirty_startdate } }
+			NOT = { year = 1837 }
+			NOT = { has_global_flag = ottos_cry_to_themselves }
+        }
+        allow = {
+			war = yes
+			OR = {
+				SRN = { brigades_compare = 5 }
+				war_exhaustion = 65
+				893 = { controlled_by = SRN }
+				3533 = { controlled_by = SRN }
+				3405 = { controlled_by = SRN }
+				AND = { 3987 = { controlled_by = SRN } 3530 = { controlled_by = SRN } }
+			}
+        }
+        effect = {
+			set_global_flag = ottos_cry_to_themselves
+			SRN = { country_event = 89678450 }
+        }
+
+        ai_will_do = { factor = 1 }
+	}
+	
+	start_the_chaos_srn = {
+        picture = badinan
+        potential = {
+			tag = SRN
+			MKN = { owns = 3325 in_sphere = TUR is_vassal = no }
+			has_global_flag = eighteenthirty_startdate
+			NOT = { has_global_flag = start_the_chaos_srn }
+        }
+        allow = {
+			owns = 927
+			is_vassal = no
+			war = no
+			year = 1831
+			month = 1
+        }
+        effect = {
+			set_global_flag = start_the_chaos_srn
+			MKN = { country_event = 45267678 }
+			3325 = { add_core = SRN }
+        }
+
+        ai_will_do = { factor = 1 }
+	}
+	conquer_kirkuk = {
+        picture = badinan
+        potential = {
+			tag = SRN
+			BNB = { owns = 1111 in_sphere = TUR is_vassal = no }
+			has_global_flag = eighteenthirty_startdate
+			NOT = { has_global_flag = conquer_kirkuk }
+        }
+        allow = {
+			owns = 928
+			war = no
+			is_vassal = no
+			year = 1831
+			month = 6
+        }
+        effect = {
+			set_global_flag = conquer_kirkuk
+			BNB = { country_event = 89678432 }
+			1111 = { add_core = SRN }
+			925 = { add_core = SRN }
+			3352 = { add_core = SRN }
+        }
+
+        ai_will_do = { factor = 1 }
+	}
+	ally_bohtan_singal = { #oh no
+        picture = dasini
+        potential = {
+			tag = SRN
+			TSI = { owns = 3532 in_sphere = TUR is_vassal = no }
+			BHT = { owns = 924 in_sphere = TUR }
+			has_global_flag = eighteenthirty_startdate
+			NOT = { has_global_flag = ally_bohtan_singal }
+        }
+        allow = {
+			owns = 3325
+			war = no
+			is_vassal = no
+			year = 1832
+			month = 1
+        }
+        effect = {
+			set_global_flag = ally_bohtan_singal
+			BHT = { country_event = 89678435 }
+			3532 = { add_core = SRN }
+        }
+
+        ai_will_do = { factor = 1 }
+	}
+	kill_bohtan = { #beg try not being a traitor genocidal maniac challenge (impossible)
+        picture = bohtan
+        potential = {
+			tag = SRN
+			BHT = { owns = 2414 in_sphere = TUR is_vassal = no }
+			has_global_flag = youregonecommasoranistraitor
+			has_global_flag = eighteenthirty_startdate
+			NOT = { has_global_flag = kill_bohtan }
+        }
+        allow = {
+			owns = 3325
+			war = no
+			is_vassal = no
+			year = 1833
+			OR = {
+				ai = no
+				AND = { month = 2 NOT = { month = 3 } TUR = { is_mobilised = no } }
+				month = 10
+			}
+        }
+        effect = {
+			set_global_flag = kill_bohtan
+			BHT = { country_event = 89678443 }
+			random_owned = {
+				limit = {
+					owner = {
+						TSI = { exists = yes }
+						NOT = { truce_with = TSI }
+					}
+				}
+				owner = {
+					TSI = { country_event = 89678437 }
+				}
+			}
+			924 = { add_core = SRN }
+			3294 = { add_core = SRN }
+			3530 = { add_core = SRN }
+			2414 = { add_core = SRN }
+			3532 = { add_core = SRN }
+        }
+
+        ai_will_do = { factor = 1 }
+	}
+	hakkari_was_based_before_eighteenfourty = {
+        picture = hakkari
+        potential = {
+			tag = SRN
+			BDN = { owns = 892 in_sphere = TUR is_vassal = no }
+			has_global_flag = eighteenthirty_startdate
+			NOT = { has_global_flag = hakkari_was_based_before_eighteenfourtyiirc }
+        }
+        allow = {
+			owns = 3325
+			war = no
+			is_vassal = no
+			year = 1834
+			month = 2
+        }
+        effect = {
+			set_global_flag = hakkari_was_based_before_eighteenfourtyiirc
+			BDN = { country_event = 89678462 }
+			892 = { add_core = SRN }
+			3931 = { add_core = SRN }
+        }
+
+        ai_will_do = { factor = 1 }
+	}
+	mosul_come_here = {
+        picture = jazira
+        potential = {
+			tag = SRN
+			OR = {
+				IRQ = { owns = 923 is_vassal = no }
+				JZR = { owns = 923 is_vassal = no }
+			}
+			has_global_flag = ceasefire_happened
+			has_global_flag = eighteenthirty_startdate
+			NOT = { has_global_flag = mosul_come_here }
+        }
+        allow = {
+			owns = 1111
+			war = no
+			is_vassal = no
+			year = 1836
+			month = 5
+        }
+        effect = {
+			set_global_flag = mosul_come_here
+			923 = { owner = { country_event = 896784681 } }
+			923 = { add_core = SRN }
+			3988 = { add_core = SRN }
+        }
+
+        ai_will_do = { factor = 1 }
+	}
+	urmia_is_soran = {
+        picture = kermanshah
+        potential = {
+			tag = SRN
+			PER = { owns = 1118 is_vassal = no }
+			has_global_flag = eighteenthirty_startdate
+			NOT = { has_global_flag = urmia_is_soran }
+        }
+        allow = {
+			owns = 1111
+			owns = 927
+			war = no
+			is_vassal = no
+			year = 1835
+			month = 10
+        }
+        effect = {
+			set_global_flag = urmia_is_soran
+			PER = { country_event = 89678470 }
+			1109 = { add_core = SRN }
+			3353 = { add_core = SRN }
+			1118 = { add_core = SRN }
+			3352 = { add_core = SRN }
+			1117 = { add_core = SRN }
+			3495 = { add_core = SRN }
+			1119 = { add_core = SRN }
+			925 = { add_core = SRN }
+        }
+
+        ai_will_do = { factor = 1 }
+	}
+	make_conquer_kurds = {
+        picture = bitlis
+        potential = {
+            tag = SRN
+			owns = 3325
+			owns = 1111
+			any_neighbor_country = {
+				primary_culture = kurdish
+				in_sphere = TUR
+				OR = { is_vassal = no vassal_of = TUR }
+			}
+			NOT = { has_global_flag = make_conquer_kurds }
+        }
+
+        allow = {
+            war = no
+			is_disarmed = no
+			is_mobilised = no
+			owns = 3931
+			owns = 1111
+			year = 1835
+        }
+
+        effect = {
+			set_global_flag = make_conquer_kurds
+			any_country = {
+				limit = {
+					primary_culture = kurdish
+					in_sphere = TUR
+					OR = { is_vassal = no vassal_of = TUR }
+				}
+				country_event = 89678466
+			}
+			892 = { add_core = SRN }
+			3931 = { add_core = SRN }
+			891 = { add_core = SRN }
+			3537 = { add_core = SRN }
+			3536 = { add_core = SRN }
+			890 = { add_core = SRN }
+        }
+        ai_will_do = { factor = 1 }
+    }
 }
