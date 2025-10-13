@@ -1,0 +1,333 @@
+country_event = {
+	id = 6020299
+	title = ""
+	desc = ""
+	picture = Picture
+	
+	fire_only_once = yes
+	trigger = { tag = CLN }
+	mean_time_to_happen = { days = 1 }
+	
+	option = {
+	name = ""
+	any_country = {
+		limit = { 
+		capital_scope = { continent = south_america }
+		is_culture_group = latin_american_cultures
+		NOT = { primary_culture = brazilian } }
+		set_variable = { which = brz_integration value = 1 }
+	}
+	URU = { set_country_flag = can_integrate_brz }
+	PRG = { set_country_flag = can_integrate_brz }
+	ENT = { set_country_flag = can_integrate_brz }
+}
+}
+#BRZ grand duchy integration
+country_event = {
+    id = 6020300
+    title = "6020300 BRZ INTEGRATION DL SETUP"
+    desc = ""
+    picture = Picture
+    
+    trigger = {
+        OR = { 
+            vassal_of = BRZ
+            AND = { vassal_of = UPB UPB = { primary_culture = brazilian } }
+        }
+		NOT = { any_owned_province = { controlled_by = REB } }
+        NOT = { capital_scope = { has_province_modifier = nationalist_agitation } }
+		overlord = { relation = { who = THIS value = 0 } } 
+		OR = {	
+		    AND = { #step 1
+			    overlord = { state_n_government = 1 }
+                check_variable = { which = brz_integration value = 1 }
+			    NOT = { check_variable = { which = brz_integration value = 2 } }
+		    }
+		    AND = { # step 2
+			    overlord = { nationalism_n_imperialism = 1 }
+                check_variable = { which = brz_integration value = 2 }
+			    NOT = { check_variable = { which = brz_integration value = 3 } }
+		    }
+            AND = {	 # step 3 and 4
+                overlord = { revolution_n_counterrevolution = 1 }
+				check_variable = { which = brz_integration value = 3 }
+				has_country_flag = can_integrate_brz
+                NOT = { check_variable = { which = brz_integration value = 5 } }
+			}	
+        }
+		ai = yes
+	}
+    
+    mean_time_to_happen = { 
+		months = 30
+		modifier = {
+			factor = 0.1
+			OR = {
+				AND = {
+					check_variable = { which = brz_integration value = 1 }
+					NOT = { check_variable = { which = brz_integration value = 2 } }
+				}
+				check_variable = { which = brz_integration value = 3 }
+			}
+		}
+		modifier = {
+			factor = 0.90
+			year = 1870
+		}
+		modifier = {
+			factor = 0.90
+			overlord = { relation = { who = THIS value = 190 } }
+		}
+		modifier = {
+			factor = 0.90
+			overlord = { relation = { who = THIS value = 170 } }
+		}
+		modifier = {
+			factor = 0.90
+			overlord = { relation = { who = THIS value = 150 } }
+		}
+		modifier = {
+			factor = 0.90
+			NOT = { average_militancy = 2 }
+		}
+		modifier = {
+			factor = 0.95
+			NOT = { average_consciousness = 2 }
+		}
+		modifier = {
+			factor = 0.90
+			capital_scope = { OR = { country_units_in_province = BRZ country_units_in_province = UPB }}
+		}
+		modifier = {
+			factor = 0.90
+			overlord = { is_sphere_leader_of = THIS }
+		}
+		modifier = {
+			factor = 1.10
+			NOT = { overlord = { alliance_with = THIS } }
+		}
+		modifier = {
+			factor = 1.35
+			war = yes
+		}
+		modifier = {
+			factor = 1.10
+			average_militancy = 3
+		}
+		modifier = {
+			factor = 1.10
+			average_militancy = 5
+		}
+		modifier = {
+			factor = 1.10
+			average_militancy = 7
+		}
+		modifier = {
+			factor = 1.05
+			average_consciousness = 3
+		}
+		modifier = {
+			factor = 1.05
+			average_consciousness = 5
+		}
+		modifier = {
+			factor = 1.05
+			average_consciousness = 7
+		}
+	}
+    
+    immediate = {
+		THIS = { set_country_flag = integration_target }
+        2447 = { owner = { set_country_flag = viewer } }
+        
+        #target country name DL
+        THIS = { limit = { has_country_flag = integration_target } set_country_flag = dynamic_loc }
+        slot_2 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+        CLN = { country_event = 2 }
+
+        #Target country flag DL
+        THIS = { limit = { has_country_flag = integration_target } set_country_flag = dynamic_loc }
+        slot_1 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+        CLN = { country_event = 4 }
+
+        #Brazil/UPB name DL
+        any_country = { limit = { has_country_flag = viewer } set_country_flag = dynamic_loc }
+        slot_4 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+        CLN = { country_event = 2 }
+
+        #Brazil/UPB flag DL
+        any_country = { limit = { has_country_flag = viewer } set_country_flag = dynamic_loc }
+        slot_3 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+        CLN = { country_event = 4 }
+
+        #slot 37
+        slot_37 = { secede_province = THIS state_scope = { change_region_name = "Over the years, the bonds between" } secede_province = QQQ }
+		#slot 36
+		slot_36 = { secede_province = THIS state_scope = { change_region_name = "and" } secede_province = QQQ }
+		# step 1
+		random_owned = {
+			limit = { owner = { check_variable = { which = brz_integration value = 1 } NOT = { check_variable = { which = brz_integration value = 2 } } } }
+            owner = {
+                slot_35 = { secede_province = THIS state_scope = { change_region_name = "have grown tighter. Through trade freely flowing through rivers, roads and rails and centralization efforts from the government. Brazilian culture and language slowly spreads in " } secede_province = QQQ }
+                slot_34 = { secede_province = THIS state_scope = { change_region_name = "It's time we begin decreasing local autonomy." } secede_province = QQQ }
+                slot_32 = { secede_province = THIS state_scope = { change_region_name = "Advances centralization in" } secede_province = QQQ }
+            }
+        }
+		# step 2
+		random_owned = {
+			limit = { owner = { check_variable = { which = brz_integration value = 2 } NOT = { check_variable = { which = brz_integration value = 3 } } } }
+            owner = {
+                slot_35 = { secede_province = THIS state_scope = { change_region_name = "have grown tighter. Through trade freely flowing through rivers, roads and rails and centralization efforts from the government. Brazilian culture and language slowly spreads in " } secede_province = QQQ }
+                slot_34 = { secede_province = THIS state_scope = { change_region_name = "It's time we continue decreasing local autonomy, with the ultimate objective of fully integrating them into our nation." } secede_province = QQQ }
+                slot_32 = { secede_province = THIS state_scope = { change_region_name = "Adds Brazilian as an accepted culture in" } secede_province = QQQ }
+            }
+        }
+        # step 3
+		random_owned = { 
+			limit = { owner = { check_variable = { which = brz_integration value = 3 } NOT = { check_variable = { which = brz_integration value = 4 } } } }
+			owner = { 
+                slot_35 = { secede_province = THIS state_scope = { change_region_name = "have slowly grown tighter. Interacting with Brazilian institutions, culture and language has already become a natural part of life for many in" } secede_province = QQQ }
+                slot_34 = { secede_province = THIS state_scope = { change_region_name = "Now it's time we make changes to the local constitution to make it nearly identical with that of our nation, the ultimate goal being to prepare the local administrative body for future annexation." } secede_province = QQQ }
+                slot_32 = { secede_province = THIS state_scope = { change_region_name = "Advances centralization in" } secede_province = QQQ }
+			}
+        }
+		# step 4
+        random_owned = { 
+			limit = { owner = { check_variable = { which = brz_integration value = 4 } NOT = { check_variable = { which = brz_integration value = 5 } } } }
+			owner = { 
+                slot_35 = { secede_province = THIS state_scope = { change_region_name = "have slowly grown tighter. Interacting with Brazilian institutions, culture and language has already become a natural part of life for many in" } secede_province = QQQ }
+                slot_34 = { secede_province = THIS state_scope = { change_region_name = "We can finally fully integrate our subject as a integral part of our territory." } secede_province = QQQ }
+                slot_32 = { secede_province = THIS state_scope = { change_region_name = "Annex" } secede_province = QQQ }
+			}
+        }
+    any_country = { 
+			limit = { 
+				has_country_flag = viewer
+			}
+			country_event = 6020301
+            clr_country_flag = viewer
+    }
+    
+    }    
+    option = { name = "1" }  
+}
+country_event = {
+    id = 6020301
+    title = "Centralizing a Grand Duchy"
+    desc = ""
+    picture = brz_grand_duchy_integration
+
+    is_triggered_only = yes
+
+    immediate = {
+        black = {}
+        slot_37 = {}
+        blue = {}
+        slot_3 = {} #brz/upb flag
+        slot_4 = {} #brz/upb name
+        black = {}
+        slot_36 = {}
+        blue = {}
+        slot_1 = {} #target flag
+        slot_2 = {} #target name
+        black = {}
+        slot_35 = {}
+		blue = {}
+		slot_1 = {} #target flag
+		slot_2 = {} #target name
+		black = {}
+        slot_34 = {}
+    }
+    option = {
+        name = "Brazilification is inevitable."
+        slot_32 = {}
+        green = {}
+        slot_1 = {}
+        slot_2 = {}
+     any_country = {
+        random_owned = { #step 1
+            limit = { owner = { has_country_flag = integration_target check_variable = { which = brz_integration value = 1 } NOT = { check_variable = { which = brz_integration value = 2 } } } }
+			owner = {
+                change_variable = { which = brz_integration value = 1 }
+			    relation = { who = BRZ value = -100 }
+				relation = { who = UPB value = -100 }
+			    any_owned = { add_province_modifier = { name = nationalist_agitation duration = 1826 } }
+                clr_country_flag = integration_target
+            }
+        }
+		random_owned = { # step 2
+			limit = { owner = { has_country_flag = integration_target check_variable = { which = brz_integration value = 2 } NOT = { check_variable = { which = brz_integration value = 3 } } } }
+				owner = {
+					add_accepted_culture = brazilian
+					change_variable = { which = brz_integration value = 1 } 
+					relation = { who = BRZ value = -200 }
+					relation = { who = UPB value = -200 }
+					any_owned = { add_province_modifier = { name = nationalist_agitation duration = 1826 } }
+					clr_country_flag = integration_target
+				}
+		}
+		random_owned = { # step 3
+			limit = { owner = { has_country_flag = integration_target check_variable = { which = brz_integration value = 3 } NOT = { check_variable = { which = brz_integration value = 4 } } } }
+				owner = { 
+					change_variable = { which = brz_integration value = 1 } 
+					relation = { who = BRZ value = -400 }
+					relation = { who = UPB value = -400 }
+					any_owned = { add_province_modifier = { name = nationalist_agitation duration = 1826 } }
+					clr_country_flag = integration_target
+				}
+		}
+		random_owned = { #step 4
+			limit = { owner = { has_country_flag = integration_target primary_culture = platinean check_variable = { which = brz_integration value = 4 } } }
+			owner = {
+				primary_culture = brazilian
+				change_variable = { which = brz_integration value = 1 } 
+				any_owned = {
+					add_province_modifier = { name = cultural_unity_assimilation duration = -1 }
+					add_core = BRZ
+					secede_province = BRZ
+				}
+				clr_country_flag = integration_target
+			}
+		}
+		random_owned = {
+			limit = { owner = { has_country_flag = integration_target primary_culture = north_andean check_variable = { which = brz_integration value = 4 } } }
+			owner = {
+				primary_culture = brazilian
+				change_variable = { which = brz_integration value = 1 } 
+				any_owned = {
+					add_province_modifier = { name = cultural_unity_assimilation duration = -1 }
+					add_core = BRZ
+					secede_province = BRZ
+				}
+				clr_country_flag = integration_target
+			}
+		}
+		random_owned = {
+			limit = { owner = { has_country_flag = integration_target primary_culture = south_andean check_variable = { which = brz_integration value = 4 } } }
+			owner = {
+				primary_culture = brazilian
+				change_variable = { which = brz_integration value = 1 } 
+				any_owned = {
+					add_province_modifier = { name = cultural_unity_assimilation duration = -1 }
+					add_core = BRZ
+					secede_province = BRZ
+				}
+				clr_country_flag = integration_target
+			}
+		}
+		random_owned = {
+			limit = { owner = { has_country_flag = integration_target primary_culture = chilean check_variable = { which = brz_integration value = 4 } } }
+			owner = {
+				primary_culture = brazilian
+				change_variable = { which = brz_integration value = 1 } 
+				any_owned = {
+					add_province_modifier = { name = cultural_unity_assimilation duration = -1 }
+					add_core = BRZ
+					secede_province = BRZ
+				}
+				clr_country_flag = integration_target
+			}
+		}
+	}
+    }
+}	
