@@ -42,8 +42,10 @@ country_event = {
         relation = { who = URU value = 100 }
         relation = { who = BRZ value = 100 }
         random_country = {
-            limit = { exists = yes tag = CRT vassal_of = ARC ai = yes }
-            annex_to = ENT
+            limit = { exists = yes tag = CRT ai = yes }
+            any_owned = {
+                secede_province = ENT
+            }
             CRT = { all_core = { remove_core = CRT add_core = ENT } }
         }
         any_country = {
@@ -68,8 +70,10 @@ country_event = {
         relation = { who = URU value = 100 }
         relation = { who = BRZ value = 100 }
         random_country = {
-            limit = { exists = yes tag = CRT vassal_of = ARC ai = yes }
-            annex_to = ENT
+            limit = { exists = yes tag = CRT ai = yes }
+            any_owned = {
+                secede_province = ENT
+            }
             CRT = { all_core = { remove_core = CRT add_core = ENT } }
         }
         any_country = {
@@ -242,7 +246,8 @@ country_event = {
             owner = { political_reform = gerrymandering }
         }
 
-        inherit = ENT
+        inherit = CRT
+		inherit = ENT
         capital = 2360
 
         CRT = { all_core = { remove_core = CRT } }
@@ -334,7 +339,8 @@ country_event = {
             owner = { political_reform = gerrymandering }
         }
 
-        inherit = ENT
+        inherit = CRT
+		inherit = ENT
         capital = 2360
 
         CRT = { all_core = { remove_core = CRT } }
@@ -390,13 +396,12 @@ country_event = {
     }
 
     mean_time_to_happen = {
-        months = 12
+        months = 6
             modifier = {
             factor = 0.75
             any_neighbor_country = { has_country_flag = will_support_entre_rios }
         }
     }
-
 
     option = {
         name = "EVTOPT4661001A"
@@ -405,9 +410,11 @@ country_event = {
         add_country_modifier = { name = unrecognized_country duration = 3650 }
         ARC = {
             release_vassal = ENT
-            add_country_modifier = { name = north_coalition duration = 365 }
-            any_owned = { limit = { is_core = CRT } secede_province = THIS remove_core = CRT }
+			any_owned = { limit = { is_core = CRT } secede_province = THIS remove_core = CRT }
+			country_event = { id = 46610019 days = 1 }
         }
+		any_country = { limit = { alliance_with = ARC NOT = { vassal_of = ARC } } leave_alliance = ARC }
+		any_country = { limit = { is_greater_power = yes is_sphere_leader_of = ARC } diplomatic_influence = { who = ARC value = -100 } }
         any_country = {
             limit = { has_country_flag = will_support_entre_rios }
             create_alliance = ENT
@@ -415,11 +422,11 @@ country_event = {
             leave_alliance = ARC
             relation = {
                 who = ENT
-                value = 200
+                value = 400
             }
             relation = {
                 who = ARC
-                value = -150
+                value = -400
             }
             casus_belli = {
                 target = ARC
@@ -427,19 +434,84 @@ country_event = {
                 months = 20
             }
         }
-        war = {
-            target = ARC
-            attacker_goal = { casus_belli = humiliate }
-            defender_goal = { casus_belli = civil_war }
-        }
         set_global_flag = entre_rios_rebellion
         ai_chance = { factor = 0.9 }
     }
 
     option = {
         name = "EVTOPT4661001B"
-        ARC = { set_country_flag = rosas_victory_new_regime inherit = ENT }
+        ARC = { set_country_flag = rosas_victory_new_regime inherit = CRT inherit = ENT }
+        CRT = { all_core = { remove_core = CRT } }
         ENT = { all_core = { remove_core = ENT } }
+        ai_chance = { factor = 0.1 }
+    }
+}
+
+country_event = {
+    id = 46610019
+    title = "EVTNAME46610019" #ENT declares war
+    desc = "EVTDESC46610019"
+    picture = "rosas_urquiza"
+
+    fire_only_once = yes
+
+    is_triggered_only = yes
+
+    option = {
+        name = "This treason will not go unpunished."
+        add_country_modifier = { name = north_coalition duration = 365 }
+        ENT = {
+			war = {
+            	target = ARC
+            	attacker_goal = { casus_belli = humiliate_no_infamy }
+            	defender_goal = { casus_belli = civil_war }
+				call_ally = yes
+			}
+        }
+    }
+}
+
+country_event = {
+    id = 46610020
+    title = "EVTNAME46610020" #BRZ gets to help ENT
+    desc = "EVTDESC46610020"
+    picture = "rosas_urquiza"
+
+    fire_only_once = yes
+
+    trigger = {
+        tag = BRZ
+        ARC = { war_with = ENT }
+		NOT = { truce_with = ARC war_with = ARC }
+		has_country_flag = will_support_entre_rios
+    }
+
+    mean_time_to_happen = {
+        days = 1
+    }
+
+
+    option = {
+        name = "Rosas must be put down."
+        leave_alliance = ARC
+        create_alliance = ENT
+        military_access = ENT
+        relation = {
+            who = ARC
+            value = -400
+        }
+        war = {
+            target = ARC
+            attacker_goal = { casus_belli = cut_down_to_size_no_infamy }
+            defender_goal = { casus_belli = humiliate_no_infamy }
+			call_ally = no
+        }
+        ai_chance = { factor = 0.9 }
+    }
+
+    option = {
+        name = "Argentinian internal struggle doesn't involve us."
+        relation = { who = ARC value = 250 }
         ai_chance = { factor = 0.1 }
     }
 }
@@ -475,6 +547,10 @@ country_event = {
             NOT = { 2348 = { controlled_by = ARC } }
             NOT = { total_amount_of_divisions = 1 }
             ARC = { national_provinces_occupied = 0.6 }
+			AND = {
+				ENT = { exists = yes }
+				truce_with = ENT
+			}
         }
     }
 
@@ -490,7 +566,8 @@ country_event = {
         set_country_flag = urquiza_victorious
         prestige = -20
         any_country = { limit = { has_country_flag = will_support_entre_rios } end_war = ARC }
-        inherit = ENT
+        inherit = CRT
+		inherit = ENT
         any_owned = { limit = { is_core = ENT } remove_core = ENT }
         any_owned = { limit = { is_core = CRT } remove_core = CRT }
         country_event = { id = 46611 days = 10 }
@@ -1105,10 +1182,14 @@ country_event = {
         }
     }
 
-    mean_time_to_happen = { months = 12 }
+    mean_time_to_happen = { months = 4 }
 
     option = {
         name = "EVT4661012PTA" #Attack the Confederation
+		any_country = {
+			limit = { alliance_with = THIS }
+			leave_alliance = THIS
+		}
         ARC = {
             war = {
                 target = SBA
