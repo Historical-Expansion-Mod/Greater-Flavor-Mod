@@ -76,9 +76,10 @@ country_event = {
     option = {
         name = "EVTOPT600057A"
         set_country_flag = colorado_victory
-        political_reform = wealth_weighted_voting
+        political_reform = none_voting
         political_reform = population_equal_weight
         ruling_party_ideology = liberal
+		government = presidential_dictatorship
         ARC = { country_event = 600058 }
         2344 = {
             remove_province_modifier = colorado_sympathies
@@ -112,7 +113,6 @@ country_event = {
         small_arms = 20
         ammunition = 20
         canned_food = 20
-        election = yes
         neutrality = yes
     }
 }
@@ -184,9 +184,9 @@ country_event = {
 
     option = {
         name = "EVTOPT600059A"
-            2344 = { add_province_modifier = { name = colorado_sympathies duration = 1000 } }
-        }
+		2344 = { add_province_modifier = { name = colorado_sympathies duration = 1000 } }
     }
+}
 
 country_event = {
     id = 600060
@@ -261,40 +261,39 @@ country_event = {
     desc = "EVTDESC6000061"
     picture = "rosistas"
 
-    fire_only_once = yes
+    is_triggered_only = yes
 
-    trigger = {
-		year = 1839
-        tag = URU
-        CRT = { exists = yes war = no }
-		month = 11
-        OR = {
-            has_country_flag = oribe_is_true_president
-            has_country_flag = rivera_is_true_president
-        }
-        NOT = {
-            has_country_flag = incite_rebellion
-            has_country_flag = rivera_backed_down
-        }
-        NOT = { year = 1860 }
-    }
-
-    mean_time_to_happen = { days = 1 }
-
-    option = {
-        name = "EVTOPT6000061A"
-        CRT = { country_event = 600062 }
-        set_country_flag = incite_rebellion
+	option = {
+        name = "Provide some support to Corrientes."
+		CRT = {
+			create_alliance = URU
+			country_event = 600062
+			set_country_flag = support_from_riveira
+		}
+		relation = { who = CRT value = 100 }
         ai_chance = {
-            factor = 0.99
+            factor = 1
+			modifier = {
+				factor = 0
+				AND = {
+					CRT = { ai = no }
+					NOT = { year = 1840 }
+				}
+			}
         }
     }
-    option = {
-        name = "EVTOPT600061B"
-        set_country_flag = rivera_backed_down
-        ARC = { set_country_flag = rivera_backed_down }
+	option = {
+        name = "Faint support to them..."
+		CRT = { country_event = 600062 }
         ai_chance = {
-            factor = 0.01
+            factor = 1
+			modifier = {
+				factor = 0
+				OR = {
+					CRT = { ai = no }
+					year = 1840
+				}
+			}
         }
     }
 }
@@ -311,26 +310,36 @@ country_event = {
 
     option = {
         name = "EVTOPT600062A"
+        ruling_party_ideology = liberal
+		government = prov_gov_liberal
         any_country = {
             limit = {
                 war_with = THIS
             }
             end_war = THIS
         }
+		random_owned = {
+			limit = {
+				owner = { has_country_flag = support_from_riveira }
+			}
+			owner = {
+				2358 = {
+					sub_unit = { type = infantry value = current }
+					sub_unit = { type = infantry value = current }
+				}
+				clr_country_flag = support_from_riveira
+			}
+		}
         add_country_modifier = { name = small_country_draft duration = 365 }
         add_country_modifier = { name = unrecognized_country duration = 3650 }
         relation = { who = ARC value = -400 }
         relation = { who = ENT value = -400 }
         ARC = {
             release_vassal = CRT
-            war = {
-                target = CRT
-                attacker_goal = { casus_belli = annex_core_country }
-                defender_goal = { casus_belli = status_quo }
-                call_ally = no
-            }
-        }
-        URU = { set_country_flag = corrientes_is_ready_for_war clr_country_flag = incite_rebellion }
+			country_event = 600084
+		}
+		set_country_flag = armies_of_corrientes
+        URU = { set_country_flag = corrientes_is_ready_for_war }
     }
 }
 
@@ -440,7 +449,6 @@ country_event = {
                 factor = 2
             }
         }
-        CRT = { set_country_flag = rivera_backed_down }
         ai_chance = { factor = 0.01 }
     }
 
@@ -1702,6 +1710,41 @@ country_event = {
 		name = "Can't the Banda Oriental have some peace?"
 		scaled_militancy = { factor = 2 ideology = conservative }
 		add_country_modifier = { name = resistance_to_new_regime duration = 90 }
+	}
+
+}
+
+country_event = {
+	id = 600094
+	title = "The Capture of Martín García Island"
+	desc = "EVTDESC600094" 
+	picture = "uruguay_riveira"
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = { days = 7 }
+	
+	trigger = {
+		tag = URU
+		year = 1838
+		OR = {
+			year = 1839
+			month = 10
+		}
+		ruling_party_ideology = conservative
+		NOT = { 
+			year = 1850 
+			has_country_flag = colorado_victory
+		}
+	}
+	
+	option = {
+		name = "What will happen to Oribe now?"
+		country_event = 600057
+		random_country = {
+			limit = { OR = { tag = FRA tag = BOR } is_greater_power = yes }
+			diplomatic_influence = { who = THIS value = 100 }
+		}
 	}
 
 }
