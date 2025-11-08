@@ -387,43 +387,6 @@ political_decisions = {
         ai_will_do = { factor = 1 }
     }
 
-    entre_rios_independent = {
-        picture = entre_rios_independent
-        potential = {
-            has_global_flag = entre_rios_rebellion
-            tag = ENT
-            NOT = { has_country_flag = called_for_recruits }
-        }
-
-        allow = {
-            OR = {
-                war_with = ARG
-                war_with = ARC
-            }
-            NOT = { has_country_modifier = small_country_draft }
-        }
-
-        effect = {
-            set_country_flag = called_for_recruits
-            money = 50000
-            add_country_modifier = {
-                name = small_country_draft
-                duration = 365
-            }
-
-            ARC = {
-                any_pop = {
-                    scaled_militancy = {
-                        ideology = liberal
-                        factor = 6
-                    }
-                }
-            }
-
-        }
-        ai_will_do = { factor = 1 }
-    }
-
     make_buenos_aires_capital = {
         picture = buenos_aires_capital
         potential = {
@@ -598,34 +561,59 @@ political_decisions = {
         ai_will_do = { factor = 1 }
     }
 
-    take_corrients = {
+    urquiza_proclamation = {
         picture = la_plata_foundation
         potential = {
             tag = ENT
-            OR = {
-                ARC = { owns = 2356 }
-                ENT = { owns = 2356 }
-            }
-            NOT = { exists = CRT }
-            NOT = { has_country_flag = corrientes_conquered }
+			vassal_of = ARC
+            has_country_flag = urquiza_rise
+            NOT = { has_country_flag = urquiza_proclamation }
         }
 
         allow = {
-            war = no
         }
 
         effect = {
-            set_country_flag = corrientes_conquered
-            ARC = {
-                any_owned = {
-                    limit = { is_core = CRT }
-                    secede_province = CRT
-                }
-				create_vassal = CRT
-				create_alliance = CRT
+            set_country_flag = urquiza_proclamation
+			any_country = {
+				limit = { war_with = THIS }
+				end_war = THIS
+			}
+			CRT = { all_core = { add_core = ENT } annex_to = ENT }
+			random_owned = {
+				limit = { owner = { URU = { vassal_of = ARC } } }
+				URU = { all_core = { add_core = ENT } annex_to = ENT }
+				owner = { set_country_flag = uru_joins }
+			}
+			random_owned = {
+				limit = { owner = { PRG = { vassal_of = ARC } } }
+				PRG = { all_core = { add_core = ENT } annex_to = ENT }
+				owner = { set_country_flag = prg_joins }
+			}
+			random_owned = {
+				limit = { owner = { URU = { ruling_party_ideology = liberal } } }
+				URU = { relation = { who = THIS value = 100 } country_event = 46610020 }
+			}
+			add_country_modifier = { name = the_big_army duration = 730 }
+			BRZ = { country_event = 46610020 relation = { who = THIS value = 100 } }
+			all_core = { limit = { NOT = { region = PRG_2338 region = ARG_2377 } } remove_core = ARC }
+			ARC = { leave_alliance = THIS release_vassal = THIS country_event = 600099 }
+			government = prov_gov_liberal
+			LPL = { release_vassal = ENT }
+			money = 50000
+            add_country_modifier = {
+                name = small_country_draft
+                duration = 730
             }
+			
         }
-        ai_will_do = { factor = 1 }
+        ai_will_do = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { AND = { year = 1851 month = 5 } }
+			}
+		}
     }
 
     ushuaia_foundation = {
