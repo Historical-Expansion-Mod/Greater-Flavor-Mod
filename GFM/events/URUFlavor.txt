@@ -276,7 +276,6 @@ country_event = {
         }
 		2358 = {
 			sub_unit = { type = infantry value = current }
-			sub_unit = { type = infantry value = current }
 		}
         add_country_modifier = { name = small_country_draft duration = 365 }
         add_country_modifier = { name = unrecognized_country duration = 3650 }
@@ -289,7 +288,58 @@ country_event = {
 		}
 		set_country_flag = armies_of_corrientes
         URU = { set_country_flag = corrientes_is_ready_for_war }
+		PRG = { country_event = 600115 }
     }
+}
+
+country_event = {
+	id = 600119
+	title = "Support Corrientes?"
+	desc = "EVTDESC600119"
+	picture = "rosistas"
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = { months = 12 }
+	
+	trigger = {
+		OR = {
+			tag = ENT
+			tag = CRT
+		}
+		has_country_flag = entre_rios_litoral
+		ruling_party_ideology = conservative
+		war = no
+		is_vassal = no
+	}
+	
+	option = {
+		name = "Outright declare on Rosas in support of Corrientes!"
+		create_alliance = CRT
+		CRT = { 
+			war = { attacker_goal = { casus_belli = call_allies_cb } call_ally = yes }
+			relation = { who = THIS value = 100 }
+			2356 = { sub_unit = { type = infantry value = current } }
+		}
+		relation = { who = ARC value = -200 }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Its our chance to weaken Rosas!"
+		CRT = { 
+			relation = { who = THIS value = 50 }
+			2356 = { sub_unit = { type = infantry value = current } }
+		}
+		relation = { who = ARC value = -100 }
+		ai_chance = { factor = 9 }
+	}
+	
+	option = {
+		name = "We can't risk drawing Rosas' anger"
+		relation = { who = ARC value = 50 }
+		ai_chance = { factor = 0 }
+	}
 }
 
 country_event = {
@@ -341,8 +391,8 @@ country_event = {
         }
         war = {
             target = ARC
-            attacker_goal = { casus_belli = humiliate_no_infamy }
-            defender_goal = { casus_belli = humiliate_no_infamy }
+            attacker_goal = { casus_belli = scripted_war }
+            defender_goal = { casus_belli = scripted_war_huge }
             call_ally = yes
         }
 
@@ -399,38 +449,6 @@ country_event = {
             }
         }
         ai_chance = { factor = 0.01 }
-    }
-
-    option = {
-        name = "EVTOPT600063C"        #bid our time
-        random_country = {
-            limit = {
-                exists = yes
-                tag = CRT
-            }
-            create_alliance = URU
-            relation = { who = URU value = 400 }
-        }
-        clr_country_flag = corrientes_is_ready_for_war
-        clr_country_flag = rivera_is_true_president
-        clr_country_flag = oribe_is_true_president
-        set_country_flag = war_on_rosas
-        any_pop = {
-            scaled_militancy = {
-                ideology = conservative
-                factor = 2
-            }
-            scaled_militancy = {
-                ideology = reactionary
-                factor = 3
-            }
-            scaled_militancy = {
-                ideology = liberal
-                factor = 1
-            }
-            }
-         casus_belli = { target = ARC type = humiliate_no_infamy months = 36 }
-        ai_chance = { factor = 0.4 }
     }
 }
 
@@ -838,7 +856,7 @@ country_event = {
     id = 600074
     title = "EVTNAME600074" #Argentina defeats Uruguay
     desc = "EVTDESC600074"
-    picture = "montevideo_uruguay"
+    picture = "uruguay_oribe"
 
     fire_only_once = yes
 
@@ -846,9 +864,9 @@ country_event = {
         tag = ARC
         truce_with = URU
         war = no
-        NOT = { war_with = URU }
+        NOT = { war_with = URU has_country_flag = lost_the_war }
         URU = {
-            has_country_modifier = recently_lost_war
+            has_country_flag = lost_the_war
             has_country_flag = war_on_rosas
         }
     }
@@ -857,35 +875,44 @@ country_event = {
 
     option = {
         name = "EVTOPT600074A"
-        #prestige = 1
+        prestige = 5
+		ENG = { diplomatic_influence = { who = URU value = -400 } }
+		FRA = { diplomatic_influence = { who = URU value = -400 } }
         URU = {
+			clr_country_flag = lost_the_war
             any_country = { leave_alliance = URU }
             set_country_flag = blanco_rule
             clr_country_flag = oribe_is_true_president
             clr_country_flag = war_on_rosas
             clr_country_flag = garibaldi_italian_legion
             ruling_party_ideology = conservative
-        relation = { who = THIS value = 400 }
-        relation = { who = BRZ value = -400 }
-        any_pop = {
-            scaled_consciousness = {
-                factor = 9
-                ideology = liberal
+			relation = { who = THIS value = 400 }
+			relation = { who = BRZ value = -400 }
+			any_pop = {
+				scaled_consciousness = {
+					factor = 9
+					ideology = liberal
+					}
+				scaled_militancy = {
+				factor = 5
+					ideology = liberal
                 }
-            scaled_militancy = {
-                factor = 5
-                ideology = liberal
-                }
-            scaled_consciousness = {
-                factor = -9
-                ideology = conservative
-                }
-            scaled_militancy = {
-                factor = -5
-                ideology = conservative
-                }
-            }
-        }
+				scaled_consciousness = {
+					factor = -9
+					ideology = conservative
+					}
+				scaled_militancy = {
+					factor = -5
+					ideology = conservative
+					}
+				ideology = {
+					factor = 0.3
+					value = conservative
+				}
+			}
+		}
+		create_alliance = URU
+		set_global_flag = oribe_and_rosas
         ai_chance = {
             factor = 0.98
         }
@@ -893,123 +920,60 @@ country_event = {
 
     option = {
         name = "EVTOPT600074B"
-        #prestige = 3
-        URU = {
-        any_country = { leave_alliance = URU }
-        set_country_flag = blanco_rule
-        clr_country_flag = garibaldi_italian_legion
-        clr_country_flag = oribe_is_true_president
-        clr_country_flag = war_on_rosas
-        government = presidential_dictatorship
-        ruling_party_ideology = conservative
-        political_reform = none_voting
-        political_reform = party_appointed
-        political_reform = no_meeting
-        political_reform = state_press
-        political_reform = no_trade_unions
-        political_reform = underground_parties
-        create_alliance = THIS
-        relation = {
-            who = THIS
-            value = 400
-                }
-        relation = {
-            who = BRZ
-            value = -400
-                }
-        any_pop = {
-            scaled_consciousness = {
-                factor = 9
-                ideology = liberal
-                }
-            scaled_militancy = {
-                factor = 8
-                ideology = liberal
-                }
-            scaled_consciousness = {
-                factor = 4
-                ideology = conservative
-                }
-            scaled_militancy = {
-                factor = 1
-                ideology = conservative
-                }
-            }
-        }
-        ai_chance = {
-            factor = 0.01
-        }
-    }
-
-    option = {
-        name = "EVTOPT600074C"
-		set_global_flag = uruguay_integration
-        badboy = 3
         prestige = 5
-		create_vassal = URU
         URU = {
-        relation = {
-            who = BRZ
-            value = -400
-        }
-        any_country = {
-		    leave_alliance = URU
-            relation = {
-                who = URU
-                value = -200
-            }
-        }
-        set_country_flag = blanco_rule
-        clr_country_flag = garibaldi_italian_legion
-        clr_country_flag = oribe_is_true_president
-        clr_country_flag = war_on_rosas
-        government = presidential_dictatorship
-        ruling_party_ideology = conservative
-        political_reform = none_voting
-        political_reform = party_appointed
-        political_reform = no_meeting
-        political_reform = state_press
-        political_reform = no_trade_unions
-        political_reform = underground_parties
-        any_pop = {
-            scaled_consciousness = {
-                factor = 9
-                ideology = liberal
-                    }
-            scaled_militancy = {
-                factor = 5
-                ideology = liberal
-                    }
-            scaled_consciousness = {
-                factor = 8
-                ideology = conservative
-                    }
-            scaled_militancy = {
-                factor = 3
-                ideology = conservative
-                    }
-                }
-            }
+			clr_country_flag = lost_the_war
+			any_country = { leave_alliance = URU }
+			set_country_flag = blanco_rule
+			clr_country_flag = garibaldi_italian_legion
+			clr_country_flag = oribe_is_true_president
+			clr_country_flag = war_on_rosas
+			government = presidential_dictatorship
+			ruling_party_ideology = conservative
+			political_reform = none_voting
+			political_reform = party_appointed
+			political_reform = no_meeting
+			political_reform = state_press
+			political_reform = no_trade_unions
+			political_reform = underground_parties
+			relation = { who = THIS value = 400 }
+			relation = { who = BRZ value = -400 }
+			any_pop = {
+				scaled_consciousness = {
+					factor = 9
+					ideology = liberal
+				}
+				scaled_militancy = {
+					factor = 8
+					ideology = liberal
+				}
+				scaled_consciousness = {
+					factor = 4
+					ideology = conservative
+				}
+				scaled_militancy = {
+					factor = 1
+					ideology = conservative
+				}
+				ideology = {
+					factor = 0.3
+					value = conservative
+				}
+			}
+		}		
+		create_alliance = URU
+		set_global_flag = oribe_and_rosas
         ai_chance = {
             factor = 0.01
-            }
-        }
-    option = {
-        name = "EVTOPT600074D"
-        #prestige = 3
-        badboy = -1
-        clr_country_flag = garibaldi_italian_legion
-        clr_country_flag = oribe_is_true_president
-        clr_country_flag = rivera_is_true_president
-        clr_country_flag = war_on_rosas
         }
     }
+}
 
 country_event = {
     id = 600075
     title = "EVTNAME600075" #Uruguay defeats Argentina
     desc = "EVTDESC600075"
-    picture = "montevideo_uruguay"
+    picture = "uruguay_riveira"
 
     fire_only_once = yes
 
@@ -1023,10 +987,10 @@ country_event = {
             has_country_flag = oribe_is_true_president
             has_country_flag = rivera_is_true_president
         }
-        NOT = { war_with = ARC }
+        NOT = { war_with = ARC has_country_flag = lost_the_war }
         ARC = {
             exists = yes
-            has_country_modifier = recently_lost_war
+            has_country_flag = lost_the_war
         }
         NOT = { year = 1860 }
     }
@@ -1047,78 +1011,132 @@ country_event = {
 
     option = {
         name = "EVTOPT600075A"
-        prestige = 20
+        prestige = 10
         treasury = 10000
         clr_country_flag = garibaldi_italian_legion
         clr_country_flag = oribe_is_true_president
         clr_country_flag = rivera_is_true_president
         clr_country_flag = war_on_rosas
-        relation = {
-            who = ARC
-            value = 400
-                }
+        relation = { who = ARC value = 400 }
         any_pop = {
             scaled_consciousness = {
                 factor = -4
                 ideology = liberal
-                }
+			}
             scaled_militancy = {
                 factor = -6
                 ideology = liberal
-                }
+			}
             scaled_consciousness = {
                 factor = -4
                 ideology = conservative
-                }
+			}
             scaled_militancy = {
                 factor = -2
                 ideology = conservative
-                }
-            }
-    ARC = {
-        treasury = -10000
-        prestige = -20
-        inherit = CRT
-        inherit = ENT
-        government = democracy
-        ruling_party_ideology = liberal
-        political_reform = no_slavery
-        political_reform = landed_voting
-        political_reform = population_equal_weight
-        political_reform = yes_meeting
-        political_reform = free_press
-        political_reform = state_controlled
-        political_reform = gerrymandering
-        any_owned = { limit = { is_core = SBA }
-            any_pop = {
-            consciousness = 9
-            militancy = 9
-            }
-        }
-        all_core = {
-            remove_core = ARC
-            remove_core = CRT
-            remove_core = ENT
-            remove_core = SBA
-            add_core = ARG
-        }
-        change_tag = ARG
-        ARG = { nationalvalue = nv_liberty }
-        }
-        ai_chance = { factor = 0.9 }
+			}
+		}
+		ARC = {
+			treasury = -10000
+			prestige = -20
+			inherit = CRT
+			inherit = ENT
+			government = democracy
+			ruling_party_ideology = liberal
+			political_reform = no_slavery
+			political_reform = landed_voting
+			political_reform = population_equal_weight
+			political_reform = yes_meeting
+			political_reform = free_press
+			political_reform = state_controlled
+			political_reform = gerrymandering
+			any_owned = { limit = { is_core = SBA }
+				any_pop = {
+				consciousness = 9
+				militancy = 9
+				}
+			}	
+			all_core = {
+				remove_core = ARC
+				remove_core = CRT
+				remove_core = ENT
+				remove_core = SBA
+				add_core = ARG
+			}
+			clr_country_flag = lost_the_war
+			change_tag = ARG
+		}
+		ARG = { nationalvalue = nv_liberty }
+		relation = { who = ARG value = 400 }
+		create_alliance = ARG
+        ai_chance = { factor = 1 }
     }
 
     option = {
         name = "EVTOPT600075B"
+		prestige = 20
+		badboy = 7.5
+        treasury = 10000
+		BRZ_2467 = { add_core = URU }
+		ARG_2360 = { add_core = URU }
+		2462 = { add_core = URU }
+		2363 = { add_core = URU }
+		2362 = { add_core = URU }
+		2361 = { add_core = URU }
         clr_country_flag = garibaldi_italian_legion
         clr_country_flag = oribe_is_true_president
         clr_country_flag = rivera_is_true_president
         clr_country_flag = war_on_rosas
+		ARC = {
+			treasury = -10000
+			prestige = -20
+			government = democracy
+			ruling_party_ideology = liberal
+			political_reform = no_slavery
+			political_reform = landed_voting
+			political_reform = population_equal_weight
+			political_reform = yes_meeting
+			political_reform = free_press
+			political_reform = state_controlled
+			political_reform = gerrymandering
+			any_owned = { limit = { is_core = SBA }
+				any_pop = {
+				consciousness = 9
+				militancy = 9
+				}
+			}
+			all_core = {
+				remove_core = ARC
+				remove_core = CRT
+				remove_core = ENT
+				remove_core = SBA
+				add_core = ARG
+			}
+			change_tag = ARG
+		}
+        inherit = CRT
+        inherit = ENT
+        ARG = {
+			nationalvalue = nv_liberty
+			any_owned = {
+				limit = { is_core = URU }
+				remove_core = ARG
+				secede_province = URU
+			}
+		}
+		all_core = { remove_core = ARG }
+		relation = { who = ARG value = 400 }
+		create_alliance = ARG
+		set_country_flag = URU_claimed
         ai_chance = {
-            factor = 0.1
+            factor = 10
+			modifier = {
+				factor = 0
+				badboy = 0.7
             }
         }
     }
+}
 
 country_event = {
     id = 600076
@@ -1698,4 +1716,102 @@ country_event = {
 		}
 	}
 
+}
+
+country_event = {
+	id = 600114
+	title = "Oribe supports Rosas!"
+	desc = "EVTDESC600114"
+	picture = "uruguay_oribe"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Urquiza stands no chance!"
+		set_country_flag = governor_oribe_setup
+		clr_global_flag = oribe_and_rosas
+	}
+}
+
+country_event = {
+	id = 600115
+	title = "Oribe supports Rosas!"
+	desc = "EVTDESC600115"
+	picture = "uruguay_oribe"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Another enemy of national organization!"
+	}
+}
+
+country_event = {
+	id = 600116
+	title = "Governor Manuel Oribe?"
+	desc = "EVTDESC600116"
+	picture = "uruguay_oribe"
+	
+	mean_time_to_happen = { months = 1 }
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ARC
+		has_country_flag = rosas_victory_new_regime
+		has_country_flag = governor_oribe_setup
+		war = no
+	}
+	
+	option = {
+		name = "Finally, a governor we can trust! §RGain 2.5 infamy§W"
+		badboy = 2.5
+		create_vassal = URU
+		create_alliance = URU
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.9
+			}
+		}
+	}
+	
+	option = {
+		name = "Oribe and Uruguay deserve better than that!"
+		prestige = 5
+		ai_chance = { factor = 1 }
+	}
+	
+}
+
+country_event = {
+	id = 600117
+	title = "Governor Manuel Oribe?"
+	desc = "EVTDESC600117"
+	picture = "uruguay_oribe"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "We fought for this, didn't we?"
+		FROM = { create_vassal = URU create_alliance = URU }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	option = {
+		name = "Oribe and Uruguay deserve better than that!"
+		prestige = 10
+		FROM = {
+			war = {
+				target = URU
+				attacker_goal = { casus_belli = make_puppet_no_infamy }
+				call_ally = no
+			}
+		}
+		ai_chance = { factor = 0 }
+	}
+	
 }
