@@ -108,10 +108,9 @@ political_decisions = {
         potential = {
 			primary_culture = platinean
 			OR = {
-				owns = 2462
-				owns = 2346
-				owns = 2554
-				owns = 4116
+				is_core = 2462
+				is_core = 2346
+				is_core = 2554
 			}
             NOT = { 
 				has_global_flag = misiones_orientales_claimed
@@ -122,6 +121,8 @@ political_decisions = {
         }
 
         allow = {
+			is_vassal = no
+			owns = 2554
             nationalism_n_imperialism = 1
             rank = 16
         }
@@ -130,8 +131,11 @@ political_decisions = {
             set_global_flag = misiones_orientales_claimed
             badboy = 2
             2466 = { add_core = THIS }
-            2467 = { add_core = THIS }
             4107 = { add_core = THIS }
+            random_owned = {
+				limit = { owner = { owns = 2344 } }
+				owner = { 2467 = { add_core = THIS } 3618 = { add_core = THIS } }
+			}
         }
         ai_will_do = { factor = 1 }
     }
@@ -151,7 +155,7 @@ political_decisions = {
 			PRG = {
                 OR = {
                     exists = no
-                    is_mobilised = no
+                    war = no
                 }
                 OR = {
                     in_sphere = THIS
@@ -168,7 +172,7 @@ political_decisions = {
             URU = {
                 OR = {
                     exists = no
-                    is_mobilised = no
+                    war = no
                 }
                 OR = {
                     in_sphere = THIS
@@ -184,10 +188,10 @@ political_decisions = {
             }
 
 			OR = {
-				ARG = {
+				ARC = {
 					OR = {
 						exists = no
-						is_mobilised = no
+						war = no
 					}
 					OR = {
 						in_sphere = THIS
@@ -219,7 +223,7 @@ political_decisions = {
 				ARG = {
 					OR = {
 						exists = no
-						is_mobilised = no
+						war = no
 					}
 					OR = {
 						in_sphere = THIS
@@ -436,4 +440,431 @@ political_decisions = {
         }
         ai_will_do = { factor = 1 }
     }
+	
+	magellan_commandancy  = {
+        picture = magellan_strait
+        potential = {
+			2334 = { empty = yes }
+			4069 = {
+			owned_by = THIS
+			is_core = THIS
+			}
+			primary_culture = platinean
+			has_global_flag = kept_isladelosestados
+            NOT = { has_country_flag = magellan_commandancy }
+        }
+
+        allow = {
+            is_vassal = no
+            war = no
+			OR = {
+				rank = 12
+				nationalism_n_imperialism = 1
+			}
+			money = 50000
+			owns = 4069
+			owns = 2354
+			owns = 2392
+			NOT = {
+				alliance_with = CHL
+			}
+        }
+
+        effect = {
+            set_country_flag = magellan_commandancy
+			2334 = { add_core = THIS secede_province = THIS any_pop = { limit = { is_primary_culture = no } literacy = -0.99 } change_province_name = "San Gregorio" }
+			2399 = { add_core = THIS }
+			2335 = { add_core = THIS }
+			2400 = { add_core = THIS }
+			relation = { who = CHL value = -100 }
+			treasury = -50000
+		}
+        ai_will_do = { factor = 1 }
+    }
+	
+	#Uruguay decisions
+	oust_riveira = {
+		picture = uru_oribe
+		potential = {
+			tag = URU
+			year = 1836
+			NOT = { has_country_flag = oribe_cooked }
+		}
+		
+		allow = {
+			war = no
+		}
+		
+		effect = {
+			prestige = 2.5
+			ruling_party_ideology = conservative
+			any_pop = {
+				limit = { OR = { type = soldiers type = officers } }
+				militancy = -1
+				consciousness = 1
+			}
+			set_country_flag = oribe_cooked
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	incite_corrientes = {
+		picture = corrientes_coa
+		potential = {
+			tag = URU
+			CRT = { exists = yes vassal_of = ARC }
+			has_country_flag = colorado_victory
+			NOT = {
+				has_country_flag = incite_rebellion
+			}
+		}
+		
+		allow = {
+			OR = {
+				ruling_party_ideology = liberal
+				AND = {
+					has_country_flag = colorado_victory
+					ai = yes
+				}
+			}
+			year = 1839
+			OR = {
+				year = 1840
+				month = 2
+			}
+		}
+		
+		effect = {
+			CRT = { country_event = 600062 }
+			set_country_flag = incite_rebellion
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	Claim_URU = {
+		picture = rivera
+        potential = {
+            tag = URU
+            NOT = { has_country_flag = URU_claimed }
+        }
+        allow = {
+            war = no
+            prestige = 70
+            is_vassal = no
+            nationalism_n_imperialism = 1
+			rank = 16
+			OR = {
+				war_policy = jingoism
+				ruling_party_ideology = liberal
+			}
+        }
+        effect = {
+            badboy = 10
+			prestige = 5
+			political_reform = federalism
+            set_country_flag = URU_claimed
+            BRZ_2467 = { add_core = URU }
+			ARG_2360 = { add_core = URU }
+			2462 = { add_core = URU }
+        }
+        ai_will_do = {
+            factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.6
+			}
+        }
+    }
+	
+	juliana_connection = {
+		picture = our_brothers_the_gauchos
+		potential = {
+			tag = URU
+			has_country_flag = URU_claimed
+			NOT = { has_country_flag = juliana_connection is_core = 2461 }
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+			rank = 12
+			owns = 2463 #Porto Alegre
+			revolution_n_counterrevolution = 1
+			war_policy = jingoism
+		}
+		
+		effect = {
+			badboy = 5
+			prestige = 2.5
+			2461 = { add_core = URU }
+			2459 = { add_core = URU }
+			4108 = { add_core = URU }
+			2462 = { add_core = URU }
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.8
+			}
+		}
+	}
+	
+	oribe_repaying_the_favor = {
+		picture = uru_oribe
+		potential = {
+			tag = URU
+			ARC = { war_with = ENT }
+			has_global_flag = oribe_and_rosas
+			NOT = { has_country_flag = repaying_favors }
+		}
+		
+		allow = {
+			NOT = { alliance_with = ENT }
+		}
+		
+		effect = {
+			set_country_flag = repaying_favors
+			casus_belli = {
+				target = ENT
+				type = cut_down_to_size
+				months = 6
+			}
+			ENT = {
+				war = {
+					target = URU
+					attacker_goal = { casus_belli = conquest_any }
+					defender_goal = { casus_belli = cut_down_to_size }
+					call_ally = no
+				}
+			}
+			ENT = { country_event = 600115 }
+			ARC = { country_event = 600114 }
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	#Mesopotamia/Litoral decisions
+	send_varela = {
+		picture = florencio_varela
+		potential = {
+			tag = CRT
+			war_with = ARC
+			NOT = { 
+				has_country_flag = send_varela 
+				year = 1849
+				AND = { year = 1848 month = 3 }
+			}
+		}
+		
+		allow = {
+			ruling_party_ideology = liberal
+			NOT = {
+				AND = {
+					OR = {
+						war_with = ENG
+						war_with = ENL
+					}
+					OR = {
+						war_with = FRA
+						war_with = BOR
+					}
+				}
+			}
+		}
+		
+		effect = {
+			war_exhaustion = -10
+			country_event = 600085
+			set_country_flag = send_varela
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	unite_with_argentina = {
+		picture = la_plata_foundation
+		potential = {
+			OR = {
+				tag = ENT
+				tag = CRT
+			}
+			OR = {
+				THIS = { ai = yes }
+				ARG = { ai = yes }
+			}
+			has_country_flag = corrientes_mesopotamia
+			ARG = { exists = yes }
+			NOT = { has_country_flag = unite_with_argentina }
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+            OR = {
+                part_of_sphere = no
+                sphere_owner = { is_sphere_leader_of = ARG }
+            }
+            ARG = {
+                war = no
+				owns = 2348
+                neighbour = THIS
+                OR = {
+					is_vassal = no
+					ARG = { overlord = { is_sphere_leader_of = THIS } }
+				}
+            }
+			ARC = { exists = no }
+		}
+		
+		effect = {
+			set_country_flag = unite_with_finland
+            THIS = { all_core = { add_core = ARG } }
+            random_country = {
+                limit = {
+                    tag = ARG
+                    THIS = { ai = yes }
+                } 
+                inherit = THIS
+            }
+            random_country = {
+                limit = {
+                    tag = FIN
+					is_vassal = yes
+                    THIS = { ai = no }
+                }
+				ARG = { 
+					overlord = {
+						create_vassal = THIS
+						create_alliance = THIS
+					}
+				}
+				THIS = {
+					inherit = ARG
+					random_owned = {
+                        limit = { owner = { owns = 2348 } }
+                        owner = { capital = 2348 }
+                    }
+					change_tag = ARG
+				}
+            }
+			random_country = {
+                limit = {
+                    tag = ARG
+					is_vassal = no
+                    THIS = { ai = no }
+                }
+                annex_to = THIS
+                THIS = {
+                    random_owned = {
+                        limit = { owner = { owns = 2348 } }
+                        owner = { capital = 2348 }
+                    }
+                    change_tag = ARG
+                }
+            }
+		}
+		
+        ai_will_do = { factor = 1 }
+	
+	}
+	
+	league_of_the_free_peoples = {
+		picture = artigas
+		potential = {
+			OR = {
+				tag = ENT
+				tag = CRT
+			}
+			is_vassal = no
+			has_country_flag = entre_rios_litoral
+			NOT = { has_country_flag = free_peoples }
+		}
+		
+		allow = {
+			rank = 16
+			centralization = federalism
+			OR = {
+				war_policy = jingoism
+				war_policy = pro_military
+				owns = 2344
+			}
+			nationalism_n_imperialism = 1
+		}
+		
+		effect = {
+			badboy = 5
+			prestige = 5
+			any_pop = {
+				ideology = {
+					value = conservative
+					factor = 0.1
+				}
+			}
+			random_owned = {
+				limit = { owner = { NOT = { owns = 2379 } } }
+				owner = { 2379 = { owner = { relation = { who = THIS value = -100 } } } }
+			}
+			random_owned = {
+				limit = { owner = { NOT = { owns = 2344 } } }
+				owner = { 2344 = { owner = { relation = { who = THIS value = -100 } } } }
+			}
+			random_owned = {
+				limit = { owner = { NOT = { owns = 2466 } } }
+				owner = { 2466 = { owner = { relation = { who = THIS value = -100 } } } }
+			}
+			URU_2344 = { add_core = THIS }
+			2467 = { add_core = THIS }
+			2466 = { add_core = THIS }
+			4107 = { add_core = THIS }
+			2380 = { add_core = THIS }
+			2381 = { add_core = THIS }
+			2379 = { add_core = THIS }
+			3618 = { add_core = THIS }
+			set_country_flag = free_peoples
+		}
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.8
+			}
+		}
+	}
+	
+	reinvade_paraguay = {
+		picture = manuel_belgrano
+		potential = {
+			OR = {
+				tag = ENT
+				tag = CRT
+			}
+			is_vassal = no
+			has_country_flag = free_peoples
+			NOT = { has_country_flag = ENT_claim_paraguay has_country_flag = derqui-varela is_core = 2339 }
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+			rank = 12
+			revolution_n_counterrevolution = 1
+			war_policy = jingoism
+		}
+		
+		effect = {
+			badboy = 10
+			prestige = 5
+			set_country_flag = ENT_claim_paraguay
+			PRG = { all_core = { add_core = PRG } }
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.6
+			}
+		}
+	}
+
 }
