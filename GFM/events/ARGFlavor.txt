@@ -19,10 +19,6 @@ country_event = {
 			}
             tag = LPL
         }
-        war = no
-        NOT = {
-            year = 1855
-        }
     }
 
     mean_time_to_happen = {
@@ -1501,7 +1497,7 @@ country_event = {
 		name = "Welcome back, Gobernador..."
 		prestige = 5
 		random_owned = {
-			limit = { owner = { URU = { exist = no } } }
+			limit = { owner = { URU = { exists = no } } }
 			release_vassal = URU
 			create_alliance = URU
 			diplomatic_influence = { who = URU value = 400 }
@@ -1524,7 +1520,7 @@ country_event = {
 		name = "Welcome back, Gobernador..."
 		prestige = 5
 		random_owned = {
-			limit = { owner = { URU = { exist = no } } }
+			limit = { owner = { URU = { exists = no } } }
 			release_vassal = URU
 			create_alliance = URU
 			diplomatic_influence = { who = URU value = 400 }
@@ -1624,6 +1620,12 @@ country_event = {
 	option = {
 		name = "He seems a bit troublesome, no?"
 		set_country_flag = urquiza_rise
+		add_country_modifier = { name = caudillo_leaders duration = 7300 }
+		define_general = {
+			name = "José Justo de Urquiza"
+			personality = defence_3.1
+			background = attack_3.1
+		}
 		treasury = 50000
 		ai_chance = { factor = 1 }
 	}
@@ -1678,12 +1680,8 @@ country_event = {
 	mean_time_to_happen = { 
 		months = 6
 		modifier = {
-            factor = 0.75 #increase likelihood to happen
+            factor = 0.01 #increase likelihood to happen
             year = 1852
-        }
-		modifier = {
-            factor = 0.1 #increase likelihood to happen
-            year = 1853
         }
 	}
 	
@@ -1729,7 +1727,7 @@ country_event = {
 			war = {
 				target = ENT
 				attacker_goal = { casus_belli = civil_war }
-				defender_goal = { casus_belli = scripted_war }
+				defender_goal = { casus_belli = scripted_war_small }
 				call_ally = no
 			}
 		}
@@ -1806,6 +1804,11 @@ country_event = {
 		remove_country_modifier = mazorca
 		clr_country_flag = totally_totalitarian
 		set_country_flag = urquiza_victorious
+		any_country = {
+			limit = { has_country_flag = help_urquiza }
+			relation = { who = THIS value = 400 }
+			clr_country_flag = help_urquiza
+		}
 	}
 }
 
@@ -2122,7 +2125,7 @@ country_event = {
 		months = 9
 		modifier = {
 			factor = 0.1
-			SBA = { exist = no }
+			SBA = { exists = no }
 		}
 		modifier = {
 			factor = 0.1
@@ -2135,6 +2138,8 @@ country_event = {
 		prestige = -5
 		end_war = SBA
 		any_owned = { limit = { is_core = SBA } secede_province = SBA } 
+		add_country_modifier = { name = lost_buenos_aires duration = -1 }
+		SBA = { any_owned = { remove_core = THIS } }
 		ai_chance = { factor = 1 }
 	}
 	
@@ -2142,6 +2147,22 @@ country_event = {
 		name = "Withdraw from the siege but keep the rest of the province occupied"
 		prestige = -5
 		end_war = SBA
+		SBA = { 
+			any_owned = {
+				limit = {
+					NOT = {
+						province_id = 2348
+						province_id = 2354
+						province_id = 2392
+					}
+				}
+				secede_province = THIS
+			}
+		}
+		random_owned = {
+			limit = { SBA = { owns = 3948 } }
+			SBA = { any_owned = { limit = { OR = { province_id = 2354 province_id = 2392 } } secede_province = THIS } }
+		}
 		any_owned = {
 			limit = {
 				OR = { 
@@ -2157,7 +2178,9 @@ country_event = {
 			SBA = { any_owned = { limit = { OR = { province_id = 2354 province_id = 2392 } } secede_province = THIS } }
 		}
 		any_owned = { limit = { is_core = SBA } add_province_modifier = { name = unitarian_federal_clashes duration = 3650 } }
+		add_country_modifier = { name = lost_buenos_aires duration = -1 }
 		any_pop = { limit = { type = soldiers } militancy = 2 consciousness = 4 }
+		SBA = { any_owned = { remove_core = THIS } }
 		ai_chance = { factor = 0 }
 	}
 	
@@ -2289,6 +2312,7 @@ country_event = {
 		political_reform = open_borders
 		political_reform = gerrymandering
 		political_reform = unitary
+		nationalvalue = nv_liberty 
 	}
 }
 
@@ -2525,6 +2549,13 @@ country_event = {
         political_reform = free_press
         political_reform = state_controlled
         political_reform = gerrymandering
+		remove_country_modifier = totalitarian_system
+		remove_country_modifier = political_education
+		remove_country_modifier = cult_of_personality
+		remove_country_modifier = the_terror
+		remove_country_modifier = paternalistic_totalitarism
+		remove_country_modifier = mazorca
+		clr_country_flag = totally_totalitarian
         any_pop = {
             scaled_militancy = {
                 ideology = reactionary
@@ -2625,8 +2656,8 @@ country_event = {
 		}
 		war = {
 			target = SBA
-			attacker_goal = { casus_belli = civil_war }
-			defender_goal = { casus_belli = civil_war }
+			attacker_goal = { casus_belli = conquest_any }
+			defender_goal = { casus_belli = conquest_any }
 		}
 		ai_chance = { factor = 1 }
 	}
@@ -2924,7 +2955,7 @@ country_event = {
 	option = {
 		name = "The end of Confederation is rewarding enough"
 		relation = { who = FROM value = 50 }
-		ai_chance = { factor = 1 }
+		ai_chance = { factor = 7 }
 	}
 	
 	option = {
@@ -3595,4 +3626,399 @@ country_event = {
 		name = "Well, we tried"
 		relation = { who = FROM value = -50 }
 	}
+}
+
+country_event = {
+	id = 600145
+	title = "Villamayor Massacre"
+	desc = "EVTDESC600145"
+	picture = "Execution"
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = { months = 1 }
+	
+	trigger = {
+		tag = ARC
+		has_country_flag = free_buenos_aires
+		SBA = { exists = yes is_vassal = no }
+		NOT = { has_country_flag = buenos_aires_recovered }
+		year = 1856
+		month = 2
+	}
+
+	option = {
+		name = "We have to urge more caution from now on..."
+		relation = { who = SBA value = -100 }
+		any_pop = { limit = { type = officers } consciousness = 4 }
+	}
+}
+
+country_event = {
+	id = 600146
+	title = "Battle of Cepeda"
+	desc = "EVTDESC600146"
+	picture = "cepeda"
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = { months = 1 }
+	
+	trigger = {
+		tag = ARC
+		has_country_flag = free_buenos_aires
+		SBA = { exists = yes is_vassal = no }
+		NOT = { has_country_flag = buenos_aires_recovered }
+		year = 1859
+		month = 1
+	}
+
+	option = {
+		name = "Camp on San José de Flores and start negotiations for now..."
+		relation = { who = SBA value = 100 }
+		SBA = { country_event = 600147 }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "March towards Buenos Aires! §RGain 5 infamy§! "
+		badboy = 5 
+		war = {
+            target = SBA
+            attacker_goal = { casus_belli = civil_war }
+            defender_goal = { casus_belli = scripted_war_small }
+			call_ally = no
+		}
+		SBA = { country_event = 600150 }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 600147
+	title = "Battle of Cepeda"
+	desc = "EVTDESC600147"
+	picture = "cepeda"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "Force Valentín Alsina to resign and start negotiations!"
+		relation = { who = FROM value = 100 }
+		FROM = { country_event = 600148 }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Alsina will fight to the last man!"
+		set_global_flag = fight_for_buenos_aires
+        add_country_modifier = { name = fanatic_army duration = 3650 }
+		add_country_modifier = { name = caudillo_leaders duration = 3650 } 
+		war = {
+            target = FROM
+            attacker_goal = { casus_belli = scripted_war_small }
+            defender_goal = { casus_belli = civil_war }
+			call_ally = no
+		}
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 600148
+	title = "Pacto de Unión Nacional"
+	desc = "EVTDESC600148"
+	picture = "san_jose_de_flores"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "Do we really think Buenos Aires will keep their word?"
+		relation = { who = FROM value = 100 }
+		create_alliance = FROM
+		FROM = { country_event = 600149 }
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600149
+	title = "Pacto de Unión Nacional"
+	desc = "EVTDESC600149"
+	picture = "san_jose_de_flores"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "We will bide our time..."
+		set_country_flag = san_jose_de_flores_pact
+		relation = { who = FROM value = 100 }
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600150
+	title = "Battle of Cepeda"
+	desc = "EVTDESC600150"
+	picture = "cepeda"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Alsina will fight to the last man!"
+		set_global_flag = fight_for_buenos_aires
+        add_country_modifier = { name = fanatic_army duration = 3650 }
+		add_country_modifier = { name = caudillo_leaders duration = 3650 } 
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600151
+	title = "The Independent State of Buenos Aires?"
+	desc = "EVTDESC600151"
+	picture = "pavon"
+	
+	fire_only_once = yes
+
+	mean_time_to_happen = { months = 1 }
+	
+	trigger = {
+		tag = SBA
+		has_global_flag = fight_for_buenos_aires
+		war = no
+		OR = {
+			truce_with = ARC
+			truce_with = LPL
+		}
+		OR = { ARC = { exists = yes NOT = { has_country_flag = lost_the_war } } LPL = { exists = yes NOT = { has_country_flag = lost_the_war } } }
+	}
+	
+	option = {
+		name = "If we can't rule Argentina, we won't be part of it!"
+		clr_global_flag = fight_for_buenos_aires
+		random_country = {
+			limit = { exists = yes OR = { tag = LPL tag = ARC } }
+			country_event = 600152
+		}
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "We just need more time!"
+		clr_global_flag = fight_for_buenos_aires
+        random_country = {
+			limit = { exists = yes tag = LPL }
+			SBA = { add_core = LPL }
+		}
+        random_country = {
+			limit = { exists = yes tag = ARC }
+			SBA = { add_core = ARC }
+		}
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 600152
+	title = "The Independent State of Buenos Aires"
+	desc = "EVTDESC600152"
+	picture = "pavon"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Damn it!"
+		clr_global_flag = fight_for_buenos_aires
+		remove_country_modifier = lost_buenos_aires
+		prestige = -10
+		any_owned = { limit = { is_core = SBA } remove_core = THIS secede_province = SBA }
+	}
+}
+
+country_event = {
+    id = 4661012
+    title = "The Fate of Buenos Aires"
+    desc = "EVTDESC4661012"
+    picture = "battle_pavon"
+
+    fire_only_once = yes
+
+    trigger = {
+        tag = SBA
+		year = 1861
+		month = 9
+        war = no
+        is_vassal = no
+        ARC = {
+            exists = yes
+            is_vassal = no
+        }
+    }
+
+    mean_time_to_happen = { months = 1 }
+
+    option = {
+        name = "Refuse to call new elections! It is now or never!"
+        ARC = { country_event = 4661013 }
+        add_country_modifier = { name = fanatic_army duration = 3650 }
+		add_country_modifier = { name = caudillo_leaders duration = 3650 } 
+        ai_chance = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				OR = { in_sphere = ARC in_sphere = LPL }
+			}
+		}
+    }
+
+    option = {
+        name = "It is with a heavy heart that we accept the Federal demands!"
+        ARC = { create_vassal = SBA country_event = 4661014 }
+        any_pop = { militancy = 4 consciousness = 6 }
+        random_owned = { limit = { owner = { ai = no } } owner = { change_tag_no_core_switch = ARC } }
+        ai_chance = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { in_sphere = ARC in_sphere = LPL }
+			}
+		}
+    }
+}
+
+country_event = {
+    id = 4661013
+    title = "Buenos Aires Breaks the Pact of San José"
+    desc = "EVTDESC4661013"
+    picture = "battle_pavon"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "It is about time we teach Buenos Aires a lesson!"
+		set_global_flag = fight_for_buenos_aires
+		war = {
+            target = SBA
+            attacker_goal = { casus_belli = civil_war }
+            defender_goal = { casus_belli = scripted_war_small }
+			call_ally = no
+		}
+    }
+}
+
+
+country_event = {
+    id = 4661014
+    title = "Buenos Aires Submits!" 
+    desc = "EVTDESC4661014"
+    picture = "battle_pavon"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "Finally, peace!"
+		create_alliance = SBA
+		any_owned = { limit = { is_core = SBA } secede_province = SBA }
+		SBA = { all_core = { add_core = ARC } }
+		add_country_modifier = { name = small_immigration_boom duration = 1825 }
+		capital_scope = { add_province_modifier = { name = gateway_to_harbor duration = 1825 } }
+		set_country_flag = federalist_triumph
+		remove_country_modifier = lost_buenos_aires
+	}
+}
+
+country_event = {
+    id = 4661015
+    title = "The Battle of Pavón"
+    desc = "EVTDESC4661015"
+    picture = "pavon"
+
+    fire_only_once = yes
+
+    trigger = {
+        tag = SBA
+		is_vassal = no
+		has_global_flag = fight_for_buenos_aires
+		ARC = { has_country_flag = lost_the_war }
+    }
+
+    mean_time_to_happen = { days = 10 }
+
+    option = {
+        name = "Finally! The Federalists are no more!"
+		prestige = 20
+		clr_global_flag = fight_for_buenos_aires
+		all_core = { add_core = ARG remove_core = ARC }
+		change_tag_no_core_switch = ARC
+		ARC = { country_event = { id = 4661016 days = 1 } }
+    }
+}
+
+country_event = {
+    id = 4661016
+    title = "The Argentine Republic"
+    desc = "EVTDESC4661016"
+    picture = "mitre_ad"
+
+    fire_only_once = yes
+
+    trigger = {
+        tag = SBA
+		is_vassal = no
+		has_global_flag = fight_for_buenos_aires
+		ARC = { has_country_flag = lost_the_war }
+    }
+
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "Finally! The Federalists are no more!"
+		prestige = 10
+		inherit = SBA
+		all_core = { add_core = ARG remove_core = ARC }
+		capital = 2348
+		2348 = { add_province_modifier = { name = gateway_to_harbor duration = 1825 } }
+		change_tag = ARG
+		ARG = { 
+			add_country_modifier = { name = small_immigration_boom duration = 1825 } 
+			remove_country_modifier = lost_buenos_aires 
+			nationalvalue = nv_liberty 
+		}
+    }
+}
+
+country_event = {
+    id = 4661017
+    title = "The Conquest of Buenos Aires"
+    desc = "EVTDESC4661017"
+    picture = "pavon"
+
+    fire_only_once = yes
+
+    trigger = {
+        tag = ARC
+        is_vassal = no
+		owns = 2348
+		has_country_flag = free_buenos_aires
+		has_global_flag = fight_for_buenos_aires
+        SBA = { exists = no }
+        ARG = { exists = no }
+		NOT = { has_country_flag = federalist_triumph }
+    }
+
+
+    mean_time_to_happen = { days = 1 }
+
+	option = {
+        name = "The Confederation is whole once again!"
+		inherit = SBA
+		SBA = { all_core = { add_core = ARC } }
+		add_country_modifier = { name = small_immigration_boom duration = 1825 }
+		set_country_flag = federalist_triumph
+		remove_country_modifier = lost_buenos_aires
+		clr_global_flag = fight_for_buenos_aires
+		any_pop = { militancy = -1 consciousness = -1 }
+    }
 }
