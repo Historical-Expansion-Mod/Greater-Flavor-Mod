@@ -62,6 +62,7 @@ political_decisions = {
         potential = {
 			primary_culture = greek
 			exists = GRE
+			OR = { ai = yes GRE = { ai = yes } }
 			OR = {
 				tag = SAM
 				ai = no
@@ -99,7 +100,10 @@ political_decisions = {
             }
             GRE = {
                 war = no
-                is_vassal = no
+                OR = {
+					is_vassal = no
+					GRE = { overlord = { is_sphere_leader_of = THIS } }
+				}
             }
 			OR = {
 				neighbour = GRE
@@ -112,84 +116,105 @@ political_decisions = {
 
         effect = {
             set_country_flag = unite_with_greece
+			all_core = { add_core = GRE }
             random_country = {
                 limit = {
                     tag = GRE
-                    ai = yes
                     THIS = { ai = yes }
                 }
                 THIS = {
                     remove_accepted_culture = north_italian #technically should be converted to MC but since it's just Corfiots there who cares
                     remove_accepted_culture = british
-					all_core = { add_core = GRE }
                 }
                 inherit = THIS
             }
             random_country = {
                 limit = {
                     tag = GRE
-                    ai = yes
+                    is_vassal = yes
                     THIS = { ai = no }
                 }
-                any_owned = { secede_province = THIS }
-                THIS = {
+                GRE = { 
+					overlord = {
+						create_vassal = THIS
+						create_alliance = THIS
+					}
+				}
+				THIS = {
+					inherit = GRE
+					random_owned = {
+                        limit = { owner = { owns = 834 } }
+                        owner = { capital = 834 }
+                    }
+					change_tag = GRE
                     remove_accepted_culture = turkish
                     remove_accepted_culture = north_italian
                     remove_accepted_culture = british
-                    random_owned = {
-                        limit = { province_id = 834 }
-                        owner = { capital = 834 }
-                    }
-                    change_tag = GRE
+					remove_accepted_culture = georgian
                 }
             }
             random_country = {
                 limit = {
                     tag = GRE
-                    ai = no
+                    is_vassal = no
+                    THIS = { ai = no }
                 }
-                country_event = 60130
+                annex_to = THIS
+				THIS = {
+					change_tag = GRE
+                    remove_accepted_culture = turkish
+                    remove_accepted_culture = north_italian
+                    remove_accepted_culture = british
+					remove_accepted_culture = georgian
+					random_owned = {
+                        limit = { owner = { owns = 834 } }
+                        owner = { capital = 834 }
+                    }
+				}
             }
         }
 		ai_will_do = { factor = 1 }
     }
-
-	unite_greece = {
-		picture = unite_with_greece
+	
+	claim_rumelia = {
+		picture = stamp_north_epirus
 		potential = {
-			is_greater_power = yes
-			GRE = {
-				vassal_of = THIS
-				exists = yes
-			}
+			tag = GRE
 			OR = {
-				SAM = { exists = yes OR = { is_vassal = no vassal_of = THIS } ai = yes }
-				CYP = { exists = yes OR = { is_vassal = no vassal_of = THIS } ai = yes }
-				CRE = { exists = yes OR = { is_vassal = no vassal_of = THIS } ai = yes }
-				ANT = { exists = yes OR = { is_vassal = no vassal_of = THIS } ai = yes }
-				PNT = { exists = yes OR = { is_vassal = no vassal_of = THIS } ai = yes }
+				invention = dark_continent
+				has_country_flag = greece_has_got_a_brand_new_bag
 			}
-			NOT = { tag = TUR }
+			rank = 16
+			NOT = { has_country_flag = greek_rumelia }
 		}
 		
 		allow = {
-			is_sphere_leader_of = GRE
-			OR = { 
-				SAM = { in_sphere = THIS war = no is_vassal = no }
-				CYP = { in_sphere = THIS war = no is_vassal = no }
-				CRE = { in_sphere = THIS war = no is_vassal = no }
-				ANT = { in_sphere = THIS war = no is_vassal = no }
-				PNT = { in_sphere = THIS war = no is_vassal = no }
+			war = no
+			is_vassal = no
+			mass_politics = 1
+			BUL = {
+				OR = {
+					exists = no
+					relation = { who = THIS value = -100 }
+				}
 			}
+			war_policy = jingoism
+			all_core = { owned_by = THIS }
 		}
 		
 		effect = {
-			any_country = {
-				limit = { OR = { tag = SAM tag = CYP tag = CRE tag = ANT tag = PNT } in_sphere = THIS is_vassal = no }
-				all_core = { add_core = GRE }
-				annex_to = GRE
+			badboy = 5
+			prestige = 5
+			TUR_809 = { add_core = GRE }
+			3302 = { add_core = GRE }
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.8
 			}
 		}
-		ai_will_do = { factor = 1 }
 	}
+
 }

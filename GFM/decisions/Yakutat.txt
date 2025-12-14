@@ -70,8 +70,8 @@ political_decisions = {
 	nejd_free = {
         picture = nejd_sanjak
         potential = {
-			tag = NEJ
-			vassal_of = EGY
+			tag = EGY
+			NEJ = { NOT = { vassal_of = EGY } }
 			EGY = { vassal_of = TUR }
 			NOT = { year = 1843 }
 			NOT = { has_global_flag = nejd_free }
@@ -80,26 +80,17 @@ political_decisions = {
         allow = {
 			EGY = { vassal_of = TUR }
 			HAL = { vassal_of = NEJ owns = 1160 }
-			OR = {
-				AND = { ai = yes year = 1836 }
-				ai = no
-			}
-			OR = {
-				EGY = { war = yes NOT = { war_with = TUR } }
-				EGY = { owns = 3692 }
-				NOT = { relation = { who = EGY value = -160 } }
-			}
+			year = 1836
 			month = 4
 			war = no
 		}
 
         effect = {
 			set_global_flag = nejd_free
-			prestige = 10
-			EGY = { release_vassal = NEJ }
+			prestige = 3
 			TUR = { diplomatic_influence = { who = NEJ value = -600 } }
 			EGY = { overlord = { country_event = 184823911 } }
-			EGY = { country_event = 184823915 }
+			NEJ = { country_event = 184823915 }
         }
 
         ai_will_do = { factor = 1 }
@@ -1165,7 +1156,7 @@ political_decisions = {
         potential = {
 			tag = NEJ
 			is_vassal = no
-			HAL = { vassal_of = NEJ }
+			HAL = { vassal_of = NEJ exists = yes }
 			NOT = { year = 1855 }
             NOT = { has_country_flag = hail_gettin_centralized }
         }
@@ -1182,7 +1173,6 @@ political_decisions = {
 			prestige = 5
 			release_vassal = HAL
 			inherit = HAL
-			HAL = { all_core = { remove_core = HAL add_core = NEJ } government = absolute_monarchy }
         }
         ai_will_do = {
             factor = 1
@@ -1196,6 +1186,7 @@ political_decisions = {
 				tag = DAR
 				tag = RZQ
 			}
+			BOI = { exists = no }
             NOT = { has_global_flag = help_muhammad_sharif }
 			NOT = { has_global_flag = sw_set }
         }
@@ -1542,33 +1533,53 @@ political_decisions = {
 	restore_abu_arish = {
 		picture = restore_abu_arish
         potential = {
-			owns = 3855
 			has_country_flag = i_am_tur
-			NYE = { owns = 1179 owns = 3692 is_vassal = no }
-			OR = { HDJ = { vassal_of = TUR owns = 3855 } HDJ = { vassal_of = ALA owns = 3855 } owns = 3855 }
+			OR = { owns = 3991 3991 = { owner = { vassal_of = THIS } } }
+			NYE = { owns = 3864 is_vassal = no }
+			OR = {
+				TSI = { owns = 3692 is_vassal = no }
+				ASI = { owns = 3692 is_vassal = no }
+			}
             NOT = { has_global_flag = restore_abu_arish }
         }
         allow = {
             war = no
 			is_disarmed = no
             NOT = { truce_with = NYE }
-			year = 1850
+			year = 1848
         }
         effect = {
             set_global_flag = restore_abu_arish
-			prestige = 5
-			1179 = { secede_province = THIS }
-			3692 = { secede_province = THIS change_controller = NYE }
-			war = {
-				target = NYE
-				attacker_goal = {
-					casus_belli = cut_down_to_size_no_infamy
+			prestige = 3
+			TSI = { all_core = { add_core = THIS add_core = HDJ } }
+			ASI = { all_core = { add_core = THIS add_core = HDJ } }
+			random_owned = {
+				limit = {
+					owner = {
+						TSI = { is_vassal = no }
+					}
 				}
-				defender_goal = {
-					casus_belli = acquire_any_state
-					state_province_id = 3692
+				owner = {
+					war = {
+						target = TSI
+						attacker_goal = { casus_belli = make_puppet_no_add_wargoal }
+						defender_goal = { casus_belli = humiliate_no_infamy }
+					}
 				}
-				call_ally = no
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						ASI = { is_vassal = no }
+					}
+				}
+				owner = {
+					war = {
+						target = ASI
+						attacker_goal = { casus_belli = make_puppet_no_add_wargoal }
+						defender_goal = { casus_belli = humiliate_no_infamy }
+					}
+				}
 			}
         }
         ai_will_do = {
@@ -3384,6 +3395,7 @@ political_decisions = {
 				tag = MRW
 				tag = BNB
 			}
+            NOT = { primary_culture = kurdish }
             NOT = { has_country_flag = reclaim_mankanba }
         }
         allow = {
@@ -3455,6 +3467,7 @@ political_decisions = {
 				tag = MRW
 				tag = BNB
 			}
+            NOT = { primary_culture = kurdish }
             NOT = { has_country_flag = maravi_reclaim }
         }
         allow = {
@@ -4269,7 +4282,7 @@ political_decisions = {
 			ai = no
 			OR = {
 				tag = BTE
-				AND = { tag = BZD owns = 3769 }
+				AND = { tag = BZD owns = 3769 NOT = { primary_culture = kurdish } }
 				has_country_flag = pan_mande
 			}
 			NOT = {
@@ -5701,7 +5714,8 @@ political_decisions = {
 
 		allow = {
 			BOI = { vassal_of = THIS }
-			year = 1837
+			year = 1836
+			month = 4
 			war = no
 			is_vassal = no
 		}
@@ -6036,9 +6050,13 @@ political_decisions = {
 				owns = 89
 				owns = 81
 			}
-			NOT = { QNG = { owns = 1496 } year = 1870 }
-			NOT = { AND = { ai = yes QNG = { ai = yes } } }
-			NOT = { has_country_flag = purchase_taiwan }
+			NOT = { 
+				QNG = { owns = 1496 } 
+				tag = JAP 
+				year = 1870 
+				AND = { ai = yes QNG = { ai = yes } }
+				has_country_flag = purchase_taiwan 
+			}
         }
 
         allow = {
@@ -7928,7 +7946,7 @@ political_decisions = {
 		picture = gaza_map
         potential = {
 			tag = MAT
-			OR = { GAZ = { owns = 3650 } TSI = { owns = 3650 } }
+			OR = { GAZ = { owns = 3650 } SRN = { owns = 3650 } }
             NOT = { has_global_flag = gaza_for_matabele }
         }
         allow = {
@@ -7962,8 +7980,9 @@ political_decisions = {
         potential = {
 			OR = {
 				tag = GAZ
-				tag = TSI
+				tag = SRN
 			}
+			NOT = { primary_culture = kurdish }
             NOT = { has_country_flag = centralize_gaza1 }
         }
         allow = {
@@ -8009,8 +8028,9 @@ political_decisions = {
         potential = {
 			OR = {
 				tag = GAZ
-				tag = TSI
+				tag = SRN
 			}
+			NOT = { primary_culture = kurdish }
             NOT = { has_global_flag = homeland_gaza }
         }
         allow = {
@@ -9456,6 +9476,7 @@ political_decisions = {
 	egyptianethiopianwar2 = {
 		picture = egt
         potential = {
+			ai = no
 			tag = ETH
 			owns = 1852
 			is_vassal = no
@@ -10113,7 +10134,6 @@ political_decisions = {
         }
         effect = {
 			1771 = { secede_province = THIS any_pop = { literacy = -0.99 } life_rating = 10 }
-			3693 = { secede_province = THIS any_pop = { literacy = -0.99 } life_rating = 10 }
 			1833 = { secede_province = THIS any_pop = { literacy = -0.99 } life_rating = 10 }
 			1834 = { secede_province = THIS any_pop = { literacy = -0.99 } life_rating = 10 }
         }
@@ -10257,6 +10277,7 @@ political_decisions = {
 				GMB = { exists = yes religion = fetishist }
 				TOG = { exists = yes religion = fetishist }
 			}
+			NOT = { primary_culture = kurdish }
 			NOT = { has_global_flag = launched_jihad_btl }
         }
         allow = {
@@ -10963,6 +10984,7 @@ political_decisions = {
         effect = {
 			set_global_flag = gulhane_edict
 			set_country_flag = gulhane_edict
+			prestige = 5
 			badboy = 2
             random_owned = {
                 limit = {
@@ -10977,9 +10999,6 @@ political_decisions = {
                 }
 				treasury = -20000
             }
-			TUR = { release_vassal = KLS }
-			894 = { owner = { inherit = KLS } }
-			KLS = { all_core = { remove_core = KLS } }
 			3533 = { change_province_name = "Hozat" }
 			any_country = {
 				limit = { vassal_of = THIS primary_culture = kurdish }
@@ -12020,7 +12039,7 @@ political_decisions = {
 				add_accepted_culture = bena_kinga
 				add_accepted_culture = yao
 				add_accepted_culture = takama
-				government = absolute_empire
+				government = absolute_monarchy
 			}
         }
         ai_will_do = {
@@ -13073,5 +13092,2994 @@ political_decisions = {
         ai_will_do = {
             factor = 1
         }
+	}
+	
+    occupation_of_the_jawiya_desert = {
+        picture = map_arabia
+        potential = {
+			has_country_flag = can_use_monthly
+            OR = {
+                AND = { #Mesopotamia
+                    owns = 3428 #Raqqa
+                    3300 = { empty = yes } #Zawr
+                }
+                AND = { #Mesopotamia
+                    owns = 3292 #Fallujah
+                    3389 = { empty = yes } #Anah
+                }
+                AND = { #Mesopotamia
+                    owns = 3300 #Zawr
+                    929 = { empty = yes } #Abu Kamal
+                }
+            }
+        }
+
+        allow = {
+            OR = {
+                AND = { #Mesopotamia
+                    owns = 3428 #Raqqa
+                    3300 = { empty = yes } #Zawr
+                    OR = {
+                        year = 1855
+                        nationalism_n_imperialism = 1
+                    }
+                }
+                AND = { #Mesopotamia
+                    owns = 3292 #Fallujah
+                    3389 = { empty = yes } #Anah
+                    OR = {
+                        year = 1870
+                        revolution_n_counterrevolution = 1
+                    }
+                }
+                AND = { #Mesopotamia
+                    owns = 3300 #Zawr
+                    929 = { empty = yes } #Abu Kamal
+                    OR = {
+                        year = 1870
+                        revolution_n_counterrevolution = 1
+                    }
+                }
+            }
+        }
+
+        effect = {
+            #Mesopotamia#
+            random_owned = {
+                limit = {
+                    owner = {
+						owns = 3428 #Raqqa
+						3300 = { empty = yes } #Fallujah
+						OR = {
+							year = 1856
+							nationalism_n_imperialism = 1
+						}
+                    }
+                }
+                3300 = { secede_province = THIS any_pop = { literacy = -0.99 } life_rating = 30 }
+                owner = { prestige = 1 }
+            }
+            random_owned = {
+                limit = {
+                    owner = {
+						owns = 3292 #Fallujah
+						3389 = { empty = yes } #Anah
+						OR = {
+							year = 1872
+							revolution_n_counterrevolution = 1
+						}
+                    }
+                }
+                3389 = { secede_province = THIS any_pop = { literacy = -0.99 } life_rating = 30 }
+                owner = { prestige = 1 }
+            }
+            random_owned = {
+                limit = {
+                    owner = {
+						owns = 3300 #Fallujah
+						929 = { empty = yes } #Abu Kamal
+						OR = {
+							year = 1872
+							revolution_n_counterrevolution = 1
+						}
+                    }
+                }
+                929 = { secede_province = THIS any_pop = { literacy = -0.99 } life_rating = 30 }
+                owner = { prestige = 1 }
+            }
+            random_owned = {
+                limit = {
+                    owner = {
+						owns = 929
+						owns = 3292
+						907 = { empty = yes }
+						JOR = { exists = no }
+                    }
+                }
+                owner = { prestige = 1 country_event = 18482610 }
+            }
+        }
+        ai_will_do = { factor = 1 }
+    }
+    mutanfiq_revolt = {
+        picture = muntafiq
+        potential = {
+            OR = {
+				tag = MKN
+				tag = DUB
+			}
+			vassal_of = TUR
+			OR = { JZR = { owns = 930 vassal_of = TUR IRQ = { exists = no } } AND = { year = 1834 month = 9 926 = { owner = { tag = IRQ is_vassal = no } } } }
+			primary_culture = bedouin 
+			has_global_flag = eighteenthirty_startdate
+			NOT = { has_global_flag = mutanfiq_revolt }
+        }
+
+        allow = {
+			war = no
+			vassal_of = TUR
+			owns = 933
+			year = 1832
+			month = 6
+        }
+
+        effect = {
+            set_global_flag = mutanfiq_revolt
+			prestige = 5
+			TUR = { country_event = 18482612 }
+        }
+        ai_will_do = { factor = 1 }
+    }
+    mutanfiq_annex = {
+        picture = muntafiq
+        potential = {
+			tag = TUR
+			owns = 930
+            OR = {
+				MKN = { vassal_of = TUR owns = 933 primary_culture = bedouin }
+				DUB = { vassal_of = TUR owns = 933 primary_culture = bedouin }
+			}
+			NOT = { has_global_flag = mutanfiq_annex }
+        }
+
+        allow = {
+			war = no
+			owns = 930
+			OR = { year = 1864 nationalism_n_imperialism = 1 owns = 934 }
+        }
+
+        effect = {
+            set_global_flag = mutanfiq_annex
+			prestige = 2
+			badboy = 1
+            random_owned = {
+                limit = {
+                    owner = {
+						MKN = { vassal_of = TUR owns = 933 primary_culture = bedouin }
+                    }
+                }
+                owner = {
+					release_vassal = MKN
+					MKN = { country_event = 184826121 }
+					THIS = { war = {
+						target = MKN
+						attacker_goal = { casus_belli = conquest_any }
+						defender_goal = { casus_belli = acquire_any_state state_province_id = 926 }
+					} }
+				}
+            }
+            random_owned = {
+                limit = {
+                    owner = {
+						DUB = { vassal_of = TUR owns = 933 primary_culture = bedouin }
+                    }
+                }
+                owner = {
+					release_vassal = DUB
+					DUB = { country_event = 184826121 }
+					THIS = { war = {
+						target = DUB
+						attacker_goal = { casus_belli = conquest_any }
+						defender_goal = { casus_belli = acquire_any_state state_province_id = 926 }
+					} }
+				}
+			}
+            random_owned = {
+                limit = {
+                    owner = {
+						JOR = { vassal_of = TUR owns = 934 }
+                    }
+                }
+                owner = {
+					release_vassal = JOR
+					JOR = { country_event = 184826121 }
+					THIS = { war = {
+						target = JOR
+						attacker_goal = { casus_belli = conquest_any }
+						defender_goal = { casus_belli = acquire_any_state state_province_id = 926 }
+					} }
+				}
+            }
+        }
+        ai_will_do = {
+            factor = 1
+            modifier = {
+                factor = 0
+                NOT = { year = 1864 }
+            }
+		}
+    }
+    bohtan_reforms = {
+        picture = bohtan
+        potential = {
+			tag = BHT
+			civilized = no
+			primary_culture = kurdish
+			NOT = { has_global_flag = bohtan_reforms }
+        }
+
+        allow = {
+			owns = 924
+			NOT = { war_with = TUR }
+			NOT = { vassal_of = SRN }
+			OR = { money = 25000 owns = 892 AND = { ai = yes year = 1839 } }
+        }
+
+        effect = {
+            set_global_flag = bohtan_reforms
+			prestige = 2
+            random_owned = {
+                limit = {
+                    owner = {
+						ai = no
+						NOT = { owns = 892 }
+                    }
+                }
+				treasury = -25000
+            }
+			any_pop = { limit = { type = bureaucrats } reduce_pop = 1.25 }
+			any_pop = { limit = { type = soldiers has_pop_religion = sunni } reduce_pop = 2 }
+			add_country_modifier = { name = bohtan_great_reformer duration = 1000 }
+            economic_reform = yes_finance_reform
+			military_reform = yes_army_schools
+            activate_technology = army_command_principle
+			military_reform = yes_foreign_artillery
+			set_country_flag = using_foreign_artillery
+			military_reform = yes_firearms_production
+			activate_technology = guild_based_production
+			activate_technology = bronze_muzzle_loaded_artillery
+        }
+        ai_will_do = { factor = 1 }
+    }
+    triple_alliance_bht = {
+        picture = bohtan
+        potential = {
+			tag = BHT
+			has_global_flag = oriental_crisis
+            primary_culture = kurdish
+			NOT = { has_global_flag = triple_alliance_bht }
+        }
+
+        allow = {
+			owns = 924
+			owns = 2414
+			NOT = { war_with = TUR }
+			NOT = { vassal_of = SRN }
+			year = 1840
+        }
+
+        effect = {
+            set_global_flag = triple_alliance_bht
+			prestige = 2
+			any_country = {
+				limit = {
+					primary_culture = kurdish
+					vassal_of = TUR
+					NOT = {
+						tag = MLN
+					}
+					NOT = {
+						tag = SRN
+					}
+				}
+				country_event = 184826171
+			}
+			any_country = {
+				limit = {
+					primary_culture = kurdish
+					vassal_of = TUR
+					tag = SRN
+				}
+				country_event = 184826172
+			}
+        }
+        ai_will_do = { factor = 1 }
+    }
+    centralize_kurdistan_fr = {
+        picture = bohtan
+        potential = {
+			tag = TUR
+			any_neighbor_country = {
+				primary_culture = kurdish
+				OR = {
+					vassal_of = TUR
+					overlord = { vassal_of = TUR }
+				}
+				war = no
+			}
+			NOT = { has_global_flag = centralize_kurdistan }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			year = 1848
+			OR = { ai = yes money = 40000 }
+        }
+
+        effect = {
+            set_global_flag = centralize_kurdistan
+			prestige = 2
+            random_owned = {
+                limit = {
+                    owner = {
+						ai = no
+                    }
+                }
+				treasury = -40000
+            }
+			any_country = {
+				limit = { vassal_of = THIS primary_culture = kurdish }
+				any_owned = { secede_province = THIS }
+			}
+			any_country = {
+				limit = { vassal_of = BHT BHT = { vassal_of = THIS } primary_culture = kurdish }
+				any_owned = { secede_province = THIS }
+			}
+        }
+        ai_will_do = { factor = 1 }
+    }
+    form_iraq = {
+        picture = iraq_map
+        potential = {
+			OR = {
+				tag = DUB
+				tag = MKN
+				tag = JOR
+				tag = PLS
+				tag = KHZ
+			}
+			OR = {
+				capital = 932
+				capital = 3999
+				capital = 3351
+				capital = 1132
+				capital = 1131
+				capital = 933
+				capital = 3407
+				capital = 3989
+				capital = 934
+				capital = 930
+				capital = 3292
+				capital = 926
+			}
+            NOT = { primary_culture = kurdish }
+			NOT = { has_global_flag = form_iraq }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			owns = 934
+			owns = 926
+			owns = 932
+			year = 1840
+			IRQ = { exists = no }
+			OR = { ai = yes money = 40000 }
+			all_core = { OR = { owned_by = THIS empty = yes province_id = 1132 province_id = 935 province_id = 1136 } }
+        }
+
+        effect = {
+            set_global_flag = form_iraq
+			prestige = 5
+            random_owned = {
+                limit = {
+                    owner = {
+						ai = no
+                    }
+                }
+				treasury = -40000
+            }
+			change_tag = IRQ
+			3292 = { add_core = IRQ }
+			934 = { add_core = IRQ }
+			3989 = { add_core = IRQ }
+			926 = { add_core = IRQ }
+			930 = { add_core = IRQ }
+			4000 = { add_core = IRQ }
+			3407 = { add_core = IRQ }
+			933 = { add_core = IRQ }
+			3689 = { add_core = IRQ }
+			932 = { add_core = IRQ }
+			3999 = { add_core = IRQ }
+			1132 = { add_core = IRQ }
+			1131 = { add_core = IRQ }
+			3351 = { add_core = IRQ }
+			1136 = { add_core = IRQ }
+			935 = { add_core = IRQ }
+			3406 = { add_core = IRQ }
+			3278 = { add_core = IRQ }
+        }
+        ai_will_do = { factor = 1 }
+    }
+    claim_khuzestan = {
+        picture = tschussistan
+        potential = {
+			tag = IRQ
+			3351 = { NOT = { is_core = IRQ } }
+			NOT = { has_global_flag = claim_khuzestan }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			OR = {
+				civilized = yes
+				civilization_progress = 0.5
+			}
+			owns = 932
+			NOT = { alliance_with = KHZ }
+			OR = {
+				war_policy = jingoism
+				war_policy = pro_military
+			}
+			all_core = { OR = { owned_by = THIS empty = yes province_id = 1132 province_id = 935 province_id = 1136 } }
+        }
+
+        effect = {
+            set_global_flag = claim_khuzestan
+			prestige = 5
+			badboy = 4
+			1136 = { add_core = IRQ }
+			3351 = { add_core = IRQ }
+			1132 = { add_core = IRQ }
+			1131 = { add_core = IRQ }
+			3349 = { add_core = IRQ }
+			1133 = { add_core = IRQ }
+			1119 = { add_core = IRQ }
+        }
+        ai_will_do = { factor = 1 }
+    }
+    claim_jazira = {
+        picture = aljazira_map
+        potential = {
+			tag = IRQ
+			923 = { NOT = { is_core = IRQ } }
+			NOT = { has_global_flag = claim_jazira }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			OR = {
+				civilized = yes
+				civilization_progress = 0.5
+			}
+			owns = 923
+			OR = {
+				war_policy = jingoism
+				war_policy = pro_military
+			}
+			all_core = { OR = { owned_by = THIS empty = yes province_id = 1132 province_id = 935 province_id = 1136 province_id = 3352 } }
+        }
+
+        effect = {
+            set_global_flag = claim_jazira
+			prestige = 5
+			badboy = 7.5
+			add_accepted_culture = turkmen
+			JZR = { all_core = { add_core = IRQ } }
+        }
+        ai_will_do = { factor = 1 }
+    }
+    claim_syria = {
+        picture = greater_syria
+        potential = {
+			tag = IRQ
+			903 = { NOT = { is_core = IRQ } }
+			has_global_flag = claim_jazira
+			NOT = { has_global_flag = claim_syria }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			civilized = yes
+			war_policy = jingoism
+			rank = 30
+			all_core = { OR = { owned_by = THIS empty = yes province_id = 1132 province_id = 935 province_id = 1136 province_id = 3352 owner = { primary_culture = kurdish } } }
+        }
+
+        effect = {
+            set_global_flag = claim_syria
+			prestige = 5
+			badboy = 12.5
+			SYR = { all_core = { add_core = IRQ } }
+			CLC = { all_core = { add_core = IRQ } }
+			PLS = { all_core = { add_core = IRQ } }
+			898 = { add_core = IRQ }
+        }
+        ai_will_do = { factor = 1 }
+    }
+    claim_iraq_persia = {
+        picture = thisisntirakwdym
+        potential = {
+			tag = IRQ
+			3351 = { is_core = IRQ }
+			1121 = { NOT = { is_core = IRQ } }
+			has_global_flag = claim_syria
+			NOT = { has_global_flag = claim_iraq_persia }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			civilized = yes
+			war_policy = jingoism
+			rank = 10
+			all_core = { OR = { owned_by = THIS empty = yes province_id = 1132 province_id = 935 province_id = 1136 province_id = 3352 owner = { primary_culture = kurdish } } }
+        }
+
+        effect = {
+            set_global_flag = claim_iraq_persia
+			prestige = 5
+			badboy = 12.5
+			3349 = { add_core = IRQ }
+			1133 = { add_core = IRQ }
+			1119 = { add_core = IRQ }
+			3495 = { add_core = IRQ }
+			3352 = { add_core = IRQ }
+			1117 = { add_core = IRQ }
+			1122 = { add_core = IRQ }
+			1120 = { add_core = IRQ }
+			1128 = { add_core = IRQ }
+			1134 = { add_core = IRQ }
+			1136 = { add_core = IRQ }
+			1127 = { add_core = IRQ }
+			1125 = { add_core = IRQ }
+			1124 = { add_core = IRQ }
+			1121 = { add_core = IRQ }
+        }
+        ai_will_do = { factor = 1 }
+    }
+    irq_accept_kurds = {
+        picture = old_kurdistan_map
+        potential = {
+			tag = IRQ
+			has_global_flag = claim_jazira
+            any_owned_province = { culture = kurdish }
+			NOT = { has_global_flag = irq_accept_kurds }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			owns = 1111
+			owns = 893
+			NOT = { average_militancy = 2 }
+			OR = {
+				citizens_rights = all_voting_pops
+				centralization = federalism
+				romanticism = 1
+				owns = 1118
+			}
+        }
+
+        effect = {
+            set_global_flag = irq_accept_kurds
+			prestige = 5
+			add_accepted_culture = kurdish
+			random_owned = { limit = { owner = { has_global_flag = global_mc_setup_complete } }
+				owner = {
+					CLN = { country_event = 768864322 }
+				}
+			}
+        }
+        ai_will_do = { factor = 1 }
+    }
+    irq_accept_lurish = {
+        picture = tschussistan
+        potential = {
+			tag = IRQ
+			has_global_flag = claim_khuzestan
+            any_owned_province = { culture = lurish }
+			NOT = { has_global_flag = irq_accept_lurish }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			owns = 1133
+			OR = {
+				citizens_rights = all_voting_pops
+				centralization = federalism
+				AND = { prestige = 100 NOT = { average_militancy = 5 } }
+				AND = { prestige = 50 NOT = { average_militancy = 2 } }
+				romanticism = 1
+			}
+			NOT = {
+				government = fascist_dictatorship
+				government = presidential_dictatorship
+			}
+            NOT = { religious_policy = moralism }
+        }
+
+        effect = {
+            set_global_flag = irq_accept_lurish
+			prestige = 5
+			add_accepted_culture = lurish
+			random_owned = { limit = { owner = { has_global_flag = global_mc_setup_complete } }
+				owner = {
+					CLN = { country_event = 768864323 }
+				}
+			}
+        }
+        ai_will_do = { factor = 1 }
+    }
+    irq_accept_syriac = {
+        picture = greater_syria
+        potential = {
+			tag = IRQ
+			has_global_flag = claim_syria
+			NOT = { has_global_flag = irq_accept_syriac }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			owns = 913
+			owns = 3325
+			nationalism_n_imperialism = 1
+			OR = {
+				citizens_rights = all_voting_pops
+				AND = { centralization = federalism rank = 10 }
+				AND = { prestige = 100 NOT = { average_militancy = 2 } }
+				AND = { realism = 1 rank = 20 }
+			}
+			NOT = {
+				government = fascist_dictatorship
+				government = presidential_dictatorship
+			}
+			has_country_flag = secularized_muslim_society
+        }
+
+        effect = {
+            set_global_flag = irq_accept_syriac
+			prestige = 5
+			add_accepted_culture = assyrian
+			add_accepted_culture = syriac
+        }
+        ai_will_do = { factor = 1 }
+    }
+    syr_accept_syriac = {
+        picture = greater_syria
+        potential = {
+			OR = { tag = SYR tag = JZR }
+            OR = {
+				any_owned_province = { culture = syriac }
+				any_owned_province = { culture = assyrian }
+			}
+			NOT = { has_country_flag = syr_accept_syriac }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			nationalism_n_imperialism = 1
+			OR = {
+				citizens_rights = all_voting_pops
+				AND = { centralization = federalism rank = 10 }
+				AND = { prestige = 100 NOT = { average_militancy = 2 } }
+				AND = { realism = 1 rank = 20 }
+			}
+			NOT = {
+				government = fascist_dictatorship
+				government = presidential_dictatorship
+			}
+			has_country_flag = secularized_muslim_society
+            OR = {
+				any_owned_province = { culture = syriac }
+				any_owned_province = { culture = assyrian }
+			}
+        }
+
+        effect = {
+            set_global_flag = syr_accept_syriac
+			prestige = 5
+			add_accepted_culture = assyrian
+			add_accepted_culture = syriac
+        }
+        ai_will_do = { factor = 1 }
+    }
+    irq_accept_persian = {
+        picture = thisisntirakwdym
+        potential = {
+			tag = IRQ
+			has_global_flag = claim_iraq_persia
+			NOT = { has_global_flag = irq_accept_persian }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			owns = 1121
+			revolution_n_counterrevolution = 1
+			OR = {
+				citizens_rights = all_voting_pops
+				AND = { centralization = federalism rank = 8 }
+				AND = { prestige = 150 NOT = { average_militancy = 1 } }
+			}
+			NOT = {
+				government = fascist_dictatorship
+				government = presidential_dictatorship
+			}
+        }
+
+        effect = {
+            set_global_flag = irq_accept_persian
+			prestige = 10
+			add_accepted_culture = persian
+        }
+        ai_will_do = { factor = 1 }
+    }
+    vassal_independence_double = {
+        picture = thisisntirakwdym
+        potential = {
+			ai = no
+			vassal_of = EGY
+			EGY = { is_vassal = yes }
+			NOT = { AND = { ai = no tag = HDJ vassal_of = EGY } }
+        }
+
+        allow = {
+			war = no
+			is_vassal = yes
+			EGY = { NOT = { truce_with = THIS } }
+			NOT = { has_country_modifier = neutrality_modifier }
+			total_amount_of_divisions = 1
+        }
+
+        effect = {
+			prestige = 5
+			EGY = {
+				country_event = 18482618
+				release_vassal = THIS
+			}
+        }
+        ai_will_do = { factor = 1 }
+    }
+	hedjaz_TUR_no_more_cores = {
+        picture = embrace_minority
+        potential = {
+			OR = { is_core = 902 is_core = 919 is_core = 1151 }
+			1151 = { OR = { is_core = TUR is_core = ALA } }
+			NOT = { tag = TUR tag = ALA }
+			NOT = { has_global_flag = hedjaz_TUR_no_more_cores }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			nationalism_n_imperialism = 1
+			owns = 1153
+			#invention = biased_multiculturalism
+			#invention = social_darwinism
+			#rank = 16
+            #war = no
+			money = 20000
+        }
+
+        effect = {
+			set_global_flag = hedjaz_TUR_no_more_cores
+			treasury = -20000
+			3692 = { remove_core = TUR remove_core = ALA }
+			3864 = { remove_core = TUR remove_core = ALA }
+			1179 = { remove_core = TUR remove_core = ALA }
+			3860 = { remove_core = TUR remove_core = ALA }
+			1152 = { remove_core = TUR remove_core = ALA }
+			1155 = { remove_core = TUR remove_core = ALA }
+			3991 = { remove_core = TUR remove_core = ALA }
+			3992 = { remove_core = TUR remove_core = ALA }
+			1151 = { remove_core = TUR remove_core = ALA }
+			1153 = { remove_core = TUR remove_core = ALA }
+			1154 = { remove_core = TUR remove_core = ALA }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	hedjaz_TUR_more_cores = {
+        picture = embrace_minority
+        potential = {
+			OR = { tag = TUR tag = ALA }
+			has_global_flag = hedjaz_TUR_no_more_cores
+			is_core = 908
+			NOT = { is_core = 1151 }
+			NOT = { has_global_flag = hedjaz_TUR_more_cores }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			OR = { AND = { ai = no revolution_n_counterrevolution = 1 } owns = 1153 }
+			nationalism_n_imperialism = 1
+			OR = { invention = biased_multiculturalism invention = social_darwinism }
+			rank = 10
+			money = 20000
+            #war = no
+        }
+
+        effect = {
+			set_global_flag = hedjaz_TUR_more_cores
+			treasury = -20000
+			3692 = { add_core = THIS }
+			3864 = { add_core = THIS }
+			1179 = { add_core = THIS }
+			3860 = { add_core = THIS }
+			1152 = { add_core = THIS }
+			1155 = { add_core = THIS }
+			3991 = { add_core = THIS }
+			3992 = { add_core = THIS }
+			1151 = { add_core = THIS }
+			1153 = { add_core = THIS }
+			1154 = { add_core = THIS }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	palestine_TUR_no_more_cores = {
+        picture = embrace_minority
+        potential = {
+			OR = { is_core = 902 is_core = 919 }
+			919 = { OR = { is_core = TUR is_core = ALA } }
+			NOT = { tag = TUR tag = ALA }
+			NOT = { has_global_flag = palestine_TUR_no_more_cores }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			NOT = { 1151 = { is_core = TUR } 1151 = { is_core = ALA } }
+			nationalism_n_imperialism = 1
+			owns = 919
+			#invention = biased_multiculturalism
+			#invention = social_darwinism
+			#rank = 16
+            #war = no
+			money = 20000
+        }
+
+        effect = {
+			set_global_flag = palestine_TUR_no_more_cores
+			treasury = -20000
+			916 = { remove_core = TUR remove_core = ALA }
+			3474 = { remove_core = TUR remove_core = ALA }
+			918 = { remove_core = TUR remove_core = ALA }
+			919 = { remove_core = TUR remove_core = ALA }
+			917 = { remove_core = TUR remove_core = ALA }
+			3357 = { remove_core = TUR remove_core = ALA }
+			920 = { remove_core = TUR remove_core = ALA }
+			909 = { remove_core = TUR remove_core = ALA }
+			908 = { remove_core = TUR remove_core = ALA }
+			911 = { remove_core = TUR remove_core = ALA }
+			910 = { remove_core = TUR remove_core = ALA }
+			922 = { remove_core = TUR remove_core = ALA }
+			3855 = { remove_core = TUR remove_core = ALA }
+			1757 = { remove_core = TUR remove_core = ALA }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	palestine_TUR_more_cores = {
+        picture = embrace_minority
+        potential = {
+			OR = { tag = TUR tag = ALA }
+			has_global_flag = palestine_TUR_no_more_cores
+			is_core = 902
+			NOT = { is_core = 919 }
+			NOT = { has_global_flag = palestine_TUR_more_cores }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			OR = { AND = { ai = no revolution_n_counterrevolution = 1 } owns = 919 }
+			nationalism_n_imperialism = 1
+			OR = { invention = biased_multiculturalism invention = social_darwinism }
+			rank = 10
+			money = 20000
+            #war = no
+        }
+
+        effect = {
+			set_global_flag = palestine_TUR_more_cores
+			treasury = -20000
+			916 = { add_core = THIS }
+			3474 = { add_core = THIS }
+			918 = { add_core = THIS }
+			919 = { add_core = THIS }
+			917 = { add_core = THIS }
+			3357 = { add_core = THIS }
+			920 = { add_core = THIS }
+			909 = { add_core = THIS }
+			908 = { add_core = THIS }
+			922 = { add_core = THIS }
+			3855 = { add_core = THIS }
+			1757 = { add_core = THIS }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	lebanon_TUR_no_more_cores = {
+        picture = embrace_minority
+        potential = {
+			is_core = 913
+			913 = { OR = { is_core = TUR is_core = ALA } }
+			NOT = { tag = TUR tag = ALA }
+			NOT = { has_global_flag = lebanon_TUR_no_more_cores }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			nationalism_n_imperialism = 1
+			owns = 913
+			#invention = biased_multiculturalism
+			#invention = social_darwinism
+			#rank = 16
+            #war = no
+			money = 20000
+        }
+
+        effect = {
+			set_global_flag = lebanon_TUR_no_more_cores
+			treasury = -20000
+			915 = { remove_core = TUR remove_core = ALA }
+			913 = { remove_core = TUR remove_core = ALA }
+			912 = { remove_core = TUR remove_core = ALA }
+			914 = { remove_core = TUR remove_core = ALA }
+			3361 = { remove_core = TUR remove_core = ALA }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	lebanon_TUR_more_cores = {
+        picture = embrace_minority
+        potential = {
+			OR = { tag = TUR tag = ALA }
+			has_global_flag = lebanon_TUR_no_more_cores
+			is_core = 902
+			NOT = { is_core = 913 }
+			NOT = { has_global_flag = lebanon_TUR_more_cores }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			OR = { AND = { ai = no revolution_n_counterrevolution = 1 } owns = 913 }
+			nationalism_n_imperialism = 1
+			OR = { invention = biased_multiculturalism invention = social_darwinism }
+			rank = 9
+			money = 20000
+            #war = no
+        }
+
+        effect = {
+			set_global_flag = lebanon_TUR_more_cores
+			treasury = -20000
+			915 = { add_core = THIS }
+			913 = { add_core = THIS }
+			912 = { add_core = THIS }
+			914 = { add_core = THIS }
+			3361 = { add_core = THIS }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	syria_TUR_no_more_cores = {
+        picture = greater_syria
+        potential = {
+			is_core = 902
+			902 = { OR = { is_core = TUR is_core = ALA } }
+			NOT = { tag = TUR tag = ALA }
+			NOT = { has_global_flag = syria_TUR_no_more_cores }
+        }
+
+        allow = {
+			war = no
+			NOT = { 909 = { is_core = TUR } }
+			NOT = { 909 = { is_core = ALA } }
+			is_vassal = no
+			nationalism_n_imperialism = 1
+			owns = 902
+			#invention = biased_multiculturalism
+			#invention = social_darwinism
+			#rank = 16
+            #war = no
+			money = 30000
+        }
+
+        effect = {
+			set_global_flag = syria_TUR_no_more_cores
+			treasury = -30000
+			3428 = { remove_core = TUR remove_core = ALA }
+			3362 = { remove_core = TUR remove_core = ALA }
+			897 = { remove_core = TUR remove_core = ALA }
+			905 = { remove_core = TUR remove_core = ALA }
+			903 = { remove_core = TUR remove_core = ALA }
+			902 = { remove_core = TUR remove_core = ALA }
+			906 = { remove_core = TUR remove_core = ALA }
+			907 = { remove_core = TUR remove_core = ALA }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	syria_TUR_more_cores = {
+        picture = greater_syria
+        potential = {
+			OR = { tag = TUR tag = ALA }
+			has_global_flag = syria_TUR_no_more_cores
+			is_core = 895
+			NOT = { is_core = 902 }
+			NOT = { has_global_flag = syria_TUR_more_cores }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			OR = { AND = { ai = no revolution_n_counterrevolution = 1 } owns = 902 }
+			nationalism_n_imperialism = 1
+			OR = { invention = biased_multiculturalism invention = social_darwinism }
+			rank = 8
+			money = 20000
+            #war = no
+        }
+
+        effect = {
+			set_global_flag = syria_TUR_more_cores
+			treasury = -20000
+			3428 = { add_core = THIS }
+			3362 = { add_core = THIS }
+			897 = { add_core = THIS }
+			905 = { add_core = THIS }
+			903 = { add_core = THIS }
+			902 = { add_core = THIS }
+			906 = { add_core = THIS }
+			898 = { add_core = THIS }
+			894 = { add_core = THIS }
+			900 = { add_core = THIS }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	jazira_TUR_no_more_cores = {
+        picture = embrace_minority
+        potential = {
+			is_core = 923
+			923 = { OR = { is_core = TUR is_core = ALA } }
+			NOT = { tag = TUR tag = ALA }
+			NOT = { has_global_flag = jazira_TUR_no_more_cores }
+        }
+
+        allow = {
+			war = no
+			NOT = { 926 = { is_core = TUR } }
+			NOT = { 926 = { is_core = ALA } }
+			is_vassal = no
+			nationalism_n_imperialism = 1
+			owns = 923
+            OR = {
+				NOT = { school_reforms = no_schools }
+				citizenship_policy = residency
+				rank = 8
+				invention = biased_multiculturalism
+				invention = social_darwinism
+			}
+			rank = 10
+			money = 40000
+            #war = no
+        }
+
+        effect = {
+			set_global_flag = jazira_TUR_no_more_cores
+			treasury = -40000
+			JZR = { all_core = { remove_core = TUR remove_core = ALA } }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	jazira_TUR_more_cores = {
+        picture = embrace_minority
+        potential = {
+			OR = { tag = TUR tag = ALA }
+			has_global_flag = jazira_TUR_no_more_cores
+			is_core = 3533
+			NOT = { is_core = 923 }
+			NOT = { has_global_flag = jazira_TUR_more_cores }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			OR = { AND = { ai = no revolution_n_counterrevolution = 1 } owns = 923 }
+			nationalism_n_imperialism = 1
+			OR = { invention = biased_multiculturalism invention = social_darwinism }
+			rank = 8
+			money = 20000
+            #war = no
+        }
+
+        effect = {
+			set_global_flag = jazira_TUR_more_cores
+			JZR = { all_core = { add_core = THIS } }
+			treasury = -20000
+		}
+        ai_will_do = { factor = 1 }
+	}
+	iraq_TUR_no_more_cores = {
+        picture = embrace_minority
+        potential = {
+			OR = { is_core = 923 is_core = 926 }
+			926 = { OR = { is_core = TUR is_core = ALA } }
+			NOT = { tag = TUR tag = ALA }
+			NOT = { has_global_flag = iraq_TUR_no_more_cores }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			OR = { nationalism_n_imperialism = 1 rank = 16 }
+			owns = 926
+			#invention = biased_multiculturalism
+			#invention = social_darwinism
+			#rank = 16
+            #war = no
+			money = 20000
+        }
+
+        effect = {
+			set_global_flag = iraq_TUR_no_more_cores
+			treasury = -20000
+			3292 = { remove_core = TUR remove_core = ALA }
+			926 = { remove_core = TUR remove_core = ALA }
+			930 = { remove_core = TUR remove_core = ALA }
+			4000 = { remove_core = TUR remove_core = ALA }
+			934 = { remove_core = TUR remove_core = ALA }
+			3989 = { remove_core = TUR remove_core = ALA }
+			3407 = { remove_core = TUR remove_core = ALA }
+			932 = { remove_core = TUR remove_core = ALA }
+			3999 = { remove_core = TUR remove_core = ALA }
+			933 = { remove_core = TUR remove_core = ALA }
+			3689 = { remove_core = TUR remove_core = ALA }
+			935 = { remove_core = TUR remove_core = ALA }
+			3406 = { remove_core = TUR remove_core = ALA }
+			3278 = { remove_core = TUR remove_core = ALA }
+			1163 = { remove_core = TUR remove_core = ALA }
+			1164 = { remove_core = TUR remove_core = ALA }
+			3990 = { remove_core = TUR remove_core = ALA }
+			
+			1132 = { remove_core = TUR remove_core = ALA }
+			1162 = { remove_core = TUR remove_core = ALA }
+			1165 = { remove_core = TUR remove_core = ALA }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	iraq_TUR_more_cores = {
+        picture = embrace_minority
+        potential = {
+			OR = { tag = TUR tag = ALA }
+			has_global_flag = iraq_TUR_no_more_cores
+			is_core = 923
+			NOT = { is_core = 926 }
+			NOT = { has_global_flag = iraq_TUR_more_cores }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			OR = { AND = { ai = no revolution_n_counterrevolution = 1 } owns = 926 }
+			nationalism_n_imperialism = 1
+			OR = { invention = biased_multiculturalism invention = social_darwinism }
+			rank = 12
+			money = 20000
+            #war = no
+        }
+
+        effect = {
+			set_global_flag = iraq_TUR_more_cores
+			treasury = -20000
+			3292 = { add_core = THIS }
+			926 = { add_core = THIS }
+			930 = { add_core = THIS }
+			4000 = { add_core = THIS }
+			934 = { add_core = THIS }
+			3989 = { add_core = THIS }
+			3407 = { add_core = THIS }
+			932 = { add_core = THIS }
+			3999 = { add_core = THIS }
+			933 = { add_core = THIS }
+			3689 = { add_core = THIS }
+			935 = { add_core = THIS }
+			3406 = { add_core = THIS }
+			3278 = { add_core = THIS }
+			1163 = { add_core = THIS }
+			1164 = { add_core = THIS }
+			3990 = { add_core = THIS }
+			random_owned = { limit = { owner = { 1132 = { is_core = IRQ } } } owner = { 1132 = { add_core = THIS } } }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	kurdistan_TUR_no_more_cores = {
+        picture = embrace_minority
+        potential = {
+			OR = { accepted_culture = kurdish tag = KDS tag = ARM }
+			923 = { OR = { is_core = TUR is_core = ALA } }
+			NOT = { tag = TUR tag = ALA tag = PER }
+			NOT = { has_global_flag = kurdistan_TUR_no_more_cores }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			OR = { nationalism_n_imperialism = 1 AND = { rank = 6 civilized = yes ai = no TUR = { NOT = { rank = 16 exists = yes } } } }
+			owns = 3533
+            OR = {
+				NOT = { school_reforms = no_schools }
+				citizenship_policy = residency
+				invention = biased_multiculturalism
+				invention = social_darwinism
+			}
+			rank = 8
+			money = 50000
+            #war = no
+        }
+
+        effect = {
+			set_global_flag = kurdistan_TUR_no_more_cores
+			treasury = -50000
+			KDS = { all_core = { remove_core = TUR remove_core = ALA } }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	kurdistan_TUR_more_cores = {
+        picture = embrace_minority
+        potential = {
+			OR = { tag = TUR tag = ALA }
+			has_global_flag = kurdistan_TUR_no_more_cores
+			is_core = 879
+			NOT = { is_core = 3533 }
+			NOT = { has_global_flag = kurdistan_TUR_more_cores }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			owns = 3533
+			revolution_n_counterrevolution = 1
+			invention = biased_multiculturalism
+			invention = social_darwinism 
+			rank = 10
+			money = 20000
+            #war = no
+        }
+
+        effect = {
+			set_global_flag = kurdistan_TUR_more_cores
+			KDS = { all_core = { limit = { NOT = { is_core = PER is_core = TCA is_core = GEO is_core = AZB } } add_core = THIS } }
+			treasury = -20000
+		}
+        ai_will_do = { factor = 1 }
+	}
+	asir_help_out_turkce = {
+        picture = restore_abu_arish
+        potential = {
+			tag = ASI
+			NYE = { owns = 1179 }
+			NOT = { year = 1836 }
+			NOT = { has_global_flag = asir_help_out_turkce }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			owns = 1155
+			year = 1833
+			month = 6
+        }
+
+        effect = {
+			set_global_flag = asir_help_out_turkce
+			treasury = 5000
+			1179 = { add_core = ASI }
+			3692 = { add_core = ASI }
+			random_owned = { limit = { owner = { NYE = { ai = yes } } } owner = { NYE = { add_country_modifier = { name = relutanct_figher duration = 500 } } } }
+			1179 = { secede_province = THIS }
+			3692 = { secede_province = THIS }
+			NYE = { war = {
+				target = ASI
+				attacker_goal = { casus_belli = acquire_any_state state_province_id = 1179 }
+				defender_goal = { casus_belli = humiliate_no_infamy }
+			} country_event = 18482619 }
+			add_country_modifier = { name = rally_tribesmen duration = 730 }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	get_rid_of_zubayr = {
+        picture = azzybaq
+        potential = {
+			OR = { tag = MKN tag = DUB }
+			owns = 3999
+			NOT = { year = 1836 }
+			NOT = { has_global_flag = get_rid_of_zubayr }
+        }
+
+        allow = {
+			war = no
+			owns = 3999
+			month = 7
+        }
+
+        effect = {
+			set_global_flag = get_rid_of_zubayr
+			country_event = { id = 18482613 days = 90 }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	arabestan_is_ottoman = {
+        picture = tschussistan
+        potential = {
+			tag = TUR
+			932 = { owner = { vassal_of = THIS } }
+			1131 = { owner = { tag = KHZ is_vassal = no NOT = { in_sphere = TUR } owns = 1132 } }
+			1132 = { is_core = THIS }
+			NOT = { has_global_flag = arabestan_is_ottoman }
+        }
+
+        allow = {
+			is_vassal = no
+			owns = 930
+			year = 1837
+			KHZ = { NOT = { alliance_with = PER } }
+        }
+
+        effect = {
+			set_global_flag = arabestan_is_ottoman
+			KHZ = { country_event = 18482615 }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	nejd_bahrein = {
+        picture = old_bahrein_map
+        potential = {
+			tag = NEJ
+			BHR = { owns = 1162 is_vassal = no }
+			QAT = { owns = 1165 vassal_of = BHR }
+			has_global_flag = eighteenthirty_startdate
+			NOT = { has_global_flag = nejd_bahrein }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			owns = 3990
+			year = 1831
+			BHR = { war = no }
+        }
+
+        effect = {
+			set_global_flag = nejd_bahrein
+			BHR = { country_event = 18482626 }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	euphrates_expedition = {
+        picture = tschussistan
+        potential = {
+			tag = ENG
+			has_global_flag = eighteenthirty_startdate
+			NOT = { war_with = YEM }
+			NOT = { owns = 1412 }
+			NOT = { has_global_flag = euphrates_expedition }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			year = 1834
+			month = 8
+			NOT = { owns = 1412 }
+			NOT = { TUR = { war_with = EGY } }
+			OR = { ai = yes money = 20000 }
+			932 = { owner = { OR = { war_with = TUR vassal_of = TUR } } }
+        }
+
+        effect = {
+			set_global_flag = euphrates_expedition
+            random_owned = {
+                limit = {
+                    owner = {
+						ai = no
+                    }
+                }
+				treasury = -20000
+            }
+			prestige = 1
+		}
+        ai_will_do = { factor = 1 }
+	}
+	aden_expedition = {
+        picture = aden_city
+        potential = {
+			tag = ENG
+			YEM = { exists = yes war = no is_vassal = no }
+			NOT = { owns = 1412 }
+			NOT = { has_global_flag = aden_expedition }
+        }
+
+        allow = {
+			OR = { war = no war_with = EGY }
+			is_vassal = no
+			month = 8
+			NOT = { owns = 1412 }
+			OR = { ai = yes money = 20000 }
+			OR = {
+				prestige = 175
+				war_with = EGY
+				AND = {
+					3692 = { owner = { OR = { vassal_of = EGY tag = EGY } } }
+					1164 = { owner = { OR = { vassal_of = EGY tag = EGY } } }
+				}
+				has_global_flag = egypt_attacked_bahrein
+			}
+        }
+
+        effect = {
+			set_global_flag = aden_expedition
+            random_owned = {
+                limit = {
+                    owner = {
+						ai = no
+                    }
+                }
+				treasury = -20000
+            }
+			badboy = 1
+			relation = { who = YEM value = -400 }
+			diplomatic_influence = { who = YEM value = -400 }
+			war = {
+				target = YEM
+				attacker_goal = { casus_belli = make_puppet_no_add_wargoal }
+				defender_goal = { casus_belli = humiliate_no_infamy }
+				call_ally = no
+			}
+			random_country = { limit = { neighbour = YEM NOT = { alliance_with = YEM } } ENG = { military_access = THIS } }
+		}
+        ai_will_do = {
+            factor = 1
+            modifier = {
+                factor = 0
+                NOT = { year = 1838 }
+            }
+		}
+	}
+	egypt_bahrein = {
+        picture = old_bahrein_map
+        potential = {
+			tag = EGY
+			BHR = { owns = 1162 is_vassal = no }
+			QAT = { owns = 1165 vassal_of = BHR }
+			3990 = { owner = { vassal_of = THIS } }
+			NOT = { has_global_flag = egypt_attacked_bahrein }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			year = 1838
+			BHR = { war = no }
+        }
+
+        effect = {
+			set_global_flag = egypt_attacked_bahrein
+			BHR = { country_event = 18482628 }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	negotiate_debt_france_hai = {
+        picture = haiti_debt
+        potential = {
+			ai = no
+			tag = HAI
+			has_country_modifier = austerity
+			NOT = { has_country_flag = unpaid_debts }
+			NOT = { has_global_flag = negotiate_debt_france }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			money = 1000
+        }
+
+        effect = {
+			set_global_flag = negotiate_debt_france
+			set_variable = { which = owed_cash_money value = 0 }
+			random_country = { limit = { capital = 425 } country_event = 45106342 }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	negotiate_debt_france = {
+        picture = haiti_debt
+        potential = {
+			primary_culture = french
+			capital = 425
+			rank = 8
+			HAI = {
+				has_country_modifier = austerity
+				NOT = { has_country_flag = unpaid_debts }
+			}
+			NOT = { has_global_flag = negotiate_debt_france }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			year = 1838
+        }
+
+        effect = {
+			set_global_flag = negotiate_debt_france
+			random_list = {
+				1 = { HAI = { country_event = 45106344 } }
+				6 = { HAI = { country_event = 45106345 } }
+				90 = { HAI = { country_event = 45106346 } }
+				3 = { HAI = { country_event = 45106347 } }
+            }
+			set_variable = { which = owed_cash_money value = 0 }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	debt_viewer = {
+        alert = no
+        picture = starting_options
+        potential = {
+			ai = no
+			check_variable = { which = owed_cash_money value = 1 }
+        }
+
+        allow = {
+			money = 30
+        }
+
+        effect = {
+			treasury = -25
+			CLN = { country_event = 18482630 }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	erzurum_treaty = {
+        picture = 1848_erzurum
+        potential = {
+			tag = TUR
+			PER = { exists = yes is_vassal = no }
+			1132 = { is_core = TUR is_core = PER }
+			NOT = { has_global_flag = erzurum_treaty }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			neighbour = PER
+			PER = { NOT = { truce_with = THIS } }
+			OR = {
+				AND = { ai = no state_n_government = 1 }
+				year = 1848
+			}
+        }
+
+        effect = {
+			set_global_flag = erzurum_treaty
+			PER = { country_event = 89000 }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	1854_firman = {
+        picture = 1854firman
+        potential = {
+			tag = ENG
+			TUR = { exists = yes slavery = yes_slavery NOT = { accepted_culture = bosniak } neighbour = SER }
+			has_global_flag = gulhane_edict
+			NOT = { year = 1861 }
+			NOT = { has_global_flag = 1854_firman }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			rank = 3
+			OR = {
+				nationalism_n_imperialism = 1
+				year = 1857
+				TUR = { war_with = RUS }
+			}
+			OR = { TUR = { war = no } TUR = { war_with = RUS } } 
+			TUR = { NOT = { truce_with = THIS } }
+        }
+
+        effect = {
+			set_global_flag = 1854_firman
+			prestige = 1
+			badboy = -0.5
+			TUR = { country_event = 18482637 }
+		}
+        ai_will_do = {
+            factor = 1
+            modifier = {
+                factor = 0
+                NOT = { year = 1854 }
+            }
+		}
+	}
+	liberate_faisal = {
+        picture = nejd_sanjak
+        potential = {
+			tag = EGY
+			is_vassal = yes
+			NEJ = { owns = 1157 is_vassal = no }
+			NOT = { year = 1855 }
+			has_global_flag = faisalyoushallcome
+			NOT = { has_global_flag = liberate_faisal }
+        }
+
+        allow = {
+			war = no
+			owns = 1154
+			year = 1843
+			OR = { ai = yes money = 2000 }
+			NEJ = { war = no }
+        }
+
+        effect = {
+			set_global_flag = liberate_faisal
+            random_owned = {
+                limit = {
+                    owner = {
+						ai = no
+                    }
+                }
+				treasury = -2000
+            }
+			NEJ = { country_event = 18482643 }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	muntafiq_samawah = {
+        picture = khazail_flag
+        potential = {
+			tag = TUR
+			MKN = { owns = 933 vassal_of = TUR }
+			JOR = { owns = 934 is_vassal = no }
+			NOT = { year = 1850 }
+			NOT = { has_global_flag = muntafiq_samawah }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			owns = 930
+			OR = {
+				year = 1848
+				owns = 1132
+				AND = {
+					ai = no
+					state_n_government = 1
+					year = 1842
+					relation = { who = MKN value = 100 }
+				}
+			}
+			JOR = { war = no NOT = { alliance_with = PER } }
+        }
+
+        effect = {
+			set_global_flag = muntafiq_samawah
+			badboy = 2
+			MKN = { country_event = 18482649 }
+			JOR = { country_event = 184826491 }
+			war = {
+				target = JOR
+				attacker_goal = { casus_belli = make_puppet_no_add_wargoal }
+				defender_goal = { casus_belli = acquire_any_state state_province_id = 933 country = MKN }
+				call_ally = no
+			}
+		}
+        ai_will_do = { factor = 1 }
+	}
+	centralize_basra = {
+        picture = basra
+        potential = {
+			tag = TUR
+			MKN = { owns = 3407 vassal_of = TUR }
+			NOT = { has_global_flag = centralize_basra }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			owns = 930
+			OR = {
+				year = 1856
+				owns = 3999
+				AND = {
+					ai = no
+					nationalism_n_imperialism = 1
+				}
+			}
+			OR = { ai = yes money = 20000 }
+        }
+
+        effect = {
+			set_global_flag = centralize_basra
+            random_owned = {
+                limit = {
+                    owner = {
+						ai = no
+                    }
+                }
+				treasury = -20000
+            }
+            random_owned = {
+                limit = {
+                    owner = { MKN = {
+						owns = 3989
+                    } }
+                }
+				MKN = { country_event = 18482650 }
+            }
+            random_owned = {
+                limit = {
+                    owner = { MKN = {
+						NOT = { owns = 3989 }
+                    } }
+                }
+				MKN = { country_event = 184826501 }
+            }
+		}
+        ai_will_do = { factor = 1 }
+	}
+	nejd_bahrein_two = {
+        picture = old_bahrein_map
+        potential = {
+			tag = NEJ
+			BHR = { owns = 1162 is_vassal = no }
+			QAT = { owns = 1165 vassal_of = BHR }
+			year = 1840
+			NOT = { year = 1861 }
+			NOT = { has_global_flag = nejd_bahrein_two }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			owns = 3990
+			OR = {
+				year = 1851
+				civilization_progress = 0.5
+				civilized = yes
+			}
+			BHR = { war = no }
+        }
+
+        effect = {
+			set_global_flag = nejd_bahrein_two
+			war = {
+				target = QAT
+				attacker_goal = { casus_belli = make_puppet_no_add_wargoal }
+			}
+			BHR = { country_event = 18482651 }
+		}
+        ai_will_do = {
+            factor = 1
+            modifier = {
+                factor = 0
+                NOT = { year = 1851 }
+            }
+		}
+	}
+	abu_arish_asir_murder = { #coup
+        picture = restore_abu_arish
+        potential = {
+			tag = ASI
+			TSI = { owns = 3860 }
+			NOT = {
+				AND = {
+					NOT = { ASI = { vassal_of = TUR } }
+					TSI = { vassal_of = TUR }
+				}
+				AND = {
+					ASI = { vassal_of = TUR }
+					NOT = { TSI = { vassal_of = TUR } }
+				}
+			}
+			NOT = { has_global_flag = abu_arish_asir_murder }
+        }
+
+        allow = {
+			war = no
+			neighbour = TSI
+			OR = {
+				year = 1863
+				AND = { civilization_progress = 0.5 ai = no }
+				civilized = yes
+			}
+			TSI = { war = no }
+        }
+
+        effect = {
+			set_global_flag = abu_arish_asir_murder
+            random_owned = {
+                limit = {
+                    owner = {
+						ASI = { vassal_of = TUR }
+						TSI = { vassal_of = TUR }
+                    }
+                }
+				TSI = { country_event = 18482653 }
+            }
+            random_owned = {
+                limit = {
+                    owner = {
+						NOT = { ASI = { vassal_of = TUR } }
+						NOT = { TSI = { vassal_of = TUR } }
+                    }
+                }
+				war = {
+					target = TSI
+					attacker_goal = { casus_belli = conquest_any }
+					defender_goal = { casus_belli = humiliate_no_infamy }
+					call_ally = no
+				}
+            }
+		}
+        ai_will_do = {
+            factor = 1
+            modifier = {
+                factor = 0
+                NOT = { year = 1863 }
+            }
+		}
+	}
+	mahra_dhofar = {
+        picture = restore_abu_arish
+        potential = {
+			tag = MHR
+			KHL = { vassal_of = THIS }
+			NOT = { has_global_flag = mahra_dhofar }
+        }
+
+        allow = {
+			war = no
+			neighbour = KHL
+			OR = {
+				year = 1871
+				civilization_progress = 0.5
+				civilized = yes
+			}
+			KHL = { war = no }
+        }
+
+        effect = {
+			set_global_flag = mahra_dhofar
+            KHL = { any_owned = { secede_province = THIS } }
+			3998 = { add_core = THIS }
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	kill_the_other_arabia = {
+        picture = othernejd
+        potential = {
+			tag = NEJ
+			owns = 1157
+			HAL = {
+				owns = 1160
+				is_vassal = no
+			}
+			NOT = { has_global_flag = kill_the_other_arabia }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			OR = {
+				civilization_progress = 0.7
+				AND = { ai = no post_napoleonic_thought = 1 }
+				year = 1880
+			}
+			NOT = {
+				truce_with = HAL
+				any_greater_power = {
+					is_sphere_leader_of = HAL
+					war = no
+				}
+			}
+		}
+
+        effect = {
+			set_global_flag = kill_the_other_arabia
+			HAL = {
+				leave_alliance = THIS
+				relation = { who = THIS value = -50 }
+			}
+			# Audax Validator "." Ignore_NEXT
+			1159 = { secede_province = THIS secede_province = HAL any_pop = { literacy = -0.99 } life_rating = 5 }
+			war = {
+				target = HAL
+				attacker_goal = {
+					casus_belli = civil_war
+				}
+				defender_goal = {
+					casus_belli = civil_war
+				}
+				call_ally = yes
+			}
+			HAL = {
+				relation = {
+					who = TUR
+					value = 500
+				}
+				create_alliance = TUR
+				# Audax Validator "." Ignore_NEXT
+				war = {
+					# Audax Validator "." Ignore_NEXT
+					attacker_goal = { casus_belli = call_allies_cb }
+					call_ally = yes
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						HAL = { ai = yes }
+						NEJ = { ai = yes }
+					}
+				}
+				owner = {
+					HAL = { 
+						add_country_modifier = {
+							name = mobilize_tribesmen
+							duration = 400
+						}
+					}
+				}
+			}
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	kill_the_other_arabia_two = {
+        picture = othernejd
+        potential = {
+			tag = HAL
+			owns = 1160
+			NEJ = {
+				owns = 1157
+				is_vassal = no
+			}
+			NOT = { has_global_flag = kill_the_other_arabia }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			OR = {
+				civilization_progress = 0.7
+				AND = { ai = no post_napoleonic_thought = 1 }
+				year = 1880
+			}
+			NOT = {
+				truce_with = NEJ
+				any_greater_power = {
+					is_sphere_leader_of = NEJ
+					war = no
+				}
+			}
+        }
+
+        effect = {
+			set_global_flag = kill_the_other_arabia
+				relation = {
+					who = TUR
+					value = 500
+				}
+            NEJ = {
+				leave_alliance = THIS
+				relation = { who = THIS value = -50 }
+			}
+			# Audax Validator "." Ignore_NEXT
+			1159 = { secede_province = THIS secede_province = HAL any_pop = { literacy = -0.99 } life_rating = 5  }
+			war = {
+				target = NEJ
+				attacker_goal = {
+					casus_belli = civil_war
+				}
+				defender_goal = {
+					casus_belli = civil_war
+				}
+				call_ally = yes
+			}
+			create_alliance = TUR
+			# Audax Validator "." Ignore_NEXT
+			war = {
+				# Audax Validator "." Ignore_NEXT
+				attacker_goal = { casus_belli = call_allies_cb }
+				call_ally = yes
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						HAL = { ai = yes }
+						NEJ = { ai = yes }
+					}
+				}
+				owner = {
+					HAL = { 
+						add_country_modifier = {
+							name = mobilize_tribesmen
+							duration = 400
+						}
+					}
+				}
+			}
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	battle_of_dhank = {
+        picture = dhank
+        potential = {
+			tag = OMA
+			owns = 1169
+			IMO = { owns = 1170 vassal_of = THIS }
+			NOT = { has_global_flag = battle_of_dhank }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			neighbour = IMO
+			OR = { year = 1870 civilization_progress = 0.7 civilized = yes }
+			IMO = { war = no }
+        }
+
+        effect = {
+			set_global_flag = battle_of_dhank
+			release_vassal = IMO
+			IMO = { create_alliance = ABU }
+			war = {
+				target = IMO
+				attacker_goal = { casus_belli = conquest_any }
+			}
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	anglo_ottoman_convention = {
+        picture = kuwait_big
+        potential = {
+			tag = ENG
+			1167 = { owner = { OR = { in_sphere = THIS tag = THIS vassal_of = THIS } } }
+			1412 = { owner = { OR = { in_sphere = THIS tag = THIS vassal_of = THIS } } }
+			revolution_n_counterrevolution = 1
+			OR = {
+				935 = { owner = { OR = { in_sphere = TUR tag = TUR vassal_of = TUR } } }
+				1157 = { owner = { OR = { in_sphere = TUR tag = TUR vassal_of = TUR } } }
+			}
+			NOT = { has_global_flag = nejd_british_disputes_yemen }
+			NOT = { has_global_flag = nejd_british_disputes_kuwait }
+			NOT = { has_global_flag = nejd_british_disputes_oman }
+			NOT = { has_global_flag = anglo_ottoman_convention }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			OR = { year = 1910 mass_politics = 1 }
+			TUR = { war = no }
+			KWT = { OR = { in_sphere = THIS vassal_of = THIS exists = no } }
+			YEM = { OR = { in_sphere = THIS vassal_of = THIS exists = no } }
+        }
+
+        effect = {
+			set_global_flag = anglo_ottoman_convention
+			prestige = 2
+			TUR = { country_event = 18482655 }
+			HAL = { country_event = 184826551 }
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	nejd_core_more = {
+        picture = kuwait_big
+        potential = {
+			OR = { tag = NEJ tag = HAL tag = BOI }
+			1158 = { is_core = THIS }
+			1161 = { is_core = THIS }
+			NOT = { 3994 = { is_core = THIS } }
+			NOT = { has_global_flag = nejd_core_more }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			OR = {
+				year = 1910
+				mass_politics = 1
+				owns = 3688
+				3993 = { is_core = YEM }
+				3994 = { is_core = OMA }
+			}
+        }
+
+        effect = {
+			set_global_flag = nejd_core_more
+			prestige = 2
+			badboy = 3
+			1180 = { add_core = NYE }
+			3859 = { add_core = YEM }
+			3858 = { add_core = THIS }
+			3992 = { add_core = THIS }
+			3993 = { add_core = THIS }
+			3995 = { add_core = THIS }
+			3994 = { add_core = THIS }
+			3688 = { add_core = THIS }
+			3996 = { add_core = THIS }
+			3869 = { add_core = THIS }
+			3916 = { add_core = THIS }
+			12 = { add_core = THIS }
+			2586 = { add_core = THIS }
+			3997 = { add_core = THIS }
+			3278 = { add_core = THIS }
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	oman_core_more = {
+        picture = map_oman
+        potential = {
+			tag = OMA
+			3688 = { is_core = THIS }
+			1174 = { is_core = THIS }
+			NOT = { 3994 = { is_core = THIS } }
+			NOT = { has_global_flag = oman_core_more }
+        }
+
+        allow = {
+			war = no
+			OR = {
+				year = 1910
+				mass_politics = 1
+				owns = 1172
+				3994 = { is_core = NEJ }
+				3994 = { is_core = HAL }
+			}
+        }
+
+        effect = {
+			set_global_flag = oman_core_more
+			prestige = 2
+			badboy = 3
+			12 = { add_core = ABU }
+			1172 = { add_core = THIS }
+			3994 = { add_core = THIS }
+			3996 = { add_core = THIS }
+			3869 = { add_core = THIS }
+			12 = { add_core = THIS }
+			3990 = { add_core = THIS }
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 3273 = { is_core = YEM } }
+						3865 = { is_core = YEM }
+						YEM = { exists = no }
+					}
+				}
+				owner = {
+					3273 = { add_core = YEM }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 3993 = { is_core = YEM } }
+						3273 = { is_core = YEM }
+						YEM = { exists = no }
+					}
+				}
+				owner = {
+					3993 = { add_core = YEM }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 3995 = { is_core = YEM } }
+						3993 = { is_core = YEM }
+					}
+				}
+				owner = {
+					3995 = { add_core = YEM }
+				}
+			}
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	yemen_core_more = {
+        picture = map_yemen
+        potential = {
+			tag = YEM
+			3866 = { is_core = THIS }
+			1175 = { is_core = THIS }
+			NOT = { 3273 = { is_core = THIS } }
+			NOT = { has_global_flag = yemen_core_more }
+        }
+
+        allow = {
+			war = no
+			OR = {
+				year = 1910
+				mass_politics = 1
+				owns = 3858
+				3993 = { is_core = NEJ }
+				3993 = { is_core = HAL }
+			}
+        }
+
+        effect = {
+			set_global_flag = yemen_core_more
+			prestige = 2
+			badboy = 3
+			1180 = { add_core = NYE }
+			3859 = { add_core = THIS }
+			3273 = { add_core = THIS }
+			3993 = { add_core = THIS }
+			3995 = { add_core = THIS }
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	kuwait_more_cores = {
+        picture = kuwait_big
+        potential = {
+			tag = KWT
+			935 = { is_core = THIS }
+			NOT = { 3997 = { is_core = THIS } }
+			NOT = { has_global_flag = kuwait_more_cores }
+        }
+
+        allow = {
+			war = no
+			OR = {
+				year = 1910
+				mass_politics = 1
+				owns = 3859
+				3993 = { is_core = NEJ }
+				3993 = { is_core = HAL }
+			}
+        }
+
+        effect = {
+			set_global_flag = kuwait_more_cores
+			prestige = 2
+			badboy = 3
+			3406 = { add_core = THIS }
+			3278 = { add_core = THIS }
+			3997 = { add_core = THIS }
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	nejd_british_disputes_oman = {
+        picture = map_oman
+        potential = {
+			OR = { tag = ENG tag = OMA }
+			3994 = { is_core = OMA }
+			OMA = { OR = { tag = THIS AND = { exists = no THIS = { owns = 1171 } } vassal_of = THIS AND = { in_sphere = THIS ai = yes } } }
+			3994 = { is_core = NEJ }
+			NOT = { 1170 = { is_core = NEJ } }
+			NOT = { has_global_flag = nejd_british_disputes_oman }
+        }
+
+        allow = {
+			war = no
+			prestige = 5
+			OR = {
+				year = 1920
+				AND = { mass_politics = 1 neighbour = NEJ }
+			}
+			NOT = { truce_with = NEJ }
+        }
+
+        effect = {
+			set_global_flag = nejd_british_disputes_oman
+			prestige = 2
+			NEJ = { country_event = 18482656 }
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	nejd_british_disputes_yemen = {
+        picture = map_yemen
+        potential = {
+			OR = { tag = ENG tag = YEM }
+			3993 = { is_core = YEM }
+			YEM = { OR = { tag = THIS AND = { exists = no THIS = { owns = 3865 } } vassal_of = THIS AND = { in_sphere = THIS ai = yes } } }
+			3993 = { is_core = NEJ }
+			NOT = { 3865 = { is_core = NEJ } }
+			NOT = { has_global_flag = nejd_british_disputes_yemen }
+        }
+
+        allow = {
+			war = no
+			prestige = 5
+			OR = {
+				year = 1920
+				AND = { mass_politics = 1 neighbour = NEJ }
+			}
+			NOT = { truce_with = NEJ }
+        }
+
+        effect = {
+			set_global_flag = nejd_british_disputes_yemen
+			prestige = 2
+			NEJ = { country_event = 18482657 }
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	nejd_british_disputes_kuwait = {
+        picture = kuwait_big
+        potential = {
+			OR = { tag = ENG tag = KWT }
+			3278 = { is_core = KWT }
+			KWT = { OR = { tag = THIS AND = { exists = no THIS = { owns = 935 } } vassal_of = THIS AND = { in_sphere = THIS ai = yes } } }
+			3278 = { is_core = NEJ }
+			NOT = { 935 = { is_core = NEJ } }
+			NOT = { has_global_flag = nejd_british_disputes_kuwait }
+        }
+
+        allow = {
+			war = no
+			prestige = 5
+			OR = {
+				year = 1920
+				AND = { mass_politics = 1 neighbour = NEJ }
+			}
+			NOT = { truce_with = NEJ }
+        }
+
+        effect = {
+			set_global_flag = nejd_british_disputes_kuwait
+			prestige = 2
+			NEJ = { country_event = 18482658 }
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	asir_core_HDJ = {
+        picture = asir_map
+        potential = {
+			tag = HDJ
+			1151 = { is_core = THIS }
+			NOT = { 3991 = { is_core = THIS } }
+			NOT = { has_global_flag = asir_core_HDJ }
+        }
+
+        allow = {
+			war = no
+			is_disarmed = no
+			NOT = { vassal_of = EGY }
+			all_core = { OR = { owned_by = THIS province_id = 1154 empty = yes } }
+			OR = { ASI = { exists = no } prestige = 20 }
+			OR = { ai = no owns = 1152 }
+        }
+
+        effect = {
+			set_global_flag = asir_core_HDJ
+			prestige = 2
+			badboy = 2
+			3991 = { add_core = THIS }
+			3992 = { add_core = THIS }
+			1155 = { add_core = THIS }
+			1152 = { add_core = THIS }
+			3860 = { add_core = THIS }
+			1179 = { add_core = THIS }
+			3692 = { add_core = THIS }
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	HDJ_core_rassids = {
+        picture = asir_map
+        potential = {
+			tag = HDJ
+			3860 = { is_core = THIS }
+			NOT = { 1178 = { is_core = THIS } }
+			NOT = { vassal_of = EGY }
+			NOT = { has_global_flag = HDJ_core_rassids }
+        }
+
+        allow = {
+			war = no
+			is_disarmed = no
+			all_core = { OR = { owned_by = THIS province_id = 1154 empty = yes } }
+			OR = { NYE = { exists = no } prestige = 40 }
+			OR = { ai = no owns = 3864 }
+        }
+
+        effect = {
+			set_global_flag = HDJ_core_rassids
+			prestige = 5
+			badboy = 4
+			3864 = { add_core = THIS }
+			1178 = { add_core = THIS }
+			1412 = { add_core = THIS }
+			3572 = { add_core = THIS }
+			3867 = { add_core = THIS }
+			3866 = { add_core = THIS }
+			3863 = { add_core = THIS }
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	JZR_core_syria = {
+        picture = greater_syria
+        potential = {
+			tag = JZR
+			3428 = { is_core = THIS }
+			NOT = { 903 = { is_core = THIS } }
+			NOT = { has_global_flag = JZR_core_syria }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			is_disarmed = no
+			all_core = { OR = { owned_by = THIS province_id = 3352 empty = yes } }
+			prestige = 20
+			OR = { ai = no owns = 897 }
+        }
+
+        effect = {
+			set_global_flag = JZR_core_syria
+			prestige = 5
+			badboy = 7.5
+			SYR = { all_core = { add_core = THIS } }
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	JZR_core_iraq = {
+        picture = greater_syria
+        potential = {
+			tag = JZR
+			923 = { is_core = THIS }
+			NOT = { 926 = { is_core = THIS } }
+			NOT = { has_global_flag = JZR_core_iraq }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			is_disarmed = no
+			all_core = { OR = { owned_by = THIS province_id = 3352 province_id = 922 empty = yes } }
+			prestige = 30
+			OR = { ai = no owns = 933 }
+        }
+
+        effect = {
+			set_global_flag = JZR_core_iraq
+			prestige = 5
+			badboy = 7.5
+			IRQ = { all_core = { add_core = THIS } }
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	gulf_oman = {
+        picture = map_oman
+        potential = {
+			OR = {
+                tag = KWT
+                tag = BHR
+                tag = QAT
+				tag = BSR
+				tag = KGN
+			}
+			has_country_flag = Gulf_claimed
+			1165 = { is_core = THIS }
+			NOT = { 1166 = { is_core = THIS } }
+			NOT = { has_global_flag = gulf_oman }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			is_disarmed = no
+			OR = {
+				civilized = yes
+				civilization_progress = 0.5
+			}
+			all_core = { OR = { owned_by = THIS owned_by = PER empty = yes } }
+			prestige = 40
+			owns = 3691
+        }
+
+        effect = {
+			set_global_flag = gulf_oman
+			prestige = 5
+			badboy = 7.5
+			3869 = { add_core = THIS }
+			3691 = { add_core = THIS }
+			3515 = { add_core = THIS }
+			3916 = { add_core = THIS }
+			3688 = { add_core = THIS }
+			1168 = { add_core = THIS }
+			2664 = { add_core = THIS }
+			1169 = { add_core = THIS }
+			1170 = { add_core = THIS }
+			1166 = { add_core = THIS }
+			1171 = { add_core = THIS }
+			12 = { add_core = THIS }
+			1167 = { add_core = THIS }
+			1171 = { add_core = THIS }
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	claim_oman = {
+        picture = map_oman
+        potential = {
+			tag = YEM
+			1174 = { is_core = THIS }
+			NOT = { 1166 = { is_core = THIS } }
+			NOT = { has_global_flag = claim_oman }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			is_disarmed = no
+			OR = {
+				civilized = yes
+				civilization_progress = 0.5
+			}
+			all_core = { OR = { owned_by = THIS owned_by = ENG empty = yes } }
+			prestige = 40
+			owns = 3998
+        }
+
+        effect = {
+			set_global_flag = claim_oman
+			prestige = 5
+			badboy = 7.5
+			3691 = { add_core = THIS }
+			3515 = { add_core = THIS }
+			3916 = { add_core = THIS }
+			3688 = { add_core = THIS }
+			1168 = { add_core = THIS }
+			2664 = { add_core = THIS }
+			1169 = { add_core = THIS }
+			1170 = { add_core = THIS }
+			1166 = { add_core = THIS }
+			1171 = { add_core = THIS }
+			1167 = { add_core = THIS }
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 3996 = { is_core = YEM } }
+						3995 = { is_core = YEM }
+					}
+				}
+				owner = {
+					3996 = { add_core = YEM }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 3869 = { is_core = YEM } }
+						3996 = { is_core = YEM }
+					}
+				}
+				owner = {
+					3869 = { add_core = YEM }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 12 = { is_core = YEM } }
+						3869 = { is_core = YEM }
+					}
+				}
+				owner = {
+					12 = { add_core = YEM }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 3990 = { is_core = YEM } }
+						3869 = { is_core = YEM }
+					}
+				}
+				owner = {
+					3990 = { add_core = YEM }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 1172 = { is_core = YEM } }
+						1174 = { is_core = YEM }
+					}
+				}
+				owner = {
+					1172 = { add_core = YEM }
+				}
+			}
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	claim_asir_TSI = {
+        picture = asir_map
+        potential = {
+			ai = no
+			OR = { tag = TSI tag = CYR }
+			3860 = { is_core = THIS }
+			NOT = { 1155 = { is_core = THIS } }
+			NOT = { has_global_flag = claim_asir_TSI }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			is_disarmed = no
+			all_core = { OR = { owned_by = THIS owned_by = ENG empty = yes } }
+			prestige = 10
+        }
+
+        effect = {
+			set_global_flag = claim_asir_TSI
+			prestige = 5
+			badboy = 2.5
+			1152 = { add_core = THIS }
+			1155 = { add_core = THIS }
+			3991 = { add_core = THIS }
+			3992 = { add_core = THIS }
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	claim_ASI_HDJ = {
+        picture = asir_map
+        potential = {
+			ai = no
+			OR = { tag = TSI tag = CYR }
+			1155 = { is_core = THIS }
+			NOT = { 1151 = { is_core = THIS } }
+			NOT = { has_global_flag = claim_ASI_HDJ }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			is_disarmed = no
+			all_core = { OR = { owned_by = THIS owned_by = ENG owned_by = HDJ empty = yes } }
+			prestige = 20
+        }
+
+        effect = {
+			set_global_flag = claim_ASI_HDJ
+			prestige = 5
+			badboy = 5
+			1154 = { add_core = THIS }
+			1153 = { add_core = THIS }
+			1151 = { add_core = THIS }
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	claim_ASI_YEM = {
+        picture = map_yemen
+        potential = {
+			ai = no
+			OR = { tag = TSI tag = CYR }
+			3692 = { is_core = THIS }
+			NOT = { 1178 = { is_core = THIS } }
+			NOT = { has_global_flag = claim_ASI_YEM }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			is_disarmed = no
+			OR = {
+				owns = 1151
+				AND = {
+					owns = 1178
+					owns = 3867
+				}
+			}
+			all_core = { OR = { owned_by = THIS empty = yes } }
+			prestige = 21
+        }
+
+        effect = {
+			set_global_flag = claim_ASI_YEM
+			prestige = 5
+			badboy = 7.5
+			3858 = { add_core = THIS }
+			1180 = { add_core = THIS }
+			3859 = { add_core = THIS }
+			3864 = { add_core = THIS }
+			1178 = { add_core = THIS }
+			3572 = { add_core = THIS }
+			1412 = { add_core = THIS }
+			3867 = { add_core = THIS }
+			3866 = { add_core = THIS }
+			3863 = { add_core = THIS }
+			1173 = { add_core = THIS }
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	claim_qarmatians_basra = {
+        picture = basra
+        potential = {
+			ai = no
+			primary_culture = bedouin
+			OR = { tag = MLW tag = BOI }
+			3990 = { is_core = THIS }
+			NOT = { 932 = { is_core = THIS } }
+			NOT = { has_global_flag = claim_qarmatians_basra }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			is_disarmed = no
+			OR = {
+				owns = 935
+				AND = {
+					owns = 3990
+					owns = 1165
+				}
+				civilization_progress = 0.5
+				civilized = yes
+			}
+			all_core = { OR = { owned_by = THIS empty = yes } }
+			prestige = 10
+        }
+
+        effect = {
+			set_global_flag = claim_qarmatians_basra
+			prestige = 5
+			badboy = 5
+			3407 = { add_core = THIS }
+			933 = { add_core = THIS }
+			3689 = { add_core = THIS }
+			932 = { add_core = THIS }
+			3999 = { add_core = THIS }
+			1132 = { add_core = THIS }
+			1131 = { add_core = THIS }
+			3351 = { add_core = THIS }
+			935 = { add_core = THIS }
+			3406 = { add_core = THIS }
+			3278 = { add_core = THIS }
+			1162 = { add_core = THIS }
+			1165 = { add_core = THIS }
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 3997 = { is_core = THIS } }
+						3690 = { is_core = THIS }
+					}
+				}
+				owner = {
+					3997 = { add_core = THIS }
+				}
+			}
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	claim_qarmatians_oman = {
+        picture = map_oman
+        potential = {
+			ai = no
+			primary_culture = bedouin
+			OR = { tag = MLW tag = BOI }
+			3990 = { is_core = THIS }
+			NOT = { 1167 = { is_core = THIS } }
+			NOT = { has_global_flag = claim_qarmatians_oman }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			is_disarmed = no
+			OR = {
+				owns = 1167
+				AND = {
+					owns = 3990
+					owns = 1165
+				}
+				civilization_progress = 0.5
+				civilized = yes
+			}
+			all_core = { OR = { owned_by = THIS empty = yes } }
+			prestige = 20
+        }
+
+        effect = {
+			set_global_flag = claim_qarmatians_oman
+			prestige = 5
+			badboy = 5
+			1162 = { add_core = THIS }
+			1165 = { add_core = THIS }
+			3869 = { add_core = THIS }
+			12 = { add_core = THIS }
+			3691 = { add_core = THIS }
+			3916 = { add_core = THIS }
+			3688 = { add_core = THIS }
+			3515 = { add_core = THIS }
+			1168 = { add_core = THIS }
+			2664 = { add_core = THIS }
+			1169 = { add_core = THIS }
+			1166 = { add_core = THIS }
+			1171 = { add_core = THIS }
+			1170 = { add_core = THIS }
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	steal_the_black_stone = {
+        picture = black_stone
+        potential = {
+			ai = no
+			primary_culture = bedouin
+			tag = BOI
+			1151 = { is_core = THIS }
+			NOT = { has_global_flag = steal_the_black_stone }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			is_disarmed = no
+			controls = 1151
+			prestige = 30
+        }
+
+        effect = {
+			set_global_flag = steal_the_black_stone
+			prestige = 5
+			badboy = 100
+			any_country = {
+				limit = {
+					OR = {
+						has_country_flag = sunni_country
+						has_country_flag = shiite_country
+						has_country_flag = ibadi_country
+					}
+				}
+				relation = { who = THIS value = -600 }
+				diplomatic_influence = { who = THIS value = -600 }
+				country_event = 18482659
+			}
+		}
+        ai_will_do = {
+            factor = 1
+		}
+	}
+	start_wahabbi_larp = {
+        picture = nejd_free
+        potential = {
+			ai = no
+			tag = NEJ
+			NOT = { has_global_flag = start_wahabbi_larp }
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			is_disarmed = no
+			1151 = { is_core = THIS }
+			owns = 1151
+			owns = 1160
+			religious_policy = moralism
+			prestige = 50
+        }
+
+        effect = {
+			set_global_flag = start_wahabbi_larp
+			add_accepted_culture = mashriqi
+			any_land_province = {
+				limit = {
+					OR = {
+						province_id = 3300
+						province_id = 3389
+						province_id = 929
+					}
+					empty = yes
+				}
+                secede_province = THIS any_pop = { literacy = -0.99 } life_rating = 30
+			}
+			any_land_province = {
+				limit = {
+					OR = {
+						province_id = 2639
+						province_id = 911
+						province_id = 910
+						province_id = 907
+						province_id = 931
+						province_id = 1156
+					}
+					empty = yes
+				}
+                secede_province = THIS any_pop = { literacy = -0.99 } life_rating = 15
+			}
+			any_land_province = {
+				limit = {
+					OR = {
+						province_id = 3406
+						province_id = 3690
+						province_id = 3404
+						province_id = 3997
+						province_id = 3689
+						province_id = 1158
+						province_id = 3278
+					}
+					empty = yes
+				}
+                secede_province = THIS any_pop = { literacy = -0.99 } life_rating = 5
+			}
+			prestige = 5
+			badboy = 10
+			war = {
+				target = TUR
+				attacker_goal = { casus_belli = saudi_tur_cb }
+				defender_goal = { casus_belli = conquest_any }
+				call_ally = no
+			}
+		}
+        ai_will_do = {
+            factor = 1
+		}
 	}
 }

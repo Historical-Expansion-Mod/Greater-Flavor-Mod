@@ -2667,21 +2667,36 @@ country_event = {
     is_triggered_only = yes
 
     option = {
-        name = "EVT952503OPTA"
-        1909 = { owner = { country_event = 952504 } }
-        diplomatic_influence = { who = FROM value = 200 }
-        ai_chance = {
-        factor = 0
-            modifier = {
-                factor = 10
-                relation = { who = FROM value = 199 }
-            }
-        }
-    }
-    option = {
         name = "EVT952503OPTB"
-        1909 = { owner = { country_event = 952505 } }
-        ai_chance = {
+		any_owned = {
+			limit = { is_core = ATJ }
+			secede_province = FROM
+		}
+		FROM = {
+			any_owned = {
+				limit = {
+					OR = {
+						region = ASH_1909
+						region = FRA_1907
+					}
+				}
+				secede_province = THIS
+			}
+		}
+		leave_alliance = ATJ
+		release_vassal = ATJ
+		relation = { who = ATJ value = -400 }
+		diplomatic_influence = { who = ATJ value = -400 }
+		relation = { who = FROM value = 50 }
+        random_owned = {
+			limit = { owner = { ATJ = { exists = yes } } }
+			owner = { TUR = { country_event = 952504 } }
+		}
+		random_owned = {
+			limit = { owner = { ATJ = { exists = no } } }
+			owner = { FROM = { country_event = 952505 } }
+		}
+		ai_chance = {
         factor = 90
             modifier = {
                 factor = 0
@@ -2697,25 +2712,7 @@ country_event = {
             }
         }
     }
-    option = {
-        name = "EVT952503OPTC"
-        1909 = { owner = { country_event = 952506 } }
-        ai_chance = {
-        factor = 10
-        modifier = {
-                factor = 100
-                NOT = {
-                    FROM = {
-                        OR = {
-							owns = 1907
-							owns = 1908
-							owns = 1909
-                        }
-                    }
-                }
-            }
-        }
-    }
+	
     option = {
         name = "EVT952503OPTD"
         1909 = { owner = { country_event = 952507 } }
@@ -2728,7 +2725,7 @@ country_event = {
         }
     }
 }
-#They accept
+#Turks choose to act
 country_event = {
     id = 952504
     title = "EVTNAME952504"
@@ -2739,31 +2736,30 @@ country_event = {
 
     option = {
         name = "EVT952504OPTA"
-        FROM = {
-            leave_alliance = ATJ
-            release_vassal = ATJ
-            relation = { who = ATJ value = -400 }
-            diplomatic_influence = { who = ATJ value = -400 }
-        }
-        ATJ = { end_military_access = THIS }
+        prestige = -5
+		random_country = {
+			limit = { OR = { tag = NET tag = BNF } exists = yes }
+			country_event = 952505
+		}
         leave_alliance = ATJ
         relation = { who = ATJ value = -400 }
-        relation = { who = FROM value = 200 }
-        any_country = { diplomatic_influence = { who = ATJ value = -50 } }
-        casus_belli = {
-            target = ATJ
-            type = establish_protectorate_NI_casus_belli
-            months = 48
-        }
+		diplomatic_influence = { who = ATJ value = -400 }
         ai_chance = { factor = 100 }
     }
     option = {
         name = "EVT952504OPTB"
+        relation = { who = ATJ value = 400 }
+		diplomatic_influence = { who = ATJ value = 400 }
+		create_alliance = ATJ
         relation = { who = FROM value = -50 }
+		random_country = {
+			limit = { OR = { tag = NET tag = BNF } exists = yes }
+			country_event = 952506
+		}
         ai_chance = { factor = 0 }
     }
 }
-#They want the gold coast
+#Dutch declare war/get Aceh
 country_event = {
     id = 952505
     title = "EVTNAME952505"
@@ -2773,47 +2769,31 @@ country_event = {
     is_triggered_only = yes
 
     option = {
-        name = "EVT952504OPTA"
-        FROM = {
-            country_event = 952508
-            leave_alliance = ATJ
-            release_vassal = ATJ
-            relation = { who = ATJ value = -400 }
-            diplomatic_influence = { who = ATJ value = -400 }
-        }
-        ATJ = { end_military_access = THIS }
-        leave_alliance = ATJ
-        relation = { who = ATJ value = -400 }
-        relation = { who = FROM value = 25 }
-        any_country = { diplomatic_influence = { who = ATJ value = -50 } }
-        casus_belli = {
-            target = ATJ
-            type = establish_protectorate_NI_casus_belli
-            months = 48
-        }
-        ai_chance = {
-			factor = 0.95 
-            modifier = {
-                factor = 2
-                NOT = { has_global_flag = colonial_railroading_disabled }
-            }
-		}
-
-    }
-    option = {
         name = "EVT952505OPTB"
-        relation = { who = FROM value = -25 }
-        FROM = { country_event = 952510 }
-        ai_chance = {
-			factor = 0.05 
-            modifier = {
-                factor = 0
-                NOT = { has_global_flag = colonial_railroading_disabled }
-            }
+		prestige = 5
+        random_owned = {
+			limit = { owner = { ATJ = { exists = yes } } }
+			owner = {
+				any_country = {
+					limit = { is_greater_power = yes }
+					relation = { who = ATJ value = -400 }
+					any_country = { diplomatic_influence = { who = ATJ value = -200 } }
+				}
+				casus_belli = {
+					target = ATJ
+					type = establish_protectorate_NI_casus_belli
+					months = 48
+				}
+				war = {
+					target = ATJ
+					attacker_goal = { casus_belli = establish_protectorate_NI_casus_belli }
+					defender_goal = { casus_belli = humiliate_no_infamy }
+				}
+			}
 		}
     }
 }
-#they want any colonies
+#Dutch warned about Ottoman Intervention
 country_event = {
     id = 952506
     title = "EVTNAME952506"
@@ -2823,54 +2803,29 @@ country_event = {
     is_triggered_only = yes
 
     option = {
-        name = "EVT952504OPTA"
-        random_owned = {
-            limit = {
-				NOT = { province_id = 1413 }
-				is_colonial = yes
-				is_coastal = yes
-				NOT = { is_core = THIS }
-            }
-			secede_province = FROM
-        }
-
-        random_owned = {
-            limit = {
-				NOT = { province_id = 1413 }
-				is_colonial = yes
-				is_coastal = yes
-				NOT = { is_core = THIS }
-            }
-			secede_province = FROM
-        }
-
-        FROM = {
-            country_event = 952509
-            leave_alliance = ATJ
-            release_vassal = ATJ
-            relation = { who = ATJ value = -400 }
-            diplomatic_influence = { who = ATJ value = -400 }
-         }
-        ATJ = { end_military_access = THIS }
-        leave_alliance = ATJ
-        relation = { who = ATJ value = -400 }
-        relation = { who = FROM value = 25 }
-        any_country = { diplomatic_influence = { who = ATJ value = -50 } }
+        name = "EVT952507OPTA"
+		prestige = 10
         casus_belli = {
-            target = ATJ
-            type = establish_protectorate_NI_casus_belli
-            months = 48
-        }
-        ai_chance = { factor = 90 }
+			target = ATJ
+			type = establish_protectorate_NI_casus_belli
+			months = 48
+		}
+		war = {
+			target = ATJ
+			attacker_goal = { casus_belli = establish_protectorate_NI_casus_belli }
+			defender_goal = { casus_belli = humiliate_no_infamy }
+		}
+        ai_chance = { factor = 99 }
     }
     option = {
-        name = "EVT952505OPTB"
-        relation = { who = FROM value = -25 }
-        FROM = { country_event = 952510 }
-        ai_chance = { factor = 10 }
+        name = "EVT952506OPTB"
+		prestige = -10
+        relation = { who = FROM value = -100 }
+        FROM = { create_vassal = ATJ create_alliance = ATJ }
+        ai_chance = { factor = 1 }
     }
 }
-#They refuse
+#English refuse
 country_event = {
     id = 952507
     title = "EVTNAME952507"
@@ -2883,14 +2838,14 @@ country_event = {
         name = "EVT952507OPTA"
         relation = { who = FROM value = -100 }
         casus_belli = {
-            target = FROM
-            type = humiliate
-            months = 6
+            target = ATJ
+            type = establish_protectorate_NI_casus_belli
+            months = 24
         }
     }
 }
 
-#The dutch agreed to cede the gold coast
+#Dutch have no colonies in the Gold Coast
 country_event = {
     id = 952508
     title = "EVTNAME952508"
@@ -2900,29 +2855,35 @@ country_event = {
     is_triggered_only = yes
 
     option = {
-        name = "EVT952504OPTA"
-        1909 = {
-			owner = {
-				any_owned = {
-					limit = {
-						OR = {
-							province_id = 1907
-							province_id = 1908
-							province_id = 1909
-							province_id = 1910
-							province_id = 3763
-							province_id = 3887
-							province_id = 3888
-							province_id = 3889
-						}
-					}
-					secede_province = THIS
-				}
+        name = "EVT952508OPTA"
+		prestige = 2.5
+        FROM = { country_event = 952509 }
+		ai_chance = { factor = 9 }
+    }
+	
+	option = {
+		name = "EVT952508OPTB"
+		prestige = 5
+		badboy = 3
+		FROM = { country_event = 952510 }
+		ai_chance = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.88
 			}
 		}
-    }
+	}
+	
+	option = {
+		name = "We won't hand Borneo to them."
+		relation = { who = FROM value = -50 }
+		FROM = { country_event = 800836 }
+		ai_chance = { factor = 0 }
+	}
 }
-#The dutch refused our terms
+
+#The English want Siak
 country_event = {
     id = 952509
     title = "EVTNAME952509"
@@ -2932,10 +2893,43 @@ country_event = {
     is_triggered_only = yes
 
     option = {
-        name = "EVT952504OPTA"
+        name = "A fair trade..."
+		prestige = 5
+		release_vassal = SAK
+		FROM = {
+			create_vassal = SAK
+			create_alliance = SAK
+			diplomatic_influence = { who = SAK value = 400 }
+			diplomatic_influence = { who = BRU value = -400 }
+			leave_alliance = BRU
+			relation = { who = BRU value = -400 }
+			release_vassal = SWK
+		}
+		diplomatic_influence = { who = SAK value = -400 }
+		inherit = SWK
+		casus_belli = {
+			target = BRU
+			type = establish_protectorate_NI_casus_belli
+			months = 48
+		}
+		war = {
+			target = BRU
+			attacker_goal = { casus_belli = establish_protectorate_NI_casus_belli }
+			defender_goal = { casus_belli = humiliate_no_infamy }
+		}
+		ai_chance = { factor = 1 }
     }
+	
+	option = {
+		name = "That won't do. End negotiations!"
+		prestige = -5
+		FROM = { country_event = 800836 }
+		relation = { who = FROM value = -50 }
+		ai_chance = { factor = 0 }
+	}
 }
-#The dutch agreed to cede any colony
+
+#The English want all of Central Sumatra
 country_event = {
     id = 952510
     title = "EVTNAME952510"
@@ -2945,10 +2939,155 @@ country_event = {
     is_triggered_only = yes
 
     option = {
-        name = "EVT952510OPTA"
+        name = "A fair trade..."
+		prestige = 2.5
+		release_vassal = SAK
+		RIA = { annex_to = SAK all_core = { add_core = SAK } }
+		FROM = {
+			create_vassal = SAK
+			create_alliance = SAK
+			diplomatic_influence = { who = SAK value = 400 }
+			diplomatic_influence = { who = BRU value = -400 }
+			leave_alliance = BRU
+			release_vassal = BRU
+			relation = { who = BRU value = -400 }
+			release_vassal = SWK
+		}
+		any_owned = {
+			limit = { is_core = SAK }
+			secede_province = SAK
+		}
+		any_owned = {
+			limit = { is_core = ATJ }
+			secede_province = ATJ
+		}
+		diplomatic_influence = { who = SAK value = -400 }
+		inherit = SWK
+		random_owned = {
+			limit = { owner = { BRU = { exists = yes } } }
+			owner = {
+				casus_belli = {
+					target = BRU
+					type = establish_protectorate_NI_casus_belli
+					months = 48
+				}
+				war = {
+					target = BRU
+					attacker_goal = { casus_belli = establish_protectorate_NI_casus_belli }
+					defender_goal = { casus_belli = humiliate_no_infamy }
+				}
+			}
+		}
+		ai_chance = { factor = 1 }
+    }
+	
+	option = {
+		name = "That won't do. End negotiations!"
+		prestige = -5
+		FROM = { country_event = 800836 }
+		relation = { who = FROM value = -50 }
+		ai_chance = { factor = 0 }
+	}
+}
+
+#England/Netherlands refuses
+country_event = {
+    id = 800836
+    title = "$FROMCOUNTRY$ refuses!"
+    desc = "EVTDESC800836"
+    picture = "gold_coast_treaty_70"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "Oh well..."
+        relation = { who = FROM value = -50 }
+        prestige = -5
     }
 }
 
+#Aceh out of English Jurisdiction
+country_event = {
+	id = 800837
+	title = "The Anglo-Dutch Treaty of $YEAR$"
+	desc = "EVTDESC800837"
+	picture = "gold_coast_treaty_70"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Tell the White Rajah to return to Singapore, Borneo is Dutch clay."
+		prestige = 5
+		any_owned = {
+			limit = { OR = { is_core = SWK is_core = BRU } }
+			secede_province = FROM
+		}
+		release_vassal = SWK
+		release_vassal = BRU
+		diplomatic_influence = { who = BRU value = -400 }
+		leave_alliance = BRU
+		release_vassal = BRU
+		relation = { who = BRU value = -400 }
+		FROM = {
+			any_owned = {
+				limit = {
+					OR = {
+						region = ASH_1909
+						region = FRA_1907
+					}
+				}
+				secede_province = THIS
+			}
+			country_event = 800838
+		}
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "How about... No?"
+		prestige = -5
+		FROM = { country_event = 800836 }
+		ai_chance = { factor = 0 }
+	}
+}
+
+#British leave Borneo
+country_event = {
+    id = 800838
+    title = "British leave Borneo"
+    desc = "EVTDESC800838"
+    picture = "gold_coast_treaty_70"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "Splendid!"
+		prestige = 5
+        random_owned = {
+			limit = { owner = { ATJ = { in_sphere = THIS } } }
+			owner = {
+				TUR = { country_event = 952504 }
+			}
+		}
+		inherit = SWK
+		random_owned = {
+			limit = { owner = { BRU = { exists = yes } } }
+			owner = {
+				casus_belli = {
+					target = BRU
+					type = establish_protectorate_NI_casus_belli
+					months = 48
+				}
+				war = {
+					target = BRU
+					attacker_goal = { casus_belli = establish_protectorate_NI_casus_belli }
+					defender_goal = { casus_belli = humiliate_no_infamy }
+				}
+			}
+		}
+    }
+}
+	
 #Aceh is Conquered/Guerrilla War
 country_event = {
     id = 952511
@@ -5173,4 +5312,155 @@ country_event = {
     option = {
         name = "However, the Dutch have refused to let us go and plan an invasion!"
     }
+}
+
+# Heligoland Purchase
+country_event = {
+	id = 211607
+	title = "$FROMCOUNTRY$ wants to buy Heligoland!" 
+	desc = "EVTDESC211607"
+	picture = "doggerbankincident"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "It is just a vacation spot anyway..."
+		533 = { secede_province = FROM add_core = FROM remove_core = THIS }
+		treasury = 200000
+		FROM = { country_event = 211608 } 
+		ai_chance = {
+            factor = 1
+        }
+	}
+		option = {
+		name = "But the prime-minister is quite fond of the island..."
+		FROM = { country_event = 211609 } 
+		ai_chance = {
+            factor = 0
+        }
+	}
+}
+
+country_event = {
+	id = 211608
+	title = "$FROMCOUNTRY$ accepts!"
+	desc = "EVTDESC211608"
+	picture = "doggerbankincident"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Heligoland is ours!"
+		relation = { who = FROM value = 50 }
+		treasury = -200000
+	}
+}
+
+country_event = {
+	id = 211609
+	title = "$FROMCOUNTRY$ refuses!"
+	desc = "EVTDESC211609"
+	picture = "doggerbankincident"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Such love for an useless islet..."
+		relation = { who = FRA value = -40 }
+	}
+}
+
+country_event = {
+	id = 800839
+	title = "The Dutch return to South Africa"
+	desc = "EVTDESC800839"
+	picture = "boer_concentration_camp"
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = { months = 6 }
+	
+	trigger = {
+		OR = { tag = TRN tag = ORA }
+		is_vassal = no
+		2087 = { OR = { owned_by = NET owned_by = BNF } }
+		is_greater_power = no
+		OR = { neighbour = NET neighbour = BNF }
+		TRN = { OR = { in_sphere = NET in_sphere = BNF exists = no } }
+		ORA = { OR = { in_sphere = NET in_sphere = BNF exists = no } }
+	}
+	
+	option = {
+		name = "Maybe we can give them another try..."
+		NAL = { all_core = { add_core = VLK remove_core = NAL } }
+		TRN = { all_core = { add_core = VLK remove_core = TRN } }
+		ORA = { all_core = { add_core = VLK remove_core = ORA } }
+		change_tag = VLK
+		random_country = {
+			limit = { exists = yes owns = 2087 OR = { tag = NET tag = BNF } }
+			country_event = { id = 800841 days = 180 }
+			diplomatic_influence = { who = THIS value = 400 }
+		}
+		any_country = {
+			limit = { primary_culture = boer }
+			country_event = 800840
+		}
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "We left Cape for a reason..."
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 800840
+	title = "$FROMCOUNTRY$ proposes union with the Dutch"
+	desc = "EVTDESC800840"
+	picture = "boer_army"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Things will be different this time..."
+		random_owned = {
+			limit = { owner = { ai = no } }
+			owner = { change_tag_no_core_switch = VLK }
+		}
+		annex_to = VLK
+		ai_chance = { factor = 0 }
+	}
+	
+	option = {
+		name = "Did they forget what the VOC did to us?"
+		any_owned = { limit = { is_core = VLK } add_core = THIS remove_core = VLK }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 800841
+	title = "Boers wish to return to us!"
+	desc = "EVTDESC800841"
+	picture = "boer_army"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Father and son, reunited!"
+		prestige = 5
+		inherit = VLK
+		VLK = { all_core = { add_core = SAF remove_core = VLK } }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Tell them we don't want them!"
+		prestige = -10
+		SAF = { all_core = { add_core = VLK } }
+		diplomatic_influence = { who = VLK value = -400 }
+		relation = { who = VLK value = -400 }
+		ai_chance = { factor = 0 }
+	}
 }

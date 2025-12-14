@@ -270,18 +270,32 @@ country_event = {
             tag = GCF
         }
         is_greater_power = yes
-        TUR = {
-            owns = 926 #Baghdad
-            has_country_flag = monarchy_government
-            war = no
-            is_vassal = no
-            NOT = {
-                alliance_with = ENG
-                alliance_with = FRA
-                alliance_with = BOR
-                alliance_with = RUS
-            }
-        }
+        OR = {
+			TUR = {
+				owns = 926 #Baghdad
+				has_country_flag = monarchy_government
+				war = no
+				is_vassal = no
+				NOT = {
+					alliance_with = ENG
+					alliance_with = FRA
+					alliance_with = BOR
+					alliance_with = RUS
+				}
+			}
+			ALA = {
+				owns = 926 #Baghdad
+				has_country_flag = monarchy_government
+				war = no
+				is_vassal = no
+				NOT = {
+					alliance_with = ENG
+					alliance_with = FRA
+					alliance_with = BOR
+					alliance_with = RUS
+				}
+			}
+		}
         NOT = {
             year = 1910
             alliance_with = TUR
@@ -310,6 +324,7 @@ country_event = {
         treasury = 20000
         set_global_flag = BerlinBaghdadRail
         relation = { who = TUR value = 100 }
+        relation = { who = ALA value = 100 }
         relation = { who = ENG value = -75 }
         relation = { who = RUS value = -75 }
         ai_chance = { factor = 100 }
@@ -318,6 +333,7 @@ country_event = {
     option = {
         name = "EVTOPTB33005"
         relation = { who = TUR value = -50 }
+        relation = { who = ALA value = -50 }
         relation = { who = ENG value = 75 }
         relation = { who = RUS value = 75 }
         officers = {
@@ -422,6 +438,46 @@ country_event = {
                 set_country_flag = germany_gave_colonies
             }
         }
+		
+		#If Kenya is not owned by a civ or player, it gives it to the UK
+		random_owned = {
+			limit = {
+				owner = {
+					OR = {
+						2045 = { owner = { civilized = no ai = yes } }
+						2030 = { owner = { civilized = no ai = yes } }
+						3850 = { owner = { civilized = no ai = yes } }
+						3872 = { owner = { civilized = no ai = yes } }
+						2048 = { owner = { civilized = no ai = yes } }
+					}
+				}
+			}
+			owner = {
+				any_country = {
+					limit = {
+						ai = yes
+						civilized = no
+						any_owned_province = {
+							OR = { 
+								region = ENG_2024
+								province_id = 2048
+							}
+						}
+					}
+					any_owned = {
+						limit = {
+							OR = { 
+								region = ENG_2024
+								province_id = 2048
+							}
+						}
+						secede_province = THIS
+						secede_province = ENG
+					}
+				}
+				set_country_flag = germany_gave_colonies
+			}
+		}
 
         ENG = { country_event = 33007 }
 
@@ -1306,6 +1362,10 @@ country_event = {
         }
         ai_chance = {
             factor = 0.15
+			modifier = {
+                factor = 10
+                alliance_with = RUS
+            }
             modifier = {
                 factor = 0
                 has_country_modifier = recently_lost_war
@@ -1792,6 +1852,8 @@ country_event = {
         name = "EVT33042OPTA" #Wien
         619 = { any_pop = { militancy = -1 } }
         capital = 619
+        GER = { set_country_flag = capital_in_wien }
+        GCF = { set_country_flag = capital_in_wien }
         ai_chance = { factor = 90 }
     }
 
@@ -1799,6 +1861,8 @@ country_event = {
         name = "EVT33042OPTB" #Aachen
         576 = { any_pop = { militancy = -1 } }
         capital = 576
+        GER = { set_country_flag = capital_in_aachen }
+        GCF = { set_country_flag = capital_in_aachen }
         ai_chance = { factor = 2 }
     }
 
@@ -1806,6 +1870,8 @@ country_event = {
         name = "EVT33042OPTC" #Leipzig
         559 = { any_pop = { militancy = -1 } }
         capital = 559
+        GER = { set_country_flag = capital_in_leipzig }
+        GCF = { set_country_flag = capital_in_leipzig }
         ai_chance = { factor = 2 }
     }
 
@@ -1813,6 +1879,8 @@ country_event = {
         name = "EVT33042OPTD" #Frankfurt
         564 = { any_pop = { militancy = -1 } }
         capital = 564
+        GER = { set_country_flag = capital_in_frankfurt }
+        GCF = { set_country_flag = capital_in_frankfurt }
         ai_chance = { factor = 2 }
     }
 
@@ -1820,6 +1888,8 @@ country_event = {
         name = "EVT33042OPTE" #Berlin
 		549 = { any_pop = { militancy = -1 } }
         capital = 549
+        GER = { set_country_flag = capital_in_berlin }
+        GCF = { set_country_flag = capital_in_berlin }
         ai_chance = { factor = 2 }
     }
 }
@@ -2873,23 +2943,77 @@ country_event = {
         random_owned = {
             limit = {
                 province_id = 549 #Berlin
-                owned_by = GER
-                owner = { primary_culture = north_german }
+                OR = { 
+                    owned_by = GER
+                    owned_by = GCF                   
+                }
+                owner = { has_country_flag = capital_in_berlin }
             }
             owner = { capital = 549 }
         }
         random_owned = {
             limit = {
                 province_id = 599 #Munich
-                owned_by = GCF
-                owner = { NOT = { has_global_flag = german_confederation_austrian } }
+                OR = { 
+                    owned_by = GER
+                    owned_by = GCF                   
+                }
+                owner = { has_country_flag = capital_in_munich }
             }
             owner = { capital = 599 }
         }
         random_owned = {
             limit = {
+                province_id = 576 #Aachen
+                OR = { 
+                    owned_by = GER
+                    owned_by = GCF                   
+                }
+                owner = { has_country_flag = capital_in_aachen }
+            }
+            owner = { capital = 576 }
+        }
+        random_owned = {
+            limit = {
+                province_id = 534 #Hannover
+                OR = { 
+                    owned_by = GER
+                    owned_by = GCF                   
+                }
+                owner = { has_country_flag = capital_in_hannover }
+            }
+            owner = { capital = 534 }
+        }
+        random_owned = {
+            limit = {
+                province_id = 559 #Leipzig
+                OR = { 
+                    owned_by = GER
+                    owned_by = GCF                   
+                }
+                owner = { has_country_flag = capital_in_leipzig }
+            }
+            owner = { capital = 559 }
+        }
+        random_owned = {
+            limit = {
+                province_id = 564 #Frankfurt
+                OR = { 
+                    owned_by = GER
+                    owned_by = GCF                   
+                }
+                owner = { has_country_flag = capital_in_frankfurt }
+            }
+            owner = { capital = 564 }
+        }
+        random_owned = {
+            limit = {
                 province_id = 619 #Vienna
-                owned_by = GCF
+                OR = { 
+                    owned_by = GER
+                    owned_by = GCF                   
+                }
+                owner = { has_country_flag = capital_in_wien }
             }
             owner = { capital = 619 }
         }
@@ -2923,6 +3047,69 @@ country_event = {
         prestige = -15
         remove_country_modifier = brothers_war_aggressor
     }
+}
+
+#Austrian cores cleanup
+country_event = {
+    id = 99816
+    title = EVTNAME99816
+    desc = EVTDESC99816
+    picture = "austria_is_no_more"
+    fire_only_once = yes
+
+	mean_time_to_happen = { days = 1 }
+	
+	trigger = {
+		owns = 619
+        any_owned_province = { is_core = AUS }
+		NOT = { 
+			exists = AUS
+			exists = AUB
+			exists = KUK
+			exists = DNB
+			exists = GCF
+		}
+	}
+		
+	option = {
+		name = "EVT99816OPTA"
+		AUS = { all_core = { remove_core = AUS } }
+		AUS_619 = { add_core = AUS } #Österreich
+		AUS_612 = { add_core = AUS } #Tirol
+		AUS_613 = { add_core = AUS } #Kärnten-Steiermark
+		623 = { add_core = AUS } #Oberwart
+		624 = { add_core = AUS } #Eisenstadt
+		735 = { add_core = AUS } #Bozen
+		any_land_province = {
+			limit = {
+				OR = {
+					province_id = 734 #Trient
+					province_id = 767 #Marburg
+					province_id = 768 #Laibach
+					region = AUS_736 #Istria
+					#Sudetenland below
+					province_id = 627
+					province_id = 628
+					province_id = 629
+					province_id = 630
+					province_id = 632
+					province_id = 688
+					province_id = 3426
+				}
+				owner = { OR = { primary_culture = north_german primary_culture = south_german }  } 
+			}
+			add_core = AUS
+		}
+		AUS = { set_country_flag = small_aus }
+		random_owned = { 
+			limit = { owner = { has_country_flag = monarchy_government } }
+			AUS = { government = absolute_monarchy }
+		}
+		random_owned = { 
+			limit = { owner = { NOT = { has_country_flag = monarchy_government } } }
+			AUS = { government = democracy }
+		}
+	}
 }
 
 #Leipzig Congress
@@ -2998,3 +3185,301 @@ country_event = {
     }
 
 }
+#Hesse-Darmstadt Issue, by Hammonia
+country_event = {
+
+    id = 44848468
+    title = "EVTNAME44848468"
+    desc = "EVTDESC44848468"
+    picture = "hesse"
+
+    is_triggered_only = yes
+    fire_only_once = yes
+
+    option = {
+        name = "EVTOPTA44848468" #annex all
+        badboy = 1.5
+        FRM = { relation = { who = SGF value = -50 } }
+        HES = { relation = { who = SGF value = -50 } } release_vassal = HES
+        HEK = { relation = { who = SGF value = -50 } }
+		SGF = { inherit = HES }
+
+        ai_chance = { factor = 10 }
+    }
+
+    option = {
+        name = "EVTOPTB44848468" #release south of main
+
+
+        2560 = { remove_core = SGF }
+        570 = { remove_core = SGF }
+
+        HES = {
+            relation = { who = SGF value = 25 }
+            create_alliance = SGF
+        }
+
+        diplomatic_influence = { who = SGF value = 400 }
+
+        ai_chance = { factor = 0 }
+    }
+
+}
+
+country_event = {
+	id = 800830
+	title = "Beyond the Meuse River"
+	desc = "EVTDESC800830"
+	picture = "treaty"
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "Flanders shall be split from Wallonia"
+		inherit = BEL
+		NET = { release = WLL }
+		FRA = { release = WLL }
+		BOR = { release = WLL }
+		any_owned = { limit = { is_core = WLL NOT = { is_core = THIS } } secede_province = WLL }
+		create_vassal = WLL
+		create_alliance = WLL
+		diplomatic_influence = {
+			who = WLL
+			value = 400
+		}
+		NET = { release = FLA }
+		FRA = { release = FLA }
+		BOR = { release = FLA }
+		any_owned = { limit = { is_core = FLA NOT = { is_core = THIS } } secede_province = FLA }
+		create_vassal = FLA
+		create_alliance = FLA
+		diplomatic_influence = {
+			who = FLA
+			value = 400
+		}
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Give Flanders to the Dutch and keep Wallonia"
+		inherit = BEL
+		NET = { release = WLL }
+		FRA = { release = WLL }
+		BOR = { release = WLL }
+		create_vassal = WLL
+		create_alliance = WLL
+		diplomatic_influence = {
+			who = WLL
+			value = 400
+		}
+		any_country = {
+			limit = {
+				any_owned_province = {
+					is_core = FLA
+				}
+			}
+			any_owned = {
+				limit = { is_core = FLA }
+				secede_province = THIS 
+			}
+		}
+		any_owned = {
+			limit = { is_core = FLA }
+			add_core = NET
+			secede_province = NET
+		}
+		381 = { secede_province = THIS add_core = THIS remove_core = NET }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "We have grown used to the existence of Belgium"
+		diplomatic_influence = { who = BEL value = 400 }
+		FRA_404 = { add_core = BEL }
+		BEL_387 = { add_core = BEL }
+		BEL_394 = { add_core = BEL }
+		395 = { secede_province = THIS remove_core = BEL remove_core = WLL add_core = THIS }
+		398 = { secede_province = THIS remove_core = BEL remove_core = WLL remove_core = LUX add_core = THIS }
+		397 = { secede_province = THIS remove_core = BEL remove_core = WLL remove_core = LUX add_core = THIS }
+		396 = { secede_province = THIS remove_core = BEL remove_core = WLL add_core = THIS }
+		any_country = {
+			limit = { NOT = { tag = BEL } any_owned_province = { is_core = BEL } }
+			any_owned = { limit = { is_core = BEL } secede_province = THIS }
+		}
+		any_owned = {
+			limit = { is_core = BEL }
+			secede_province = BEL
+		}
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 800831
+	title = "The fate of the Rhine"
+	desc = "EVTDESC800831"
+	picture = "german_rhine"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "We shall divide the Rhine with the Benelux!"
+		GCF = {
+            any_owned = {
+                limit = {
+                    is_core = FRA
+                }
+                secede_province = FRA
+			}
+			release_vassal = BEL
+			release_vassal = NET
+			release_vassal = BEL
+			release_vassal = NET
+		}
+		GER = {
+			any_owned = {
+				limit = {
+					is_core = FRA
+				}
+				secede_province = FRA
+			}
+			release_vassal = BEL
+			release_vassal = NET
+			release_vassal = BEL
+			release_vassal = NET
+		}
+		LUX = {
+		country_event = 123544
+		}
+		BEL = {
+			country_event = 123545
+		}
+		NET = {
+			country_event = 123546
+			country_event = 123547
+		}
+		random_country = {
+			limit = {
+				exists = yes
+				OR = { tag = GER tag = GCF }
+				truce_with = THIS
+			}
+			country_event = 123548
+		}
+		573 = { secede_province = THIS add_core = THIS remove_core = RHI }
+		412 = { secede_province = THIS add_core = THIS }
+		409 = { secede_province = THIS add_core = THIS }
+		410 = { secede_province = THIS add_core = THIS }
+		3409 = { secede_province = THIS add_core = THIS }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Sazonov has some good points..."
+		PRU_570 = { add_core = THIS }
+		574 = { remove_core = THIS add_core = BEL }
+		381 = { remove_core = NET add_core = BEL secede_province = THIS }
+		PRU_575 = { add_core = BEL }
+		BEL_387 = { add_core = BEL }
+		BEL_394 = { add_core = BEL }
+		FRA_404 = { remove_core = BEL remove_core = WLL remove_core = FLA }
+		405 = { remove_core = BEL remove_core = WLL remove_core = FLA }
+		412 = { secede_province = THIS add_core = THIS }
+		409 = { secede_province = THIS add_core = THIS }
+		410 = { secede_province = THIS add_core = THIS }
+		3409 = { secede_province = THIS add_core = THIS }
+		GCF = {
+            any_owned = {
+                limit = {
+                    OR = { is_core = FRA is_core = BEL is_core = BOR is_core = BOE }
+                }
+                secede_province = THIS
+            }
+			release_vassal = BEL
+			release_vassal = NET
+			release_vassal = BEL
+			release_vassal = NET
+		}
+		GER = {
+			any_owned = {
+				limit = {
+					OR = { is_core = FRA is_core = BEL is_core = BOR is_core = BOE }
+				}
+				secede_province = THIS
+			}
+			release_vassal = BEL
+			release_vassal = NET
+			release_vassal = BEL
+			release_vassal = NET
+		}
+		random_owned = {
+			limit = { owner = { BEL = { exists = no OR = { is_vassal = no vassal_of = THIS } } } }
+			owner = {
+				release_vassal = BEL 
+				create_alliance = BEL
+				diplomatic_influence = { who = BEL value = 400 }
+			}
+		}
+		random_owned = {
+			limit = { owner = { BEL = { exists = yes OR = { is_vassal = no vassal_of = THIS } } } }
+			owner = {
+				any_owned = {
+					limit = { is_core = BEL }
+					secede_province = BEL
+				}
+				create_alliance = BEL
+				diplomatic_influence = { who = BEL value = 400 }
+			}
+		}
+		NET = {
+			country_event = 123546
+		}
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "The Rhine is ours and ours only!"
+		GCF = {
+            any_owned = {
+                limit = {
+                    is_core = FRA
+                }
+                secede_province = FRA
+            }
+			release_vassal = BEL
+			release_vassal = NET
+			release_vassal = BEL
+			release_vassal = NET
+		}
+		GER = {
+			any_owned = {
+				limit = {
+					is_core = FRA
+				}
+				secede_province = FRA
+			}
+			release_vassal = BEL
+			release_vassal = NET
+			release_vassal = BEL
+			release_vassal = NET
+		}
+		NET = {
+			country_event = 123546
+		}
+		random_country = {
+			limit = {
+				exists = yes
+				OR = { tag = GER tag = GCF }
+				truce_with = THIS
+			}
+			country_event = 123548
+		}
+		LUX = { annex_to = RHI }
+		412 = { secede_province = THIS add_core = THIS }
+		409 = { secede_province = THIS add_core = THIS }
+		410 = { secede_province = THIS add_core = THIS }
+		3409 = { secede_province = THIS add_core = THIS }
+		573 = { secede_province = THIS add_core = THIS remove_core = RHI }
+		ai_chance = { factor = 1 }
+	}
+}	
