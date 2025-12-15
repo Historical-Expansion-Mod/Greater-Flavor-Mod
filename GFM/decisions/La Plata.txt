@@ -42,7 +42,10 @@ political_decisions = {
     banda_oriental = {
 		picture = banda_oriental
         potential = {
-            tag = ARG
+            OR = {
+				tag = ARG
+				tag = ARC
+			}
 			NOT = {
 				AND = {
 					2344 = { is_core = THIS }
@@ -66,12 +69,12 @@ political_decisions = {
         effect = {
             badboy = 5
             set_country_flag = banda_oriental_is_ours #Uruguay provinces
-            2344 = { add_core = ARG }
-            2345 = { add_core = ARG }
-            2346 = { add_core = ARG }
-            2347 = { add_core = ARG }
-            3641 = { add_core = ARG }
-            3644 = { add_core = ARG }
+            2344 = { add_core = THIS }
+            2345 = { add_core = THIS }
+            2346 = { add_core = THIS }
+            2347 = { add_core = THIS }
+            3641 = { add_core = THIS }
+            3644 = { add_core = THIS }
         }
         ai_will_do = { factor = 1 }
     }
@@ -488,6 +491,73 @@ political_decisions = {
 		}
         ai_will_do = { factor = 1 }
     }
+	
+	cuzco_protectorate = {
+		picture = san_martin_declaration
+		potential = {
+			OR = {
+				tag = LPL
+				AND = { tag = ARC OR = { revolution_n_counterrevolution = 1 has_country_flag = federalist_triumph } }
+				AND = { tag = ARG OR = { revolution_n_counterrevolution = 1 has_country_flag = generation_80 } }
+			}
+			OR = {
+				AND = { 2313 = { is_core = THIS owned_by = THIS } 4022 = { is_core = THIS owned_by = THIS } 2310 = { is_core = THIS owned_by = THIS } }
+				is_our_vassal = BOL
+			}
+			NOT = { has_country_flag = cuzco_protectorate }
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+			is_greater_power = yes
+			SPU = { OR = { exists = no is_vassal = no } }
+			2307 = { OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } empty = yes } } 
+			2308 = { OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } empty = yes } } 
+			2578 = { OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } empty = yes } }
+			2304 = { OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } empty = yes } } 
+			2303 = { OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } empty = yes } } 
+			2302 = { OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } empty = yes } } 
+			2301 = { OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } empty = yes } } 
+			war_policy = jingoism
+		}
+		
+		effect = {
+			badboy = 8
+			2307 = { add_core = SPU }
+			2308 = { add_core = SPU }
+			2578 = { add_core = SPU }
+			2304 = { add_core = SPU }
+			2303 = { add_core = SPU }
+			2302 = { add_core = SPU }
+			2301 = { add_core = SPU }
+			random_owned = {
+				limit = { 2302 = { OR = { owner = { vassal_of = THIS } owned_by = THIS } } }
+				badboy = 4
+			}
+			random_owned = {
+				limit = { NOT = { 2302 = { OR = { owner = { vassal_of = THIS } owned_by = THIS } } } }
+				badboy = 8
+			}
+			any_country = { 
+				limit = { any_owned_province = { is_core = SPU } }
+				any_owned = { limit = { is_core = SPU } secede_province = THIS }
+			}
+			random_owned = {
+				limit = { SPU = { exists = no } }
+				owner = { release_vassal = SPU }
+			}
+			random_owned = {
+				limit = { SPU = { exists = yes } }
+				owner = { create_vassal = SPU }
+			}
+			SPU = { capital = 2302 }
+			country_event = 600170
+			set_country_flag = cuzco_protectorate
+		}
+		
+		ai_will_do = { factor = 1 modifier = { factor = 0 badboy = 0.68 } }
+	}
 	
 	#Uruguay decisions
 	oust_riveira = {

@@ -1798,6 +1798,8 @@ country_event = {
 		remove_country_modifier = north_coalition
 		remove_country_modifier = lost_the_war
 		inherit = ENT
+		any_pop = { militancy = -5 }
+		random_owned = { limit = { owner = { owns = 2360 } } owner = { capital = 2360 } }
 		remove_country_modifier = totalitarian_system
 		remove_country_modifier = political_education
 		remove_country_modifier = cult_of_personality
@@ -1843,6 +1845,7 @@ country_event = {
             clr_country_flag = will_not_support_entre_rios
             clr_country_flag = will_support_entre_rios
 		}
+		random_owned = { limit = { URU = { exists = no } owner = { 2344 = { owned_by = THIS } } } release_vassal = URU create_alliance = URU }
         remove_country_modifier = north_coalition
         add_country_modifier = { name = small_immigration_boom duration = 1825 }
         2348 = { add_province_modifier = { name = gateway_to_harbor duration = 1825 } }
@@ -1907,6 +1910,7 @@ country_event = {
 				create_alliance = URU
 			}	
 		}
+		clr_country_flag = hide_tooltip
 		CRT = { capital = 2356 all_core = { add_core = ARC } }
 	}
 }
@@ -1951,7 +1955,7 @@ country_event = {
 		war = {
             target = SBA
             attacker_goal = { casus_belli = civil_war }
-            defender_goal = { casus_belli = civil_war }
+            defender_goal = { casus_belli = status_quo }
 			call_ally = no
 		}
 		ai_chance = { factor = 1 }
@@ -1982,7 +1986,7 @@ country_event = {
 		war = {
             target = SBA
             attacker_goal = { casus_belli = civil_war }
-            defender_goal = { casus_belli = civil_war }
+            defender_goal = { casus_belli = status_quo }
 			call_ally = no
 		}
 		change_tag_no_core_switch = SBA
@@ -2330,12 +2334,14 @@ country_event = {
 	
 	fire_only_once = yes
 	
-	mean_time_to_happen = { months = 12 }
+	mean_time_to_happen = { months = 3 }
 	
 	trigger = {
 		tag = ARC
-		year = 1874
-		revolution_n_counterrevolution = 1 
+		OR = { 
+			year = 1874
+			revolution_n_counterrevolution = 1 
+		}
 		has_country_flag = federalist_triumph
 		SBA = { OR = { vassal_of = THIS exists = no } }
 	}
@@ -2359,6 +2365,10 @@ country_event = {
 			}
 			all_core = { add_core = ARC }
 			annex_to = THIS
+		}
+		random_owned = { 
+			limit = { owner = { has_country_flag = cuzco_integration } }
+			SPU = { all_core = { add_core = THIS } annex_to = THIS }
 		}
 		ai_chance = { factor = 1 }
 	}
@@ -4166,6 +4176,7 @@ country_event = {
 	option = {
         name = "Order and Progress!"
 		plurality = -5
+		set_country_flag = generation_80
 		random_owned = {
 			limit = { owner = { ruling_party_ideology = conservative } }
 			owner = { add_country_modifier = { name = positivist_oligarchy duration = 11680 } }
@@ -4679,6 +4690,7 @@ country_event = {
 					tag = URU
 					tag = PRG
 					tag = SBA
+					tag = BOL
 				}
 				vassal_of = THIS
 				ai = yes
@@ -4687,5 +4699,149 @@ country_event = {
 			annex_to = THIS
 		}
 		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600170
+	title = "The Protectorate of South Peru"
+	desc = "EVTDESC600170"
+	picture = "san_martin_declaration"
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = { days = 1 }
+	
+	trigger = {
+		OR = {
+			tag = LPL
+			tag = ARG
+			tag = ARC
+		}
+		has_country_flag = cuzco_protectorate
+		OR = {
+			SPU = { exists = no all_core = { OR = { owned_by = THIS owner = { vassal_of = THIS } empty = yes } } }
+			is_our_vassal = SPU
+		}
+		NOT = { has_country_flag = cuzco_wants_answers }
+	}
+	
+	option = {
+		name = "EVTOPTA600170"
+		create_alliance = SPU 
+		diplomatic_influence = { who = SPU value = 400 }
+		add_country_modifier = { name = national_confusion duration = 1825 }
+		set_country_flag = cuzco_wants_answers
+		SPU = { any_pop = { militancy = 2 consciousness = 2 } }
+		ai_chance = { factor = 1 }
+	}
+	
+}
+
+country_event = {
+	id = 600171
+	title = "Cuszo: The Due Date"
+	desc = "EVTDESC600171"
+	picture = "san_martin_declaration"
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = { days = 1 }
+	
+	trigger = {
+		OR = {
+			tag = LPL
+			tag = ARG
+			tag = ARC
+		}
+		has_country_flag = cuzco_wants_answers
+		is_our_vassal = SPU
+		NOT = { has_country_modifier = national_confusion }
+	}
+	
+	option = {
+		name = "South Peru's independence is assured!"
+		release_vassal = SPU
+		create_alliance = SPU 
+		diplomatic_influence = { who = SPU value = 400 }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "But we will integrate some territory into Alto Peru, of course §RGain 5 infamy§!"
+		badboy = 5
+		2307 = { add_core = BOL }
+		2308 = { add_core = BOL }
+		2578 = { add_core = BOL }
+		2303 = { add_core = BOL }
+		2301 = { add_core = BOL }
+		release_vassal = SPU
+		create_alliance = SPU 
+		diplomatic_influence = { who = SPU value = 400 }
+		random_owned = {
+			limit = { 2310 = { owned_by = THIS is_core = THIS } }
+			2307 = { add_core = THIS }
+			2308 = { add_core = THIS }
+			2578 = { add_core = THIS }
+			2303 = { add_core = THIS }
+			2301 = { add_core = THIS }
+			SPU = { any_owned = { limit = { is_core = THIS } secede_province = THIS } }
+		}
+		random_owned = { 
+			limit = { 2310 = { owned_by = BOL } BOL = { vassal_of = THIS } }
+			SPU = { any_owned = { limit = { is_core = BOL } secede_province = THIS } }
+			owner = { any_owned = { limit = { is_core = SPU is_core = BOL } secede_province = BOL } }
+		}
+		BOL = { any_pop = { consciousness = -1 militancy = -1 } }
+		ai_chance = { factor = 1 modifier = { factor = 0 badboy = 0.8 } }
+	}
+	
+	option = { 
+		name = "We welcome the Province of Cusco! §RGain 2.5 infamy§!"
+		badboy = 2.5
+		SPU = { any_pop = { militancy = 2 consciousness = 2 } }
+		set_country_flag = cuzco_integration
+		random_owned = { 
+			limit = { 2310 = { owned_by = THIS is_core = THIS } }
+			2307 = { add_core = THIS }
+			2308 = { add_core = THIS }
+			2578 = { add_core = THIS }
+			2303 = { add_core = THIS }
+			2301 = { add_core = THIS }
+			SPU = { all_core = { add_core = THIS } annex_to = THIS }
+		}
+		random_owned = { 
+			limit = { 2310 = { owned_by = BOL } BOL = { vassal_of = THIS } }
+			owner = { diplomatic_influence = { who = SPU value = 400 } }
+		}
+		ai_chance = { factor = 4 modifier = { factor = 0 badboy = 0.9 } }
+	}
+	
+	option = {
+		name = "Even if it is a bit smaller, of course... §RGain 5 infamy§!"
+		badboy = 5
+		set_country_flag = cuzco_integration
+		2307 = { add_core = BOL }
+		2308 = { add_core = BOL }
+		2578 = { add_core = BOL }
+		2303 = { add_core = BOL }
+		2301 = { add_core = BOL }
+		SPU = { any_pop = { militancy = 2 consciousness = 2 } }
+		random_owned = { 
+			limit = { 2310 = { owned_by = THIS is_core = THIS } }
+			2307 = { add_core = THIS }
+			2308 = { add_core = THIS }
+			2578 = { add_core = THIS }
+			2303 = { add_core = THIS }
+			2301 = { add_core = THIS }
+			SPU = { all_core = { add_core = THIS } annex_to = THIS }
+		}
+		random_owned = { 
+			limit = { 2310 = { owned_by = BOL } BOL = { vassal_of = THIS } }
+			SPU = { any_owned = { limit = { is_core = BOL } secede_province = THIS } }
+			owner = { any_owned = { limit = { is_core = SPU is_core = BOL } secede_province = BOL } }
+		}
+		BOL = { any_pop = { consciousness = -1 militancy = -1 } }
+		ai_chance = { factor = 1 modifier = { factor = 0 badboy = 0.8 } }
 	}
 }
