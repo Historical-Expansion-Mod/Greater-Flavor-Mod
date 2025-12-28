@@ -792,6 +792,7 @@ country_event = {
 
     option = {
         name = "Goodbye Marcistas."
+		set_country_flag = moreno_regime
 		random_owned = {
 			limit = { owner = { exists = ECM } }
 			owner = { inherit = ECM }
@@ -917,6 +918,7 @@ country_event = {
     trigger = {
         tag = ECU
 		has_global_flag = ecu_civil_war_1859
+		has_country_flag = moreno_regime
         ECM = { exists = no }
 		CLR = { exists = yes }
 		owns = 2279
@@ -933,7 +935,7 @@ country_event = {
 
 country_event = {
     id = 197078
-    title = "The Ecuadorian-Colombian Union Proposal"
+    title = "The Colombian Union Proposal"
     desc = "EVTDESC197078"
     fire_only_once = yes
     picture = "gran_colombia"
@@ -986,14 +988,15 @@ country_event = {
     }
 	
     option = {
-        name = "A union with Colombia is the only way to protect us against Peru! §REcuador is annexed§W"
+        name = "A union with Colombia sounds a good idea! §REcuador becomes a puppet§W"
 		CLM = { country_event = 199084 }
-		any_owned = { secede_province = FROM }
-        FROM = { inherit = THIS }
+		change_tag = ECU
+        CLM = { create_vassal = THIS }
 		ai_chance = {
 			factor = 1
 			modifier = {
                 factor = 99
+				NOT = { has_country_flag = moreno_regime }
 				OR = {
 					2280 = { owned_by = PEU }
 					3680 = { owned_by = PEU }
@@ -1004,12 +1007,18 @@ country_event = {
 			}
 			modifier = {
                 factor = 80
+				NOT = { has_country_flag = moreno_regime }
 				relation = { who = FROM value = 190 }
 			}
 			modifier = {
                 factor = 60
+				NOT = { has_country_flag = moreno_regime }
 				2313 = { owned_by = PEU is_core = PEU }
 				2283 = { is_core = PEU }
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = moreno_regime
 			}
 		}
     }
@@ -1061,7 +1070,6 @@ country_event = {
 		2263 = { add_core = ECU }
 		3359 = { add_core = ECU }
 		2291 = { add_core = ECU }
-		ECU = { all_core = { add_core = THIS } }
 		2259 = { remove_core = ECU }
 		relation = { who = PEU value = -50 }
     }
@@ -1117,7 +1125,7 @@ country_event = {
     }
 	
 	option = {
-        name = "All of Ecuador is ours!"
+        name = "Depose Moreno and put the liberals in charge!"
 		set_country_flag = clm_ecuador_annexed
 		political_reform = open_borders
 		political_reform = federalism
@@ -1125,11 +1133,12 @@ country_event = {
 		badboy = 8
 		random_owned = {
 			limit = { owner = { exists = ECU } }
-			CLM = { inherit = ECU }
+			CLM = { create_vassal = ECU }
 		}
 		random_owned = {
-			limit = { owner = { exists = ECM } }
-			CLM = { inherit = ECM }
+			limit = { owner = { exists = ECM  } }
+			country_event = 299085
+			CLM = { create_vassal = ECM }
 		}
 		ECM = { all_core = { add_core = ECU remove_core = ECM } }
 		2283 = { add_core = ECU }
@@ -1181,6 +1190,44 @@ country_event = {
 }
 
 country_event = {
+    id = 299085
+    title = "The Peace Treaty" #loser event
+    desc = "EVTDESC199095"
+    picture = "clm_ecu_war"
+
+    fire_only_once = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "Bah!!!"
+		prestige = -5
+		change_tag = ECU
+		government = democracy
+		ruling_party_ideology = liberal
+		CLM = { create_vassal = ECU }
+        any_pop = {
+			ideology = {
+                value = liberal
+                factor = 0.80
+            }
+		}
+		any_pop = {
+            scaled_militancy = {
+                ideology = reactionary
+                factor = 5
+            }
+            scaled_militancy = {
+                ideology = conservative
+                factor = 4
+            }
+			limit = { pop_majority_ideology = liberal }
+			militancy = -5
+			consciousness = -4
+        }
+    }
+}
+
+country_event = {
     id = 198086
     title = "The Treaty of Pinsaquí" #Ecuador demands
     desc = "EVTDESC198086"
@@ -1192,7 +1239,7 @@ country_event = {
     option = {
         name = "Pasto is Ecuadorian!"
 		prestige = 5
-		2259 = { remove_core = CLM }
+		2259 = { add_core = THIS remove_core = CLM }
 		random_owned = {
 			limit = { owner = { 2263 = { is_core = THIS } } }
 			2263 = { remove_core = CLM }
@@ -1217,7 +1264,7 @@ country_event = {
         name = "Restore the previous borders of 1831"
 		prestige = 10
 		badboy = 15
-		2259 = { remove_core = CLM }
+		2259 = { add_core = THIS remove_core = CLM }
 		random_owned = {
 			limit = { owner = { 2263 = { is_core = THIS } } }
 			2263 = { remove_core = CLM }
@@ -1732,10 +1779,8 @@ country_event = {
 	
     option = {
         name = "We shall unite with our brothers once again §RVenezuela is annexed§W"
-		THIS = { all_core = { add_core = CLM } }
 		CLM = { country_event = 832022 }
-		any_owned = { secede_province = FROM }
-        FROM = { inherit = THIS }
+        FROM = { create_vassal = THIS }
 		ai_chance = {
 			factor = 5
 		}
@@ -1768,7 +1813,7 @@ country_event = {
 		}
         war = {
             target = VNZ
-            attacker_goal = { casus_belli = conquest_any }
+            attacker_goal = { casus_belli = make_puppet_no_infamy }
             defender_goal = { casus_belli = cut_down_to_size_no_infamy }
 			call_ally = no
         }
@@ -1822,6 +1867,157 @@ country_event = {
 }
 
 country_event = {
+    id = 932024
+    title = "Colombian liberal rule"
+    desc = "EVTDESC932024"
+    picture = "CLM_into_GCO_event"
+
+    fire_only_once = yes
+
+    trigger = {
+		tag = VNZ
+        has_country_flag = clm_ecuador_annexed
+		has_global_flag = colombia_venezuela_war
+		NOT = { has_global_flag = treaty_of_maracaibo }
+		THIS = { vassal_of = CLM }
+	}
+
+	mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "Liberal rules over our country!"
+		government = democracy
+		ruling_party_ideology = liberal
+        any_pop = {
+			ideology = {
+                value = liberal
+                factor = 0.80
+            }
+		}
+		any_pop = {
+            scaled_militancy = {
+                ideology = reactionary
+                factor = 5
+            }
+            scaled_militancy = {
+                ideology = conservative
+                factor = 4
+            }
+			limit = { pop_majority_ideology = liberal }
+			militancy = -5
+			consciousness = -4
+        }
+    }
+}
+
+country_event = {
+    id = 932025
+    title = "Conservative nationalist coup"
+    desc = "EVTDESC932025"
+    picture = "CLM_into_GCO_event"
+
+    fire_only_once = yes
+
+    trigger = {
+		tag = VNZ
+        has_country_flag = clm_ecuador_annexed
+		OR = { CLM = { has_country_flag = clm_into_gco } has_global_flag = colombia_venezuela_war }
+		THIS = { vassal_of = CLM }
+		has_global_flag = clm_1876_civil_war
+		CLR = { exists = yes ruling_party_ideology = conservative }
+	}
+
+	mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "Break from the Colombian chains."
+		end_war = CLR
+        any_pop = {
+			ideology = {
+                value = conservative
+                factor = 0.50
+            }
+		}
+		ruling_party_ideology = conservative
+		release_vassal = VNZ
+		CLM = { country_event = 932027 }
+    }
+}
+
+country_event = {
+    id = 932026
+    title = "Conservative nationalist coup"
+    desc = "EVTDESC932026"
+    picture = "CLM_into_GCO_event"
+
+    fire_only_once = yes
+
+    trigger = {
+		tag = ECU
+        has_country_flag = clm_ecuador_annexed
+		THIS = { vassal_of = CLM }
+		has_global_flag = clm_1876_civil_war
+		CLR = { exists = yes ruling_party_ideology = conservative }
+	}
+
+	mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "Break from the Colombian chains."
+		end_war = CLR
+        any_pop = {
+			ideology = {
+                value = conservative
+                factor = 0.50
+            }
+		}
+		ruling_party_ideology = conservative
+		release_vassal = ECU
+		CLM = { country_event = 932028 }
+    }
+}
+
+country_event = {
+    id = 932027
+    title = "Conservative coup in Venezuela"
+    desc = "\n\nIn the mist of our civil war, conservatives in $FROMCOUNTRY$ has couped our friendly government and the new government has broken from us."
+    picture = "CLM_into_GCO_event"
+
+    fire_only_once = yes
+
+    is_triggered_only = yes
+
+    option = {
+        name = "They gonna regret this"
+        war = {
+			target = VNZ
+			attacker_goal = { casus_belli = make_puppet_no_infamy }
+			defender_goal = { casus_belli = humiliate_no_infamy }
+		}
+    }
+}
+
+country_event = {
+    id = 932028
+    title = "Conservative coup in Ecuador"
+    desc = "\n\nIn the mist of our civil war, conservatives in $FROMCOUNTRY$ has couped our friendly government and the new government has broken from us."
+    picture = "CLM_into_GCO_event"
+
+    fire_only_once = yes
+
+    is_triggered_only = yes
+
+    option = {
+        name = "They gonna regret this"
+        war = {
+			target = ECU
+			attacker_goal = { casus_belli = make_puppet_no_infamy }
+			defender_goal = { casus_belli = humiliate_no_infamy }
+		}
+    }
+}
+
+country_event = {
     id = 832024
     title = "The Restoration of Gran Colombia"
     desc = "EVTDESC832024"
@@ -1830,16 +2026,26 @@ country_event = {
 	fire_only_once = yes
 
     trigger = {
-        tag = CLM
+        year = 1878
+		tag = CLM
 		has_country_flag = clm_ecuador_annexed
 		OR = { has_country_flag = clm_into_gco has_global_flag = colombia_venezuela_war }
-		owns = 2247
-		owns = 2264
-		owns = 2279
+		OR = {
+			AND = {
+				owns = 2247
+				owns = 2264
+				owns = 2279
+                VNZ = { exists = no }
+		        ECU = { exists = no }
+		        ECM = { exists = no }
+			}
+			AND = {
+				VNZ = { vassal_of = THIS }
+				ECU = { vassal_of = THIS }
+			}
+		}
+		CLR = { exists = no }
 		NOT = { has_global_flag = mosquera_colombia_full has_global_flag = treaty_of_maracaibo }
-        VNZ = { exists = no }
-		ECU = { exists = no }
-		ECM = { exists = no }
 		
     }
 
@@ -1849,6 +2055,8 @@ country_event = {
 
     option = {
         name = "Bolivar's legacy shall live on."
+		inherit = VNZ
+		inherit = ECU
 		prestige = 10
 		political_reform = open_borders
 		social_reform = incarceration
@@ -1902,6 +2110,10 @@ country_event = {
     option = {
         name = "Damn..."
 		prestige = -20
+		random_owned = {
+			limit = { ECU = { exists = yes vassal_of = THIS } }
+			release_vassal = ECU
+		}
 		any_owned = {
 			limit = { is_core = ECU NOT = { province_id = 2259 province_id = 2263 province_id = 3359 province_id = 4202 } }
 			secede_province = ECU

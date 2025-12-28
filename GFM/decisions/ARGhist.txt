@@ -1,6 +1,6 @@
 political_decisions = {
     conquest_of_the_desert = {
-        picture = conquest_of_the_desert
+        picture = desert_campaign_malones
         potential = {
             OR = {
                 owns = 2350 #azul
@@ -35,7 +35,8 @@ political_decisions = {
                 4124 = { empty = yes }
                 2395 = { empty = yes }
             }
-            NOT = { has_global_flag = conquest_of_the_desert }
+			has_country_flag = buenos_aires_conquered
+            NOT = { has_country_flag = desert_blocked has_global_flag = conquest_of_the_desert }
         }
 
         allow = {
@@ -159,6 +160,10 @@ political_decisions = {
                     any_pop = { limit = { is_primary_culture = no } literacy = -0.99 }
                 }
             }
+			inherit = SLN
+			inherit = RAN
+			inherit = PUR
+			inherit = MZN
         }
         ai_will_do = { factor = 1 }
     }
@@ -327,6 +332,10 @@ political_decisions = {
                     any_pop = { limit = { is_primary_culture = no } literacy = -0.99 }
                 }
             }
+			random_owned = {
+				limit = { owner = { OR = { tag = URU tag = ENT tag = CRT } 2361 = { is_core = THIS } } 2380 = { NOT = { owned_by = THIS } } }
+				owner = { country_event = 600141 }
+			}
         }
         ai_will_do = { factor = 1 }
     }
@@ -382,43 +391,6 @@ political_decisions = {
         ai_will_do = { factor = 1 }
     }
 
-    entre_rios_independent = {
-        picture = entre_rios_independent
-        potential = {
-            has_global_flag = entre_rios_rebellion
-            tag = ENT
-            NOT = { has_country_flag = called_for_recruits }
-        }
-
-        allow = {
-            OR = {
-                war_with = ARG
-                war_with = ARC
-            }
-            NOT = { has_country_modifier = small_country_draft }
-        }
-
-        effect = {
-            set_country_flag = called_for_recruits
-            money = 50000
-            add_country_modifier = {
-                name = small_country_draft
-                duration = 365
-            }
-
-            ARC = {
-                any_pop = {
-                    scaled_militancy = {
-                        ideology = liberal
-                        factor = 6
-                    }
-                }
-            }
-
-        }
-        ai_will_do = { factor = 1 }
-    }
-
     make_buenos_aires_capital = {
         picture = buenos_aires_capital
         potential = {
@@ -427,28 +399,106 @@ political_decisions = {
                 tag = ARC
                 tag = ARG
             }
-            2348 = { is_capital = no }
-            ENT = { exists = no }
-            CRT = { exists = no }
-            SBA = { exists = no }
-			NOT = { has_global_flag = corrientes_led_argentina }
+            ENT = { OR = { is_vassal = no vassal_of = BRZ exists = no } }
+            CRT = { OR = { is_vassal = no exists = no } }
+			OR = { has_country_flag = rosist_triumph has_country_flag = unitarians_on_top }
+			NOT = { has_country_flag = federalist_triumph AND = { has_country_flag = federalized_capital capital = 2348 } }
         }
 
         allow = {
             owns = 2348
-            2348 = { is_capital = no }
+            OR = { has_country_flag = generation_80 2348 = { is_capital = no } }
             war = no
         }
 
         effect = {
-            all_core = { remove_core = ENT }
-            all_core = { remove_core = CRT }
-            SBA = { all_core = { remove_core = SBA } }
+			set_country_flag = federalized_capital
             capital = 2348
+			SBA = { all_core = { remove_core = SBA } }
             2348 = { rich_strata = { militancy = -4 } middle_strata = { militancy = -2 } poor_strata = { militancy = -1 } }
         }
         ai_will_do = { factor = 1 }
     }
+	
+	stay_away_buenos_aires = {
+		picture = buenos_aires_capital
+		potential = {
+			OR = {
+				tag = ARC
+				tag = LPL
+			}
+			2348 = {
+				OR = {
+					owned_by = THIS
+					owner = { vassal_of = THIS }
+				}
+			}
+			has_country_flag = federalist_triumph
+			NOT = { has_country_flag = federal_new_capital }
+		}
+		
+		allow = {
+			war = no
+			money = 100000
+			2348 = {
+				OR = {
+					owned_by = THIS
+					owner = { vassal_of = THIS }
+				}
+			}
+			2360 = {
+				OR = {
+					owned_by = THIS
+					owner = { vassal_of = THIS }
+				}
+			}
+			2373 = {
+				OR = {
+					owned_by = THIS
+					owner = { vassal_of = THIS }
+				}
+			}
+			2349 = {
+				OR = {
+					owned_by = THIS
+					owner = { vassal_of = THIS }
+				}
+			}
+			2354 = {
+				OR = {
+					owned_by = THIS
+					owner = { vassal_of = THIS }
+				}
+			}
+			2351 = {
+				OR = {
+					owned_by = THIS
+					owner = { vassal_of = THIS }
+				}
+			}
+			2381 = {
+				OR = {
+					owned_by = THIS
+					owner = { vassal_of = THIS }
+				}
+			}
+		}
+		
+		effect = {
+			prestige = 5
+			country_event = 600153
+			set_country_flag = federal_new_capital
+			2348 = { rich_strata = { militancy = 4 } middle_strata = { militancy = 2 } poor_strata = { militancy = 1 } }
+		}
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { money = 125000 }
+			}
+		}
+	}
 
     create_argentina = {
         picture = argentina_chile_border_treaty
@@ -593,34 +643,60 @@ political_decisions = {
         ai_will_do = { factor = 1 }
     }
 
-    take_corrients = {
+    urquiza_proclamation = {
         picture = la_plata_foundation
         potential = {
             tag = ENT
-            OR = {
-                ARC = { owns = 2356 }
-                ENT = { owns = 2356 }
-            }
-            NOT = { exists = CRT }
-            NOT = { has_country_flag = corrientes_conquered }
+			vassal_of = ARC
+            has_country_flag = urquiza_rise
+            NOT = { has_country_flag = urquiza_proclamation }
         }
 
         allow = {
-            war = no
         }
 
         effect = {
-            set_country_flag = corrientes_conquered
-            ARC = {
-                any_owned = {
-                    limit = { is_core = CRT }
-                    secede_province = ENT
-                    add_core = ENT
-                }
+            set_country_flag = urquiza_proclamation
+			any_country = {
+				limit = { war_with = THIS }
+				end_war = THIS
+			}
+			CRT = { all_core = { add_core = ENT } annex_to = ENT }
+			random_owned = {
+				limit = { owner = { URU = { vassal_of = ARC } } }
+				URU = { all_core = { add_core = ENT } annex_to = ENT }
+				owner = { set_country_flag = uru_joins }
+			}
+			random_owned = {
+				limit = { owner = { PRG = { vassal_of = ARC } } }
+				PRG = { all_core = { add_core = ENT } annex_to = ENT }
+				owner = { set_country_flag = prg_joins }
+			}
+			random_owned = {
+				limit = { owner = { URU = { ruling_party_ideology = liberal } } }
+				URU = { relation = { who = THIS value = 100 } country_event = 46610020 }
+			}
+			add_country_modifier = { name = the_big_army duration = 730 }
+			BRZ = { country_event = 46610020 relation = { who = THIS value = 100 } }
+			random_owned = { limit = { owner = { PRG = { exists = yes } } } PRG = { country_event = 46610020 relation = { who = THIS value = 100 } } }
+			all_core = { limit = { NOT = { region = PRG_2338 region = ARG_2377 } } remove_core = ARC }
+			ARC = { leave_alliance = THIS release_vassal = THIS country_event = 600099 }
+			government = prov_gov_liberal
+			LPL = { release_vassal = ENT leave_alliance = ENT }
+			money = 50000
+            add_country_modifier = {
+                name = small_country_draft
+                duration = 730
             }
-            CRT = { all_core = { remove_core = CRT } }
+			
         }
-        ai_will_do = { factor = 1 }
+        ai_will_do = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { AND = { year = 1851 month = 5 } }
+			}
+		}
     }
 
     ushuaia_foundation = {
@@ -698,7 +774,7 @@ political_decisions = {
         potential = {
 			year = 1835
 			tag = ARC
-            NOT = { has_country_flag = mazorca_established }
+            NOT = { has_country_flag = mazorca_established has_country_modifier = mazorca }
         }
 
         allow = {
@@ -721,20 +797,16 @@ political_decisions = {
 	buenos_aires_conquest = {
 		picture = bahia_blanca_fort
 		potential = {
-			owns = 2351
-			owns = 3947
 			OR = {
 				tag = ARG
 				tag = ARC
 				tag = LPL
 				tag = SBA
 			}
-            OR = {
-				2352 = { empty = yes }
-				2350 = { empty = yes }
-				3948 = { empty = yes }
-				2355 = { empty = yes }
-			}
+			2350 = { owned_by = THIS }
+			2352 = { owned_by = THIS }
+			2354 = { owned_by = THIS }
+			2392 = { owned_by = THIS }
 			NOT = { has_country_flag = buenos_aires_conquered }
 		}
 
@@ -757,9 +829,10 @@ political_decisions = {
 				}
 			}
 			random_owned = {
-				limit = { 3948 = { empty = yes } }
+				limit = { 3948 = { OR = { owned_by = THIS owner = { civilized = no ai = yes } } } }
 				3948 = {
 					secede_province = THIS
+					add_core = THIS
 					life_rating = 15
 					any_pop = { limit = { is_primary_culture = no } literacy = -0.99 }
 				}
@@ -769,7 +842,7 @@ political_decisions = {
 				add_province_modifier = { name = small_immigration_boom duration = 730 }
 			}
 			random_owned = {
-				limit = { 2355 = { empty = yes } }
+				limit = { 2355 = { OR = { owned_by = THIS owner = { civilized = no ai = yes } } } }
 				2355 = {
 					secede_province = THIS
 					add_core = THIS
@@ -945,4 +1018,182 @@ political_decisions = {
 			}
         }
     }
+	
+	lpl_1826_constitution = {
+		picture = lpl_constitution_1826
+        potential = {
+            OR = {
+				AND = {
+					tag = LPL
+					has_global_flag = la_plata_founded_cv
+				}
+				AND = {
+					OR = {
+						tag = ENT
+						tag = CRT
+					}
+					has_country_flag = corrientes_mesopotamia
+				}
+				AND = {
+					tag = ARG
+					has_global_flag = corrientes_led_argentina
+				}
+			}
+			OR = { is_next_reform = wealth_weighted_voting is_next_reform = landed_voting }
+			NOT = { political_parties = secret_ballots }
+			NOT = { has_country_flag = lpl_1826_constitution }
+        }
+
+        allow = {
+			ruling_party_ideology = liberal
+			OR = {
+				rank = 16
+				prestige = 50
+			}
+			OR = {
+				average_militancy = 5
+				average_consciousness = 5
+				AND = { war_with = BRZ controls = 2463 }
+				AND = {
+					average_consciousness = 3
+					average_militancy = 2
+					is_next_reform = wealth_weighted_voting
+				}
+				year = 1854
+			}
+			OR = { war = no war_with = BRZ }
+			is_vassal = no
+			is_disarmed = no
+		}
+
+
+        effect = {
+            set_country_flag = lpl_1826_constitution
+			prestige = 5
+			government = democracy
+            political_reform = wealth_weighted_voting
+            political_reform = censored_press
+			political_reform = state_equal_weight
+			political_reform = jefferson_method
+			political_reform = culture_voting_only
+			political_reform = open_borders
+			political_reform = gerrymandering
+			political_reform = unitary
+			add_country_modifier = { name = national_confusion duration = 365 }
+			any_pop = {
+				scaled_militancy = { factor = 1 ideology = conservative }
+				scaled_militancy = { factor = 2.5 ideology = reactionary }
+				scaled_militancy = { factor = -2 ideology = liberal }
+				scaled_militancy = { factor = -5 ideology = radical }
+			}
+		}
+        ai_will_do = {
+            factor = 1
+        }
+	}
+	
+	commission_angelis_constitution = {
+		picture = pedro_de_angelis
+		potential = {
+			tag = ARC
+			has_country_flag = rosas_victory_new_regime
+			NOT = { has_country_flag = arc_constitution }
+		}
+		
+		allow = {
+			OR = {
+				AND = {
+					plurality = 50
+					average_consciousness = 3
+					average_militancy = 2
+					is_next_reform = wealth_weighted_voting
+				}
+				government = democracy
+				has_country_flag = rosas_dead
+			}
+		}
+		
+		effect = {
+			government = democracy
+			ruling_party_ideology = conservative
+			political_reform = federalism
+			random_owned = {
+				limit = { owner = { OR = { vote_franschise = landed_voting vote_franschise = none_voting } } }
+				owner = { political_reform = wealth_weighted_voting }
+			}
+			political_reform = no_slavery
+			political_reform = population_equal_weight
+			random_owned = {
+				limit = { owner = { trade_unions = no_trade_unions } }
+				owner = { political_reform = state_controlled }
+			}
+			random_owned = {
+				limit = { owner = { OR = { political_parties = underground_parties political_parties = harassment } } }
+				owner = { political_reform = gerrymandering }
+			}
+			remove_country_modifier = totalitarian_system
+			remove_country_modifier = political_education
+			remove_country_modifier = cult_of_personality
+			remove_country_modifier = the_terror
+			remove_country_modifier = paternalistic_totalitarism
+			remove_country_modifier = mazorca
+			clr_country_flag = totally_totalitarian
+			any_pop = {
+				scaled_militancy = {
+					ideology = reactionary
+					factor = 3
+				}
+				scaled_militancy = {
+					ideology = liberal
+					factor = -8
+				}
+				scaled_militancy = {
+					ideology = radical
+					factor = -4
+				}
+				scaled_militancy = {
+					ideology = socialist
+					factor = -2
+				}
+			}
+			set_country_flag = arc_constitution
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	province_of_paraguay = {
+		picture = paraguay_map
+		potential = {
+			tag = ARC
+			has_country_flag = rosas_victory_new_regime
+			has_country_flag = arc_constitution
+			NOT = { has_country_flag = claim_paraguay has_country_flag = derqui-varela }
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+			nationalism_n_imperialism = 1 
+			war_policy = jingoism
+			rank = 10
+			NOT = { alliance_with = PRG }
+		}
+		
+		effect = {
+			badboy = 10
+			PRG = { all_core = { add_core = THIS } }
+			relation = { who = PRG value = -400 }
+			diplomatic_influence = { who = PRG value = -400 }
+			set_country_flag = claim_paraguay
+		}
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.6
+			}
+		}
+	}
+	
 }

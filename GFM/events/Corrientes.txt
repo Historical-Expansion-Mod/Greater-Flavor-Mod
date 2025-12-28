@@ -9,8 +9,10 @@ country_event = {
     trigger = {
         tag = CRT
 		war_with = ARC
+		has_country_flag = armies_of_corrientes
 		controls = 2360
 		controls = 2359
+		is_vassal = no
     }
 
     mean_time_to_happen = { days = 3 }
@@ -37,24 +39,24 @@ country_event = {
 			}
 		}
     }
+	
 }
 
 country_event = {
     id = 4661020
 	major = yes
-    title = "Corrientes Stands Victorious"
+    title = "Unitarians Stands Victorious"
     desc = "CRTUNIFICATION"
     picture = "correntino_victory"
 
     fire_only_once = yes
 
     trigger = {
-        tag = CRT
+        OR = { tag = CRT tag = SBA tag = ARG tag = BOL }
 		war = no
-		ARC = {
-            has_country_modifier = recently_lost_war
-            truce_with = THIS
-        }
+		owns = 2348
+		has_country_flag = armies_of_corrientes
+		NOT = { has_country_flag = entre_rios_litoral year = 1850 }
     }
 
     mean_time_to_happen = { days = 5 }
@@ -64,32 +66,28 @@ country_event = {
 		prestige = 5
         inherit = ARC
 		inherit = ENT
-        change_tag = ARG
-		capital = 2356
-        ARG = { nationalvalue = nv_liberty }
-        government = democracy
+		random_owned = { limit = { owner = { tag = BOL } } owner = { set_country_flag = was_bolivia } }
+		any_country = {
+			limit = {
+				OR = { tag = CRT tag = SBA tag = ARG tag = BOL }
+				has_country_flag = armies_of_corrientes
+				NOT = { tag = THIS }
+			}
+			annex_to = THIS
+		}
+        random_owned = {
+			limit = { NOT = { owned_by = ARG } }
+			owner = { change_tag = ARG }
+		}
 		set_global_flag = corrientes_led_argentina
-        ruling_party_ideology = liberal
-        political_reform = unitary
-        random_owned = {
-            limit = { NOT = { owner = { slavery = no_slavery } } }
-            owner = { political_reform = no_slavery }
-        }
-        random_owned = {
-            limit = { owner = { vote_franschise = none_voting } }
-            owner = { political_reform = wealth_weighted_voting }
-        }
-        political_reform = population_equal_weight
-        political_reform = yes_meeting
-        political_reform = free_press
-        random_owned = {
-            limit = { owner = { trade_unions = no_trade_unions } }
-            owner = { political_reform = state_controlled }
-        }
-        random_owned = {
-            limit = { owner = { OR = { political_parties = underground_parties political_parties = harassment } } }
-            owner = { political_reform = gerrymandering }
-        }
+		random_country = {
+			limit = { OR = { tag = ENG tag = ENL } is_greater_power = yes }
+			diplomatic_influence = { who = ARG value = 50 }
+		}
+		random_country = {
+			limit = { OR = { tag = FRA tag = BOR } is_greater_power = yes }
+			diplomatic_influence = { who = ARG value = 50 }
+		}
         ARC = {
             all_core = {
                 add_core = ARG
@@ -100,13 +98,25 @@ country_event = {
             }
         }
         ARG = {
+			nationalvalue = nv_liberty
+			government = presidential_dictatorship
+			ruling_party_ideology = liberal
+			political_reform = unitary
+			capital = 2348
             all_core = {
                 remove_core = ARC
                 remove_core = SBA
                 remove_core = CRT
                 remove_core = ENT
             }
+			clr_country_flag = armies_of_corrientes
+			set_country_flag = unitarians_on_top
         }
+		random_owned = {
+			limit = { owner = { has_country_flag = was_bolivia } }
+			primary_culture = platinean
+			add_accepted_culture = south_andean
+		}
         add_country_modifier = { name = small_immigration_boom duration = 1825 }
         2360 = { add_province_modifier = { name = gateway_to_harbor duration = 1825 } }
         any_pop = { militancy = -3 }
@@ -205,4 +215,429 @@ country_event = {
 		2357 = { any_pop = { limit = { culture = brazilian } reduce_pop = 1.05 consciousness = 1 } }
 		2358 = { any_pop = { limit = { culture = brazilian } reduce_pop = 1.05 consciousness = 1 } }
     }
+}
+
+country_event = {
+    id = 600084
+    title = "The 5 Armies of Corrientes"
+    desc = "EVTDESC600084"
+    picture = "correntino_victory"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "They will try this 5 times?"
+		war = {
+			target = CRT
+			attacker_goal = { casus_belli = annex_core_country }
+			defender_goal = { casus_belli = conquest_any }
+			call_ally = yes
+		}
+		add_country_modifier = { name = small_country_draft duration = 1650 }
+		set_country_flag = armies_of_corrientes
+		ai_chance = { factor = 1 }
+    }
+	
+	option = {
+		name = "They are right! Rosas has to go! §BPlay as Corrientes§W"
+		war = {
+			target = CRT
+			attacker_goal = { casus_belli = annex_core_country }
+			defender_goal = { casus_belli = conquest_any }
+			call_ally = yes
+		}
+		set_country_flag = armies_of_corrientes
+		change_tag_no_core_switch = CRT
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+    id = 600085
+    title = "Interests in Mesopotamia"
+    desc = "EVTDESC600085"
+    picture = "pbc_argentina_border_treaty"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "We don't need any European support!"
+		prestige = 10
+		war_exhaustion = -15
+		ai_chance = { factor = 0 }
+    }
+	
+	option = {
+		name = "Promise them free navigation on the Paraná and Uruguay Rivers, of course!"
+		prestige = -5
+		random_country = {
+			limit = { OR = { tag = ENG tag = ENL } is_greater_power = yes }
+			diplomatic_influence = { who = THIS value = 50 }
+		}
+		random_country = {
+			limit = { OR = { tag = FRA tag = BOR } is_greater_power = yes }
+			diplomatic_influence = { who = THIS value = 50 }
+		}
+		2356 = {
+			sub_unit = { type = artillery value = current }
+			sub_unit = { type = irregular value = current }
+		}
+		war_exhaustion = -5
+		ai_chance = { 
+			factor = 1
+			modifier = {
+				factor = 0 
+				OR = {
+					in_sphere = FRA
+					in_sphere = BOR
+					in_sphere = ENG
+					in_sphere = ENL
+				}
+			}
+		}
+		
+	}
+	
+	option = {
+		name = "Offer ourselves as a British protectorate §RYou will become a British Puppet§!"
+		random_country = {
+			limit = { OR = { tag = ENG tag = ENL } exists = yes }
+			country_event = 600086
+		}
+		ai_chance = { 
+			factor = 1
+			modifier = {
+				factor = 0 
+				NOT = {
+					in_sphere = ENG
+					in_sphere = ENL
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = "Offer ourselves as a French protectorate §RYou will become a French Puppet§!"
+		random_country = {
+			limit = { OR = { tag = FRA tag = BOR } exists = yes }
+			country_event = 600086
+		}
+		ai_chance = { 
+			factor = 1
+			modifier = {
+				factor = 0 
+				NOT = {
+					in_sphere = FRA
+					in_sphere = BOR
+				}
+			}
+		}
+	}
+
+}
+
+country_event = {
+	id = 600086
+	title = "Varela's Offer"
+	desc = "EVTDESC600086"
+	picture = "pbc_argentina_border_treaty"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Maybe a trip to Buenos Aires is worth it after all §RGain 5 infamy§!"
+		badboy = 5
+		set_global_flag = foreign_mesopotamia
+		any_country = {
+			limit = { war_with = FROM }
+			end_war = FROM
+        }
+		create_vassal = FROM
+		create_alliance = FROM
+		diplomatic_influence = { who = FROM value = 400 }
+		random_owned = {
+			limit = { owner = { primary_culture = french } }
+			owner = { CRT = { government = colonial_company_4 } }
+		}
+		random_owned = {
+			limit = { owner = { primary_culture = british } }
+			owner = { CRT = { government = colonial_company_3 } }
+		}
+		war = {
+			target = ARC
+			attacker_goal = { casus_belli = scripted_war_small }
+			defender_goal = { casus_belli = scripted_war_minuscule }
+			call_ally = no
+		}
+		FROM = { country_event = 600087 }
+		ARC = { country_event = 600093 }
+		ai_chance = { factor = 1 modifier = { factor = 0 badboy = 0.8 } }
+	}
+	
+	option = {
+		name = "Tell Varela it isn't in our best interests"
+		prestige = -5
+		FROM = { country_event = 600088 }
+		ai_chance = { factor = 0 }
+	}
+
+}
+
+country_event = {
+	id = 600087
+	title = "$FROMCOUNTRY_ADJ$ Protectorate"
+	desc = "EVTDESC600087"
+	picture = "pbc_argentina_border_treaty"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "It is the only way!"
+		treasury = 10000
+		2356 = {
+			sub_unit = { type = infantry value = current }
+			sub_unit = { type = hussar value = current }
+			sub_unit = { type = artillery value = current }
+		}
+		ARG_2360 = { add_core = THIS }
+		PRG = { all_core = { add_core = THIS } }
+	}
+
+}
+
+country_event = {
+	id = 600088
+	title = "$FROMCOUNTRY_ADJ$ Refusal"
+	desc = "EVTDESC600088"
+	picture = "pbc_argentina_border_treaty"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "We will make do with what we have"
+	}
+
+}
+
+country_event = {
+	id = 600089
+	title = "Defeat in Argentina"
+	desc = "EVTDESC600089"
+	picture = "pbc_argentina_border_treaty"
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = { days = 1 }
+	
+	trigger = {
+		OR = {
+			tag = FRA
+			tag = BOR
+			tag = ENL
+			tag = ENG
+		}
+		is_our_vassal = CRT
+		has_global_flag = foreign_mesopotamia 
+		has_country_flag = lost_the_war
+	}
+	
+	option = {
+		name = "That is embarrasing..."
+		prestige = -10
+		any_owned = {
+			limit = { is_core = ARC }
+			secede_province = ARC
+		}
+		release_vassal = CRT
+		ARC = { country_event = 600090 inherit = CRT }
+		clr_global_flag = foreign_mesopotamia
+		clr_country_flag = lost_the_war
+	}
+
+}
+
+country_event = {
+	id = 600090
+	title = "Victory against $FROMCOUNTRY$"
+	desc = "EVTDESC600090"
+	picture = "pbc_argentina_border_treaty"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Argentina under Rosas can't fail!"
+		prestige = 10
+		2360 = { remove_core = CRT secede_province = ENT }
+		2359 = { remove_core = CRT secede_province = ENT }
+		create_vassal = ENT
+		create_alliance = ENT
+		any_owned = {
+			limit = { is_core = CRT }
+			remove_core = THIS
+			secede_province = CRT
+		}
+		create_vassal = CRT
+		create_alliance = CRT
+		PRG = { all_core = { remove_core = CRT } }
+		2340 = { add_core = CRT }
+		4116 = { add_core = CRT }
+		2554 = { add_core = CRT }
+		2462 = { add_core = CRT }
+		CRT = { government = colonial_company_2 }
+		ENT = { government = colonial_company_2 }
+	}
+
+}
+
+country_event = {
+	id = 600091
+	title = "The Loss of Mesopotamia"
+	desc = "EVTDESC600091"
+	picture = "pbc_argentina_border_treaty"
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = { days = 1 }
+	
+	trigger = {
+		tag = ARC
+		truce_with = CRT
+		has_global_flag = foreign_mesopotamia 
+		has_country_flag = lost_the_war
+	}
+	
+	option = {
+		name = "La Plata grows further divided"
+		prestige = -10
+		ARG_2360 = { add_core = CRT }
+		PRG = { all_core = { add_core = CRT } }
+		any_owned = { limit = { is_core = ENT } secede_province = CRT }
+		ENT = { annex_to = CRT }
+		random_country = {
+			limit = { is_our_vassal = CRT }
+			country_event = 600092
+		}
+		clr_global_flag = foreign_mesopotamia
+		clr_country_flag = lost_the_war
+	}
+
+}
+
+country_event = {
+	id = 600092
+	title = "A Protectorate in Mesopotamia"
+	desc = "EVTDESC600092"
+	picture = "pbc_argentina_border_treaty"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "We can look towards integrating Paraguay into it now..."
+		prestige = 10
+		create_vassal = CRT
+		create_alliance = CRT
+	}
+
+}
+
+country_event = {
+	id = 600093
+	title = "$FROMCOUNTRY_ADJ$ Declaration"
+	desc = "EVTDESC600093"
+	picture = "pbc_argentina_border_treaty"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Let's see if they have the balls to follow through..."
+		war_exhaustion = -25
+	}
+
+}
+
+country_event = {
+	id = 600095
+	title = "Corrientes breaks away from the Confederation"
+	desc = "EVTDESC600095"
+	picture = "correntino_victory"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Sadly, Mesopotamia is out of our reach."
+		prestige = -10
+        set_country_flag = rosas_victory_new_regime
+		CRT = { all_core = { remove_core = ARC } end_war = ARC country_event = 600097 }
+		ENT = { all_core = { remove_core = ARC add_core = CRT } }
+		any_owned = { limit = { is_core = CRT } secede_province = CRT }
+		ai_chance = { factor = 1 }
+	}
+
+}
+
+country_event = {
+	id = 600097
+	title = "Between the Uruguay and Paraná Rivers"
+	desc = "EVTDESC600097"
+	picture = "correntino_victory"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "The Republic of Mesopotamia is born!"
+		prestige = 15
+		set_country_flag = corrientes_mesopotamia
+		government = presidential_dictatorship
+		nationalvalue = nv_liberty
+		ruling_party_ideology = liberal
+		any_country = {
+			limit = { war_with = THIS }
+			end_war = THIS
+		}
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "The Independent State of Litorial finds liberty!"
+		prestige = 15
+		set_country_flag = corrientes_mesopotamia
+		change_tag = ENT
+		government = presidential_dictatorship
+		ENT = { nationalvalue = nv_liberty }
+		ruling_party_ideology = liberal
+		any_country = {
+			limit = { war_with = THIS }
+			end_war = THIS
+		}
+		ai_chance = { factor = 0 }
+	}
+
+}
+
+country_event = {
+	id = 600096
+	title = "The Future of Mesopotamia"
+	desc = "EVTDESC600096"
+	picture = "rosistas"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = CRT
+		has_country_flag = armies_of_corrientes
+		truce_with = ARC 
+		ARC = { exists = yes }
+		war = no
+	}
+	
+	mean_time_to_happen = { months = 1 }
+	
+	option = {
+		name = "Mesopotamia frees itself from tyranny!"
+		set_country_flag = corrientes_mesopotamia
+		prestige = 5
+		ENT = { all_core = { add_core = CRT } }
+		inherit = ENT
+		ARC = { country_event = 600095 }
+	}
 }
