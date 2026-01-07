@@ -1421,38 +1421,22 @@ country_event = {
     option = {
         name = "EVT33038OPTA"
         any_owned = { limit = { is_core = THIS } add_core = FROM }
-        random_owned = { limit = { owner = { primary_culture = FROM } }
-            owner = { any_owned = { limit = { is_core = THIS } remove_core = THIS } }
-        }
-        annex_to = NGF
+        FROM = { create_vassal = THIS create_alliance = THIS diplomatic_influence = { who = THIS value = 400 } }
 
         ai_chance = {
             factor = 0.5
             modifier = {
-                factor = 1.1
-                primary_culture = FROM
+                factor = 10
                 OR = {
                     vassal_of = FROM
                     in_sphere = FROM
-                    }
-                }
-            modifier = {
-                factor = 0.7
-                NOT = { total_num_of_ports = 1 }
-                primary_culture = FROM
-                is_vassal = no
-            }
+				}
+			}
             modifier = {
                 factor = 0.1
-                OR = {
-                    vassal_of = AUS
-                    in_sphere = AUS
-                    in_sphere = BAV
-                    vassal_of = BAV
-                    in_sphere = HAN
-                    vassal_of = HAN
-                    vassal_of = FRA
-                    vassal_of = BOR
+				part_of_sphere = yes
+                NOT = {
+					in_sphere = FROM
                 }
             }
         }
@@ -1469,16 +1453,10 @@ country_event = {
         ai_chance = {
             factor = 0.5
             modifier = {
-                factor = 0.7
-                OR = {
-                    vassal_of = AUS
-                    in_sphere = AUS
-                    in_sphere = BAV
-                    vassal_of = BAV
-                    in_sphere = HAN
-                    vassal_of = HAN
-                    vassal_of = FRA
-                    vassal_of = BOR
+                factor = 1
+				part_of_sphere = yes
+                NOT = {
+					in_sphere = FROM
                 }
             }
         }
@@ -1500,16 +1478,21 @@ country_event = {
 #The Rhine is Lost - Prussia calls for Unity
 country_event = {
     id = 33039
-    title = "EVTNAME33039"
+    title = "Call for Unity!"
     desc = "EVTDESC33039"
     picture = "german_rhine"
-    major = yes
 
     fire_only_once = yes
 
     trigger = {
         tag = PRU
         has_country_flag = french_claimed_the_rhine
+		has_global_flag = bundestag_destroyed
+		OR = {
+			has_country_flag = had_liberal_revolution
+			has_country_flag = liberal_revolution_in_progress
+		}
+		war = no
         is_vassal = no
         NOT = { exists = NGF }
         NOT = { exists = GER }
@@ -1537,21 +1520,13 @@ country_event = {
                 has_global_flag = left_bank_french_victory
             }
         }
-        ai = yes
     }
 
     mean_time_to_happen = { days = 10 }
 
     option = {
-        name = "EVT33039OPTA"
-        NGF = { set_country_flag = formed_on_rhine_crisis }
-        any_owned = {
-            limit = {
-                is_core = GER
-                }
-            add_core = NGF
-            remove_core = THIS
-		}
+        name = "For Germany and for revenge! We stand together!"
+        set_global_flag = ngf_rhine_crisis
 		random_owned = {
 			limit = {
 				owner = {
@@ -1562,31 +1537,13 @@ country_event = {
 				political_reform = bankruptcy
 			}
 		}
-        change_tag = NGF
-        all_core = {
-            limit = { is_core = PRU }
-			remove_core = PRU
-			add_core = NGF
-		}
         any_country = {
             limit = {
                 exists = yes
                 is_greater_power = no
-				OR = {
-					primary_culture = north_german
-					primary_culture = south_german
-				}
+				primary_culture = north_german
 				NOT = {
-                    tag = AUS
-                    tag = AUB
-                    tag = KUK
-                    tag = DNB
-                    tag = UBD
-                    tag = LAT
-                    tag = EST
-                    tag = PRU
-                    tag = NGF
-                    tag = LUX
+                    tag = THIS
                     capital_scope = { NOT = { is_core = GER } }
                     is_vassal = yes
 				}
@@ -1615,15 +1572,65 @@ country_event = {
 		}
         ai_chance = { factor = 0.7 }
 	}
+	
+}
 
-	option = {
-        name = "EVT33039OPTB"
-        NGF = { set_country_flag = formed_on_rhine_crisis }
-        any_owned = {
-            limit = { is_core = GER }
-            add_core = NGF
-            remove_core = THIS
+#The Rhine is Lost - Bavaria presents the Trias Plan
+country_event = {
+    id = 800905
+    title = "Von der Pfordten presents the Trias Plan"
+    desc = "EVTDESC800905"
+    picture = "prussian_constitution"
+
+    fire_only_once = yes
+
+    trigger = {
+        tag = BAV
+        year = 1849
+		has_global_flag = left_bank_french_victory
+		has_global_flag = bundestag_destroyed
+		OR = {
+			has_country_flag = had_liberal_revolution
+			has_country_flag = liberal_revolution_in_progress
 		}
+		war = no
+        is_vassal = no
+        NOT = { exists = SGF }
+        NOT = { exists = GER }
+        NOT = { exists = GCF }
+        NOT = { year = 1890 }
+        NOT = { has_global_flag = 3hurrahs }
+        OR = {
+            575 = { owner = { NOT = { is_culture_group = germanic } } }
+            576 = { owner = { NOT = { is_culture_group = germanic } } }
+            577 = { owner = { NOT = { is_culture_group = germanic } } }
+            572 = { owner = { NOT = { is_culture_group = germanic } } }
+            PRU_578 = { owner = { NOT = { is_culture_group = germanic } } }
+            PRU_570 = { owner = { NOT = { is_culture_group = germanic } } }
+            BAD_586 = { owner = { NOT = { is_culture_group = germanic } } }
+            WUR_589 = { owner = { NOT = { is_culture_group = germanic } } }
+            HES_2560 = { owner = { NOT = { is_culture_group = germanic } } }
+            AND = {
+                RHI = {
+                    exists = yes
+                    OR = {
+                        vassal_of = FRA
+                        vassal_of = BOR
+                    }
+                }
+                has_global_flag = left_bank_french_victory
+            }
+        }
+    }
+
+    mean_time_to_happen = { days = 10 }
+
+    option = {
+        name = "Austro-Prussian tyranny ends here! We stand together!"
+		set_global_flag = sgf_rhine_crisis
+        BAV = { all_core = { add_core = SGF } }
+		WUR = { all_core = { add_core = SGF } }
+		BAD = { all_core = { add_core = SGF } }
 		random_owned = {
 			limit = {
 				owner = {
@@ -1634,16 +1641,11 @@ country_event = {
 				political_reform = bankruptcy
 			}
 		}
-        change_tag = NGF
-        all_core = {
-            limit = { is_core = PRU }
-			remove_core = PRU
-			add_core = NGF
-		}
+        change_tag = SGF
         any_country = {
             limit = {
                 ai = yes
-                primary_culture = north_german
+                primary_culture = south_german
                 is_substate = no
                 capital_scope = { is_core = GER }
                 OR = {
@@ -1651,41 +1653,26 @@ country_event = {
                     vassal_of = THIS
                 }
                 in_sphere = THIS
+				NOT = { tag = AUS tag = AUB tag = DNB }
             }
             annex_to = THIS
-        }
-        random_country = {
-            limit = {
-                ai = yes
-                primary_culture = south_german
-                is_substate = no
-                capital_scope = { is_core = GER }
-                is_vassal = no
-			}
-            change_tag = SGF
         }
         any_country = {
             limit = {
                 ai = yes
                 primary_culture = south_german
                 is_substate = no
-				NOT = { tag = SWI }
-				NOT = { tag = AUS }
-				NOT = { tag = KUK }
+				NOT = { tag = SWI tag = AUS tag = AUB tag = DNB }
                 capital_scope = { is_core = GER }
                 OR = {
                     is_vassal = no
                     vassal_of = THIS
                 }
             }
-            annex_to = SGF
-			all_core = { add_core = SGF }
+            country_event = 800908
         }
-		relation = { who = SGF value = 400 }
-		diplomatic_influence = { who = SGF value = 100 }
-		create_alliance = SGF
-		random_country = { limit = { exists = yes OR = { tag = AUS tag = KUK tag = AUB } } relation = { who = SGF value = 100 } diplomatic_influence = { who = SGF value = 50 } }
-        FRA_412 = { add_core = GER }
+		AUS = { diplomatic_influence = { who = SGF value = -200 } }
+		PRU = { diplomatic_influence = { who = SGF value = -200 } }
         any_pop = {
 			limit = { is_culture_group = germanic }
 			dominant_issue = {
@@ -1693,17 +1680,111 @@ country_event = {
 				value = jingoism
 			}
 		}
-        SGF = {
-            any_pop = {
-                limit = { is_culture_group = germanic }
-                dominant_issue = {
-                    factor = 0.1
-                    value = jingoism
-                }
-            }
-        }
-        ai_chance = { factor = 0.8 }
+        RHI = { all_core = { remove_core = BAV } }
     }
+}
+
+#The Rhine is Lost - South German states decide what to do
+country_event = {
+    id = 800908
+    title = "The Trias Plan"
+    desc = "EVTDESC800908"
+    picture = "prussian_constitution"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "EVT33038OPTA"
+        any_owned = { limit = { is_core = THIS } add_core = FROM }
+        FROM = { inherit = THIS }
+
+        ai_chance = {
+            factor = 1
+            modifier = {
+                factor = 10
+                OR = {
+                    vassal_of = FROM
+                    in_sphere = FROM
+				}
+			}
+        }
+    }
+
+    option = {
+        name = "EVT33038OPTB"
+        any_owned = { 
+			limit = { is_core = GER }
+            add_province_modifier = {
+                name = nationalist_agitation
+                duration = 3650
+			}
+		}
+		ai_chance = {
+            factor = 0.1
+        }
+    }
+
+    option = {
+        name = "EVT33038OPTC"
+        all_core = {
+            add_core = SGF
+        }
+        SGF = { inherit = THIS }
+        change_tag_no_core_switch = SGF
+
+        ai_chance = { factor = 0 }
+    }
+}
+
+#The Rhine is Lost - Confederation crumbles
+country_event = {
+    id = 800909
+    title = "The End of the German Confederation"
+    desc = "EVTDESC800909"
+    picture = "prussian_constitution"
+	major = yes
+
+    fire_only_once = yes
+	
+	mean_time_to_happen = { days = 10 }
+	
+	trigger = {
+		tag = AUS
+		year = 1849
+		has_global_flag = sgf_rhine_crisis
+		has_global_flag = ngf_rhine_crisis
+		NOT = { exists = GER }
+	}
+	
+
+    option = {
+        name = "The Confederation ends here..."
+        prestige = -10
+		SGF = { prestige = 10 }
+		PRU = { prestige = 10 }
+        ai_chance = {
+            factor = 1
+        }
+    }
+
+    option = {
+        name = "The Confederation will survive, by force!"
+        war = {
+			target = SGF
+			attacker_goal = { casus_belli = unification_humiliate_cb }
+			defender_goal = { casus_belli = unification_humiliate_cb }
+			call_ally = yes
+		}
+		war = {
+			target = PRU
+			attacker_goal = { casus_belli = unification_humiliate_cb }
+			defender_goal = { casus_belli = unification_humiliate_cb }
+			call_ally = yes
+		}
+		ai_chance = {
+            factor = 0
+        }
+	}
 }
 
 #Germany LR Normalization
@@ -2004,6 +2085,10 @@ country_event = {
                 months = 20
             }
         }
+		FRM = {
+			relation = { who = THIS value = 400 }
+			create_alliance = THIS 
+		}
         any_country = {
             limit = {
                 exists = yes
