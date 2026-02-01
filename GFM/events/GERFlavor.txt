@@ -66,8 +66,6 @@ province_event = {
         culture = danish
         NOT = {
             year = 1899
-            has_global_flag = GermanizeSchlewsigDanes
-            has_global_flag = NOGermanizeSchlewsigDanes
         }
     }
 
@@ -94,7 +92,6 @@ province_event = {
             militancy = 2
         }
         DEN = { country_event = 36206 }
-        set_global_flag = GermanizeSchlewsigDanes
     }
 
     option = {
@@ -106,7 +103,6 @@ province_event = {
             }
         }
         relation = { who = DEN value = 100 }
-        set_global_flag = NOGermanizeSchlewsigDanes
     }
 }
 
@@ -357,6 +353,7 @@ country_event = {
 
     option = {
         name = "EVT33006OPTA"
+		533 = { add_core = THIS }
         #If Zanzibar exists and is a German vassal, Germany will release it
         random_owned = {
             limit = {
@@ -3567,4 +3564,57 @@ country_event = {
 		573 = { secede_province = THIS add_core = THIS remove_core = RHI }
 		ai_chance = { factor = 1 }
 	}
-}	
+}
+
+country_event = {
+	id = 800916
+	title = "Keeping the Lion at Bay"
+	desc = "EVTDESC800916"
+	picture = "Scandinavia"
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = { 
+		months = 24
+		modifier = {
+            factor = 0.01 #increase likelihood to happen
+            SCA = { rank = 8 }
+        }
+	}
+	
+	trigger = {
+		OR = { tag = GCF tag = GER }
+		is_our_vassal = SCA
+		SCA = { rank = 16 NOT = { primary_culture = danish } }
+		DEN = { all_core = { OR = { owned_by = THIS owned_by = SCA } } }
+	}
+	
+	option = {
+		name = "The loss of Denmark will weaken Scandinavia. §RGain 2 infamy§W"
+		badboy = 2
+		SCA = { any_owned = { limit = { is_core = DEN } secede_province = THIS } }
+		any_owned = { limit = { is_core = DEN NOT = { is_core = THIS } } secede_province = DEN }
+		create_vassal = DEN
+		create_alliance = DEN
+		diplomatic_influence = { who = DEN value = 400 }
+		ai_chance = { factor = 1 modifier = { factor = 0 badboy = 0.92 } }
+	}
+	
+	option = {
+		name = "Award Scania to the Danes on top of that. §RGain 2.5 infamy§W"
+		badboy = 2.5
+		334 = { add_core = DEN }
+		335 = { add_core = DEN }
+		SCA = { any_owned = { limit = { is_core = DEN } secede_province = THIS } }
+		any_owned = { limit = { is_core = DEN NOT = { is_core = THIS } } secede_province = DEN }
+		create_vassal = DEN
+		create_alliance = DEN
+		diplomatic_influence = { who = DEN value = 400 }
+		ai_chance = { factor = 1 modifier = { factor = 0 badboy = 0.9 } }
+	}
+	option = {
+		name = "We have nothing to fear. We will keep them in check."
+		
+		ai_chance = { factor = 1 }
+	}
+}
