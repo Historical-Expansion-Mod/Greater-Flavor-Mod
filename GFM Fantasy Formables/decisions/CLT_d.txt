@@ -8,61 +8,10 @@ political_decisions = {
                 IRE = { in_sphere = THIS }
                 SCO = { in_sphere = THIS }
                 WHA = { in_sphere = THIS }
+                IRE = { vassal_of = THIS }
+				SCO = { vassal_of = THIS }
+				WHA = { vassal_of = THIS }
             }
-			OR = {
-				ai = no
-				AND = {
-					SCO = {
-						all_core = {
-							OR = {
-								owned_by = THIS
-								owner = {
-									in_sphere = THIS
-									war = no
-								}
-								owner = {
-									vassal_of = THIS
-									war = no
-								}
-							}
-						}
-					}
-					IRE = {
-						all_core = {
-							OR = {
-								owned_by = THIS
-								owner = {
-									in_sphere = THIS
-									war = no
-								}
-								owner = {
-									vassal_of = THIS
-									war = no
-								}
-							}
-						}
-					}
-					WHA = {
-						all_core = {
-							OR = {
-								owned_by = THIS
-								owner = {
-									in_sphere = THIS
-									war = no
-								}
-								owner = {
-									vassal_of = THIS
-									war = no
-								}
-							}
-						}
-					}
-					war = no
-					prestige = 50
-					is_greater_power = yes
-					nationalism_n_imperialism = 1
-				}
-			}
             NOT = { tag = ENG tag = ENL }
             NOT = { exists = CLT }
             has_global_flag = fantasy_countries_enabled
@@ -129,40 +78,48 @@ political_decisions = {
             any_country = {
                 limit = {
                     OR = {
+                        tag = IRE
                         tag = SCO
                         tag = WHA
 						tag = IOM
 						tag = CRN
                     }
                     ai = yes
-                    in_sphere = THIS
+                    OR = {
+                        in_sphere = THIS
+                        vassal_of = THIS
+                    }
                 }
-                annex_to = IRE
+                annex_to = THIS
             }
-            IRE = { change_tag = CLT }
+            any_owned = {
+              limit = {
+                is_core = THIS
+              }
+              remove_core = CLT
+            }
+            any_owned = {
+              limit = {
+                is_core = CLT
+              }
+              secede_province = CLT
+            }
 			CLT = { set_country_flag = i_am_clt }
-
             create_alliance = CLT
             diplomatic_influence = {
                 who = CLT
                 value = 400
             }
             any_country = {
-                limit = {
-                    OR = {
-                        in_sphere = USA
-                        vassal_of = USA
-                    }
-                    any_owned_province = { is_core = CLT }
-                    war = no
+              limit = {
+                OR = {
+                  in_sphere = THIS
+                  vassal_of = THIS
                 }
-                country_event = 123615
-            }
-            THIS = {
-                any_owned = {
-                    limit = { is_core = CLT }
-                    secede_province = CLT
-                }
+                any_owned_province = { is_core = CLT }
+                war = no
+              }
+              country_event = 123615
             }
             create_vassal = CLT
 			random_owned = {
@@ -194,54 +151,48 @@ political_decisions = {
 
     Claim_GLC = {
         potential = {
-            tag = CLT
-			OR = {
-				ai = no
-				AND = {
-					war = no
-					prestige = 75
-					is_vassal = no
-					NOT = {
-						in_sphere = SPA
-					}
-					is_disarmed = no
-					war_policy = jingoism
-					owns = 273
-					owns = 299
-					owns = 263
-					owns = 304
-					owns = 269
-					owns = 420
-				}
+            OR = {
+				tag = CLT
+				CLT = { vassal_of = THIS }
 			}
-            NOT = { has_country_flag = GLC_claimed }
+            NOT = { has_global_flag = GLC_claimed }
+            NOT = {
+                tag = SPA
+                tag = SPC
+                tag = IBR
+                tag = BOE
+                in_sphere = SPA
+                in_sphere = SPC
+                in_sphere = IBR
+                in_sphere = BOE
+                vassal_of = SPA
+                vassal_of = SPC
+                vassal_of = IBR
+                vassal_of = BOE
+            }
         }
         allow = {
             war = no
             prestige = 75
             is_vassal = no
-            NOT = {
-				in_sphere = SPA
-            }
             is_disarmed = no
-            war_policy = jingoism
-            owns = 273
-            owns = 299
-            owns = 263
-            owns = 304
-            owns = 269
-            owns = 420
+            OR = {
+                war_policy = jingoism
+                war_policy = pro_military
+            }
+            476  = { OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } } }
+            474  = { OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } } }
         }
         effect = {
             badboy = 3
             prestige = 10
-            set_country_flag = GLC_claimed
-            GLC = {
+            set_global_flag = GLC_claimed
+            SPA_474 = {
                 all_core = {
                     add_core = CLT
                 }
             }
-            add_accepted_culture = galician
+            CLT = { add_accepted_culture = galician }
         }
         ai_will_do = {
             factor = 1
@@ -256,34 +207,19 @@ political_decisions = {
 				tag = CRN
 				tag = IOM
             }
-			OR = {
-				ai = no
-				AND = {
-					war = no
-					prestige = 50
-					is_vassal = no
-					is_disarmed = no
-					NOT = {
-					in_sphere = ENG
-					}
-					state_n_government = 1
-					is_greater_power = yes
-					OR = {
-						war_policy = jingoism
-						war_policy = pro_military
-					}
-				}
-			}
             NOT = { has_global_flag = Celtic_Union_Formed }
+            NOT = {
+                in_sphere = ENG
+                in_sphere = ENL
+                vassal_of = ENG
+                vassal_of = ENL
+            }
         }
         allow = {
             war = no
             prestige = 50
             is_vassal = no
             is_disarmed = no
-            NOT = {
-            in_sphere = ENG
-            }
             state_n_government = 1
             is_greater_power = yes
             OR = {
@@ -351,52 +287,48 @@ political_decisions = {
     }
     Claim_BRT = {
         potential = {
-            tag = CLT
-			OR = {
-				ai = no
-				AND = {
-					war = no
-					prestige = 50
-					is_vassal = no
-					NOT = {
-						in_sphere = FRA
-					}
-					is_disarmed = no
-					war_policy = jingoism
-					owns = 273
-					owns = 299
-					owns = 263
-					owns = 304
-					owns = 269
-				}
+            OR = {
+				tag = CLT
+				CLT = { vassal_of = THIS }
 			}
-            NOT = { has_country_flag = BRT_claimed }
+            NOT = { has_global_flag = BRT_claimed }
+            NOT = {
+                tag = FRA
+                tag = BOR
+                tag = BOE
+                in_sphere = FRA
+                in_sphere = BOR
+                in_sphere = BOE
+                vassal_of = FRA
+                vassal_of = BOR
+                vassal_of = BOE
+            }
         }
         allow = {
             war = no
             prestige = 50
             is_vassal = no
-            NOT = {
-				in_sphere = FRA
-            }
             is_disarmed = no
-            war_policy = jingoism
-            owns = 273
-            owns = 299
-            owns = 263
-            owns = 304
-            owns = 269
+            OR = {
+                war_policy = jingoism
+                war_policy = pro_military
+            }
+            420  = { OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } } }
+            421  = { OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } } }
+            422  = { OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } } }
+            423  = { OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } } }
+            424  = { OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } } }
         }
         effect = {
             badboy = 3
             prestige = 10
-            set_country_flag = BRT_claimed
-            BRT = {
+            set_global_flag = BRT_claimed
+            FRA_420 = {
                 all_core = {
                     add_core = CLT
                 }
             }
-            add_accepted_culture = breton
+            CLT = { add_accepted_culture = breton }
         }
         ai_will_do = {
             factor = 1
