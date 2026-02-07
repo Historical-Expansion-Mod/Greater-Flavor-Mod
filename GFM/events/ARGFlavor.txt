@@ -2048,7 +2048,7 @@ country_event = {
 
 country_event = {
 	id = 600107
-	title = "The End of the Northern Alliance"
+	title = "Taboada's Last Dance"
 	desc = "EVTDESC600107"
 	picture = "unitarismo_contra_federalismo"
 	
@@ -2066,7 +2066,11 @@ country_event = {
 	
 	option = {
 		name = "That is a relief..."
-		any_owned = { remove_province_modifier = taboada_alliance }
+		any_owned = { 
+			limit = { has_province_modifier = taboada_alliance } 
+			ideology = { value = conservative factor = 0.1 }
+			remove_province_modifier = taboada_alliance
+		}
 	}
 }
 
@@ -4291,6 +4295,7 @@ country_event = {
 		is_our_vassal = ENT
 		year = 1870
 		month = 4
+		NOT = { has_country_flag = rivadavian_unitarians }
 	}
 	
 	option = {
@@ -4714,8 +4719,9 @@ country_event = {
 	}
 	
 	option = {
-		name = "Peace! At last!"
+		name = "Rosism will fade, but Federalism will thrive!"
 		plurality = 5
+		nationalvalue = nv_equality
 		set_country_flag = evolved_federalism
 		any_country = {
 			limit = {
@@ -4733,7 +4739,43 @@ country_event = {
 			all_core = { add_core = THIS }
 			annex_to = THIS
 		}
-		ai_chance = { factor = 1 }
+		ai_chance = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				government = presidential_dictatorship
+			}
+		}
+	}
+	option = {
+		name = "Glory to the Confederation! Glory to Rosas!"
+		plurality = -5
+		nationalvalue = nv_order
+		set_country_flag = evolved_federalism
+		any_country = {
+			limit = {
+				OR = {
+					tag = ENT
+					tag = CRT
+					tag = URU
+					tag = PRG
+					tag = SBA
+					tag = BOL
+				}
+				vassal_of = THIS
+				ai = yes
+			}
+			all_core = { add_core = THIS }
+			annex_to = THIS
+		}
+		
+		ai_chance = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { government = presidential_dictatorship }
+			}
+		}
 	}
 }
 
@@ -5330,15 +5372,15 @@ country_event = {
 	id = 600183
 	title = "The Return of Exiles"
 	desc = "EVTDESC600183"
-	picture = "rosistas"
+	picture = "rivadavia"
 	
 	fire_only_once = yes
 	
-	mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 36 }
 	
 	trigger = {
 		tag = ARG
-		OR = { has_country_flag = corrientes_led_argentina has_country_flag = rivadavian_unitarians }
+		has_country_flag = rivadavian_unitarians
 	}
 	
 	option = {
@@ -5370,13 +5412,13 @@ country_event = {
 	
 	trigger = {
 		tag = ARG
-		OR = { has_country_flag = corrientes_led_argentina has_country_flag = rivadavian_unitarians }
+		has_country_flag = rivadavian_unitarians
 		NOT = { has_country_flag = interior_subdued }
 		any_owned_province = {
 			OR = {
 				region = ARG_2368
 				region = ARG_2374
-				province_id = 2376
+				province_id = 2378
 			}
 			NOT = { has_province_modifier = the_hostile_interior }
 		}
@@ -5395,8 +5437,92 @@ country_event = {
 			}
 			add_province_modifier = { name = the_hostile_interior duration = -1 }
 			any_pop = {
-				ideology = { value = conservative factor = 0.1 }
+				ideology = { value = reactionary factor = 0.15 }
+				consciousness = 3
 			}
+		}
+	}
+}
+
+country_event = {
+	id = 600185
+	title = "Mesopotamian Troubles"
+	desc = "EVTDESC600185"
+	picture = "rosistas"
+	
+	mean_time_to_happen = { months = 12 }
+	
+	trigger = {
+		tag = ARG
+		has_country_flag = rivadavian_unitarians
+		has_country_flag = interior_rebels 
+	}
+	
+	option = {
+		name = "The Federalists will never give up, won't they?"
+		has_country_flag = mesopotamian_troubles
+		any_owned = {
+			limit = { region = ARG_2360 }
+			add_province_modifier = { name = unitarian_federal_clashes duration = -1 }
+			any_pop = {
+				ideology = { value = reactionary factor = 0.15 }
+				consciousness = 4
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 600186
+	title = "A Party Divided"
+	desc = "EVTDESC600186"
+	picture = "rivadavia"
+	
+	mean_time_to_happen = { months = 12 }
+	
+	trigger = {
+		tag = ARG
+		government = presidential_dictatorship
+		OR = { has_country_flag = corrientes_led_argentina has_country_flag = mesopotamian_troubles }
+	}
+	
+	option = {
+		name = "It is just a temporary measure, right?"
+		any_owned = {
+			limit = { NOT = { has_province_modifier = unitarian_federal_clashes has_country_modifier = the_hostile_interior } }
+			any_pop = {
+				ideology = { value = conservative factor = 0.10 }
+				consciousness = 2
+			}
+		}
+	}
+}
+
+country_event = {
+	id = 600187
+	title = "The Future of the Unitarian Party"
+	desc = "EVTDESC600187"
+	picture = "mitre_ad"
+	
+	mean_time_to_happen = { months = 1 }
+	
+	trigger = {
+		tag = ARG
+		war = no
+		has_country_flag = rivadavian_unitarians
+		year = 1856
+	}
+	
+	option = {
+		name = "We stand on the should of misguided giants..."
+		random_owned = {
+			limit = { owner = { ruling_party_ideology = conservative } }
+			owner = { ruling_party_ideology = liberal }
+		}
+		any_pop = {
+			ideology = { value = conservative factor = -0.05 }
+			ideology = { value = liberal factor = 0.15 }
+			consciousness = 2
 		}
 	}
 }
