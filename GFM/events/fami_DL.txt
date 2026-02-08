@@ -454,3 +454,271 @@ country_event = {
 		}
 	}
 }
+country_event = {
+	id = 6020304
+	title = "EVTNAME6020304"
+	desc = "EVTDESC6020304"
+	is_triggered_only = yes
+	picture = brz_cisplatine_war
+
+	option = { 
+		name = "EVT6020304OPTA"
+		any_country = {
+			limit = { NOT = { owns = 2344 } primary_culture = platinean }
+			country_event = 6020305
+			FROM = { country_event = 6020306 }
+		}
+	}
+}
+country_event = {
+	id = 6020305
+	title = "EVTNAME6020305"
+	desc = "EVTDESC6020305"
+	is_triggered_only = yes
+	picture = brz_cisplatine_war
+
+	option = {
+		name = "EVT6020305OPTA"		
+		relation = { who = FROM value = 200 }
+		create_alliance = FROM
+		ai_chance = { factor = 90 }
+		modifier = { 
+			factor = 0
+			relation = { who = FROM value = -200 } 
+		}
+	}
+	option = {
+		name = "EVT6020305OPTB"
+	}
+}
+country_event = {
+	id = 6020306
+	title = "EVTNAME6020306"
+	desc = "EVTDESC6020306"
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT6020306OPTA"
+		war = {
+			target = FROM
+			attacker_goal = {
+				casus_belli = scripted_war_big
+			}
+			defender_goal = {
+				casus_belli = scripted_war_big
+			}
+			call_ally = no
+		}
+		FROM = {
+			# Audax Validator "." Ignore_NEXT
+			war = { attacker_goal = { casus_belli = call_allies_cb } call_ally = yes }
+		}
+	} 
+}
+
+country_event = {
+	id = 6020307
+	title = "6020307 DL CISPLATINE TREATY SETUP"
+	desc = ""
+
+	trigger = {
+		has_global_flag = cisplatine_war
+		tag = CLN
+		OR = {
+			3584 = { owner = { has_country_flag = lost_the_war } }
+			2344 = { owner = { has_country_flag = lost_the_war } }
+		}
+	}
+	immediate = {
+		#Determines who won
+		any_country = { 
+			limit = { 
+				OR = { 
+					owns = 3584 owns = 2344 
+				} 
+				NOT = { 
+					has_country_flag = lost_the_war 
+				} 
+			}
+			set_country_flag = viewer #I'd rename this to cisplatine_winner but if I do the DL just won't work, don't ask me why but country flag names can fuck up DL
+		}
+		any_country = { 
+			limit = { 
+				OR = { 
+					owns = 3584 owns = 2344 
+				} 
+				has_country_flag = lost_the_war 
+			}
+			set_country_flag = cisplatine_loser
+			clr_country_flag = lost_the_war
+		}
+        #Winner name DL
+        any_country = { limit = { has_country_flag = viewer } set_country_flag = dynamic_loc }
+        slot_2 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+        CLN = { country_event = 2 }
+
+        #Winner flag DL
+        any_country = { limit = { has_country_flag = viewer } set_country_flag = dynamic_loc }
+        slot_1 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+        CLN = { country_event = 4 }
+
+		#Loser adjective DL
+		any_country = { limit = { has_country_flag = cisplatine_loser } set_country_flag = dynamic_loc  }
+		slot_11 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+		CLN = { country_event = 6 }
+
+		#Target name/flag DL
+		random_owned = {
+			limit = { 2344 = { owner = { has_country_flag = cisplatine_loser NOT = { owns = 2463 } } } }
+			owner = {
+				URU = { government = colonial_company_2 set_country_flag = dynamic_loc }
+        		slot_4 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+        		CLN = { country_event = 2 }
+			}
+		}
+		random_owned = {
+			limit = { 2344 = { owner = { has_country_flag = cisplatine_loser NOT = { owns = 2463 } } } }
+			owner = {
+				URU = { government = colonial_company_2 set_country_flag = dynamic_loc set_country_flag = ctarget }
+        		slot_3 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+        		CLN = { country_event = 4 }
+			}
+		}
+		#Same as above but in case of Brazillian defeat
+		random_owned = {
+			limit = { 2463 = { owner = { has_country_flag = cisplatine_loser NOT = { owns = 2344 } } } }
+			owner = {
+				RGS = { government = republic set_country_flag = dynamic_loc set_country_flag = ctarget }
+        		slot_4 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+        		CLN = { country_event = 2 }
+			}
+		}
+		random_owned = {
+			limit = { 2463 = { owner = { has_country_flag = cisplatine_loser NOT = { owns = 2344 } } } }
+			owner = {
+				RGS = { government = republic set_country_flag = dynamic_loc }
+        		slot_3 = { add_province_modifier = { name = dynamic_loc duration = -1 } }
+        		CLN = { country_event = 4 }
+			}
+		}
+		##BRZ VICTORY
+		#Loc if ARG/ARC/LPL owns URU
+		random_owned = {
+			limit = { 2344 = { owner = { has_country_flag = cisplatine_loser OR = { tag = ARG tag = ARC tag = LPL } } } }
+			owner = {
+				slot_10 = { secede_province = THIS state_scope = { change_region_name = "has decisively defeated the" } secede_province = QQQ }
+				slot_13 = { secede_province = THIS state_scope = { change_region_name = "government for violating the treaty of Montevideo, with Brazilian troops reocuppying the Cisplatina, the long lost province may begin the process of integrating and assimilating" } secede_province = QQQ }
+				slot_15 = { secede_province = THIS state_scope = { change_region_name = "into our nation." } secede_province = QQQ }
+				#Tooltip
+				slot_14 = { secede_province = THIS state_scope = { change_region_name = "Will create a puppet in" } secede_province = QQQ }
+			} 
+		}
+		#Loc if URU is independent
+		random_owned = {
+			limit = { 2344 = { owner = { tag = URU has_country_flag = cisplatine_loser } } }
+			owner = {
+				slot_10 = { secede_province = THIS state_scope = { change_region_name = "has successfully overran the" } secede_province = QQQ }
+				slot_13 = { secede_province = THIS state_scope = { change_region_name = "territory, overturning the treaty of Montevideo and bringing it back under Brazillian control once more, a autonomous administration is to be established in the province in order to faciliate the reintegration and assimilation of" } secede_province = QQQ }
+				slot_15 = { secede_province = THIS state_scope = { change_region_name = "into our nation." } secede_province = QQQ }
+				#Tooltip
+				slot_14 = { secede_province = THIS state_scope = { change_region_name = "Will create a puppet in" } secede_province = QQQ }
+			} 
+		}
+		#Generic fallback loc if someone silly annexes Uruguay
+		random_owned = {
+			limit = { 2344 = { owner = { has_country_flag = cisplatine_loser NOT = { OR =  { tag = ARG tag = ARC tag = LPL tag = URU } } } } }
+			owner = {
+				slot_10 = { secede_province = THIS state_scope = { change_region_name = "has defeated the" } secede_province = QQQ }
+				slot_13 = { secede_province = THIS state_scope = { change_region_name = "occupiers, bringing the region back under Brazillian control, a autonomous administration is to be established in the province in order to faciliate the reintegration and assimilation of" } secede_province = QQQ }
+				slot_15 = { secede_province = THIS state_scope = { change_region_name = "into our nation." } secede_province = QQQ }
+				#Tooltip
+				slot_14 = { secede_province = THIS state_scope = { change_region_name = "Will create a puppet in" } secede_province = QQQ }
+			} 
+		}
+		##BRZ DEFEAT
+		random_owned = {
+			limit = { 2463 = { owner = { has_country_flag = cisplatine_loser NOT = { owns = 2344 } } } }
+			owner = {
+				slot_10 = { secede_province = THIS state_scope = { change_region_name = "has managed to push back the" } secede_province = QQQ }
+				slot_13 = { secede_province = THIS state_scope = { change_region_name = "invaders from our lands, their armies fleeing back north. A buffer puppet state is to be established in" } secede_province = QQQ }
+				slot_15 = { secede_province = THIS state_scope = { change_region_name = "to deter possible future aggression." } secede_province = QQQ }
+				#Tooltip
+				slot_14 = { secede_province = THIS state_scope = { change_region_name = "Will create a puppet in" } secede_province = QQQ }
+			} 
+		}
+	}
+	option = {
+		name = " "
+		any_country = {
+			limit = { has_country_flag = viewer }
+			country_event = 6020308
+		}
+	}
+}
+country_event = {
+	id = 6020308
+	title = "Victory In The Second Cisplatine War"
+	desc = ""
+	is_triggered_only = yes
+	picture = brz_cisplatine_war
+
+	immediate = {
+		blue = {}
+		slot_2 = {}
+		slot_1 = {}
+		black = {}
+		slot_10 = {}
+		slot_11 = {}
+		slot_13 = {}
+		blue = {}
+		slot_4 = {}
+		slot_3 = {}
+		black = {}
+		slot_15 = {}
+	}
+
+	option = {
+		name = "And so it ends!"
+		green = {}
+		slot_1 = {}
+		slot_14 = {}
+		slot_3 = {}
+		set_country_flag = hidden_tooltip
+		random_owned = { limit = { owner = { has_country_flag = hidden_tooltip } }
+			owner = {
+			any_country = {
+				limit = { has_country_flag = ctarget }
+				all_core = {
+					secede_province = THIS
+				}
+			}
+			random_owned = { 
+				limit = { URU = { has_country_flag = ctarget } }
+				owner = {
+					any_owned = { 
+						limit = { is_core = URU NOT = { is_core = THIS } }
+						secede_province = URU
+						add_province_modifier = { name = nationalist_agitation duration = 1826 }
+						2447 = { owner = { create_vassal = URU } } 
+					}
+
+				} 
+			}
+			random_owned = { 
+				limit = { RGS = { has_country_flag = ctarget } }
+				owner = {
+					any_owned = { 
+						limit = { is_core = RGS NOT = { is_core = THIS } }
+						secede_province = RGS
+						add_province_modifier = { name = nationalist_agitation duration = 1826 }
+						2344 = { owner = { create_vassal = RGS } } 
+					}
+				} 
+			}
+		}
+		}
+		clr_country_flag = hidden_tooltip
+		clr_country_flag = viewer
+		set_country_flag = cisplatine_win
+	}
+}
