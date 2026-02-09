@@ -15,7 +15,7 @@ political_decisions = {
 			}
             NOT = { has_country_flag = kenesary_rebellion }
 			NOT = { has_country_flag = kazakhstan_formed_manually }
-			NOT = { AND = { tag = KAZ is_core = 1186 is_core = 1182 } }
+			NOT = { AND = { tag = KAZ 1186 = { is_core = THIS } 1182 = { is_core = THIS } } }
         }
         allow = {
 			prestige = 15
@@ -217,22 +217,141 @@ political_decisions = {
             factor = 1
         }
     }
+	
+###KOKANDI DECISIONS
 
-###BUKHARAN DECISIONS
-
-	bukharan_ambitions = {
-        picture = kht_attack
+	kokand_invade_darvaz = {
+        picture = kokand
         potential = {
-			tag = BUK
+			tag = KOK
 			1201 = { owned_by = KOK }
 			1189 = { owned_by = KOK }
-			NOT = { has_global_flag = bukkharan_ambitions }
+			NOT = { has_global_flag = invaded_darvaz }
+			NOT = { year = 1840 }
+			NOT = { 3519 = { is_core = KOK } }
+			
         }
 
         allow = {
 			OR = {
-				AND = { ai = yes year = 1841 month = 6 }
-				AND = { ai = no OR = { money = 5000 prestige = 10 relation = { who = KOK value = -150 } } }
+				AND = { ai = yes year = 1834 month = 6 }
+				AND = { ai = no OR = { money = 10000 prestige = 10 relation = { who = KOK value = -150 } } }
+			}
+			war = no
+		}
+
+        effect = {
+			set_global_flag = invaded_darvaz
+			3518 = { add_core = KOK }
+			3519 = { add_core = KOK }
+			3520 = { add_core = KOK }
+			3518 = { secede_province = KOK secede_province = KUN }
+			war = {
+				target = DRV
+				attacker_goal = { casus_belli = make_puppet_no_add_wargoal_2 }
+				attacker_goal = { casus_belli = acquire_core_state state_province_id = 3520 country = DRV }
+				defender_goal = { casus_belli = status_quo }
+				call_ally = no
+			}
+			war = {
+				target = KUN
+				attacker_goal = { casus_belli = acquire_core_state state_province_id = 3519 }
+				defender_goal = { casus_belli = humiliate_no_infamy }
+				call_ally = no
+			}
+        }
+
+        ai_will_do = {
+            factor = 1
+            modifier = {
+                factor = 0
+                NOT = { year = 1835 }
+            }
+		}
+    }
+	
+	tame_dalvarzin = {
+        picture = kokand
+        potential = {
+			1201 = { owned_by = THIS }
+			4195 = { owned_by = THIS }
+			NOT = { has_global_flag = tamed_dalvarzin }
+        }
+
+        allow = {
+			1201 = { owned_by = THIS }
+			4195 = { owned_by = THIS }
+			OR = { ai = yes money = 2000 }
+			war = no
+		}
+
+        effect = {
+			set_global_flag = tamed_dalvarzin
+			prestige = 2
+			treasury = -1500
+			1201 = { life_rating = 2 }
+			4195 = { life_rating = 3 }
+        }
+
+        ai_will_do = {
+            factor = 1
+		}
+    }
+	
+	kokand_invade_darvaz2 = {
+        picture = kokand
+        potential = {
+			tag = KOK
+			1201 = { owned_by = KOK }
+			has_global_flag = invaded_darvaz
+			has_global_flag = malla_khan
+			NOT = { has_global_flag = invaded_karategin }
+			NOT = { 3520 = { is_core = KOK } }
+        }
+
+        allow = {
+			OR = {
+				AND = { ai = yes year = 1859 month = 6 }
+				AND = { ai = no OR = { money = 10000 prestige = 10 relation = { who = KOK value = -150 } } }
+			}
+			war = no
+		}
+
+        effect = {
+			set_global_flag = invaded_karategin
+			prestige = 5
+			3520 = { add_core = KOK secede_province = THIS }
+			relation = {
+				who = BUK
+				value = -25
+			}
+        }
+
+        ai_will_do = {
+            factor = 1
+            modifier = {
+                factor = 0
+                NOT = { year = 1859 }
+            }
+		}
+    }
+
+###BUKHARAN DECISIONS
+
+	bukharan_ambitions = {
+        picture = nasrullah
+        potential = {
+			tag = BUK
+			1201 = { owned_by = KOK }
+			NOT = { has_global_flag = bukkharan_ambitions }
+        }
+
+        allow = {
+			1186 = { owned_by = KOK }
+			month = 6 
+			OR = {
+				ai = yes
+				AND = { money = 5000 prestige = 10 relation = { who = KOK value = -150 } }
 			}
 			war = no
 		}
@@ -240,10 +359,11 @@ political_decisions = {
         effect = {
 			set_global_flag = bukkharan_ambitions
 			1201 = { add_core = BUK }
+			4195 = { add_core = BUK }
 			war = {
 				target = KOK
-				attacker_goal = { casus_belli = acquire_all_cores }
-				defender_goal = { casus_belli = humiliate_no_infamy }
+				attacker_goal = { casus_belli = make_puppet_no_add_wargoal }
+				defender_goal = { casus_belli = acquire_core_state state_province_id = 4129 }
 				call_ally = no
 			}
 			random_owned = {
@@ -257,6 +377,38 @@ political_decisions = {
 				}
 			}
 			random_owned = { limit = { owner = { KAZ = { is_vassal = no } } } KAZ = { country_event = { id = 52015 days = 60 } } }
+        }
+
+        ai_will_do = {
+            factor = 1
+            modifier = {
+                factor = 0
+                NOT = { year = 1842 }
+            }
+		}
+    }
+	
+	bukhara_kills_madali = {
+        picture = nasrullah
+        potential = {
+			tag = BUK
+			OR = { KOK = { vassal_of = THIS } war_with = KOK }
+			NOT = { has_global_flag = madali_dead }
+        }
+
+        allow = {
+			OR = { KOK = { vassal_of = THIS } 1202 = { controlled_by = THIS } }
+		}
+
+        effect = {
+			set_global_flag = madali_dead
+			prestige = 10
+			end_war = KOK
+			1201 = { secede_province = THIS }
+			4129 = { secede_province = THIS } #MAKE URATEPPE BUKHARA'S VASSAL
+			4195 = { secede_province = THIS } #MAKE URATEPPE BUKHARA'S VASSAL
+			create_vassal = KOK
+			KOK = { country_event = 52085 }
         }
 
         ai_will_do = { factor = 1 }
@@ -485,7 +637,7 @@ political_decisions = {
         }
 
         allow = {
-			prestige = 10
+			OR = { ai = yes prestige = 10 }
 			war = no
 			is_vassal = no
 			KSJ = { NOT = { vassal_of = KAZ } }
@@ -827,7 +979,7 @@ political_decisions = {
         effect = {
 			treasury = -10000
             prestige = 5
-			1208 = { secede_province = THIS fort = 1 life_rating = 5 }
+			1208 = { secede_province = THIS fort = 1 life_rating = 10 }
 		}
         ai_will_do = {
             factor = 1
@@ -841,7 +993,7 @@ political_decisions = {
 			1210 = { NOT = { produces = gems } }
         }
         allow = {
-			money = 30000
+			OR = { ai = yes money = 30000 }
             war = no
             is_vassal = no
 			OR = {
@@ -860,6 +1012,87 @@ political_decisions = {
 		}
         ai_will_do = {
             factor = 1
+        }
+    }
+	
+	rebuild_kulob = {
+        picture = nasrullah
+        potential = {
+			owns = 3519
+			has_global_flag = kulab_destroyed
+        }
+
+        allow = {
+			war = no
+			OR = { year = 1865 admin_reform = yes_admin_reform civilized = yes }
+			OR = { ai = yes money = 11000 }
+		}
+
+        effect = {
+			clr_global_flag = kulab_destroyed
+			prestige = 5
+			treasury = -10000
+			3519 = {
+				change_province_name = "Kulab"
+				life_rating = 3
+			}
+        }
+
+        ai_will_do = { factor = 1 }
+    }
+	
+	rebuild_kulob = {
+        picture = nasrullah
+        potential = {
+			owns = 3519
+			has_global_flag = kulab_destroyed
+        }
+
+        allow = {
+			war = no
+			OR = { year = 1865 admin_reform = yes_admin_reform civilized = yes }
+			OR = { ai = yes money = 11000 }
+		}
+
+        effect = {
+			clr_global_flag = kulab_destroyed
+			prestige = 5
+			treasury = -10000
+			3519 = {
+				change_province_name = "Kulab"
+				life_rating = 3
+			}
+        }
+
+        ai_will_do = { factor = 1 }
+    }
+
+###MISC DECISIONS
+
+	sart_language_schooling = {
+        picture = embrace_minority
+        potential = {
+            has_country_flag = sart_empire
+            OR = { civilized = yes education_reform = yes_education_reform }
+            NOT = { has_country_flag = enacted_sart_schooling }
+        }
+
+        allow = {
+			nationalism_n_imperialism = 1
+            invention = biased_multiculturalism
+            invention = social_darwinism
+            war = no
+			citizenship_policy = residency
+            NOT = { school_reforms = no_schools }
+        }
+
+        effect = {
+            set_country_flag = enacted_sart_schooling
+            remove_accepted_culture = arpitan
+            remove_accepted_culture = breton
+            remove_accepted_culture = wallonian
+            remove_accepted_culture = occitan
+			set_global_flag = pain_occitan
         }
     }
 

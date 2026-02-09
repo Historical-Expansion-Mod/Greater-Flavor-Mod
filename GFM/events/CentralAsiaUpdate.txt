@@ -1,4 +1,4 @@
-### AT 52075
+### AT 52095
 ### PROVINCE CLEANUP
 
 country_event = {
@@ -187,17 +187,42 @@ country_event = {
     trigger = {
         tag = KYR
 		war = no
-		government = prov_gov_conservative
+		OR = { government = prov_gov_conservative government = prov_gov_liberal }
 		ai = no
     }
 	
     option = {
         name = "Our independence is secured!"
 		prestige = 5
-        government = absolute_monarchy
+		random_owned = {
+			limit = { owner = { government = prov_gov_liberal KOK = { exists = no } } }
+			owner = { 
+				government = absolute_monarchy 
+				change_tag = KOK 
+				KOK = {
+					all_core = {
+						limit = { owned_by = RUS }
+						secede_province = THIS
+					}
+					capital = 1202
+					primary_culture = kirgiz
+					add_accepted_culture = sart
+					add_accepted_culture = uzbek
+					add_accepted_culture = tajik
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { government = prov_gov_liberal KOK = { exists = yes } } }
+			owner = { government = absolute_monarchy }
+		}
+		random_owned = {
+			limit = { owner = { government = prov_gov_conservative } }
+			owner = { government = absolute_monarchy }
+		}
 		ai_chance = { factor = 1 }
     }
-	
+
 	mean_time_to_happen = { days = 2 }
 }
 
@@ -1272,7 +1297,7 @@ province_event = {
     }
 
     mean_time_to_happen = {
-        months = 72
+        months = 36
         modifier = {
             factor = 2
             owner = { relation = { who = KYR value = 0 } }
@@ -1289,7 +1314,7 @@ province_event = {
 	
 	option = {
         name = "The Kyrgyz must be stopped!"
-		add_province_modifier = { name = kyrgyz_raids duration = 550 }
+		add_province_modifier = { name = kyrgyz_raids duration = 182 }
         owner = { prestige = -1 KYR = { capital_scope = { province_event = { id = 52043 days = 0 } } } }
     }
 }
@@ -1321,6 +1346,9 @@ country_event = {
 	option = {
         name = "The Teachings of Ormon shall lead us forward!"
 		prestige = 5
+		1186 = { remove_core = KOK }
+		1190 = { remove_core = KOK }
+		3914 = { remove_core = KOK }
 		any_owned = {
 			any_pop = {
 				limit = { has_pop_culture = kirgiz }
@@ -1512,6 +1540,110 @@ country_event = {
 }
 
 country_event = {
+	id = 52082
+	title = "The Andijan Uprising of $YEAR$"
+	desc = "ANDIJANUPRISING"
+	picture = "andijan_kyrgyz"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = RUS
+		year = 1898
+		month = 5
+		has_country_flag = monarchy_government
+		owns = 4135
+		NOT = {
+			exists = KYR
+			religious_policy = pluralism
+		}
+	}
+
+	option = {
+        name = "Crush them! §RDeclare war on the Kyrgyzs§W"
+		prestige = -5
+		4135 = { secede_province = KYR }
+		RUS = {
+		KYR = {
+			capital = 4135
+			government = prov_gov_liberal
+			define_general = { name = "Muhammad Ali Madali" personality = defence_1.1 background = no_background }
+			define_general = { name = "Omurbek Datka" personality = defence_2.1 background = no_background }
+            capital_scope = {
+                sub_unit = { type = cavalry value = current }
+			}
+		}
+		war = {
+			target = KYR
+			attacker_goal = { casus_belli = conquest_any }
+			defender_goal = { casus_belli = acquire_all_cores }
+			call_ally = no
+		}
+		4135 = {
+			any_pop = {
+				limit = {
+					has_pop_culture = kirgiz
+				}
+				reduce_pop = 0.9
+				militancy = 5
+				consciousness = 7
+			}
+		}
+		RUS = {
+			any_pop = {
+				limit = {
+					is_culture_group = central_asian
+				}
+				militancy = 1
+				consciousness = 1
+			}
+		}
+    }
+	
+    option = {
+        name = "Freedom for the Kygyz! §BPlay as the Kyrgyz§W"
+		prestige = -5
+		4135 = { secede_province = KYR }
+		KYR = {
+			capital = 4135
+			government = prov_gov_liberal
+			define_general = { name = "Muhammad Ali Madali" personality = defence_1.1 background = no_background }
+			define_general = { name = "Omurbek Datka" personality = defence_2.1 background = attack_1.1 }
+            capital_scope = {
+                sub_unit = { type = cavalry value = current }
+			}
+		}
+		war = {
+			target = KYR
+			attacker_goal = { casus_belli = conquest_any }
+			defender_goal = { casus_belli = acquire_all_cores }
+			call_ally = no
+		}
+		4135 = {
+			any_pop = {
+				limit = {
+					has_pop_culture = kirgiz
+				}
+				reduce_pop = 0.9
+				militancy = 5
+				consciousness = 7
+			}
+		}
+		RUS = {
+			any_pop = {
+				limit = {
+					is_culture_group = central_asian
+				}
+				militancy = 1
+				consciousness = 1
+			}
+		}
+		change_tag_no_core_switch = KYR
+    }
+	
+	mean_time_to_happen = { months = 1 }
+}
+
+country_event = {
 	id = 52069
 	title = "Along The Ile"
 	desc = "KYRGYZILI"
@@ -1535,6 +1667,8 @@ country_event = {
 		ai_chance = { factor = 0 }
 	}
 }
+
+### END OF KYRGYZ CONTENT
 
 ### KAZAKH LARP EXPANSION EVENTS
 
@@ -2133,7 +2267,7 @@ country_event = {
 	}
 	
     option = {
-        name = "This can't possibly be good. §RDeclare war on Kazakhs§W"
+        name = "This can't possibly be good. §RDeclare war on the Kazakhs§W"
 		prestige = -10
 		4140 = { secede_province = BKY }
 		4174 = { secede_province = BKY }
@@ -2216,7 +2350,7 @@ country_event = {
 	}
 	
     option = {
-        name = "This can't possibly be good. §RDeclare war on Kazakhs§W"
+        name = "This can't possibly be good. §RDeclare war on the Kazakhs§W"
 		prestige = -10
 		2702 = { secede_province = BKY }
 		1183 = { secede_province = BKY }
@@ -2300,7 +2434,7 @@ country_event = {
 	}
 	
     option = {
-        name = "This can't possibly be good. §RDeclare war on Kazakhs§W"
+        name = "This can't possibly be good. §RDeclare war on the Kazakhs§W"
 		prestige = -10
 		1183 = { secede_province = BKY }
 		2610 = { secede_province = BKY }
@@ -2384,7 +2518,7 @@ country_event = {
 	}
 	
     option = {
-        name = "This can't possibly be good. §RDeclare war on Kazakhs§W"
+        name = "This can't possibly be good. §RDeclare war on the Kazakhs§W"
 		prestige = -10
 		1194 = { secede_province = BKY }
 		RUS = {
@@ -2455,6 +2589,259 @@ country_event = {
 ### KOKAND CONTENT
 
 country_event = {
+	id = 52083
+	title = "The Golden Age Of The Ming"
+	desc = "MADALI"
+	picture = "central_asia_peace"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = KOK
+	}
+
+	option = {
+		name = "May the Ming rule Kokand for a thousand years!"
+		prestige = 5
+		add_country_modifier = { name = kokand_ming duration = -1 }
+		ai_chance = { factor = 1 }
+	}
+
+	mean_time_to_happen = { days = 1 }
+}
+
+country_event = {
+	id = 52084
+	title = "The Destruction of Kulab"
+	desc = "KULAB1"
+	picture = "kokand_revolt"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = KOK
+		OR = { 3519 = { owned_by = THIS } 3519 = { controlled_by = THIS } }
+	}
+
+	option = {
+		name = "The horrors of war know no bounds..."
+		set_global_flag = kulab_destroyed
+		prestige = 2
+		money = 2500
+		3519 = {
+			change_province_name = "Baljovan"
+			life_rating = -3
+			fort = -2
+			any_pop = {
+				reduce_pop = 0.8
+			}
+		}
+		ai_chance = { factor = 1 }
+	}
+
+	mean_time_to_happen = { days = 1 }
+}
+
+country_event = {
+	id = 52085
+	title = "Ibrahim Khayal is Installed as Governor of Kokand"
+	desc = "SHERALI1"
+	picture = "kokand_revolt"
+	is_triggered_only = yes
+
+	option = {
+		name = "Oh the horror!"
+		KOK = { set_country_flag = ibrahimkhayal }
+		prestige = -5
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 52086
+	title = "Sherali Ming is Elected Khan of Kokand"
+	desc = "SHERALI2"
+	picture = "kokand_revolt"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = KOK
+		vassal_of = BUK
+		has_country_flag = ibrahimkhayal
+	}
+
+	option = {
+		name = "Oust the Bukharan menace!"
+		set_country_flag = sherali
+		clr_country_flag = ibrahimkhayal
+		money = 10000
+		add_country_modifier = { name = all_or_nothing duration = 365 }
+		BUK = {
+			war = {
+				target = KOK
+				attacker_goal = { casus_belli = make_puppet_no_add_wargoal }
+				defender_goal = { casus_belli = status_quo }
+				call_ally = no
+			}
+		}
+		1201 = { change_controller = BUK }
+		1201 = { secede_province = THIS change_controller = BUK }
+		KOK = {
+			define_general = {
+				name = "Musulmonqul Mingbashi"
+				personality = defence_1.1
+				background = attack_4.1
+			}
+			4135 = {
+			sub_unit = { type = cavalry value = current }
+			sub_unit = { type = cavalry value = current }
+			}
+			4136 = {
+			sub_unit = { type = cavalry value = current }
+			sub_unit = { type = cavalry value = current }
+			}
+		}
+		ai_chance = { factor = 1 }
+	}
+
+	mean_time_to_happen = { months = 1 }
+}
+
+country_event = {
+	id = 52080
+	title = "The Osh Rebellion of $YEAR$"
+	desc = "OSHREBELLION"
+	picture = "kokand_revolt"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = KOK
+		year = 1845
+		is_vassal = no
+		has_country_flag = sherali
+	}
+
+	option = {
+		name = "The Kyrgyz lie broken under our overwhealming might!"
+		KOK = {
+			any_pop = {
+				limit = {
+					has_pop_culture = kirgiz
+					location = { province_id = 1195 }
+				}
+				reduce_pop = 0.85
+				militancy = -3
+				consciousness = 3
+			}
+		}
+		ai_chance = { factor = 1 }
+	}
+
+	mean_time_to_happen = { months = 3 }
+}
+
+country_event = {
+	id = 52087
+	title = "The Assassination of Sherali Khan"
+	desc = "SHERALI3"
+	picture = "kokand_revolt"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = KOK
+		year = 1845
+		DRV = { vassal_of = THIS }
+		owns = 3519
+	}
+
+	option = {
+		name = "Musulmonqul shall rule as regent under Khudayar Khan!"
+		prestige = -2
+		primary_culture = kipchak_minor
+		add_accepted_culture = kirgiz
+		remove_accepted_culture = sart
+		remove_accepted_culture = tajik
+		KOK = {
+			any_pop = {
+				limit = {
+					has_pop_culture = sart
+					OR = { pop_type = clergymen pop_type = aristocrats }
+					location = {
+						OR = {
+							province_id = 1195
+							province_id = 1201
+							province_id = 1202
+							province_id = 1203
+							province_id = 4135
+							province_id = 4136
+						}
+					}
+				}
+				reduce_pop = 0.8
+				militancy = 7
+				consciousness = 5
+			}
+		}
+		remove_country_modifier = kokand_ming
+		add_country_modifier = { name = muslimkul duration = -1 }
+		#THIS IS WHERE THE SOUTHERN TERRITORIES SEPARATE
+		release_vassal = DRV
+		3518 = { secede_province = DRV remove_core = KOK }
+		3519 = { add_core = DRV secede_province = DRV remove_core = KOK }
+		3520 = { secede_province = DRV remove_core = KOK }
+		ai_chance = { factor = 1 }
+	}
+
+	mean_time_to_happen = { days = 1 }
+}
+
+country_event = {
+	id = 52081
+	title = "The Kipchak Massacre of $YEAR$"
+	desc = "KIPCHAKMASSACRE"
+	picture = "kokand_revolt"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = KOK
+		year = 1852
+		month = 6
+		primary_culture = kipchak_minor
+	}
+
+	option = {
+		name = "Put any nomad who calls wheat biday instead of bugdoy to death!"
+		badboy = 1.5
+		primary_culture = sart
+		add_accepted_culture = tajik
+		remove_accepted_culture = kipchak_minor
+		remove_accepted_culture = kirgiz
+		KOK = {
+			any_pop = {
+				limit = {
+					has_pop_culture = kipchak_minor
+					location = {
+						OR = {
+							province_id = 1195
+							province_id = 1197
+							province_id = 1201
+							province_id = 1202
+							province_id = 1203
+							province_id = 4135
+							province_id = 4136
+						}
+					}
+				}
+				reduce_pop = 0.7
+				militancy = -5
+				consciousness = 5
+			}
+		}
+		remove_country_modifier = muslimkul
+		ai_chance = { factor = 1 }
+	}
+	mean_time_to_happen = { days = 29 }
+}
+
+country_event = {
 	id = 52029
 	title = "The Russians Sieze Ak-Mechet"
 	desc = "AKMECHET1"
@@ -2483,6 +2870,192 @@ country_event = {
 		any_pop = { militancy = 3 consciousness = 3 }
 		ai_chance = { factor = 99 }
 	}
+}
+
+country_event = {
+	id = 52088
+	title = "Malla Beg's Siezes Power"
+	desc = "MALLA1"
+	picture = "kokand_revolt"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = KOK
+		year = 1858
+		month = 10
+		is_vassal = no
+	}
+
+	option = {
+		name = "The tyranny of Khudayar Khan has been extinguished!"
+		set_global_flag = malla_khan
+		KOK = {
+			primary_culture = kipchak_minor
+			add_accepted_culture = kirgiz
+			add_accepted_culture = sart
+			define_general = {
+				name = "Alimkul Asan-biyuluu"
+				personality = defence_1.1
+				background = attack_4.1
+			}
+			any_pop = {
+				militancy = -4
+				consciousness = -2
+			}
+		}
+		ai_chance = { factor = 1 }
+	}
+
+	mean_time_to_happen = { months = 1 }
+}
+
+country_event = {
+	id = 52089
+	title = "Kana'at Shah's Offer"
+	desc = "URA1"
+	picture = "kokand_revolt"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = KOK
+		year = 1858
+		BUK = { owns = 4195 }
+		KOK = { owns = 3520 owns = 1201 }
+		has_global_flag = malla_khan
+	}
+
+	option = {
+		name = "We appreciate his attempt at currying our favour! §RGain 2 Infamy§!"
+		prestige = 3
+		badboy = 2
+		set_country_flag = ura_trollage
+		4195 = { secede_province = THIS }
+		relation = {
+			who = BUK
+			value = -50
+		}
+		BUK = { country_event = 52090 }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "We will not humor this fool's attempt at betrayal! §GLose 2 Infamy§!"
+		prestige = 5
+		badboy = -2
+		relation = {
+			who = BUK
+			value = 75
+		}
+		ai_chance = { factor = 0 }
+	}
+
+	mean_time_to_happen = { months = 1 }
+}
+
+country_event = {
+	id = 52090
+	title = "Kana'at Shah Betrays the Emirate"
+	desc = "URA2"
+	picture = "kokand_revolt"
+	is_triggered_only = yes
+
+	option = {
+		name = "This shall not stand! March for Ura Tepe! §RGain 2 Infamy§!"
+		prestige = 3
+		badboy = 2
+		4195 = { secede_province = BUK }
+		war = {
+			target = KOK
+			attacker_goal = { casus_belli = humiliate_no_infamy }
+			defender_goal = { casus_belli = acquire_core_state state_province_id = 4195 }
+			call_ally = no
+		}
+		4195 = { change_controller = KOK }
+		ai_chance = { factor = 0 }
+	}
+	
+	option = {
+		name = "Bah, let them keep Ura Tepe for now! §GLose 2 Infamy§!"
+		prestige = 5
+		badboy = -2
+		relation = {
+			who = KOK
+			value = 25
+		}
+		ai_chance = { factor = 1 }
+	}
+
+	mean_time_to_happen = { months = 1 }
+}
+
+country_event = {
+	id = 52091
+	title = "The Governor of Ura Tepe Betrays Us"
+	desc = "URA4"
+	picture = "kokand_revolt"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = KOK
+		year = 1859
+		month = 10
+		owns = 4195
+		has_country_flag = ura_trollage
+		has_global_flag = malla_khan
+	}
+
+	option = {
+		name = "Crush the Governor of Ura Tepe and put an end to the Khanate! §RGain 2 Infamy§!"
+		prestige = 2
+		badboy = 2
+		4195 = { secede_province = BUK }
+		war = {
+			target = BUK
+			attacker_goal = { casus_belli = acquire_core_state state_province_id = 4195 }
+			defender_goal = { casus_belli = acquire_core_state state_province_id = 1201 }
+			call_ally = no
+		}
+		KOK = { add_country_modifier = { name = all_or_nothing duration = 365 } }
+		ai_chance = { factor = 0 }
+	}
+	
+	option = {
+		name = "We were foolish to trust Ura Tepe from the start... §GLose 2 Infamy§!"
+		prestige = -3
+		badboy = -2
+		relation = {
+			who = KOK
+			value = 25
+		}
+		ai_chance = { factor = 1 }
+	}
+
+	mean_time_to_happen = { months = 1 }
+}
+
+country_event = {
+	id = 52092
+	title = "The Assassination of Malla Khan"
+	desc = "MALLA2"
+	picture = "kokand_revolt"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = KOK
+		year = 1862
+		is_vassal = no
+		has_global_flag = malla_khan
+	}
+
+	option = {
+		name = "The Kipchak once again rule the Khanate!"
+		clr_global_flag = malla_khan
+		prestige = -2
+		remove_accepted_culture = sart
+		ai_chance = { factor = 1 }
+	}
+
+	mean_time_to_happen = { months = 1 }
 }
 
 ### END OF KOKAND CONTENT
@@ -2559,7 +3132,11 @@ country_event = {
 		badboy = 2
 		PER = { inherit = KHR }
 		686 = { add_core = PER }
-		1147 = { add_core = PER reduce_pop = .98 }
+		1147 = { add_core = PER 
+			any_pop = {
+				reduce_pop = .98
+			}
+		}
 		1150 = { add_core = PER }
 		1204 = { add_core = PER }
 		3498 = { add_core = PER }
@@ -2825,9 +3402,9 @@ country_event = {
 	option = {
 		name = "Curse those Kazakhs!"
 		relation = {
-				who = KAZ
-				value = -50
-			}
+			who = KAZ
+			value = -50
+		}
 		prestige = -2
 		4174 = { fort = -2 life_rating = -10 secede_province = QQQ change_province_name = "Aqban" }
 	}
@@ -3146,6 +3723,383 @@ country_event = {
 	mean_time_to_happen = { months = 2 }
 }
 
+country_event = {
+    id = 52093
+    title = "The Integration of Kyzylkum"
+    desc = "KYZYLKUMDESERT"
+    fire_only_once = yes
+    picture = "bukey_annexation"
+    
+    trigger = {
+        tag = RUS
+		owns = 1193
+		owns = 1197
+		owns = 4129
+		owns = 4140
+        OR = {
+            3298 = { empty = yes }
+            3298 = { owned_by = RUS }
+        }
+        OR = {
+            29 = { empty = yes }
+            29 = { owned_by = RUS }
+        }
+		OR = {
+            4127 = { empty = yes }
+            4127 = { owned_by = RUS }
+        }
+		OR = {
+            4174 = { empty = yes }
+            4174 = { owned_by = RUS }
+        }
+		BUK = { vassal_of = THIS }
+    }
+
+    option = {
+        name = "Advance into the Kara-Kum!"
+		29 = { secede_province = THIS }
+        3298 = { secede_province = THIS }
+		4127 = { secede_province = THIS }
+		4174 = { secede_province = THIS }
+		ai_chance = { factor = 1 }
+    }
+	
+	mean_time_to_happen = { days = 1 }
+}
+
+country_event = {
+    id = 52094
+    title = "The Sart Question"
+    desc = "SARTEDUCATION"
+	picture = "bukey_annexation"
+    is_triggered_only = yes
+
+    option = {
+        name = "Sart"
+	#CULTURES
+		primary_culture = sart
+		remove_accepted_culture = tajik
+		remove_accepted_culture = uzbek
+		remove_accepted_culture = turkmen
+		remove_accepted_culture = kipchak_minor
+		remove_accepted_culture = qaraqalpaq
+		remove_accepted_culture = kirgiz
+		remove_accepted_culture = hazara
+		remove_accepted_culture = aimaq
+		remove_accepted_culture = afshar
+		remove_accepted_culture = persian
+		remove_accepted_culture = khorasani
+		random_owned = {
+			limit = { 
+				owner = { tag = KYR } 
+			}
+			add_accepted_culture = kirgiz
+		}
+		random_owned = {
+			limit = { 
+				owner = { tag = KKP CLN = { has_country_flag = global_mc_setup_complete } } 
+			}
+			add_accepted_culture = qaraqalpaq
+		}
+		random_owned = {
+			limit = { 
+				owner = { tag = KKP CLN = { NOT = { has_country_flag = global_mc_setup_complete } } } 
+			}
+			add_accepted_culture = kipchak_minor
+		}
+		random_owned = {
+			limit = { 
+				owner = { OR = { tag = KSJ tag = BKY tag = KAZ } } 
+			}
+			add_accepted_culture = kazak
+		}
+	#ADDS ASSIMILATION MODIFIER
+        any_owned = {
+                limit = {
+					is_overseas = no
+                    OR = {
+						region = AFG_1214 #Kunduz
+						region = BUK_1199 #Samarkand
+						region = KOK_1190 #Kirghizia
+						region = TAJ_1208 #Khatlon
+                        region = KHI_1191 #Khiva
+						region = KHI_1195 #Fergana
+						region = KHI_1200 #Bukhara
+						region = KHI_3298 #Turkestan
+						province_id = 686
+						province_id = 1186
+						province_id = 1189
+						province_id = 2519
+						province_id = 3442
+						province_id = 3527
+						province_id = 3529
+						province_id = 3785
+						province_id = 3915
+						province_id = 4137
+                    }
+					NOT = { 
+						province_id = 4140
+						province_id = 4174
+					}
+                }
+                add_province_modifier = {
+                    name = sart_cultural_unity
+                    duration = -1
+                }
+            }
+            any_owned = {
+                limit = {
+					is_overseas = no
+                    OR = {
+						region = RUS_1185 #Semireche
+						region = RUS_1184 #Akmolinsk
+						region = RUS_1187 #Semipalatinsk
+						region = RUS_1196 #Transcaspia
+						region = RUS_2685 #Ural
+						region = AFG_1209 #West Pashtunistan
+						region = AFG_1212 #Herat
+						region = AFG_1215 #Sistan
+						region = AFG_1218 #East Pashtunistan
+						region = PER_1148 #Khorasan
+						region = PER_3350 #Qa'inat
+						province_id = 1060
+						province_id = 1116
+						province_id = 1182
+						province_id = 1594
+						province_id = 1595
+						province_id = 1596
+						province_id = 1597
+						province_id = 3501
+						province_id = 4140
+						province_id = 4146
+						province_id = 4147
+						province_id = 4174
+                    }
+					NOT = {
+						province_id = 686
+						province_id = 1186
+						province_id = 1189
+						province_id = 2519
+						province_id = 3442
+						province_id = 3527
+						province_id = 3529
+						province_id = 3785
+						province_id = 3915
+						province_id = 4137
+					}
+                }
+                add_province_modifier = {
+                    name = sart_cultural_unity2
+                    duration = -1
+                }
+            }
+	#REMOVES LOCAL CORES
+            random_owned = {
+                limit = {
+                    KOK = { exists = no }
+                }
+                KOK = { all_core = { remove_core = KOK } }
+            }
+            random_owned = {
+                limit = {
+                    BUK = { exists = no }
+                }
+                BUK = { all_core = { remove_core = BUK } }
+            }
+            random_owned = {
+                limit = {
+                    KHI = { exists = no }
+                }
+                KHI = { all_core = { remove_core = KHI } }
+            }
+			random_owned = {
+                limit = {
+                    BDK = { exists = no }
+                }
+                BDK = { all_core = { remove_core = BDK } }
+            }
+			random_owned = {
+                limit = {
+                    KUN = { exists = no }
+                }
+                KUN = { all_core = { remove_core = KUN } }
+            }
+			random_owned = {
+                limit = {
+                    MYN = { exists = no }
+                }
+                MYN = { all_core = { remove_core = MYN } }
+            }
+			random_owned = {
+                limit = {
+                    URT = { exists = no }
+                }
+                URT = { all_core = { remove_core = URT } }
+            }
+			random_owned = {
+                limit = {
+                    KKP = { exists = no }
+                }
+                KKP = { all_core = { remove_core = KKP } }
+            }
+			random_owned = {
+                limit = {
+                    DRV = { exists = no }
+                }
+                DRV = { all_core = { remove_core = DRV } }
+            }
+			random_owned = {
+                limit = {
+                    KYR = { exists = no }
+                }
+                KYR = { all_core = { remove_core = KYR } }
+            }
+			any_country = {
+                limit = {
+                    tag = HAZ
+                    exists = no
+                }
+                primary_culture = sart
+				add_accepted_culture = hazara
+            }
+			any_country = {
+                limit = {
+                    tag = AFG
+                    exists = no
+                }
+                primary_culture = sart
+				add_accepted_culture = pashtun
+            }
+			any_country = {
+                limit = {
+                    tag = KND
+                    exists = no
+                }
+                primary_culture = sart
+				add_accepted_culture = pashtun
+            }
+			any_country = {
+                limit = {
+                    tag = HRT
+                    exists = no
+                }
+                primary_culture = sart
+				add_accepted_culture = pashtun
+            }
+            random_owned = {
+                limit = {
+                    KAZ = { exists = no }
+                }
+                owner = {
+					any_owned = {
+						limit = {
+							is_core = KAZ
+						}
+						remove_core = KAZ
+					}
+				}
+            }
+			random_owned = {
+                limit = {
+                    KSJ = { exists = no }
+                }
+                owner = {
+					any_owned = {
+						limit = {
+							is_core = KSJ
+						}
+						remove_core = KSJ
+					}
+				}
+            }
+			random_owned = {
+                limit = {
+                    BKY = { exists = no }
+                }
+                owner = {
+					any_owned = {
+						limit = {
+							is_core = BKY
+						}
+						remove_core = BKY
+					}
+				}
+            }
+			random_owned = {
+                limit = {
+                    XIN = { exists = no }
+                }
+                owner = {
+					any_owned = {
+						limit = {
+							is_core = XIN
+						}
+						remove_core = XIN
+					}
+				}
+            }
+            any_country = {
+                limit = {
+                    tag = XIN
+                    exists = yes
+                    vassal_of = THIS
+                }
+                primary_culture = sart
+            }
+			any_country = {
+                limit = {
+                    tag = KAZ
+                    exists = yes
+                    vassal_of = THIS
+                }
+                primary_culture = sart
+            }
+			any_country = {
+                limit = {
+                    tag = KSJ
+                    exists = yes
+                    vassal_of = THIS
+                }
+                primary_culture = sart
+            }
+			any_country = {
+                limit = {
+                    tag = BKY
+                    exists = yes
+                    vassal_of = THIS
+                }
+                primary_culture = sart
+            }
+			any_country = {
+                limit = {
+                    tag = KHR
+                    exists = yes
+                    vassal_of = THIS
+                }
+                primary_culture = sart
+            }
+	#EFFECTS ON POPULATION
+			THIS = {
+				any_pop = {
+					limit = {
+						has_pop_culture = kirgiz
+					}
+					militancy = 5
+					consciousness = 7
+				}
+				any_pop = {
+					limit = {
+						has_pop_culture = kirgiz
+					}
+					militancy = 5
+					consciousness = 7
+				}
+			}
+			
+		ai_chance = { factor = 1 }
+    }
+}
+
 ### END OF PEACEFUL RUSSIAN ANNEXATIONS
 
 country_event = {
@@ -3165,48 +4119,7 @@ country_event = {
 }
 
 #REWORK LATER
-country_event = {
-    id = 34257422
-    title = "The Integration of Kyzylkum"
-    desc = "KYZYLKUMDESERT"
-    fire_only_once = yes
-    picture = "bukey_annexation"
-    mean_time_to_happen = { days = 5 }
-    trigger = {
-        tag = RUS
-		owns = 4140
-		owns = 1193
-        OR = {
-            3298 = { empty = yes }
-            3298 = { owned_by = RUS }
-        }
-        OR = {
-            29 = { empty = yes }
-            29 = { owned_by = RUS }
-        }
-		OR = {
-            4127 = { empty = yes }
-            4127 = { owned_by = RUS }
-        }
-		OR = {
-            4174 = { empty = yes }
-            4174 = { owned_by = RUS }
-        }
-    }
-    option = {
-        name = "Advance into Turkestan!"
-        3298 = { secede_province = THIS }
-        29 = { secede_province = THIS }
-		4127 = { secede_province = THIS }
-		random_owned = {
-			limit = {
-				4174 = { empty = yes }
-			}
-			4174 = { secede_province = THIS }
-		}
-		ai_chance = { factor = 1 }
-    }
-}
+
 country_event = {
     id = 34257423
     title = "The Integration of Turkmenistan"
