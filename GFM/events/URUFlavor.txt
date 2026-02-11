@@ -1050,6 +1050,8 @@ country_event = {
 			prestige = -20
 			inherit = CRT
 			inherit = ENT
+			inherit = ARG
+			inherit = SBA
 			government = democracy
 			ruling_party_ideology = liberal
 			political_reform = no_slavery
@@ -1059,6 +1061,8 @@ country_event = {
 			political_reform = free_press
 			political_reform = state_controlled
 			political_reform = gerrymandering
+			set_country_flag = rivadavian_unitarians
+			set_country_flag = mesopotamian_troubles
 			any_owned = { limit = { is_core = SBA }
 				any_pop = {
 				consciousness = 9
@@ -1121,12 +1125,16 @@ country_event = {
 			political_reform = free_press
 			political_reform = state_controlled
 			political_reform = gerrymandering
+			set_country_flag = rivadavian_unitarians
+			set_country_flag = mesopotamian_troubles
 			any_owned = { limit = { is_core = SBA }
 				any_pop = {
 				consciousness = 9
 				militancy = 9
 				}
 			}
+			inherit = ARG
+			inherit = SBA
 			all_core = {
 				remove_core = ARC
 				remove_core = CRT
@@ -1853,3 +1861,694 @@ country_event = {
 		set_country_flag = oribe_is_waiting
     }
 }
+
+country_event = {
+	id = 600194
+	title = "Liberal Guerrillas" #Farrapos causing a little too much trouble
+    desc = "EVTDESC600194"
+	picture = "uruguay_riveira"
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = { months = 4 }
+	
+	trigger = {
+		tag = BRZ
+		has_country_flag = oribe_is_ready
+		RGS = { exists = no all_core = { OR = { owned_by = THIS owned_by = BRZ empty = yes } } }
+		URU = { exists = yes OR = { is_vassal = no vassal_of = ARG } }
+		NOT = { has_country_flag = cisplatina_is_ours year = 1845 }
+	}
+	
+	option = {
+		name = "Let us consider our options..."
+		set_country_flag = hide_tooltip
+		relation = { who = URU value = -200 }
+		relation = { who = ARG value = -100 }
+		random_owned = {
+			limit = { owner = { has_country_flag = hide_tooltip } }
+			URU = { country_event = 600195 }
+		}
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Just let the situation die down..."
+		prestige = -5
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600195
+	title = "The Brazilian Threat"
+    desc = "EVTDESC600195"
+	picture = "uruguay_oribe"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "We better reach out to Buenos Aires and others for support..."
+		relation = { who = ARG value = 100 }
+		ARG = { country_event = 600196 }
+        political_reform = no_slavery
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "We will face Brazil alone, if need be..."
+		prestige = 10
+		set_global_flag = david_n_goliath
+		BRZ = { country_event = 600199 }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 600196
+	title = "The Brazilian Threat"
+    desc = "EVTDESC600196"
+	picture = "uruguay_oribe"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Tell Rivera he has our full support!"
+		prestige = 5
+		relation = { who = BRZ value = -400 }
+		relation = { who = URU value = 400 }
+		leave_alliance = BRZ
+		create_alliance = URU
+		set_country_flag = federalists_rally
+		URU = { country_event = 600197 }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "They are on their own..."
+		prestige = -10
+		set_country_flag = federalists_rally
+		URU = { country_event = 600198 }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 600197
+	title = "Unitarians promise us support!"
+    desc = "EVTDESC600197"
+	picture = "rivadavia"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "We may have a chance now..."
+		set_global_flag = david_n_goliath
+		set_global_flag = big_war_alt
+		BRZ = { country_event = 600199 }
+		define_general = {
+			name = "Giuseppe Garibaldi"
+			personality = defence_4.1
+			background = attack_4.1
+		}
+		2344 = {
+			sub_unit = { type = guard value = current }
+			sub_unit = { type = guard value = current }
+		}
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600198
+	title = "Unitarians ditch us!"
+    desc = "EVTDESC600198"
+	picture = "rivadavia"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "May God help us all..."
+		set_global_flag = david_n_goliath
+		BRZ = { country_event = 600199 }
+		define_general = {
+			name = "Giuseppe Garibaldi"
+			personality = defence_4.1
+			background = attack_4.1
+		}
+		2344 = {
+			sub_unit = { type = guard value = current }
+			sub_unit = { type = guard value = current }
+		}
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600199
+	title = "Manuel Oribe makes us an offer"
+    desc = "EVTDESC600199"
+	picture = "uruguay_oribe"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Accept Oribe's offer! §RDeclare war on Uruguay§W"
+		set_country_flag = propup_oribe
+		relation = { who = URU value = -400 }
+		diplomatic_influence = { who = URU value = -400 }
+		leave_alliance = URU
+        war = {
+            target = URU
+            attacker_goal = { casus_belli = scripted_war_huge }
+            defender_goal = { casus_belli = scripted_war_small }
+        }
+		URU = { 
+			add_country_modifier = { name = fanatic_army duration = 3650 }
+			add_country_modifier = { name = caudillo_leaders duration = 3650 } 
+		}
+		random_owned = { 
+			limit = { owner = { has_global_flag = big_war_alt } } 
+			ARG = { 
+				add_country_modifier = { name = fanatic_army duration = 3650 }
+				add_country_modifier = { name = caudillo_leaders duration = 3650 }
+			}
+		}
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "We can't do this! Call off our military preparations..."
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+    id = 600202
+    title = "Colorados Defeated!" #Brazil defeats Uruguay
+    desc = "EVTDESC600202"
+    picture = "uruguay_riveira"
+
+    fire_only_once = yes
+
+    trigger = {
+        tag = BRZ
+        has_country_flag = propup_oribe
+        has_global_flag = david_n_goliath
+        truce_with = URU
+        war = no
+        NOT = { has_country_flag = lost_the_war }
+        URU = {
+            exists = yes
+            has_country_flag = lost_the_war
+        }
+    }
+
+    mean_time_to_happen = { days = 1 }
+
+
+    option = {
+        name = "Restore President Oribe... §GLose 1 infamy§W"
+        prestige = 5
+		badboy = -1
+		clr_global_flag = david_n_goliath
+		URU = { ruling_party_ideology = conservative set_country_flag = rivera_won clr_country_flag = lost_the_war }
+        relation = { who = URU value = 400 }
+		create_alliance = URU
+		diplomatic_influence = { who = URU value = 400 }
+		random_owned = { 
+			limit = { owner = { has_global_flag = big_war_alt } }
+			owner = { country_event = 600203 }
+		}
+        ai_chance = { factor = 6 }
+    }
+
+    option = {
+        name = "And settle our claims as payment, of course!"
+		prestige = 7.5
+		set_country_flag = URU_treaty_1851
+		clr_global_flag = david_n_goliath
+		RGS = { all_core = { remove_core = URU } }
+		3641 = { add_core = BRZ add_core = RGS remove_core = URU secede_province = BRZ }
+		2346 = { add_core = BRZ add_core = RGS remove_core = URU secede_province = BRZ }
+		URU = { ruling_party_ideology = conservative set_country_flag = rivera_won clr_country_flag = lost_the_war }
+        relation = { who = URU value = 400 }
+		create_alliance = URU
+		diplomatic_influence = { who = URU value = 400 }
+		random_owned = { 
+			limit = { owner = { has_global_flag = big_war_alt } }
+			owner = { country_event = 600203 }
+		}
+        ai_chance = { factor = 2 }
+    }
+
+    option = {
+        name = "Backstab Oribe and take over Cisplatina... §RGain 2.5 infamy§!"
+		prestige = 10
+		badboy = 2.5
+		set_country_flag = cisplatina_is_ours
+		clr_global_flag = david_n_goliath
+		2346 = { remove_core = RGS secede_province = URU }
+		RGS = { all_core = { remove_core = URU } }
+        relation = { who = URU value = 400 }
+		create_vassal = URU
+		create_alliance = URU
+		URU = {
+			government = colonial_company_2 
+			ruling_party_ideology = conservative
+			add_accepted_culture = brazilian
+			all_core = { add_core = BRZ }
+			clr_country_flag = lost_the_war 
+		}
+		diplomatic_influence = { who = URU value = 400 }
+		random_owned = { 
+			limit = { owner = { has_global_flag = big_war_alt } }
+			owner = { country_event = 600203 }
+		}
+        ai_chance = {
+            factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.9
+            }
+        }
+    }
+
+    option = {
+        name = "Directly integrate it into the empire! §RGain 5 infamy§!"
+		prestige = 12.5
+		badboy = 5
+		set_country_flag = cisplatina_is_ours
+		clr_global_flag = david_n_goliath
+		3641 = { add_core = BRZ add_core = RGS }
+		2346 = { add_core = BRZ add_core = RGS }
+		URU = { all_core = { add_core = BRZ } annex_to = BRZ clr_country_flag = lost_the_war }
+		random_owned = { 
+			limit = { owner = { has_global_flag = big_war_alt } }
+			owner = { country_event = 600203 }
+		}
+        ai_chance = {
+            factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.8
+            }
+        }
+    }
+}
+
+country_event = {
+    id = 600203
+    title = "Our Rivals in Buenos Aires" #Brazil decides what to do with Argentina
+    desc = "EVTDESC600203"
+    picture = "rivadavia"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "Let the Unitarians be! §GLose 1 infamy§W"
+        prestige = 5
+		badboy = -1
+		clr_global_flag = big_war_alt
+		relation = { who = ARG value = 100 }
+        ai_chance = { factor = 2 }
+    }
+
+    option = {
+        name = "Depose the Unitarians in favor of our Federalist allies!"
+		prestige = 7.5
+		ARG = {
+			prestige = -10
+			government = democracy
+			ruling_party_ideology = conservative
+			political_reform = no_slavery
+			political_reform = landed_voting
+			political_reform = population_equal_weight
+			political_reform = yes_meeting
+			political_reform = free_press
+			political_reform = state_controlled
+			political_reform = gerrymandering
+			set_country_flag = urquiza_victorious
+			any_owned = { limit = { is_core = SBA }
+				any_pop = {
+				consciousness = 9
+				militancy = 9
+				}
+			}
+			inherit = ARC
+			inherit = ENT
+			all_core = {
+				remove_core = ARG
+				add_core = ARC
+			}
+			change_tag = ARC
+		}
+		clr_global_flag = big_war_alt
+		relation = { who = ARC value = 400 }
+		diplomatic_influence = { who = ARC value = 400 }
+        ai_chance = { factor = 6 }
+    }
+
+    option = {
+        name = "And establish the Grand-Duchy of Y'tyba as a buffer! §RGain 2.5 infamy§!"
+		prestige = 10
+		badboy = 2.5
+		ARG_2360 = { add_core = ENT remove_core = ARG remove_core = CRT }
+		2340 = { remove_core = CRT remove_core = ENT remove_core = ARG }
+		2362 = { remove_core = ENT remove_core = CRT remove_core = ARG }
+		ARG = {
+			prestige = -10
+			government = democracy
+			ruling_party_ideology = conservative
+			political_reform = no_slavery
+			political_reform = landed_voting
+			political_reform = population_equal_weight
+			political_reform = yes_meeting
+			political_reform = free_press
+			political_reform = state_controlled
+			political_reform = gerrymandering
+			set_country_flag = urquiza_victorious
+			any_owned = { limit = { is_core = SBA }
+				any_pop = {
+				consciousness = 9
+				militancy = 9
+				}
+			}
+			inherit = ARC
+			inherit = ENT
+			all_core = {
+				remove_core = ARG
+				add_core = ARC
+			}
+			any_owned = { limit = { is_core = ENT } secede_province = THIS }
+			change_tag = ARC
+		}
+		clr_global_flag = big_war_alt
+		relation = { who = ARC value = 200 }
+		diplomatic_influence = { who = ARC value = 200 }
+		2462 = { remove_core = ENT remove_core = CRT remove_core = ARG }
+		any_owned = { limit = { is_core = ENT } secede_province = ENT }
+		create_vassal = ENT
+		create_alliance = ENT
+		diplomatic_influence = { who = ENT value = 400 }
+		ENT = { all_core = { remove_core = ARG remove_core = CRT add_core = BRZ } government = presidential_dictatorship add_accepted_culture = brazilian }
+		ENT = { government = colonial_company }
+        ai_chance = {
+            factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.9
+            }
+        }
+    }
+
+    option = {
+        name = "Better yet, integrate it into the empire! §RGain 5 infamy§!"
+		prestige = 12.5
+		badboy = 5
+		ARG_2360 = { add_core = ENT remove_core = ARG remove_core = CRT }
+		2340 = { remove_core = CRT remove_core = ENT remove_core = ARG }
+		2362 = { remove_core = ENT remove_core = CRT remove_core = ARG }
+		ARG = {
+			prestige = -10
+			government = democracy
+			ruling_party_ideology = conservative
+			political_reform = no_slavery
+			political_reform = landed_voting
+			political_reform = population_equal_weight
+			political_reform = yes_meeting
+			political_reform = free_press
+			political_reform = state_controlled
+			political_reform = gerrymandering
+			set_country_flag = urquiza_victorious
+			any_owned = { limit = { is_core = SBA }
+				any_pop = {
+				consciousness = 9
+				militancy = 9
+				}
+			}
+			inherit = ARC
+			inherit = ENT
+			all_core = {
+				remove_core = ARG
+				add_core = ARC
+			}
+			any_owned = { limit = { is_core = ENT } secede_province = THIS }
+			change_tag = ARC
+		}
+		clr_global_flag = big_war_alt
+		relation = { who = ARC value = 100 }
+		diplomatic_influence = { who = ARC value = 100 }
+		2462 = { remove_core = ENT remove_core = CRT remove_core = ARG }
+		ENT = { all_core = { remove_core = ARG remove_core = CRT add_core = BRZ } }
+        ai_chance = {
+            factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.8
+            }
+        }
+    }
+}
+
+country_event = {
+    id = 600204
+    title = "Colorado Victory!" #Brazil defeats Uruguay
+    desc = "EVTDESC600204"
+    picture = "uruguay_oribe"
+
+    fire_only_once = yes
+
+    trigger = {
+        tag = URU
+        has_global_flag = david_n_goliath
+        truce_with = BRZ
+        war = no
+        NOT = { has_country_flag = lost_the_war }
+        BRZ = {
+            exists = yes
+            has_country_flag = lost_the_war
+			has_global_flag = big_war_alt
+        }
+    }
+
+    mean_time_to_happen = { days = 1 }
+
+
+    option = {
+        name = "We just want our claims, thanks! §GLose 1 infamy§W"
+        prestige = 5
+		badboy = -1
+		clr_global_flag = david_n_goliath
+		URU = { all_core = { remove_core = BRZ } }
+		BRZ = { any_owned = { limit = { is_core = URU } secede_province = URU } clr_country_flag = lost_the_war }
+        ai_chance = { factor = 2 }
+    }
+
+    option = {
+        name = "Liberate Rio Grande do Sul!"
+		prestige = 7.5
+		clr_global_flag = david_n_goliath
+		URU = { all_core = { remove_core = BRZ remove_core = RGS } }
+		BRZ = { any_owned = { limit = { OR = { is_core = RGS is_core = URU } } secede_province = URU } clr_country_flag = lost_the_war }
+		any_owned = { limit = { is_core = RGS } secede_province = RGS }
+		RGS = {
+			capital = 2463
+			government = democracy
+			all_core = { remove_core = BRZ }
+		}
+		create_alliance = RGS
+        relation = { who = RGS value = 400 }
+        ai_chance = { factor = 4 }
+    }
+
+    option = {
+        name = "And the Juliana Republic! §RGain 2.5 infamy§!"
+		prestige = 10
+		badboy = 2.5
+		clr_global_flag = david_n_goliath
+		URU = { all_core = { remove_core = BRZ remove_core = RGS } }
+		BRZ = { any_owned = { limit = { OR = { is_core = RGS is_core = URU is_core = SAC } } secede_province = URU } clr_country_flag = lost_the_war }
+		any_owned = { limit = { OR = { is_core = RGS is_core = SAC } } secede_province = RGS }
+		RGS = {
+			capital = 2463
+			government = democracy
+			all_core = { remove_core = BRZ }
+		}
+		SAC = { all_core = { add_core = RGS remove_core = BRZ } }
+		create_alliance = RGS
+        relation = { who = RGS value = 400 }
+        ai_chance = {
+            factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.9
+            }
+        }
+    }
+
+    option = {
+        name = "Unite into the Uruguayan Federation! §RGain 5 infamy§!"
+		prestige = 12.5
+		badboy = 5
+		clr_global_flag = david_n_goliath
+		URU = { all_core = { remove_core = BRZ } }
+		BRZ = { any_owned = { limit = { OR = { is_core = RGS is_core = URU is_core = SAC } } secede_province = URU } clr_country_flag = lost_the_war }
+		any_owned = { limit = { OR = { is_core = RGS is_core = SAC } } secede_province = RGS }
+		RGS = {
+			all_core = { add_core = URU remove_core = BRZ }
+		}
+		SAC = { all_core = { add_core = URU remove_core = BRZ } }
+		create_alliance = RGS
+        relation = { who = RGS value = 400 }
+        ai_chance = {
+            factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.8
+            }
+        }
+    }
+}
+
+country_event = {
+    id = 600205
+    title = "Joint Unitarian-Colorado Victory!" #Brazil defeats Uruguay
+    desc = "EVTDESC600205"
+    picture = "uruguay_oribe"
+
+    fire_only_once = yes
+
+    trigger = {
+        tag = ARG
+        has_global_flag = big_war_alt
+        truce_with = BRZ
+        war = no
+        URU = { NOT = { has_country_flag = lost_the_war } }
+        BRZ = {
+            exists = yes
+            has_country_flag = lost_the_war
+        }
+    }
+
+    mean_time_to_happen = { days = 1 }
+
+
+    option = {
+        name = "We just want the Eastern Missiones, thanks! §GLose 1 infamy§W"
+        prestige = 5
+		set_country_flag = colorado_unitarian_ties
+		badboy = -1
+		clr_global_flag = david_n_goliath
+		clr_global_flag = big_war_alt
+		URU = { all_core = { remove_core = BRZ } }
+		ARG = { all_core = { remove_core = BRZ } }
+		BRZ = { any_owned = { limit = { is_core = URU } secede_province = ARG } clr_country_flag = lost_the_war }
+		2466 = { add_core = ARG remove_core = URU remove_core = RGS }
+		4107 = { add_core = ARG remove_core = URU remove_core = RGS }
+		any_owned = { limit = { is_core = URU } secede_province = URU }
+        ai_chance = { factor = 2 }
+    }
+
+    option = {
+        name = "Liberate Rio Grande do Sul!"
+		prestige = 7.5
+		set_country_flag = colorado_unitarian_ties
+		clr_global_flag = david_n_goliath
+		clr_global_flag = big_war_alt
+		URU = { all_core = { remove_core = BRZ remove_core = RGS } }
+		ARG = { all_core = { remove_core = BRZ } }
+		BRZ = { any_owned = { limit = { OR = { is_core = RGS is_core = URU } } secede_province = ARG } clr_country_flag = lost_the_war }
+		2466 = { add_core = ARG remove_core = URU remove_core = RGS }
+		4107 = { add_core = ARG remove_core = URU remove_core = RGS }
+		any_owned = { limit = { is_core = URU } secede_province = URU }
+		any_owned = { limit = { is_core = RGS } secede_province = RGS }
+		RGS = {
+			capital = 2463
+			government = democracy
+			all_core = { remove_core = BRZ }
+		}
+		create_alliance = RGS
+        relation = { who = RGS value = 400 }
+        ai_chance = { factor = 4 }
+    }
+
+    option = {
+        name = "And the Juliana Republic! §RGain 2.5 infamy§!"
+		prestige = 10
+		set_country_flag = colorado_unitarian_ties
+		badboy = 2.5
+		clr_global_flag = david_n_goliath
+		clr_global_flag = big_war_alt
+		URU = { all_core = { remove_core = BRZ remove_core = RGS } }
+		ARG = { all_core = { remove_core = BRZ remove_core = SAC } }
+		BRZ = { any_owned = { limit = { OR = { is_core = RGS is_core = URU is_core = SAC } } secede_province = ARG } clr_country_flag = lost_the_war }
+		2466 = { add_core = ARG remove_core = URU remove_core = RGS }
+		4107 = { add_core = ARG remove_core = URU remove_core = RGS }
+		any_owned = { limit = { is_core = URU } secede_province = URU }
+		any_owned = { limit = { is_core = RGS } secede_province = RGS }
+		any_owned = { limit = { is_core = SAC } secede_province = SAC }
+		RGS = {
+			capital = 2461
+			government = democracy
+			all_core = { remove_core = BRZ }
+		}
+		create_alliance = RGS
+        relation = { who = RGS value = 400 }
+		SAC = {
+			capital = 2463
+			government = democracy
+			all_core = { remove_core = BRZ }
+		}
+		create_alliance = SAC
+        relation = { who = SAC value = 400 }
+        ai_chance = {
+            factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.9
+            }
+        }
+    }
+
+    option = {
+        name = "Establish the Province of San Padro §RGain 5 infamy§!"
+		prestige = 12.5
+		set_country_flag = colorado_unitarian_ties
+		badboy = 5
+		clr_global_flag = david_n_goliath
+		clr_global_flag = big_war_alt
+		URU = { all_core = { remove_core = BRZ remove_core = RGS } }
+		ARG = { all_core = { remove_core = BRZ remove_core = SAC } }
+		BRZ = { any_owned = { limit = { OR = { is_core = RGS is_core = URU is_core = SAC } } secede_province = ARG } clr_country_flag = lost_the_war }
+		2466 = { add_core = ARG remove_core = URU remove_core = RGS }
+		4107 = { add_core = ARG remove_core = URU remove_core = RGS }
+		any_owned = { limit = { is_core = URU } secede_province = URU }
+		any_owned = { limit = { is_core = RGS } secede_province = RGS }
+		any_owned = { limit = { is_core = SAC } secede_province = SAC }
+		RGS = {
+			capital = 2461
+			government = democracy
+			all_core = { remove_core = BRZ }
+		}
+		create_vassal = RGS
+		create_alliance = RGS
+        relation = { who = RGS value = 400 }
+		SAC = {
+			capital = 2463
+			government = democracy
+			all_core = { remove_core = BRZ }
+		}
+		create_alliance = SAC
+        relation = { who = SAC value = 400 }
+		set_country_flag = province_san_pedro
+        ai_chance = {
+            factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.8
+            }
+        }
+    }
+}
+	
