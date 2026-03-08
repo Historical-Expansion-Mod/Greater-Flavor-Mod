@@ -2248,7 +2248,7 @@ country_event = {
 country_event = {
     id = 72754
     title = "The Question of the Italian Crown"
-    desc = EVTDESC72754
+    desc = "EVTDESC72754"
 	picture = "corona_incisa"
     major = yes
 	
@@ -2349,6 +2349,132 @@ country_event = {
         }
         ai_chance = {
             factor = 0
+        }
+    }
+}
+country_event = {
+    id = 800906
+    title = "The Question of the Italian Crown"
+    desc = "EVTDESC800906"
+	picture = "corona_incisa"
+    major = yes
+	
+    fire_only_once = yes
+
+    trigger = {
+        has_global_flag = french_outside_italy
+        year = 1870
+        OR = {
+            tag = FRA
+            tag = BOR
+            tag = BOE
+        }
+        nationalism_n_imperialism = 1
+        PAP = { vassal_of = THIS }
+        NPL = { vassal_of = THIS }
+        SRD = { OR = { all_core = { owned_by = THIS } vassal_of = THIS } }
+        LOM = { vassal_of = THIS }
+		SYC = { vassal_of = THIS }
+        NOT = { exists = ITA }
+        war = no
+    }
+
+    mean_time_to_happen = {
+        months = 12
+    }
+
+    option = {
+        name = "To the Savoyards!"
+        SVY = {
+            change_tag = ITA
+            add_accepted_culture = south_italian
+        }
+		any_country = {
+			limit = {
+				is_culture_group = italian
+				vassal_of = THIS
+				NOT = { tag = SRD tag = ITA }
+			}
+			all_core = { add_core = ITA }
+			annex_to = ITA
+		}
+		all_core = { remove_core = ITA }
+        ai_chance = {
+            factor = 25
+        }
+    }
+    option = {
+        name = "To the Sicilians!"
+        NPL = {
+            change_tag = ITA
+            add_accepted_culture = north_italian
+			random_owned = { limit = { owner = { government = absolute_monarchy } } owner = { government = absolute_empire } }
+			random_owned = { limit = { owner = { government = prussian_constitutionalism } } owner = { government = semi_constitutional_empire } }
+			random_owned = { limit = { owner = { government = hms_government } } owner = { government = constitutional_empire } }
+        }
+		any_country = {
+			limit = {
+				is_culture_group = italian
+				vassal_of = THIS
+				NOT = { tag = SRD tag = ITA }
+			}
+			all_core = { add_core = ITA }
+			annex_to = ITA
+		}
+		all_core = { remove_core = ITA }
+        set_global_flag = ITS_form
+        ai_chance = {
+            factor = 25
+        }
+    }
+    option = {
+        name = "To His Holiness the Pope!"
+        PAP = {
+            change_tag = ITA
+            primary_culture = north_italian
+            add_accepted_culture = south_italian
+			government = theocracy
+        }
+		any_country = {
+			limit = {
+				is_culture_group = italian
+				vassal_of = THIS
+				NOT = { tag = SRD tag = ITA }
+			}
+			all_core = { add_core = ITA }
+			annex_to = ITA
+		}
+        any_pop = {
+                limit = {
+                    religion = catholic
+                }
+                consciousness = -6
+        }
+		all_core = { remove_core = ITA }
+        ai_chance = {
+            factor = 25
+        }
+    }
+    option = {
+        name = "Italy's fate is to live under the French heel! §RGain 1 infamy§W"
+		badboy = 1
+        any_pop = {
+            limit = {
+                pop_majority_ideology = conservative
+                is_primary_culture = yes
+            }
+            consciousness = -3
+        }
+		any_country = {
+			limit = {
+				is_culture_group = italian
+				vassal_of = THIS
+			}
+			any_pop = { militancy = 3 consciousness = 3 }
+			clr_country_flag = colony_exemption
+		}
+        ai_chance = {
+            factor = 25
         }
     }
 }
@@ -5131,5 +5257,72 @@ country_event = {
 			any_pop = { limit = { culture = volga_german } reduce_pop = 1.5 }
 			add_province_modifier = { name = baltic_trade duration = -1 }
 		}
+	}
+}
+
+country_event = {
+	id = 800915
+	title = "Our Interests in Crimea"
+	desc = "EVTDESC800915"
+	picture = "yalta"
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = { months = 12 }
+	
+	trigger = {
+		OR = { tag = GER tag = GCF }
+		war = no
+		CRI = { all_core = { OR = { owned_by = THIS owner = { in_sphere = THIS vassal_of = THIS } } } }
+	}
+	
+	option = {
+		name = "Crimea will stay as it is"
+		random_owned = { limit = { 967 = { owned_by = UKR } } UKR = { relation = { who = THIS value = 100 } } }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Grant the Tatars full control over Crimea"
+		any_country = {
+			limit = { any_owned_province = { is_core = CRI } vassal_of = THIS in_sphere = THIS }
+			any_owned = { limit = { is_core = CRI } secede_province = THIS }
+		}
+		any_owned = { limit = { is_core = CRI } secede_province = CRI }
+		create_vassal = CRI
+		create_alliance = CRI
+		diplomatic_influence = { who = CRI value = 400 }
+		CRI = { capital = 964 set_country_flag = colony_exemption government = presidential_dictatorship }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "We will have direct control over Sevastopol"
+		any_country = {
+			limit = { any_owned_province = { is_core = CRI } vassal_of = THIS in_sphere = THIS }
+			any_owned = { limit = { is_core = CRI } secede_province = THIS }
+		}
+		any_owned = { limit = { is_core = CRI NOT = { province_id = 967 } } secede_province = CRI }
+		create_vassal = CRI
+		create_alliance = CRI
+		diplomatic_influence = { who = CRI value = 400 }
+		967 = { secede_province = UTI }
+		inherit = UTI
+		CRI = { capital = 964 set_country_flag = colony_exemption government = presidential_dictatorship }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "We ought to control Crimea ourselves"
+		any_country = {
+			limit = { any_owned_province = { is_core = CRI } vassal_of = THIS in_sphere = THIS }
+			any_owned = { limit = { is_core = CRI } secede_province = THIS }
+		}
+		any_owned = { limit = { is_core = CRI } secede_province = CRI }
+		create_vassal = CRI
+		create_alliance = CRI
+		diplomatic_influence = { who = CRI value = 400 }
+		CRI = { add_accepted_culture = volga_german capital = 964 }
+		ai_chance = { factor = 1 }
 	}
 }
