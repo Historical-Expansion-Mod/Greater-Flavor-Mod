@@ -1695,6 +1695,13 @@ country_event = {
 			limit = { 1191 = { OR = { owned_by = THIS owner = { vassal_of = THIS } } is_core = THIS } }
 			owner = { country_event = 600239 }
 		}
+		any_pop = {
+			limit = {
+				has_pop_culture = russian
+				location = { OR = { region = RUS_1102 region = AZB_1105 region = RUS_1098 region = RUS_1090 region = RUS_1052 region = RUS_3390 region = TUR_885 } }
+			}
+			move_pop = 1039
+		}
 		ai_chance = { factor = 2 }
     }
 
@@ -1711,6 +1718,13 @@ country_event = {
 		random_owned = {
 			limit = { 1191 = { OR = { owned_by = THIS owner = { vassal_of = THIS } } is_core = THIS } }
 			owner = { country_event = 600239 }
+		}
+		any_pop = {
+			limit = {
+				has_pop_culture = russian
+				location = { OR = { region = RUS_1102 region = AZB_1105 region = RUS_1098 region = RUS_1090 region = RUS_1052 region = RUS_3390 region = TUR_885 } }
+			}
+			move_pop = 1039
 		}
 		ai_chance = { factor = 5 }
     }
@@ -1733,6 +1747,13 @@ country_event = {
 		random_owned = {
 			limit = { 1191 = { OR = { owned_by = THIS owner = { vassal_of = THIS } } is_core = THIS } }
 			owner = { country_event = 600239 }
+		}
+		any_pop = {
+			limit = {
+				has_pop_culture = russian
+				location = { OR = { region = RUS_1102 region = AZB_1105 region = RUS_1098 region = RUS_1090 region = RUS_1052 region = RUS_3390 region = TUR_885 } }
+			}
+			move_pop = 1039
 		}
 		ai_chance = { factor = 2 modifier = { factor = 0 badboy = 0.9 } }
     }
@@ -1771,6 +1792,21 @@ country_event = {
 		random_owned = {
 			limit = { 1191 = { OR = { owned_by = THIS owner = { vassal_of = THIS } } is_core = THIS } }
 			owner = { country_event = 600239 }
+		}
+		any_pop = {
+			limit = {
+				has_pop_culture = russian
+				location = { OR = { region = RUS_1102 region = AZB_1105 region = RUS_1098 region = RUS_1090 region = RUS_1052 region = RUS_3390 region = TUR_885 } }
+			}
+			move_pop = 1039
+		}
+		GEO = {	
+			any_pop = {
+				limit = {
+					has_pop_culture = russian
+				}
+				move_pop = 1039
+			}
 		}
 		ai_chance = { factor = 1 modifier = { factor = 0 badboy = 0.8 } }
     }
@@ -2033,6 +2069,15 @@ country_event = {
     }
 	
 	option = {
+        name = "And unite the Kazakhs as a strong buffer between us and Russia §RGain 10 infamy§W"
+		badboy = 10
+		prestige = 5
+		RUS = { country_event = 600240 }
+		set_global_flag = unite_kazakhstan
+		ai_chance = { factor = 1 modifier = { factor = 0 badboy = 0.6 } }
+    }
+	
+	option = {
         name = "Let the Bear play in the steppes."
     }
 }
@@ -2057,6 +2102,7 @@ country_event = {
 		}
 		any_land_province = { remove_core = KAZ remove_core = BKY remove_core = KSJ }
 		random_owned = { limit = { owner = { is_our_vassal = KAZ } } owner = { inherit = KAZ } }
+		1208 = { add_core = KYR }
 		1182 = { add_core = BKY remove_core = RUS }
 		1060 = { add_core = BKY remove_core = RUS }
 		1194 = { add_core = BKY remove_core = RUS }
@@ -2070,17 +2116,38 @@ country_event = {
 		3913 = { add_core = KSJ  remove_core = RUS }
 		1197 = { add_core = KSJ  remove_core = RUS }
 		4139 = { add_core = KSJ  remove_core = RUS }
-		BKY = { all_core = { add_core = KAZ } }
-		KSJ = { all_core = { add_core = KAZ } }
 		RUS_1184 = { add_core = KAZ remove_core = RUS }
 		RUS_1187 = { add_core = KAZ remove_core = RUS }
 		1188 = { add_core = KAZ remove_core = RUS }
 		4148 = { add_core = KAZ remove_core = RUS }
 		1193 = { add_core = KAZ remove_core = RUS }
-		1208 = { add_core = KYR }
-		any_owned = { limit = { is_core = KAZ } secede_province = KAZ }
-		random_owned = { limit = { owner = { is_our_vassal = KAZ } } owner = { release_vassal = KAZ } }
-		KAZ = { government = absolute_empire }
+		random_owned = {
+			limit = { owner = { has_global_flag = unite_kazakhstan } }
+			BKY = { all_core = { add_core = KAZ } }
+			KSJ = { all_core = { add_core = KAZ } }
+			owner = {
+				any_owned = { limit = { is_core = KAZ } secede_province = KAZ }
+				clr_global_flag = unite_kazakhstan
+			}
+			KAZ = { government = absolute_empire }
+		}
+		random_owned = {
+			limit = { owner = { NOT = { has_global_flag = unite_kazakhstan } } }
+			BKY = { all_core = { remove_core = KAZ } }
+			KSJ = { all_core = { remove_core = KAZ } }
+			owner = {
+				any_owned = { limit = { is_core = BKY } secede_province = BKY }
+				any_owned = { limit = { is_core = KSJ } secede_province = KSJ }
+				any_owned = { limit = { is_core = KAZ } secede_province = KAZ }
+			}
+			PER = { relation = { who = KAZ value = 400 } diplomatic_influence = { who = KSJ value = 400 } }
+			PER = { relation = { who = KAZ value = 400 } diplomatic_influence = { who = BKY value = 400 } }
+			KSJ = { government = absolute_monarchy }
+			BKY = { government = absolute_monarchy }
+			KAZ = { government = absolute_monarchy }
+		}
+		random_owned = { limit = { owner = { is_our_vassal = KSJ } } owner = { release_vassal = KSJ } }
+		random_owned = { limit = { owner = { is_our_vassal = BKY } } owner = { release_vassal = BKY } }
 		PER = { relation = { who = KAZ value = 400 } diplomatic_influence = { who = KAZ value = 400 } }
 		any_owned = { limit = { is_core = KYR } secede_province = KYR }
 		random_owned = { limit = { owner = { is_our_vassal = KYR } } owner = { release_vassal = KYR } }
@@ -2098,6 +2165,10 @@ country_event = {
 		random_owned = { limit = { owner = { is_our_vassal = KHI } } owner = { release_vassal = KHI } }
 		KHI = { government = absolute_monarchy }
 		PER = { relation = { who = KHI value = 400 } diplomatic_influence = { who = KHI value = 400 } }
+		any_owned = { limit = { is_core = DRV } secede_province = DRV }
+		random_owned = { limit = { owner = { is_our_vassal = DRV } } owner = { release_vassal = DRV } }
+		DRV = { government = absolute_monarchy }
+		PER = { relation = { who = DRV value = 400 } diplomatic_influence = { who = DRV value = 400 } }
 		any_owned = { limit = { is_core = KKP } secede_province = KKP }
 		random_owned = { limit = { owner = { is_our_vassal = KKP } } owner = { release_vassal = KKP } }
 		KKP = { government = absolute_monarchy }
@@ -2125,7 +2196,7 @@ country_event = {
 	}
 
     option = {
-        name = "Let the Georgians man the Gates! §GLose 1 infamy§W"
+        name = "Let the Georgians guard the Gates! §GLose 1 infamy§W"
 		badboy = -1
 		1091 = { remove_core = PER add_core = GEO secede_province = GEO }
 		3427 = { remove_core = PER add_core = GEO secede_province = GEO }
