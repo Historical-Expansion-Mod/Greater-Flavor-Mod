@@ -33,14 +33,17 @@ political_decisions = {
 			3355 = { add_core = PER }
 			3356 = { add_core = PER }
 			4194 = { add_core = PER }
+			ENG = {
+				leave_alliance = HRT
+				diplomatic_influence = { who = HRT value = -300 }
+			}
 			random_owned = {
 				limit = { owner = { civilized = no } }
 				owner = { military_reform = yes_foreign_officers activate_technology = military_staff_system }
 			}
-			release_vassal = HRT
 			war = {
 				target = HRT
-				attacker_goal = { casus_belli = annex_core_country }
+				attacker_goal = { casus_belli = make_puppet_no_add_wargoal }
 				defender_goal = { casus_belli = humiliate_no_infamy }
 				call_ally = yes
 			}
@@ -402,9 +405,12 @@ political_decisions = {
                 is_vassal = no
                 NOT = { vassal_of = ENG }
             }
-            NOT = { war_exhaustion = 1 }
-            NOT = { year = 1855 }
-            NOT = { has_country_flag = anglo_afghan_war }
+            NOT = { 
+				war_exhaustion = 1
+				year = 1855
+				has_country_flag = anglo_afghan_war
+				has_global_flag = afghans_on_witness_protection
+			}
         }
 
         allow = {
@@ -1116,7 +1122,7 @@ political_decisions = {
 				AND = { tag = BUK KOK = { exists = no } KHI = { exists = no } }
 				AND = { tag = KHI BUK = { exists = no } KOK = { exists = no } }
 				AND = { tag = KUN BUK = { exists = no } KOK = { exists = no } KHI = { exists = no } }
-				AND = { tag = KSJ BUK = { exists = no } KOK = { exists = no } KHI = { exists = no } KAZ = { exists = no } }
+				AND = { tag = KSJ KAZ = { exists = no } BUK = { exists = no } KOK = { exists = no } KHI = { exists = no } }
 				AND = { tag = KYR BUK = { exists = no } KOK = { exists = no } KHI = { exists = no } }
 				AND = { tag = KUN BUK = { exists = no } KOK = { exists = no } KHI = { exists = no } }
 				AND = { tag = BDK BUK = { exists = no } KOK = { exists = no } KHI = { exists = no } }
@@ -1347,5 +1353,45 @@ political_decisions = {
 			country_event = 700700
 		}
         ai_will_do = { factor = 1 }
+	}
+	
+	kabul_resident = {
+		picture = kabul_court
+		potential = {
+			OR = { tag = ENG tag = ENL }
+			has_country_flag = control_over_kabul
+			NOT = { 
+				has_country_flag = kabul_resident
+				AFG = {
+					OR = {
+						government = absolute_empire
+						government = semi_constitutional_empire
+						government = constitutional_empire
+					}
+				}
+			}
+		}
+		
+		allow = {
+			war = no
+			invention = the_dark_continent
+			AFG = {
+				war = no
+				in_sphere = THIS
+				OR = { is_vassal = no vassal_of = THIS }
+			}
+		}
+		
+		effect = {
+			badboy = 5
+			prestige = 5
+			create_vassal = AFG
+			create_alliance = AFG
+			diplomatic_influence = { who = AFG value = 400 }
+			clr_country_flag = colony_exemption
+			set_country_flag = kabul_resident
+			AFG = { all_core = { add_core = HND } }
+		}
+		ai_will_do = { factor = 1 modifier = { factor = 0 badboy = 0.8 } }
 	}
 }
