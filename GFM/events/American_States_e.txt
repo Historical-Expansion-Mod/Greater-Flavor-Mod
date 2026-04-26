@@ -825,4 +825,162 @@ country_event = {
 			}
 		}
 	}
-}
+	}
+#The new lands in alt Guadalupe Hidalgo treaty
+country_event = {
+    id = 620261
+    title = "The Sonoran and Rio Grande Colonies"
+    desc = "620261_desc"
+    picture = "tex_event"
+
+    fire_only_once = yes
+    mean_time_to_happen = { months = 1 }
+
+    trigger = {
+		year = 1840
+        tag = USA
+		has_country_flag = treaty_of_guadalupe_hidalgo
+		2138 = { is_core = USA }
+		98 = { is_core = USA }
+		2132 = { is_core = USA }
+		2150 = { is_core = USA }
+        NOT = { has_global_flag = american_civil_war_has_happened }
+    }
+
+    option = {
+        name = "We welcome them to the Union!"
+		MEX_2138 = { add_core = SON }
+		2143 = { add_core = SON }
+		2142 = { add_core = SON }
+		2145 = { add_core = SON }
+		2154 = { add_core = SON }
+		SON = { primary_culture = dixie 
+				remove_accepted_culture = mexican 
+				remove_accepted_culture = norteno }
+		3456 = { add_core = CAL }
+		2139 = { add_core = CAL }
+		2138 = { add_core = CAL }
+		MEX_2149 = { add_core = RGR }
+		MEX_2149 = { change_region_name = "Rio Grande" }
+		138 = { trade_goods = cotton }
+		2151 = { trade_goods = cotton }
+		2150 = { add_province_modifier = { name = small_immigration_boom duration = 365 } }
+		2150 = { add_province_modifier = { name = small_immigration_boom duration = 365 } }
+		3973 = { add_core = RGR }
+		2144 = { add_core = RGR }
+		4060 = { add_core = RGR } 
+		RGR = { primary_culture = dixie 
+		remove_accepted_culture = norteno 
+		remove_accepted_culture = yucatanean } }
+		
+		ai_chance = { factor = 1 }
+	}
+#The new states secede
+country_event = {
+    id = 620262
+    title = "Sonora and Rio Grande secede!"
+    desc = "620262_desc"
+    picture = "tex_event"
+
+    fire_only_once = yes
+    mean_time_to_happen = { months = 1 }
+
+    trigger = {
+		tag = USA
+		has_country_flag = treaty_of_guadalupe_hidalgo
+		has_global_flag = acw_war_started
+		MEX_2138 = { is_core = SON }
+		2154 = { owned_by = USA }
+		MEX_2149 = { owned_by = USA }
+        NOT = { has_global_flag = american_civil_war_has_happened }
+		mean_time_to_happen = { days = 10 }
+    }
+
+    option = {
+        name = "Even Mexican territories? This is getting out of control!"
+		any_owned = { limit = { is_core = SON 
+								owned_by = USA } 
+												add_core = CSA }
+												
+		any_owned = { limit = { is_core = SON 
+								owned_by = USA } 
+												secede_province = SON }
+												
+		CSA = { create_vassal = SON }
+		USA = { influence = { who = SON value = 400 } }
+		
+		any_owned = { limit = { is_core = RGR 
+								owned_by = USA }
+								add_core = CSA }
+								
+		any_owned = { limit = { is_core = RGR
+								owned_by = USA	
+								NOT = 138 } 
+												secede_province = RGR }
+		CSA = { create_vassal = RGR }
+		USA = { influence = { who = RGR value = 400 } }
+		SON = { all_core = { remove_core = USA } }
+		RGR = { all_core = { remove_core = USA } }
+		USA = { set_country_flag = sam_houston_border_secession }
+			}
+		ai_chance = { factor = 1 }
+	}
+
+#They rejoin the USA 	
+country_event = {
+    id = 620263
+    title = "The fate of our southern states!"
+    desc = "620263_desc"
+    picture = "tex_event"
+
+    fire_only_once = yes
+    mean_time_to_happen = { months = 1 }
+
+    trigger = {
+		tag = USA
+		has_country_flag = sam_houston_border_secession
+		SON = { in_sphere = USA }
+		RGR = { in_sphere = USA }
+		CSA = { OR = { exists = no 
+					   has_country_flag = confederate_cuba } }
+						mean_time_to_happen = { days = 10 }
+    }
+
+    option = {
+        name = "They will be spared of radical reconstruction."
+		 = { inherit = USA }
+		 RGR = { add_core = USA }
+		 SON = { add_core = USA }
+		USA = { inherit = SON
+				inherit = RGR 
+				set_country_flag = sam_houston_states_rejoin_USA }
+			}
+		ai_chance = { factor = 1 }
+	}
+#They join the CSA
+country_event = {
+    id = 620264
+    title = "The problem with our southern states"
+    desc = "620264_desc"
+    picture = "tex_event"
+
+    fire_only_once = yes
+    mean_time_to_happen = { months = 1 }
+
+    trigger = {
+		tag = CSA
+		truce_with = USA 
+		USA = { has_country_flag = sam_houston_border_secession }
+		SON = { exists = yes }
+		RGR = { exists = yes }
+		mean_time_to_happen = { days = 10 }
+    }
+
+    option = {
+        name = "They will be brought into the fold."
+		CSA = { inherit = SON 
+				inherit = RGR
+				set_country_flag = sam_houston_states_join_CSA }
+			}
+		ai_chance = { factor = 1 }
+	}
