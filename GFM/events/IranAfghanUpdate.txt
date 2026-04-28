@@ -877,6 +877,47 @@ province_event = {
     }
 }
 
+province_event = {
+    id = 6002121
+    title = "Ka'bi Dominion over Arabestan"
+    desc = "EVTDESC6002121"
+
+    trigger = {
+        owned_by = PER
+		year = 1840
+		KHZ = { vassal_of = PER }
+		AND = {
+			is_core = KHZ
+			OR = {
+				province_id = 932
+				province_id = 935
+				province_id = 3999
+			}
+		}
+		owner = { war = no }
+    }
+
+    mean_time_to_happen = { months = 1 }
+
+    option = {
+        name = "So long as they remain loyal..."
+        state_scope = {
+            any_owned = {
+                limit = {
+					OR = {
+						province_id = 932
+						province_id = 935
+						province_id = 3999
+					}
+				}
+				add_core = KHZ
+				secede_province = KHZ
+            }
+        }
+        ai_chance = { factor = 100 }
+    }
+}
+
 country_event = {
     id = 600213
     title = "Consolidation of our Eastern Holdings"
@@ -1689,6 +1730,65 @@ country_event = {
 		prestige = 5
 		HAZ = { all_core = { add_core = THIS } annex_to = THIS }
 		ai_chance = { factor = 1 }
+    }
+}
+
+province_event = {
+    id = 600281
+    title = "Turkmen Raids"
+    desc = "EVTDESC600281"
+
+    trigger = {
+		owner = { tag = PER }
+		NOT ={
+			owner = { has_country_flag = no_more_raids }
+			AND = {
+				KHI = { OR = { exists = no is_vassal = yes slavery = no_slavery } }
+				TKM = { OR = { exists = no is_vassal = yes slavery = no_slavery } }
+				RUS_1196 = { empty = no owner = { OR = { tag = PER slavery = no_slavery } } }
+			}
+		}
+		OR = {
+			region = PER_1148
+			region = PER_3353
+			region = RUS_1196
+			region = AFG_1212
+			province_id = 3528
+			province_id = 1191
+			province_id = 1192
+			province_id = 3501
+			province_id = 1116
+			province_id = 1126
+		}
+		NOT = { has_province_modifier = turkmen_raids }
+    }
+
+    mean_time_to_happen = {
+        months = 72
+        modifier = {
+            factor = 2
+            TKM = { exists = yes }
+        }
+        modifier = {
+            factor = 25
+            owner = { 
+				OR = {
+					relation = { who = TKM value = 100 }
+					relation = { who = KHI value = 100 }
+					war_with = TKM
+				}
+			}
+        }
+        modifier = {
+            factor = 1
+            owner = { NOT = { relation = { who = TKM value = 0 } } }
+        }
+    }
+	
+	option = {
+        name = "The Turkmen must be stopped!"
+		add_province_modifier = { name = turkmen_raids duration = 550 }
+        owner = { prestige = -1 TKM = { capital_scope = { province_event = { id = 52043 days = 0 } } } }
     }
 }
 
