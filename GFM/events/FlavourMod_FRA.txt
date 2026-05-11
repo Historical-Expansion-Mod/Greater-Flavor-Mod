@@ -21,7 +21,7 @@ country_event = {
             country_event = 99955
         }
         set_country_flag = tonkin_campaign_started
-		ai_chance = { factor = 100 }
+		ai_chance = { factor = 1 }
     }
 	option = {
         name = "This is not in our interests."
@@ -368,14 +368,13 @@ country_event = {
     }
 }
 
-#Carribean Federation - French Islands are seized
+#Caribbean Federation - French Islands are seized
 country_event = {
     id = 99992
     title = "EVTNAME99992"
     desc = "EVTDESC99992"
 	picture = "mtq_n_glp"
     major = yes
-	
     is_triggered_only = yes
 
     option = {
@@ -424,7 +423,43 @@ country_event = {
 	picture = "french_triumph"
     major = yes
 
-    is_triggered_only = yes
+	fire_only_once = yes
+	
+	mean_time_to_happen = { days = 1 }
+
+    trigger = {
+		tag = FRA
+		has_country_modifier = rhine_crisis
+		OR = { truce_with = PRU truce_with = NGF truce_with = GER }
+		RHI = {
+            in_sphere = FRA
+			exists = yes
+		}
+		OR = {
+			PRU = { has_country_modifier = recently_lost_war }
+			NGF = { has_country_modifier = recently_lost_war }
+			GER = { has_country_modifier = recently_lost_war }
+		}
+	}
+	
+	immediate = {
+		set_country_flag = hide_tooltip
+		random_owned = {
+			limit = { owner = { has_country_flag = hide_tooltip } }
+			RHI = {
+				prestige = -50
+				any_owned = { limit = { region = PRU_578 } secede_province = THIS }
+				set_country_flag = rhine_vassal
+			}
+			owner = {
+				any_owned = { limit = { region = PRU_578 } secede_province = PRU }
+			}
+            571 = { add_core = RHI }
+            3904 = { add_core = RHI }
+            570 = { add_core = RHI }
+		}
+		clr_country_flag = hide_tooltip
+	}
 
     option = {
         name = "Vive la France!"
@@ -434,12 +469,13 @@ country_event = {
             who = RHI
             value = 400
         }
-        create_alliance = RHI
-		random_owned = { limit = { owner = {
-		RHI = { is_vassal = no }
-		}} owner = { create_vassal = RHI } }
+		PRU_578 = { remove_core = RHI add_core = WES }
+		random_owned = { 
+			limit = { owner = { RHI = { is_vassal = no } } }
+			owner = { create_vassal = RHI } 
+		}
         remove_country_modifier = rhine_crisis
-
+        create_alliance = RHI
         any_country = {
             limit = {
                 owns = 570
@@ -454,6 +490,49 @@ country_event = {
                 truce_with = THIS
             }
             country_event = 99995
+        }
+
+        any_country = {
+            limit = {
+                owns = 395
+                truce_with = THIS
+				OR = {
+					NOT = { owns = 381 }
+					AND = {
+						owns = 381
+						NOT = { owns = 577 }
+						NOT = { owns = 379 }
+						NOT = { owns = 391 }
+					}
+				}
+				OR = {
+					NOT = { owns = 396 }
+					AND = {
+						owns = 396
+						NOT = { owns = 576 }
+					}
+				}
+				OR = {
+					NOT = { owns = 398 }
+					AND = {
+						owns = 398
+						OR = {
+							NOT = { owns = 397 }
+							AND = {
+								owns = 397
+								OR = {
+									NOT = { owns = 3379 }
+									AND = {
+										owns = 3379
+										NOT = { owns = 572 }
+									}
+								}
+							}
+						}
+					}
+				}
+            }
+            country_event = 9999633
         }
     }
 }
@@ -477,6 +556,33 @@ country_event = {
         }
     }
 }
+#The Rhine Crisis - France Wins / Seceding Flauhaut to the French
+country_event = {
+    id = 9999633
+    title = "EVTNAME9999633"
+    desc = "EVTDESC9999633"
+	picture = "french_triumph"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "EVT99993OPTA"
+        prestige = -5
+        any_owned = {
+            limit = {
+				OR = {
+					province_id = 381
+					province_id = 395
+					province_id = 398
+					province_id = 397
+					province_id = 3379
+					province_id = 396
+				}
+			}
+            secede_province = FROM
+        }
+    }
+}
 
 
 #France wants to purchase Annam
@@ -494,12 +600,8 @@ country_event = {
         FROM = {
             random_owned = { limit = { owner = { ai = no } } owner = { treasury = -100000 } }
             random_owned = {
-                limit = { owner = { ai = yes NOT = { check_variable = { which = owed_cash_money value = 1 } } } }
-                owner = { set_variable = { which = owed_cash_money value = 100 } }
-            }
-            random_owned = {
-                limit = { owner = { ai = yes check_variable = { which = owed_cash_money value = 9 } } }
-                owner = { change_variable = { which = owed_cash_money value = 100 } }
+                limit = { owner = { ai = yes } }
+                owner = { set_variable = { which = owed_cash_money value = 1000 } }
             }
         }
         random_owned = {
@@ -521,7 +623,7 @@ country_event = {
             who = FROM
             value = 150
         }
-        ai_chance = { factor = 100 }
+        ai_chance = { factor = 1 }
     }
 
     option = {
@@ -544,10 +646,10 @@ country_event = {
 	allow_multiple_instances = no
 
 	trigger = {
-		primary_culture = french
-		capital = 425
-		is_greater_power = yes
 		has_country_flag = enacted_french_schooling
+		capital = 425
+		primary_culture = french
+		is_greater_power = yes
 		any_owned_province = {
 			is_core = WLL
 			WLL = { exists = no }

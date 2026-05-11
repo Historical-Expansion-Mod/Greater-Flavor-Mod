@@ -15,6 +15,7 @@ country_event = {
     picture = "greatwar"
 
     trigger = {
+        war = yes
         OR = {
             has_country_flag = dismantle_declared
             is_greater_power = yes
@@ -29,7 +30,6 @@ country_event = {
                 }
             }
         }
-        war = yes
         OR = {
             has_country_flag = coalition_member
             mass_politics = 1
@@ -92,6 +92,7 @@ country_event = {
             rank = 16
             has_country_flag = dismantle_declared
         }
+        war = yes
         OR = {
             AND = {
                 has_country_flag = dismantle_declared
@@ -112,7 +113,6 @@ country_event = {
                 }
             }
         }
-        war = yes
         NOT = { has_country_flag = calling_all_allies }
         ai = yes
     }
@@ -431,6 +431,10 @@ country_event = {
             has_country_flag = ultimatum_accepted
             has_country_flag = dismantling_treaty
         }
+        OR = {
+            has_country_flag = ultimatum_accepted
+            has_country_flag = dismantling_treaty
+        }
         war = no
         NOT = {
             tag = GCF
@@ -448,11 +452,6 @@ country_event = {
             tag = DNB
             tag = TUR
             tag = JAP
-            tag = TKG
-        }
-        OR = {
-            has_country_flag = ultimatum_accepted
-            has_country_flag = dismantling_treaty
         }
     }
 
@@ -634,6 +633,13 @@ country_event = {
             BDN = { all_core = {
                 remove_core = BDN add_core = KDS
 			} }
+			random_owned = { limit = { owner = { MKN = { primary_culture = kurdish } } }
+				owner = {
+					MKN = { all_core = {
+						remove_core = MKN add_core = KDS
+					} }
+				}
+			}
             BTL = { all_core = {
                 remove_core = BTL add_core = KDS
 			} }
@@ -650,10 +656,6 @@ country_event = {
 				remove_core = BZD add_core = KDS
 			} }
         }
-        any_country = {
-            limit = { vassal_of = TUR overlord = { tag = THIS } NOT = { tag = KDS } primary_culture = kurdish ai = no KDS = { exists = yes } }
-			country_event = 18482556
-        }
         random_country = {
             limit = { vassal_of = TUR overlord = { tag = THIS } NOT = { tag = KDS } primary_culture = kurdish ai = yes KDS = { exists = no } }
             change_tag = KDS
@@ -669,6 +671,13 @@ country_event = {
             BDN = { all_core = {
                 remove_core = BDN add_core = KDS
 			} }
+			random_owned = { limit = { owner = { MKN = { primary_culture = kurdish } } }
+				owner = {
+					MKN = { all_core = {
+						remove_core = MKN add_core = KDS
+					} }
+				}
+			}
             BTL = { all_core = {
                 remove_core = BTL add_core = KDS
 			} }
@@ -1130,7 +1139,7 @@ country_event = {
                         # }
                     # }
                     # is_greater_power = no
-                    # is_secondary_power = yes
+                    # rank = 16
                     # exists = yes
                     # NOT = { has_country_modifier = recently_lost_war }
                     # is_vassal = no
@@ -1610,6 +1619,57 @@ country_event = {
             }
             leave_alliance = THIS
         }
+			any_country = {
+				limit = {
+					primary_culture = kurdish
+					tag = THIS
+					exists = yes
+					NOT = { KDS = { exists = yes } }
+					NOT = { government = colonial_company }
+					NOT = { tag = KDS }
+					NOT = { tag = SRN }
+					war = no
+					NOT = { has_global_flag = sw_set }
+				}
+				government = absolute_monarchy
+				change_tag = KDS
+				government = absolute_monarchy
+				random_owned = {
+					limit = {
+						owner = {
+							KDS = { vassal_of = TUR }
+						}
+					}
+					owner = {
+						TUR = { release_vassal = KDS }
+					}
+				}
+			}
+			any_country = {
+				limit = {
+					primary_culture = kurdish
+					tag = THIS
+					exists = yes
+					KDS = { exists = yes }
+					NOT = { government = colonial_company }
+					NOT = { tag = KDS }
+					NOT = { tag = SRN }
+					war = no
+					NOT = { has_global_flag = sw_set }
+				}
+				KDS = { inherit = THIS }
+				government = absolute_monarchy
+				random_owned = {
+					limit = {
+						owner = {
+							KDS = { vassal_of = TUR }
+						}
+					}
+					owner = {
+						TUR = { release_vassal = KDS }
+					}
+				}
+			}
         ai_chance = {
             factor = 50
             modifier = {
@@ -1995,7 +2055,7 @@ country_event = {
         any_country = {
             limit = {
                 is_greater_power = no
-                is_secondary_power = yes
+                rank = 16
                 is_vassal = no
                 OR = {
                     truce_with = THIS
@@ -3180,15 +3240,14 @@ country_event = {
         #if Denmark has a truce, it gets Schleswig back
         random_country = {
             limit = {
-                tag = DEN
-                truce_with = THIS
-                THIS = {
-                    OR = {
-                        owns = 370
-                        owns = 371
-						owns = 3862
-                    }
-                }
+				tag = DEN
+				truce_with = THIS
+				OR = {
+					owns = 370
+					owns = 371
+					owns = 3862
+				}
+				CLN = { has_country_flag = danish_schlewig }
             }
             370 = {
                 add_core = DEN
@@ -3205,6 +3264,7 @@ country_event = {
                 remove_core = GER
                 remove_core = GCF
             }
+            CLN = { set_country_flag = danish_schlewig }
         }
 
         #normalize relations with treaty members
@@ -3711,7 +3771,7 @@ country_event = {
                         # }
                     # }
                     # is_greater_power = no
-                    # is_secondary_power = yes
+                    # rank = 16
                     # is_vassal = no
                     # OR = {
                         # truce_with = THIS
@@ -3878,29 +3938,6 @@ country_event = {
                 }
             }
         }
-        random_country = {
-            limit = {
-                tag = TKG
-                exists = yes
-                truce_with = THIS
-            }
-            RUS = {
-                all_core = {
-                    limit = { is_core = TKG }
-                    remove_core = THIS
-                }
-                any_owned = {
-                    limit = { region = JAP_1086 }
-                    remove_core = THIS
-                    add_core = TKG
-                }
-                any_owned = {
-                    limit = { region = CHI_1082 }
-                    remove_core = THIS
-                    add_core = TKG
-                }
-            }
-        }
 
         #If Japan doesn't have a truce, add cores only to Sakhalin but don't remove Russian cores
         random_country = {
@@ -3913,20 +3950,6 @@ country_event = {
                 any_owned = {
                     limit = { region = JAP_1086 }
                     add_core = JAP
-                }
-            }
-        }
-
-        random_country = {
-            limit = {
-                tag = TKG
-                exists = yes
-                NOT = { truce_with = THIS }
-            }
-            RUS = {
-                any_owned = {
-                    limit = { region = JAP_1086 }
-                    add_core = TKG
                 }
             }
         }
@@ -3947,6 +3970,9 @@ country_event = {
                 remove_core = RUS
             }
             707 = {
+                remove_core = RUS
+            }
+            362 = {
                 remove_core = RUS
             }
             719 = {
@@ -3970,6 +3996,9 @@ country_event = {
                 remove_core = RUS
             }
             707 = {
+                remove_core = RUS
+            }
+            362 = {
                 remove_core = RUS
             }
             719 = {
@@ -5063,7 +5092,7 @@ country_event = {
                         # }
                     # }
                     # is_greater_power = no
-                    # is_secondary_power = yes
+                    # rank = 16
                     # is_vassal = no
                     # OR = {
                         # truce_with = THIS
@@ -5802,7 +5831,7 @@ country_event = {
                         # }
                     # }
                     # is_greater_power = no
-                    # is_secondary_power = yes
+                    # rank = 16
                     # is_vassal = no
                     # OR = {
                         # truce_with = THIS
@@ -6537,7 +6566,7 @@ country_event = {
                         # }
                     # }
                     # is_greater_power = no
-                    # is_secondary_power = yes
+                    # rank = 16
                     # is_vassal = no
                     # OR = {
                         # truce_with = THIS
@@ -6617,10 +6646,7 @@ country_event = {
     major = yes
 
     trigger = {
-        OR = {
-            tag = JAP
-            tag = TKG
-        }
+		tag = JAP
         OR = {
             has_country_modifier = great_war
             has_country_modifier = great_war2
@@ -7192,7 +7218,7 @@ country_event = {
                         # }
                     # }
                     # is_greater_power = no
-                    # is_secondary_power = yes
+                    # rank = 16
                     # is_vassal = no
                     # OR = {
                         # truce_with = THIS
@@ -7384,6 +7410,7 @@ country_event = {
                 OR = {
                     is_core = ALD
                     is_core = RGA
+                    is_core = LBY
                 }
             }
             remove_core = THIS
@@ -8026,7 +8053,7 @@ country_event = {
                         # }
                     # }
                     # is_greater_power = no
-                    # is_secondary_power = yes
+                    # rank = 16
                     # is_vassal = no
                     # OR = {
                         # truce_with = THIS
@@ -8821,7 +8848,7 @@ country_event = {
                         # }
                     # }
                     # is_greater_power = no
-                    # is_secondary_power = yes
+                    # rank = 16
                     # is_vassal = no
                     # OR = {
                         # truce_with = THIS
@@ -9292,6 +9319,7 @@ country_event = {
                     tag = ASY
                     tag = CYP
                     tag = SYR
+                    tag = JZR
                     tag = LBN
                     tag = PLS
                     tag = JOR
@@ -9808,7 +9836,7 @@ country_event = {
                         # }
                     # }
                     # is_greater_power = no
-                    # is_secondary_power = yes
+                    # rank = 16
                     # is_vassal = no
                     # OR = {
                         # truce_with = THIS
@@ -10093,8 +10121,8 @@ country_event = {
 
     trigger = {
         is_greater_power = yes
-        is_disarmed = no
         mass_politics = 1
+        is_disarmed = no
         any_greater_power = {
             is_disarmed = no
             NOT = { relation = { who = THIS value = -100 } }
@@ -10224,8 +10252,8 @@ country_event = {
 
     trigger = {
         is_greater_power = yes
-        is_disarmed = no
         mass_politics = 1
+        is_disarmed = no
         any_greater_power = {
             is_disarmed = no
             NOT = { relation = { who = THIS value = -100 } }
@@ -11067,14 +11095,7 @@ country_event = {
 
     trigger = {
         has_country_modifier = punitive_effects
-        OR = {
-            government = hms_government
-            government = prussian_constitutionalism
-            government = absolute_monarchy
-            government = absolute_empire
-            government = semi_constitutional_empire
-            government = constitutional_empire
-        }
+        has_country_flag = monarchy_government
         NOT = {
             has_country_flag = end_of_monarchy
             num_of_revolts = 1

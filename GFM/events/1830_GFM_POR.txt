@@ -148,10 +148,11 @@ country_event = {
     fire_only_once = yes
 
     trigger = {
-		tag = POR
 		year = 1831
+		tag = POR
 		month = 7
 		NOT = { year = 1836 }
+		MPR = { exists = no }
     }
 
     mean_time_to_happen = { days = 1 }
@@ -192,10 +193,10 @@ country_event = {
     fire_only_once = yes
 
     trigger = {
-		tag = POR
-		owns = 518
-		MPR = { vassal_of = THIS owns = 2134 }
 		year = 1832
+		tag = POR
+		MPR = { vassal_of = THIS owns = 2134 }
+		owns = 518
 		month = 6
 		NOT = { year = 1836 }
     }
@@ -223,6 +224,7 @@ country_event = {
 			political_reform = underground_parties
 			political_reform = none_voting
 		}
+	    ai_chance = { factor = 1 }
     }
 
 	option = { # Change tag to Liberal Portugal
@@ -247,6 +249,7 @@ country_event = {
 			political_reform = none_voting
 		}
 		change_tag_no_core_switch = MPR
+	    ai_chance = { factor = 0 }
     }
 }
 
@@ -324,10 +327,10 @@ country_event = {
     fire_only_once = yes
 
     trigger = {
-		tag = POR
 		year = 1833
-		month = 6
+		tag = POR
 		owns = 521
+		month = 6
 		NOT = { year = 1836 }
     }
 
@@ -432,18 +435,44 @@ country_event = {
     fire_only_once = yes
 
     trigger = {
-		tag = POR
-	    has_global_flag = eighteenthirty_startdate
 		OR = {
-			MPR = { exists = no }
-			all_core = {
+			AND = {
+				tag = MPR
 				OR = {
-					controlled_by = THIS
-					province_id = 2134
+					AND = {
+						NOT = { war_with = POR }
+						POR = { exists = yes }
+					}
+					POR = { government = hms_government }
+					POR = { government = prussian_constitutionalism }
+					POR = { exists = no }
+					all_core = {
+						OR = {
+							controlled_by = THIS
+							province_id = 2135
+							province_id = 1498
+							province_id = 3287
+						}
+					}
+				}
+			}
+			AND = {
+				tag = POR
+				OR = {
+					MPR = { exists = no }
+					MPR = { government = absolute_monarchy }
+					all_core = {
+						OR = {
+							controlled_by = THIS
+							province_id = 2134
+						}
+					}
 				}
 			}
 		}
+		has_global_flag = eighteenthirty_startdate
 		has_global_flag = portugal_trolstarts
+		NOT = { has_global_flag = porended }
 		NOT = { has_global_flag = por_liberal_victory has_global_flag = por_absolutist_victory }
     }
 
@@ -451,74 +480,64 @@ country_event = {
 
     option = {
         name = "PORLOSESOPT"
+		set_global_flag = porended
 		random_owned = {
 			limit = {
-				owner = { MPR = { exists = yes } }
+				owner = { tag = POR MPR = { exists = no } }
 			}
-			owner = { POR = { inherit = MPR } }
+			owner = { 
+				end_war = MPR
+				MPR = { all_core = { remove_core = MPR } }
+				any_pop = { militancy = -10 }
+				POR = { capital = 521 political_reform = none_voting }
+				set_global_flag = por_absolutist_victory
+			}
 		}
-		MPR = { all_core = { remove_core = MPR } }
-		any_pop = { militancy = -10 }
-		POR = { capital = 521 political_reform = none_voting }
-		set_global_flag = por_absolutist_victory
+		random_owned = {
+			limit = {
+				owner = { tag = POR MPR = { exists = yes } }
+			}
+			owner = {
+				end_war = MPR
+				MPR = { all_core = { remove_core = MPR } }
+				any_pop = { militancy = -10 }
+				POR = { capital = 521 political_reform = none_voting }
+				set_global_flag = por_absolutist_victory
+				POR = { inherit = MPR }
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = { tag = MPR POR = { exists = no } }
+			}
+			owner = { 
+				end_war = POR
+				any_pop = { militancy = -10 }
+				set_global_flag = por_liberal_victory
+				MPR = { all_core = { remove_core = MPR add_core = POR } }
+				change_tag = POR
+				ruling_party_ideology = liberal
+				POR = { capital = 521 }
+			}
+		}
+		random_owned = {
+			limit = {
+				owner = { tag = MPR POR = { exists = yes } }
+			}
+			owner = {
+				end_war = POR
+				any_pop = { militancy = -10 }
+				set_global_flag = por_liberal_victory
+				MPR = { all_core = { remove_core = MPR add_core = POR } }
+				MPR = { inherit = POR }
+				change_tag = POR
+				ruling_party_ideology = liberal
+				POR = { capital = 521 }
+			}
+		}
     }
 }
 
-# Batalha de Asseiceira - fires for (Liberal) Portugal
-country_event = {
-    id = 16051960
-    title = "The Battle of Asseiceira"
-    desc = "MPRLOSES"
-    picture = "battle_asseceira"
-
-    fire_only_once = yes
-
-    trigger = {
-		tag = MPR
-	    has_global_flag = eighteenthirty_startdate
-		OR = {
-			AND = {
-				NOT = { war_with = POR }
-				POR = { exists = yes }
-			}
-			AND = {
-				POR = { exists = no }
-			}
-			all_core = {
-				OR = {
-					controlled_by = THIS
-					province_id = 2135
-					province_id = 1498
-					province_id = 3287
-				}
-			}
-		}
-		has_global_flag = portugal_trolstarts
-		NOT = { has_global_flag = por_liberal_victory has_global_flag = por_absolutist_victory }
-    }
-
-    mean_time_to_happen = { days = 1 }
-
-    option = {
-        name = "MPRLOSESOPT"
-		any_pop = { militancy = -10 }
-		random_owned = {
-			limit = {
-				owner = { POR = { exists = yes } }
-			}
-			owner = { MPR = { inherit = POR } }
-		}
-		set_global_flag = por_liberal_victory
-		MPR = { all_core = { remove_core = MPR add_core = POR } }
-		change_tag = POR
-		ruling_party_ideology = liberal
-		political_reform = appointed
-		political_reform = landed_voting
-		political_reform = no_meeting
-		political_reform = non_secret_ballots
-		POR = { capital = 521 }
-    }
-}
 country_event = {
     id = 184823113
     title = "Raid Lourenço Marques?"
@@ -533,6 +552,7 @@ country_event = {
 		POR = {
 			owns = 3919
 			owns = 2049
+			NOT = { owns = 2114 }
 		}
 		year = 1833
 		NOT = { year = 1835 }
@@ -583,7 +603,7 @@ country_event = {
         }
 	}
     option = {
-        name = "Take it back at any cost. §RGain 8 infamy§W"
+        name = "Take it back at any cost. §RGain 3 infamy§W"
 		ZUL = { release_vassal = TSN }
 		casus_belli = {
 			target = TSN
@@ -605,7 +625,7 @@ country_event = {
             attacker_goal = { casus_belli = establish_protectorate_NI_casus_belli }
             defender_goal = { casus_belli = humiliate_no_infamy }
         }
-		badboy = 8
+		badboy = 3
 		FROM = { country_event = 184823116 }
         ai_chance = {
             factor = 0
@@ -654,6 +674,7 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
+		year = 1834
 		tag = GAZ
 		owns = 2050
 		owns = 2052
@@ -661,7 +682,6 @@ country_event = {
 			owns = 2051
 			owns = 2049
 		}
-		year = 1834
 		NOT = { year = 1836 }
 		NOT = { war_with = POR }
 	}
@@ -745,8 +765,8 @@ country_event = {
     fire_only_once = yes
 
     trigger = {
-		tag = POR
 		has_global_flag = por_liberal_victory
+		tag = POR
 		year = 1834
 		month = 8
 		NOT = { year = 1836 }

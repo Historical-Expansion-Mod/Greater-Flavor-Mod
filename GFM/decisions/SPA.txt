@@ -1,4 +1,44 @@
 political_decisions = {
+	tarfaya_purchase = {
+        picture = tarfaya_purchase
+        potential = {
+			owns = 1696
+			NOT = { owns = 3682 }
+            NOT = { has_global_flag = tarfaya_purchase }
+        }
+
+        allow = {
+			3682 = {
+				owner = {
+					NOT = {
+						war_with = THIS
+						truce_with = THIS
+					}
+					war = no
+				}
+			}
+			OR = {
+				money = 50000
+				ai = yes
+			}
+            war = no
+			is_vassal = no
+			OR = {
+				year = 1895
+				AND = {
+					year = 1890
+					3682 = { owner = { alliance_with = THIS } }
+				}
+			}
+        }
+
+        effect = {
+            set_global_flag = tarfaya_purchase
+            3682 = { owner = { country_event = 325501 } }
+        }
+        ai_will_do = { factor = 1 }
+    }
+
     falangist_doctrine = {
 		picture = falangist_doctrine
         potential = {
@@ -115,24 +155,17 @@ political_decisions = {
                 tag = SPC
                 tag = IBR
             }
-            OR = { mass_politics = 1 year = 1907 }
+            OR = { mass_politics = 1 year = 1906 }
             MOR = {
+                OR = { part_of_sphere = yes AND = { part_of_sphere = no FRA = { any_owned_province = { is_core = MOR } } } }
                 ai = yes
                 exists = yes
-                part_of_sphere = yes
                 NOT = { in_sphere = THIS }
                 sphere_owner = { capital_scope = { continent = europe } }
                 sphere_owner = { NOT = { tag = TUR } }
                 sphere_owner = { NOT = { tag = RUS } }
             }
-            OR = {
-                government = hms_government
-                government = prussian_constitutionalism
-                government = absolute_monarchy
-                government = absolute_empire
-                government = semi_constitutional_empire
-                government = constitutional_empire
-            }
+            has_country_flag = monarchy_government
             NOT = { has_country_flag = moroccan_question }
 			NOT = { has_global_flag = colonial_railroading_disabled }
         }
@@ -143,7 +176,15 @@ political_decisions = {
 
         effect = {
             set_country_flag = moroccan_question
-            MOR = { sphere_owner = { country_event = 971700 } }
+            random_owned = {
+                limit = { owner = { MOR = { part_of_sphere = yes } } }
+                owner = { MOR = { sphere_owner = { country_event = 971700 } } }
+            }
+            random_owned = {
+                limit = { owner = { MOR = { part_of_sphere = no } } }
+                owner = { FRA = { country_event = 971700 } }
+            }
+            
         }
         ai_will_do = { factor = 1 }
     }
@@ -157,12 +198,7 @@ political_decisions = {
                 tag = IBR
             }
             OR = {
-                government = hms_government
-                government = prussian_constitutionalism
-                government = absolute_monarchy
-                government = absolute_empire
-                government = semi_constitutional_empire
-                government = constitutional_empire
+                has_country_flag = monarchy_government
                 government = presidential_dictatorship
                 government = fascist_dictatorship
                 government = proletarian_dictatorship
@@ -262,9 +298,43 @@ political_decisions = {
             prestige = 2
             1773 = { secede_province = THIS add_core = MOR any_pop = { literacy = -0.99 } }
             1774 = { secede_province = THIS add_core = MOR any_pop = { literacy = -0.99 } }
-			any_country = { limit = { owns = 3833 civilized = yes } country_event = 18482476 }
-			any_country = { limit = { owns = 3833 tag = MOR } country_event = 184824761 }
-			any_country = { limit = { owns = 3833 tag = WSA } country_event = 184824761 }
+			any_country = { limit = { owns = 3833 civilized = yes is_vassal = no } country_event = 18482476 }
+			any_country = { limit = { owns = 3833 civilized = no tag = MOR is_vassal = no } country_event = 184824761 }
+			any_country = { limit = { owns = 3833 civilized = no tag = MOR is_vassal = yes overlord = { OR = { ai = yes NOT = { rank = 20 } } } } overlord = { country_event = 184824761 } }
+			any_country = {
+				limit = { owns = 3833 civilized = no tag = MOR is_vassal = yes overlord = { tag = THIS } }
+				any_owned = {
+					limit = {
+						OR = {
+							province_id = 3833
+							province_id = 1696
+							province_id = 3682
+						}
+					}
+					secede_province = THIS
+					secede_province = UTI
+				}
+				THIS = { inherit = UTI }
+				UTI = { all_core = { remove_core = UTI } }
+			}
+			any_country = { limit = { owns = 3833 civilized = no tag = WSA is_vassal = no } country_event = 184824761 }
+			any_country = { limit = { owns = 3833 civilized = no tag = WSA is_vassal = yes overlord = { OR = { ai = yes NOT = { rank = 20 } tag = MOR } } } overlord = { country_event = 184824761 } }
+			any_country = {
+				limit = { owns = 3833 civilized = no tag = WSA is_vassal = yes overlord = { tag = THIS } }
+				any_owned = {
+					limit = {
+						OR = {
+							province_id = 3833
+							province_id = 1696
+							province_id = 3682
+						}
+					}
+					secede_province = THIS
+					secede_province = UTI
+				}
+				THIS = { inherit = UTI }
+				UTI = { all_core = { remove_core = UTI } }
+			}
 			3833 = { add_core = MOR }
 			3682 = { add_core = MOR }
 			3834 = { add_core = MOR }
@@ -279,6 +349,7 @@ political_decisions = {
             OR = {
                 is_greater_power = yes
                 owns = 517
+				primary_culture = spanish
             }
             capital_scope = { continent = europe }
             colonial_nation = yes
@@ -292,6 +363,7 @@ political_decisions = {
                     OR = {
                         is_greater_power = no
                         primary_culture = spanish
+						primary_culture = french
                     }
                 }
             }
@@ -304,7 +376,7 @@ political_decisions = {
         }
 
         allow = {
-            blue_and_brown_water_schools = 1
+            OR = { blue_and_brown_water_schools = 1 year = 1910 }
             war = no
         }
 
@@ -325,6 +397,7 @@ political_decisions = {
                         }
                         owns = 1686
                     }
+					exists = yes
                 }
                 country_event = 81002215
             }
@@ -480,4 +553,52 @@ political_decisions = {
         }
         ai_will_do = { factor = 1 }
     }
+	
+	prop_up_french_bourbons = {
+		picture = july_ordinances
+		potential = {
+			ai = no
+			OR = { 
+				tag = SPC
+				AND = {
+					tag = IBR
+					has_country_flag = carlist_ibr
+				}
+			}
+			NOT = { BOR = { exists = yes } has_country_flag = bourbon_exile has_country_flag = bourbon_exile_restoration }
+		}
+		
+		allow = {
+			is_greater_power = yes
+			nationalism_n_imperialism = 1
+			any_owned_province = {
+				is_core = FRA
+				NOT = { is_core = THIS }
+			}
+			NOT = { truce_with = FRA alliance_with = FRA }
+		}
+		
+		effect = {
+			prestige = 5
+			badboy = 10
+			CLN = { release_vassal = BOR }
+			any_owned = {
+				limit = { is_core = FRA	NOT = { is_core = THIS } }
+				secede_province = BOR
+			}
+			create_alliance = BOR
+			diplomatic_influence = { who = BOR value = 400 }
+			FRA = { all_core = { add_core = BOR } country_event = 8008842 }
+			set_country_flag = bourbon_exile_restoration
+			set_global_flag = french_succession_war
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.6
+			}
+		}
+	}
+
 }

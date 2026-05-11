@@ -7,10 +7,12 @@ political_decisions = {
         picture = franco_prussian_memorial
         potential = {
             412 = {
-                OR = {
-                    owned_by = THIS
-                    owner = { vassal_of = THIS }
-                }
+                owner = {
+					OR = {
+						tag = THIS
+						vassal_of = THIS
+					}
+				}
             }
             OR = {
                 tag = GER
@@ -131,16 +133,18 @@ political_decisions = {
         picture = austro_prussian_war
         potential = {
             tag = PRU
-            370 = {
-                OR = {
-                    owned_by = THIS
-                    owner = { vassal_of = THIS }
-                }
-            }
             AUS = {
                 is_greater_power = yes
                 has_cultural_sphere = yes
                 NOT = { war_with = THIS }
+            }
+            370 = {
+                owner = {
+					OR = {
+						tag = THIS
+						vassal_of = THIS
+					}
+				}
             }
             NOT = { has_country_flag = brothers_war_winner }
             NOT = { has_country_flag = begin_austro_prussian_war }
@@ -200,6 +204,7 @@ political_decisions = {
     treaty_of_vienna = {
         picture = form_germany
         potential = {
+            has_global_flag = austrian_refused_unification
             OR = {
                 tag = GER
                 AND = {
@@ -207,7 +212,6 @@ political_decisions = {
                     NOT = { capital = 619 }
                 }
             }
-            has_global_flag = austrian_refused_unification
             war = yes
             OR = {
                 war_with = KUK
@@ -264,7 +268,7 @@ political_decisions = {
                     }
                     exists = yes
                 }
-                country_event = 31520
+                country_event = 315201
             }
             random_country = {
                 limit = {
@@ -302,15 +306,18 @@ political_decisions = {
     bohemian_question = {
         picture = czech_autonomy
         potential = {
-			tag = GER
-            is_possible_vassal = BOH
 			owns = 619
-            NOT = { capital = 619 } #Vienna
+			OR = { 
+				tag = GER
+				tag = GCF
+			}
+            is_possible_vassal = BOH
+            war = no
             NOT = {
                 exists = BOH
                 has_country_flag = no_bohemia_independence
+				has_country_flag = bohemian_question
             }
-            war = no
         }
         allow = {
             revolution_n_counterrevolution = 1
@@ -319,130 +326,207 @@ political_decisions = {
 			is_vassal = no
         }
         effect = {
-            badboy = -5
-            prestige = -20
-            627 = { remove_core = BOH add_core = GER }
-            628 = { remove_core = BOH add_core = GER }
-            629 = { remove_core = BOH add_core = GER }
-            630 = { remove_core = BOH add_core = GER }
-            632 = { remove_core = BOH add_core = GER remove_core = MRV }
-            688 = { remove_core = BOH add_core = GER remove_core = MRV }
-			3426 = { remove_core = BOH add_core = GER remove_core = MRV }
-            PRU_685 = { remove_core = BOH remove_core = MRV }
-            PRU_682 = { remove_core = BOH remove_core = MRV }
-            release_vassal = BOH
-            BOH = {
-                any_pop = {
-                    limit = { is_culture_group = czecho_slovak_culture_group NOT = { has_pop_culture = slovak } }
-                    militancy = -8
-                }
-                all_core = { remove_core = GER }
-            }
-            any_pop = {
-                limit = { is_culture_group = czecho_slovak_culture_group NOT = { has_pop_culture = slovak } }
-                militancy = -3
-            }
-            any_pop = {
-                limit = {
-                    NOT = { is_culture_group = czecho_slovak_culture_group NOT = { has_pop_culture = slovak } }
-                    is_primary_culture = no
-                }
-                militancy = 1
-            }
-            relation = { who = BOH value = 50 }
-            diplomatic_influence = { who = BOH value = 400 }
+			set_country_flag = bohemian_question
+            random_owned = {
+				limit = { owner = { tag = GER } }
+				627 = { remove_core = BOH add_core = GER }
+				628 = { remove_core = BOH add_core = GER }
+				629 = { remove_core = BOH add_core = GER }
+				630 = { remove_core = BOH add_core = GER }
+				632 = { remove_core = BOH add_core = GER remove_core = MRV }
+				688 = { remove_core = BOH add_core = GER remove_core = MRV }
+				3426 = { remove_core = BOH add_core = GER remove_core = MRV }
+				PRU_685 = { remove_core = BOH remove_core = MRV }
+				PRU_682 = { remove_core = BOH remove_core = MRV }
+				owner = {
+					badboy = -5
+					prestige = -20
+					any_pop = {
+						limit = { is_culture_group = czecho_slovak_culture_group NOT = { has_pop_culture = slovak } }
+						militancy = -3
+					}
+					any_pop = {
+						limit = {
+							NOT = { is_culture_group = czecho_slovak_culture_group NOT = { has_pop_culture = slovak } }
+							is_primary_culture = no
+						}
+						militancy = 1
+					}
+					release_vassal = BOH
+					create_alliance = BOH
+					relation = { who = BOH value = 50 }
+					diplomatic_influence = { who = BOH value = 400 }
+				}
+				BOH = {
+					any_pop = {
+						limit = { is_culture_group = czecho_slovak_culture_group NOT = { has_pop_culture = slovak } }
+						militancy = -8
+					}
+					add_accepted_culture = south_german
+					set_country_flag = german_accepted
+					all_core = { remove_core = GER }
+				}
+			}
+			random_owned = {
+				limit = { owner = { tag = GCF } }
+				owner = { country_event = 800829 }
+			}	
         }
 
         ai_will_do = {
             factor = 1
             modifier = {
                 factor = 0
-                GER = {
-                    NOT = { badboy = 0.8 }
-                }
-            }
+                NOT = { badboy = 0.8 }
+			}
         }
     }
+	
+	act_of_5th_november = {
+		picture = polish_mark
+		potential = {
+			tag = GER
+			is_possible_vassal = POL
+			POL = { exists = no }
+			OR = { owns = 706 mass_politics = 1 }
+			NOT = { has_country_flag = act_of_5th_november }
+		}
+		
+		allow = {
+			mass_politics = 1
+			war = no
+			is_vassal = no
+			706 = {
+				owned_by = THIS
+				NOT = { average_militancy = 3 }
+			}
+			POL = {
+				exists = no
+				all_core = {
+					OR = { 
+						owned_by = THIS
+						owner = {
+							AND = {
+								in_sphere = THIS
+								OR = { is_vassal = no vassal_of = THIS }
+							}
+						}
+						owner = { alliance_with = THIS }
+						province_id = 719
+						province_id = 3341
+						province_id = 707
+						province_id = 362
+					}
+				}
+			}
+			OR = {
+				718 = { #Minsk
+					OR = {
+						owned_by = THIS 
+						owner = { 
+							AND = { 
+								in_sphere = THIS
+								OR = { is_vassal = no vassal_of = THIS }
+							}
+						}
+						owner = { truce_with = THIS }
+					}
+				}
+			}
+		}
+		
+		effect = {
+			all_core = { remove_core = POL }
+			719 = { remove_core = POL }
+			RUS_707 = { remove_core = POL }
+			any_country = {
+				limit = { any_owned_province = { region = RUS_715 } }
+				any_owned = { limit = { region = RUS_715 } secede_province = THIS }
+			}
+			any_country = {
+				limit = { in_sphere = THIS any_owned_province = { is_core = POL } }
+				any_owned = { limit = { is_core = POL } secede_province = THIS }
+			}
+			release_vassal = POL
+			create_alliance = POL
+			diplomatic_influence = { who = POL value = 400 }
+			random_owned = {
+				limit = { 
+					owner = { 
+						2584 = { is_core = THIS owned_by = THIS }
+						POL = { owns = 3285 } 
+						NOT = { has_country_flag = frauenstadt_solved } 
+					}
+				}
+				owner = { country_event = 800828 }
+			}
+			random_owned = {
+				limit = { owner = { POL = { owns = 715 } UKR = { owns = 956 exists = yes in_sphere = THIS } } }
+				any_country = {
+					limit = { any_owned_province = { OR = { province_id = 715 province_id = 940 } } }
+					any_owned = { limit = { OR = { province_id = 715 province_id = 940 } } }
+				}
+				owner = {
+					715 = { add_core = UKR secede_province = UKR }
+					940 = { add_core = UKR secede_province = UKR }
+				}
+			}
+			POL = {
+				any_owned = {
+					add_province_modifier = { name = nationalist_agitation duration = 730 }
+					any_pop = { militancy = 5 consciousness = 2 }
+				}
+			}
+			PRU_701 = { add_core = POL }
+			PRU_685 = { add_core = POL }
+			PRU_690 = { add_core = POL }
+			3327 = { add_core = POL }
+			3329 = { add_core = POL }
+			719 = { add_core = POL }
+			RUS_707 = { add_core = POL }
+			688 = { remove_core = POL } #Troppau is not Polish
+			set_country_flag = act_of_5th_november
+			set_global_flag = polish_german_cores_removed
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+
 
     greater_germany_hungarian_border_treaty = {
         picture = gtfo
         potential = {
+            exists = HUN
+            HUN = { OR = { is_vassal = no vassal_of = THIS } }
             OR = {
                 tag = GER
                 tag = GCF
             }
+			owns = 619
             OR = {
-                623 = { is_core = THIS }
-                624 = { is_core = HUN }
-            }
-            OR = {
-                AND = {
-                    623 = { owned_by = THIS }
-                    624 = { owned_by = HUN }
-                }
-                AND = {
-                    623 = { owned_by = THIS }
-                    624 = { owned_by = THIS }
-                }
-                AND = {
-                    623 = { owned_by = HUN }
-                    624 = { owned_by = HUN }
-                }
-            }
-            OR = {
-                AND = {
-                    tag = HUN
-                    rank = 16
-                    state_n_government = 1
-                    AUS = { NOT = { rank = 16 } }
-                }
-                AND = {
-                    is_greater_power = yes
-                    state_n_government = 1
-                    HUN = {
-                        in_sphere = THIS
-                        is_greater_power = no
-                    }
-                }
-            }
-            exists = HUN
-            HUN = { is_vassal = no }
+				623 = { owned_by = HUN }
+				624 = { owned_by = HUN }
+				623 = { is_core = HUN }
+				624 = { is_core = HUN }
+				AND = {
+					owns = 767
+					3282 = { OR = { is_core = HUN owned_by = HUN } }
+				}
+			}
+			is_greater_power = yes
+			state_n_government = 1
+			HUN = {
+				in_sphere = THIS
+			}
             NOT = {
                 exists = AUS
                 exists = KUK
             }
             NOT = { has_country_flag = greater_germany_hungarian_border_treaty_tried }
-            NOT = { has_global_flag = german_confederation_austrian }
         }
 
         allow = {
             state_n_government = 1
-            OR = {
-                AND = {
-                    tag = GER
-                    AUS_619 = { owned_by = THIS }
-                    AUS_623 = { owned_by = HUN }
-                    AUS_641 = { owned_by = HUN }
-                }
-                AND = {
-                    tag = GCF
-                    AUS_619 = { owned_by = THIS }
-                    AUS_623 = { owned_by = HUN }
-                    AUS_641 = { owned_by = HUN }
-                }
-                AND = {
-                    tag = HUN
-                    AUS_619 = { owned_by = GER }
-                    AUS_623 = { owned_by = THIS }
-                    AUS_641 = { owned_by = THIS }
-                }
-                AND = {
-                    tag = HUN
-                    AUS_619 = { owned_by = GCF }
-                    AUS_623 = { owned_by = THIS }
-                    AUS_641 = { owned_by = THIS }
-                }
-            }
             war = no
         }
 
@@ -450,10 +534,7 @@ political_decisions = {
             set_country_flag = greater_germany_hungarian_border_treaty_tried
             random_country = {
                 limit = {
-                    OR = {
-                        tag = THIS
-                        tag = HUN
-                    }
+                    tag = HUN
                     exists = yes
                     neighbour = THIS
                 }
@@ -461,6 +542,10 @@ political_decisions = {
             }
             624 = { add_core = THIS }
 			623 = { add_core = THIS }
+			random_owned = {
+				limit = { owner = { owns = 767 } }
+				3282 = { add_core = THIS }
+			}
         }
         ai_will_do = { factor = 1 }
     }
@@ -500,14 +585,7 @@ political_decisions = {
                     truce_with = THIS
                 }
             }
-            OR = {
-                government = hms_government
-                government = prussian_constitutionalism
-                government = absolute_monarchy
-                government = absolute_empire
-                government = semi_constitutional_empire
-                government = constitutional_empire
-            }
+            has_country_flag = monarchy_government
             NOT = { has_country_flag = ger_ai_banat }
         }
         allow = {
@@ -540,17 +618,13 @@ political_decisions = {
     claim_liechenstein = {
 		picture = form_germany
         potential = {
-            OR = {
-                owns = 614
-                owns = 603
-            }
+            neighbour = LIE
+            is_greater_power = yes
             OR = {
                 tag = GER
                 tag = GCF
             }
-            is_greater_power = yes
             LIE = {
-                exists = yes
                 ai = yes
             }
             NOT = { has_country_flag = claim_liechenstein }
@@ -581,18 +655,13 @@ political_decisions = {
     duchy_of_lorraine = {
         picture = duchy_of_lorraine
         potential = {
+            has_global_flag = lorraine_war
             owns = 411
             owns = 412
             is_culture_group = germanic
-            has_global_flag = lorraine_war
             is_greater_power = yes
             OR = {
-                government = hms_government
-                government = prussian_constitutionalism
-                government = absolute_monarchy
-                government = absolute_empire
-                government = semi_constitutional_empire
-                government = constitutional_empire
+                has_country_flag = monarchy_government
                 government = fascist_dictatorship
             }
             # 411 = { province_control_days = 365 } # I don't it works this way, it needs to be controlled by someone other than the owner
@@ -652,6 +721,7 @@ political_decisions = {
                 truce_with = BEL
             }
             NET = { war_with = BEL }
+			BEL = { is_vassal = no }
         }
 
         effect = {
@@ -665,10 +735,10 @@ political_decisions = {
     treaty_of_amsterdamn = {
         picture = treaty_signing
         potential = {
+            has_global_flag = dutch_prussian_alliance_accepted
             387 = { owned_by = NET }
             is_greater_power = yes
             primary_culture = north_german
-            has_global_flag = dutch_prussian_alliance_accepted
             NOT = { exists = BEL }
             NOT = { has_global_flag = treaty_of_amsterdamn }
         }
@@ -694,7 +764,13 @@ political_decisions = {
         picture = wilhelmshaven
         potential = {
             tag = PRU
-			OLD = { owns = 3259 }
+			OLD = {
+				owns = 3259
+				OR = {
+					is_vassal = no
+					vassal_of = THIS
+				}
+			}
             NOT = { has_country_flag = has_asked_for_jade }
         }
 
@@ -707,6 +783,9 @@ political_decisions = {
                 SWH = { exists = no }
                 year = 1853
             }
+			war = no
+			NOT = { OLD = { truce_with = THIS } }
+			OLD = { war = no }
         }
 
         effect = {
@@ -744,26 +823,38 @@ political_decisions = {
                     steel_railroad = 1
                 }
             }
-            TUR = {
-                war = no
-                owns = 926 #Baghdad
-                is_vassal = no
-                OR = {
-                    government = hms_government
-                    government = prussian_constitutionalism
-                    government = absolute_monarchy
-                    government = absolute_empire
-                    government = semi_constitutional_empire
-                    government = constitutional_empire
-                    alliance_with = THIS
-                }
-                NOT = {
-                    alliance_with = ENG
-                    alliance_with = FRA
-                    alliance_with = BOR
-                    alliance_with = RUS
-                }
-            }
+			OR = {
+				TUR = {
+					war = no
+					owns = 926 #Baghdad
+					is_vassal = no
+					OR = {
+						has_country_flag = monarchy_government
+						alliance_with = THIS
+					}
+					NOT = {
+						alliance_with = ENG
+						alliance_with = FRA
+						alliance_with = BOR
+						alliance_with = RUS
+					}
+				}
+				ALA = {
+					war = no
+					owns = 926 #Baghdad
+					is_vassal = no
+					OR = {
+						has_country_flag = monarchy_government
+						alliance_with = THIS
+					}
+					NOT = {
+						alliance_with = ENG
+						alliance_with = FRA
+						alliance_with = BOR
+						alliance_with = RUS
+					}
+				}
+			}
         }
 
         effect = { country_event = 33005 }
@@ -860,6 +951,7 @@ political_decisions = {
         picture = duchy_of_lorraine
         potential = {
             owns = 410
+            is_greater_power = yes
             owns = 409
             owns = 412
             owns = 3409
@@ -881,18 +973,15 @@ political_decisions = {
 					owns = 413
 				}
 			}
-            is_greater_power = yes
             is_vassal = no
             OR = {
-                government = hms_government
-                government = prussian_constitutionalism
-                government = absolute_monarchy
-                government = absolute_empire
-                government = semi_constitutional_empire
-                government = constitutional_empire
+                has_country_flag = monarchy_government
                 government = fascist_dictatorship
             }
-            NOT = { has_global_flag = lorraine_war }
+            NOT = {
+				has_global_flag = lorraine_war
+				has_global_flag = you_are_playing_mp
+			}
         }
 
         allow = {

@@ -113,12 +113,12 @@ political_decisions = {
 			owns = 800
 			OR = {
 				tag = MON
-				tag = YUG
-				has_country_flag = i_am_slu
 				AND = {
 					tag = SER
 					has_country_flag = claimed_greater_serbia
 				}
+				tag = YUG
+				has_country_flag = i_am_slu
 			}
 			NOT = { 850 = { is_core = THIS } }
 		}
@@ -214,7 +214,7 @@ political_decisions = {
 		picture = montenegro_map
 		potential = {
 			tag = MON
-			SER = { exists = yes is_vassal = no }
+			SER = { is_vassal = no }
 			NOT = {
 				exists = BFR
 				exists = YUG
@@ -232,6 +232,7 @@ political_decisions = {
 				alliance_with = SER
 				SER = { military_score = THIS }
 			}
+			SER = { exists = yes }
 			OR = {
 				AND = {
 					rank = 20
@@ -301,11 +302,7 @@ political_decisions = {
 				exists = YUG
 				exists = BFR
 			}
-			NOT = {
-				government = absolute_monarchy
-				government = prussian_constitutionalism
-				government = hms_government
-			}
+			government = theocracy
 		}
 		allow = {
 			war = no
@@ -323,6 +320,34 @@ political_decisions = {
 		ai_will_do = { factor = 1 }
    }
    
+   MON_restore_pec = {
+		picture = pec_patriarchate
+		potential = {
+			OR = {
+				tag = MON
+				tag = SER
+				tag = YUG
+				tag = BFR
+			}
+            owns = 3420
+			NOT = { religious_policy = pro_atheism religious_policy = secularized has_global_flag = pec_patriarchate_restored }
+		}
+		allow = {
+			war = no
+            is_vassal = no
+		}
+		effect = {
+			set_global_flag = pec_patriarchate_restored
+			prestige = 5
+			any_pop = {
+				limit = { has_pop_religion = orthodox }
+                dominant_issue = { value = moralism factor = 0.05 }
+                consciousness = 0.5
+            }
+		}
+		ai_will_do = { factor = 1 }
+   }
+   
    MON_become_serbia_tsar = {
 		picture = MON_SER_empire
 		potential = {
@@ -332,11 +357,7 @@ political_decisions = {
 				exists = YUG
 				exists = BFR
 			}
-			OR = {
-				government = absolute_monarchy
-				government = prussian_constitutionalism
-				government = hms_government
-			}
+			has_country_flag = monarchy_government
 		}
 		allow = {
 			war = no
@@ -344,6 +365,7 @@ political_decisions = {
             is_disarmed = no
 			neighbour = SER
 			nationalism_n_imperialism = 1
+			has_global_flag = pec_patriarchate_restored
 		}
 		effect = {
 			prestige = 10
@@ -384,16 +406,63 @@ political_decisions = {
 		ai_will_do = { factor = 1 }
    }
    
+   MON_proclaim_kingdom = {
+		picture = nikola_king
+		potential = {
+			tag = MON
+			OR = { government = absolute_empire government = semi_constitutional_empire government = constitutional_empire }
+			NOT = { has_country_flag = MON_kingdom }
+		}
+		allow = {
+			war = no
+			owns = 2569
+			owns = 2577
+			owns = 800
+			owns = 3420
+			OR = {
+				ruling_party_ideology = conservative
+				ruling_party_ideology = reactionary
+				ruling_party_ideology = fascist
+			}
+		}
+		effect = {
+			set_country_flag = MON_kingdom
+			prestige = 10
+			MON = { 
+				random_owned = { limit = { owner = { government = absolute_empire } } owner = { government = absolute_monarchy } }
+				random_owned = { limit = { owner = { government = semi_constitutional_empire } } owner = { government = prussian_constitutionalism } }
+				random_owned = { limit = { owner = { government = constitutional_empire } } owner = { government = hms_government } }
+			}
+			any_pop = {
+				scaled_militancy = {
+					ideology = liberal
+					factor = 2
+				}
+				scaled_militancy = {
+					ideology = radical
+					factor = 4
+				}
+			}
+			any_pop = {
+				limit = {
+					location = { is_colonial = no }
+				}
+				consciousness = 1
+			}
+		}
+		ai_will_do = { factor = 1 }
+	}
+   
    MON_marry_serbia = {
 		picture = nikola_I
 		potential = {
-			tag = MON
 			year = 1880
+			tag = MON
+			has_country_flag = monarchy_government
 			SER = {
 				exists = yes
-				OR = { government = colonial_company government = absolute_monarchy government = prussian_constitutionalism government = hms_government government = absolute_empire government = semi_constitutional_empire government = constitutional_empire }
+				OR = { government = colonial_company has_country_flag = monarchy_government }
 			}
-			OR = { government = absolute_monarchy government = prussian_constitutionalism government = hms_government }
 			NOT = { has_country_flag = MON_married_serbia }
 		}
 		allow = {

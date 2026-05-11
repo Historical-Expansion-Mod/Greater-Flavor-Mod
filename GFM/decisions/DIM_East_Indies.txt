@@ -2,11 +2,11 @@ political_decisions = {
     mess_with_sintang = {
         picture = annex_stg
         potential = {
+			neighbour = STG
             OR = {
 				tag = NET
 				tag = BNF
 			}
-			neighbour = STG
 			is_vassal = no
 			STG = { ai = yes is_vassal = no }
 			NOT = { has_country_flag = sintang_ded }
@@ -80,6 +80,7 @@ political_decisions = {
                 MAL = { vassal_of = THIS exists = yes civilized = no }
                 SAK = { vassal_of = THIS exists = yes civilized = no }
                 SBS = { vassal_of = THIS exists = yes civilized = no }
+                ATJ = { vassal_of = THIS exists = yes civilized = no }
             }
             NOT = { has_global_flag = tidore_integrated }
         }
@@ -92,6 +93,7 @@ political_decisions = {
                 MAL = { vassal_of = THIS exists = yes civilized = no }
                 SAK = { vassal_of = THIS exists = yes civilized = no }
                 SBS = { vassal_of = THIS exists = yes civilized = no }
+                ATJ = { vassal_of = THIS exists = yes civilized = no }
             }
         }
 
@@ -122,6 +124,12 @@ political_decisions = {
                 tech_school = developing_tech_school
                 annex_to = THIS
             }
+            random_country = {
+                limit = { exists = yes tag = ATJ vassal_of = THIS civilized = no }
+                any_pop = { consciousness = 3 militancy = 1 }
+                tech_school = developing_tech_school
+                annex_to = THIS
+            }
             random_owned = {
                 limit = { owner = { owns = 1453 } }
                 owner = {
@@ -140,33 +148,63 @@ political_decisions = {
     the_aceh_question = {
         picture = the_aceh
         potential = {
-			owns = 1909
+            OR = { is_canal_enabled = 2 AND = { ai = yes year = 1872 } }
+            OR = { 
+				owns = 1909
+				neighbour = ATJ
+			}
             OR = {
 				tag = NET
 				tag = BNF
 			}
-            colonial_nation = yes
-            is_canal_enabled = 2
-            neighbour = ATJ
-            ATJ = {
-                exists = yes
-                part_of_sphere = yes
-                civilized = no
-                NOT = { in_sphere = THIS }
-            }
+			OR = {
+				ENG = {
+					any_owned_province = { is_core = ATJ }
+				}
+				ATJ = {
+					exists = yes
+					civilized = no
+				}
+			}
             NOT = { has_global_flag = gold_coast_treaty }
             NOT = { has_global_flag = made_aceh_proposal }
         }
 
         allow = {
             war = no
-            revolution_n_counterrevolution = 1
+            OR = { revolution_n_counterrevolution = 1 AND = { ai = yes year = 1871 } }
         }
 
         effect = {
             set_global_flag = made_aceh_proposal
-            ATJ = { sphere_owner = { country_event = 952503 } }
-        }
+			random_owned = {
+				limit = { 
+					owner = { 
+						owns = 1909
+						ATJ = { OR = { in_sphere = ENG part_of_sphere = no } }
+					}
+				}
+				owner = { ENG = { country_event = 952503 } }
+			}
+			random_owned = {
+				limit = {
+					owner = {
+							NOT = { owns = 1909 }
+						}
+					}
+				owner = { ENG = { country_event = 952508 } }
+			}
+			random_owned = {
+				limit = {
+					owner = {
+							owns = 1909
+							ATJ = { part_of_sphere = yes NOT = { in_sphere = ENG } }
+					}
+				}
+				owner = { ENG = { country_event = 800837 } }
+			}
+		}
+        
         ai_will_do = { factor = 1 }
     }
 
@@ -324,11 +362,11 @@ political_decisions = {
         picture = DIM_cultuurgebied_oost_sumatra
         potential = {
             owns = 1406
+            civilized = no
             OR = {
 				vassal_of = NET
 				vassal_of = BNF
 			}
-            civilized = no
             1406 = { NOT = { has_province_modifier = deli_maatschappij } }
         }
 
@@ -353,13 +391,13 @@ political_decisions = {
         picture = DIM_hadj_tax
         alert = no
         potential = {
+            has_global_flag = regeringsregelement
             owns = 1413
             owns = 1408
 			OR = {
 				tag = NET
 				tag = BNF
 			}
-            has_global_flag = regeringsregelement
             NOT = { has_global_flag = hadj_tax_ended }
         }
 
@@ -407,12 +445,12 @@ political_decisions = {
         picture = DIM_suiker
         alert = no
         potential = {
+            has_global_flag = regeringsregelement
             owns = 1413
 			OR = {
 				tag = NET
 				tag = BNF
 			}
-            has_global_flag = regeringsregelement
             NOT = { slavery = no_slavery }
             NOT = { has_global_flag = slavery_ended_indonesia }
         }
@@ -514,6 +552,7 @@ political_decisions = {
     DIM_NET_new_bungai_treaty = {
         picture = dreams_of_empire
         potential = {
+            year = 1835
             owns = 1430
             OR = {
 				tag = NET
@@ -523,11 +562,16 @@ political_decisions = {
                 ai = yes
                 exists = yes
             }
-            year = 1835
             NOT = { has_global_flag = new_bungaij_treaty }
         }
 
-        allow = { war = no }
+        allow = {
+			war = no
+			SLW = {
+				war = no
+				is_vassal = no
+			}
+		}
 
         effect = {
             badboy = 2

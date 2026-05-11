@@ -2,57 +2,33 @@ political_decisions = {
 	russo_japanese_war = {
 		picture = attack_on_port_arthur
 		potential = {
-			has_country_flag = otsu_incident
-			OR = {
-				tag = TKG
-				tag = JAP
-			}
+			tag = JAP
 			civilized = yes
-			RUS = {
-				is_greater_power = yes
-				owns = 1082
-				owns = 1481
-			}
 			OR = {
-				QNG = {
-					owns = 1479
-					owns = 1480
-					owns = 1552
-					owns = 1553
-					owns = 1554
-					owns = 1555
-					owns = 3440
-					owns = 1533
-					owns = 1879
+				1481 = { owned_by = RUS } 
+				AND = {
+					1481 = { OR = { owned_by = THIS owner = { vassal_of = THIS } } }
+					1082 = { owned_by = RUS }
+					RUS = { has_country_flag = liaodong_crisis }
 				}
-				CHI = {
-					owns = 1479
-					owns = 1480
-					owns = 1552
-					owns = 1553
-					owns = 1554
-					owns = 1555
-					owns = 3440
-					owns = 1533
-					owns = 1879
+				AND = {
+					1481 = { OR = { owned_by = THIS owner = { vassal_of = THIS } } }
+					1082 = { OR = { owned_by = THIS owner = { vassal_of = THIS } } }
+					1080 = { owned_by = RUS }
+					RUS = { has_country_flag = liaodong_crisis }
 				}
-				TPG = {
-					owns = 1479
-					owns = 1480
-					owns = 1552
-					owns = 1553
-					owns = 1554
-					owns = 1555
-					owns = 3440
-					owns = 1533
-					owns = 1879
+				AND = {
+					1481 = { OR = { owned_by = THIS owner = { vassal_of = THIS } } }
+					1082 = { OR = { owned_by = THIS owner = { vassal_of = THIS } } }
+					1080 = { OR = { owned_by = THIS owner = { vassal_of = THIS } } }
+					1072 = { owned_by = RUS }
+					RUS = { has_country_flag = liaodong_crisis }
 				}
 			}
-			NOT = { has_country_flag = only_one_war_with_russia }
+				NOT = { has_country_flag = only_one_war_with_russia }
 		}
 		allow = {
 			has_country_modifier = fukoku_kyohei
-			year = 1904
 			war = no
 			OR = {
 				ai = yes
@@ -60,8 +36,7 @@ political_decisions = {
 			}
 			OR = {
 				has_country_flag = negotiate_ganghwa_treaty
-				KOR = { have_core_in = JAP }
-				KOR = { have_core_in = TKG }
+				JAP = { any_owned_province = { is_core = KOR } }
 				KOR = { vassal_of = THIS }
 				KOR = { in_sphere = THIS }
 				diplomatic_influence = { who = KOR value = 50 }
@@ -77,11 +52,21 @@ political_decisions = {
 			set_country_flag = only_one_war_with_russia
 		}
 
-		ai_will_do = { factor = 1 }
+		ai_will_do = { 
+			factor = 1
+			modifier = {
+				factor = 0 
+				NOT = {
+					year = 1905
+					war = yes
+					war_exhaustion = 25
+					has_country_flag = otsu_incident 
+				}
+			}
+		}
 	}
 
 	remove_jap_and_rus_military_access = {
-
 		potential = {
 			has_country_flag = humble_access_giver
 			OR = {
@@ -93,43 +78,28 @@ political_decisions = {
 				tag = KMT
 				tag = KOR
 			}
-			OR = {
-				AND = {
-					JAP = {
-						war = no
-						military_access = THIS
-					}
-					RUS = {
-						war = no
-						military_access = THIS
-					}
-				}
-				AND = {
-					TKG = {
-						war = no
-						military_access = THIS
-					}
-					RUS = {
-						war = no
-						military_access = THIS
-					}
-				}
+			JAP = {
+				war = no
+				military_access = THIS
+			}
+			RUS = {
+				war = no
+				military_access = THIS
 			}
 			OR = {
 				has_global_flag = rjw_over
-				NOT = { TKG = { has_country_modifier = aggression_against_russia } }
 				NOT = { JAP = { has_country_modifier = aggression_against_russia } }
 			}
-			NOT = { has_country_flag = military_access_cancelled }
+			NOT = { has_country_flag = military_access_canceled }
 		}
 
 		allow = {
-			NOT = { vassal_of = TKG }
-			NOT = { vassal_of = JAP }
-			NOT = { vassal_of = RUS }
-			NOT = { in_sphere = TKG }
-			NOT = { in_sphere = JAP }
-			NOT = { in_sphere = RUS }
+			NOT = {
+				vassal_of = JAP
+				vassal_of = RUS
+				in_sphere = JAP
+				in_sphere = RUS
+			}
 		}
 
 		effect = {
@@ -137,7 +107,6 @@ political_decisions = {
 			any_country = {
 				limit = {
 					OR = {
-						tag = TKG
 						tag = JAP
 						tag = RUS
 						has_country_flag = participating_in_rj_war
@@ -147,7 +116,7 @@ political_decisions = {
 				end_military_access = THIS
 				country_event = 666611
 			}
-			set_country_flag = military_access_cancelled
+			set_country_flag = military_access_canceled
 		}
 		ai_will_do = {
 			factor = 1
@@ -157,13 +126,12 @@ political_decisions = {
 	invade_manchuria = {
 		picture = manchuria_map
 		potential = {
-			has_country_flag = rj_war_victor
+			has_global_flag = rjw_over
 			OR = {
 				tag = JAP
-				tag = TKG
 				tag = RUS
 			}
-			has_global_flag = rjw_over
+			has_country_flag = rj_war_victor
 			OR = {
 				QNG = {
 					any_owned_province = { is_core = MCK }
@@ -184,8 +152,12 @@ political_decisions = {
 					any_owned_province = { is_core = MCK }
 				}
 			}
-			NOT = { has_country_flag = invading_manchuria }
-			NOT = { has_global_flag = annexed_manchuria }
+			NOT = { 
+				has_country_flag = invading_manchuria 
+				has_global_flag = annexed_manchuria
+				has_country_flag = mck_organized 
+				has_country_flag = yellow_russia_project
+			}
 		}
 
 		allow = {
@@ -219,6 +191,7 @@ political_decisions = {
 		}
 
 		effect = {
+			badboy = 10
 			any_country = {
 				limit = {
 					OR = {
@@ -318,11 +291,11 @@ political_decisions = {
 
 		potential = {
 			has_country_flag = rj_war_victor
-			OR = {
-				tag = TKG
-				tag = JAP
+			tag = JAP
+			NOT = { 
+				has_global_flag = japan_trying_to_expel_the_russians
+				has_global_flag = russians_expelled_far_east 
 			}
-			NOT = { has_global_flag = japan_trying_to_expel_the_russians }
 		}
 
 		allow = {
@@ -339,10 +312,9 @@ political_decisions = {
 						is_core = KAM
 						is_core = BRY
 						is_core = LSK
-						province_id = 2645
-						province_id = 2696
-						province_id = 2644
-						province_id = 1087
+						is_core = YAK
+						region = RUS_1075
+						region = JAP_1086
 						province_id = 1088
 						province_id = 1089
 						province_id = 1086
