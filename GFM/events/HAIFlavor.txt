@@ -62,6 +62,7 @@ country_event = {
     option = {
         name = "EVTOPTA45101"
         government = absolute_empire
+		set_country_flag = faustin
         ruling_party_ideology = reactionary
         political_reform = none_voting
         political_reform = party_appointed
@@ -76,6 +77,7 @@ country_event = {
 
 	option = {
 		name = "NO! The republic must stand! The military of Haiti will defend our constitution."
+		set_country_flag = faustin
 		any_pop = {
 			limit = {
 				pop_majority_ideology = reactionary
@@ -182,6 +184,415 @@ country_event = {
 }
 
 country_event = {
+	id = 600260
+	title = "The Plan Levasseur"
+	desc = "EVTDESC600260"
+	picture = "la_trinitaria"
+
+    fire_only_once = yes
+	
+	trigger = {
+		year = 1843
+		months = 12
+		OR = { tag = FRA tag = BOR }
+		HAI = { 
+			exists = yes 
+			owns = 2214
+			owns = 2216
+		}
+        2214 = { is_core = HAI }
+        2216 = { is_core = HAI }
+		DOM = { exists = no }
+	}
+	
+	mean_time_to_happen = { days = 1 }
+	
+	option = {
+		name = "A small price to pay to expand our influence §R(Pay 50,000¤)§W"
+		treasury = -50000
+		set_global_flag = plan_levasseur
+		set_country_flag = plan_levasseur
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "It would be dishonorable to weaken Haiti like that..."
+		prestige = -5
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 600261
+	title = "The Coup of 18 Dominican Brumaire"
+	desc = "EVTDESC600261"
+	picture = "return_of_duarte"
+
+    fire_only_once = yes
+	
+	trigger = {
+		year = 1844
+		tag = DOM
+	}
+	
+	mean_time_to_happen = { months = 2 }
+	
+	option = {
+		name = "Santo Domingo won't exchange one overlord for another!"
+		ruling_party_ideology = liberal
+		any_pop = { ideology = { factor = 0.1 value = liberal } }
+		any_pop = { ideology = { factor = -0.05 value = conservative } }
+		set_country_flag = brumaire_coup
+		random_country = {
+			limit = { OR = { tag = FRA tag = BOR } has_country_flag = plan_levasseur }
+			diplomatic_influence = { who = DOM value = -400 }
+			relation = { who = DOM value = -100 }
+			country_event = 600262
+			clr_country_flag = plan_levasseur
+		}
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600262
+	title = "The Coup of 18 Dominican Brumaire"
+	desc = "EVTDESC600262"
+	picture = "return_of_duarte"
+
+    is_triggered_only = yes
+	
+	option = {
+		name = "Start to pull back on our involvment! The Haitians have no chance anyway!"
+		prestige = -2.5
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Reorganize our assets! Send the Naiade back to Santo Domingo! §R(Pay 75,000¤)"
+		treasury = -75000
+		diplomatic_influence = { who = DOM value = 50 }
+		set_country_flag = dominican_infiltration
+		ai_chance = { factor = 0 }
+	}
+	
+	option = {
+		name = "They will learn to not betray us! We are going all in! §RGain 7.5 infamy§W"
+		badboy = 7.5
+        war = {
+            target = DOM
+            attacker_goal = { casus_belli = make_puppet_no_infamy }
+            defender_goal = { casus_belli = status_quo }
+        }
+		DOM = { country_event = 600266 }
+		relation = { who = USA value = -100 }
+		relation = { who = ENG value = -100 }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 600263
+	title = "Santana's Coup"
+	desc = "EVTDESC600263"
+	picture = "Artillery"
+
+    fire_only_once = yes
+	
+	trigger = {
+		tag = DOM
+		has_country_flag = brumaire_coup
+	}
+	
+	mean_time_to_happen = { days = 10 }
+	
+	option = {
+		name = "The Republic is in good hands!"
+		ruling_party_ideology = conservative
+		any_pop = { ideology = { factor = 0.1 value = conservative } }
+		set_country_flag = santana_troubles
+		clr_country_flag = brumaire_coup
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600264
+	title = "Juan Pablo Duarte: Father of the Republic or Traitor of the Nation?"
+	desc = "EVTDESC600264"
+	picture = "arrested"
+
+    fire_only_once = yes
+	
+	trigger = {
+		tag = DOM
+		has_country_flag = santana_troubles
+	}
+	
+	mean_time_to_happen = { days = 10 }
+	
+	option = {
+		name = "Where was Duarte when we seized Puerta del Conde?"
+		clr_country_flag = santana_troubles
+		set_country_flag = santana_in_power
+		plurality = -5
+		any_pop = { ideology = { factor = -0.1 value = liberal } }
+		add_country_modifier = { name = military_man duration = 2922 }
+		random_owned = {
+			limit = { owner = { has_global_flag = gco_supporting_duarte } }
+			GCO = {
+				diplomatic_influence = { who = DOM value = -400 }
+				relation = { who = DOM value = -100 }
+				country_event = 600265
+				clr_global_flag = gco_supporting_duarte
+			}
+		}
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600265
+	title = "Juan Pablo Duarte is Exiled!"
+	desc = "EVTDESC600265"
+	picture = "return_of_duarte"
+
+    is_triggered_only = yes
+	
+	option = {
+		name = "Grant Duarte a small pension and let the Dominicans chart their own course."
+		prestige = -2.5
+		ai_chance = { factor = 0 }
+	}
+	
+	option = {
+		name = "We will restore Duarte! Declare war on Santana's government! §RGain 2.5 infamy§W"
+		badboy = 2.5
+		set_country_flag = restoring_duarte
+        war = {
+            target = DOM
+            attacker_goal = { casus_belli = make_puppet_no_infamy }
+            defender_goal = { casus_belli = status_quo }
+        }
+		DOM = { country_event = 600266 }
+		relation = { who = USA value = -100 }
+		relation = { who = ENG value = -100 }
+		relation = { who = FRA value = -100 }
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600266
+	title = "$FROMCOUNTRY$ declares war!"
+	desc = "EVTDESC600266"
+	picture = "return_of_duarte"
+
+    is_triggered_only = yes
+	
+	option = {
+		name = "Prepare for the worse..."
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600267
+	title = "The Afrancesado Coup"
+	desc = "EVTDESC600267"
+	picture = "Artillery"
+
+    is_triggered_only = yes
+	
+	option = {
+		name = "The Republic is in good hands!"
+		ruling_party_ideology = reactionary
+		FROM = { 
+			create_vassal = DOM
+			diplomatic_influence = { who = DOM value = 400 }
+		}
+		government = colonial_company
+		add_accepted_culture = french
+		set_country_flag = french_accepted
+		GCO = { clr_country_flag = restoring_duarte }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "We won't stand for this! Launch a countercoup!"
+		FROM = {
+			war = {
+				target = DOM
+				attacker_goal = { casus_belli = make_puppet_no_infamy }
+				defender_goal = { casus_belli = status_quo }
+			}
+		}
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 600268
+	title = "The San Cristóbal's Constitution"
+	desc = "EVTDESC600268"
+	picture = "santo_domingo"
+
+    fire_only_once = yes
+	
+	trigger = {
+		tag = DOM
+		has_country_flag = santana_in_power
+	}
+	
+	mean_time_to_happen = { months = 2 }
+	
+	option = {
+		name = "Santo Domingo is now free and sovereign!"
+		prestige = 5
+		plurality = 5
+		set_country_flag = san_cristobal_const
+		clr_country_flag = santana_in_power
+		random_owned = {
+			limit = { owner = { NOT = { OR = { upper_house_composition =  state_equal_weight upper_house_composition = population_equal_weight } } } }
+			owner = { political_reform = appointed }
+		}
+		random_owned = {
+			limit = { owner = { OR = { vote_franschise =  none_voting vote_franschise = landed_voting } } }
+			owner = { political_reform = wealth_weighted_voting }
+		}
+		political_reform = first_past_the_post
+		political_reform = mandatory_service
+		political_reform = free_press
+		political_reform = yes_meeting
+		political_reform = no_slavery
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600269
+	title = "Santana's Resignation"
+	desc = "EVTDESC600269"
+	picture = "santo_domingo"
+
+    fire_only_once = yes
+	
+	trigger = {
+		tag = DOM
+		has_country_flag = san_cristobal_const
+		year = 1848
+		months = 8
+	}
+	
+	mean_time_to_happen = { days = 4 }
+	
+	option = {
+		name = "He deserves to rest!"
+		remove_country_modifier = military_man
+		add_country_modifier = { name = reluctant_reformer duration = 3650 }
+		any_pop = { ideology = { factor = 0.05 value = liberal } }
+		election = yes
+		set_country_flag = jimenes
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600279
+	title = "The Battle of Las Carreras" 
+	desc = "EVTDESC600279" 
+	picture = "battle_of_las_carreras"
+	fire_only_once = yes
+	
+	mean_time_to_happen = { days = 1 }
+	
+	trigger = {
+		tag = HAI
+		war_with = DOM
+		has_country_flag = faustin_invasion
+	}
+	
+	option = {
+		name = "We will cut our losses for now, but we will be back one day!"
+		prestige = -5
+		end_war = DOM
+		DOM = { country_event = 600280 }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "A small setback such as this won't stop us! §RGain 2.5 infamy§W"
+		prestige = -5
+		badboy = 2.5
+		war_exhaustion = 20
+		DOM = { country_event = 600280 }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 600280
+	title = "The Battle of Las Carreras" 
+	desc = "EVTDESC600280" 
+	picture = "battle_of_las_carreras"
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "That ought to teach them a lesson!"
+		prestige = 5
+		set_country_flag = santana_returned
+		3403 = { sub_unit = { type = artillery value = current } }
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600282
+	title = "The Siege of Santo Domingo" 
+	desc = "EVTDESC600282" 
+	picture = "santo_domingo"
+	fire_only_once = yes
+	
+	mean_time_to_happen = { days = 12 }
+	
+	trigger = {
+		tag = DOM
+		has_country_flag = santana_returned
+	}
+	
+	option = {
+		name = "Santana is our hero! We will rally behind him and Báez!"
+		plurality = -5
+		remove_country_modifier = reluctant_reformer
+		government = democracy
+		2214 = {
+			any_pop = {
+				militancy = 2
+				consciousness = 2
+			}
+		}
+		add_country_modifier = { name = resistance_to_new_regime duration = 12 }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Santana is our hero, but Jimenes is our president!"
+		plurality = -5
+		government = democracy
+		2214 = {
+			any_pop = {
+				militancy = 2
+				consciousness = 2
+			}
+		}
+		add_country_modifier = { name = resistance_to_new_regime duration = 60 }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
 
     id = 45104
     title = "EVTNAME45104"
@@ -217,40 +628,19 @@ country_event = {
             remove_province_modifier = nationalist_agitation
             secede_province = DOM
         }
-        3309 = { secede_province = HAI }
         DOM = {
             define_general = { name = "Pedro Santana" personality = defence_3.1 background = attack_4.1 }
             add_country_modifier = { name = unrecognized_country duration = 3650 }
         }
         relation = { who = DOM value = -400 }
-        random_owned = {
-			limit = {
-				owner = { USA = { exists = yes } }
-				owner = { GCO = { exists = no } }
-			}
-			owner = {
-				USA = {
-					diplomatic_influence = {
-						who = DOM
-						value = 400
-					}
-					relation = { who = DOM value = 200 }
-				}
-			} }
-        random_owned = {
-			limit = {
-			 GCO = { exists = yes }
-			}
-				GCO = {
-					diplomatic_influence = {
-						who = DOM
-						value = 400
-					}
-					relation = { who = DOM value = 200 }
-					country_event = 62040
-				}
-			}
         DOM = {
+			government = prov_gov_conservative
+			treasury = 50000
+			iron = 25
+			wool = 25
+			timber = 50
+			small_arms = 30
+			leadership = 20
             capital_scope = {
                 sub_unit = { type = infantry value = current }
                 sub_unit = { type = infantry value = current }
@@ -263,7 +653,44 @@ country_event = {
                 sub_unit = { type = artillery value = current }
                 sub_unit = { type = artillery value = current }
             }
+			add_country_modifier = { name = small_country_draft duration = 365 }
         }
+		random_owned = {
+			limit = { owner = { has_global_flag = plan_levasseur } }
+			DOM = {
+				iron = 10
+				wool = 10
+				timber = 10
+				small_arms = 10
+				capital_scope = {
+					sub_unit = { type = guard value = current }
+					sub_unit = { type = artillery value = current }
+				}
+				clr_global_flag = plan_levasseur
+			}
+		}
+		random_country = {
+			limit = { OR = { tag = FRA tag = BOR } has_country_flag = plan_levasseur }
+			diplomatic_influence = { who = DOM value = 100 }
+			relation = { who = DOM value = 100 }
+		}
+		random_owned = {
+			limit = { owner = { has_global_flag = gco_supporting_duarte } }
+			DOM = {
+				iron = 15
+				wool = 15
+				timber = 15
+				small_arms = 15
+				capital_scope = {
+					sub_unit = { type = guard value = current }
+					sub_unit = { type = artillery value = current }
+				}
+			}
+			GCO = {
+				diplomatic_influence = { who = DOM value = 100 }
+				relation = { who = DOM value = 100 }
+			}
+		}
 		casus_belli = { target = DOM type = conquest months = 36 }
         war = {
             target = DOM
@@ -275,6 +702,8 @@ country_event = {
 
     option = {
         name = "EVT45104OPTB"
+        set_country_flag = DOM_revolt
+        set_country_flag = dominican_revolution
         remove_accepted_culture = caribeno
         remove_accepted_culture = afro_latino
         any_owned = {
@@ -285,9 +714,66 @@ country_event = {
         }
         DOM = {
             define_general = { name = "Pedro Santana" personality = defence_3.1 background = attack_4.1 }
-            add_accepted_culture = afro_latino
+            add_country_modifier = { name = unrecognized_country duration = 3650 }
         }
         relation = { who = DOM value = -400 }
+        DOM = {
+			government = prov_gov_conservative
+			treasury = 50000
+			iron = 25
+			wool = 25
+			timber = 50
+			small_arms = 30
+			leadership = 20
+            capital_scope = {
+                sub_unit = { type = infantry value = current }
+                sub_unit = { type = infantry value = current }
+                sub_unit = { type = infantry value = current }
+                sub_unit = { type = infantry value = current }
+                sub_unit = { type = cavalry value = current }
+                sub_unit = { type = artillery value = current }
+                sub_unit = { type = artillery value = current }
+                sub_unit = { type = artillery value = current }
+                sub_unit = { type = artillery value = current }
+                sub_unit = { type = artillery value = current }
+            }
+			add_country_modifier = { name = small_country_draft duration = 365 }
+        }
+		random_owned = {
+			limit = { owner = { has_global_flag = plan_levasseur } }
+			DOM = {
+				iron = 10
+				wool = 10
+				timber = 10
+				small_arms = 10
+				capital_scope = {
+					sub_unit = { type = guard value = current }
+					sub_unit = { type = artillery value = current }
+				}
+			}
+		}
+		random_country = {
+			limit = { OR = { tag = FRA tag = BOR } has_country_flag = plan_levasseur }
+			diplomatic_influence = { who = DOM value = 100 }
+			relation = { who = DOM value = 100 }
+		}
+		random_owned = {
+			limit = { owner = { has_global_flag = gco_supporting_duarte } }
+			DOM = {
+				iron = 15
+				wool = 15
+				timber = 15
+				small_arms = 15
+				capital_scope = {
+					sub_unit = { type = guard value = current }
+					sub_unit = { type = artillery value = current }
+				}
+			}
+			GCO = {
+				diplomatic_influence = { who = DOM value = 100 }
+				relation = { who = DOM value = 100 }
+			}
+		}
 		casus_belli = { target = DOM type = conquest months = 36 }
         war = {
             target = DOM

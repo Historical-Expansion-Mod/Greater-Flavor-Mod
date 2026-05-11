@@ -293,6 +293,7 @@ country_event = {
 		4186 = { remove_core = THIS }
 		3652 = { remove_core = THIS }
 		4201 = { remove_core = THIS }
+		4212 = { remove_core = THIS }
 		4202 = { remove_core = THIS }
 		random_owned = {
 			limit = { SPU = { exists = yes } }
@@ -1383,7 +1384,6 @@ country_event = {
 		prestige = 25
 		set_global_flag = GCO_DESTROYED_BRZ
 		BRZ = { country_event = 62037 }
-		add_country_modifier = { name = the_homestead_act duration = -1 }
 		2415 = { remove_core = BRZ }
 		2407 = { remove_core = BRZ }
 		4076 = { remove_core = BRZ }
@@ -1397,6 +1397,7 @@ country_event = {
 		4186 = { remove_core = BRZ }
 		3652 = { remove_core = BRZ }
 		4201 = { remove_core = BRZ }
+		4212 = { remove_core = BRZ }
 		4202 = { remove_core = BRZ }
 		3567 = { remove_core = BRZ }
 		4204 = { remove_core = BRZ }
@@ -1429,6 +1430,7 @@ country_event = {
 						province_id = 4186
 						province_id = 3652
 						province_id = 4201
+						province_id = 4212
 						province_id = 4202
 						province_id = 3567
 						province_id = 4204
@@ -1598,7 +1600,6 @@ country_event = {
 		set_global_flag = GCO_DESTROYED_BRZ
 		set_global_flag = gco_grao_para_taken
 		BRZ = { country_event = 62037 }
-		add_country_modifier = { name = the_homestead_act duration = -1 }
 		2415 = { remove_core = BRZ }
 		2407 = { remove_core = BRZ }
 		4076 = { remove_core = BRZ }
@@ -1612,6 +1613,7 @@ country_event = {
 		4186 = { remove_core = BRZ }
 		3652 = { remove_core = BRZ }
 		4201 = { remove_core = BRZ }
+		4212 = { remove_core = BRZ }
 		4202 = { remove_core = BRZ }
 		3567 = { remove_core = BRZ }
 		4204 = { remove_core = BRZ }
@@ -2206,74 +2208,583 @@ country_event = {
 #Colombian Intervention in the Dominican Revolution - Time to get the Dominicans!
 country_event = { 
 	id = 62040
-	title = "The Dominican Revolution" 
+	title = "A Meeting in Caracas" 
 	desc = "62040_desc"
-	picture = "dominican_revolution"
-	is_triggered_only = yes 
+	picture = "return_of_duarte"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = GCO
+		year = 1843
+		month = 8
+		DOM = { exists = no }
+	}
+	
+	mean_time_to_happen = { days = 2 }
+	
 	option = { 
-		name = "Pedro Santana is a liability, but one we must exploit to bring the Caribbean into our fold."
-		set_global_flag = Colombian_Intervention_in_Santo_Domingo
+		name = "We failed the Dominicans in 1822 but we won't fail them it again! §R(Pay 50,000¤)"
+		set_global_flag = gco_supporting_duarte
 		prestige = 5 
-		badboy = 1
-		USA = { diplomatic_influence = { who = HAI value = -200 } leave_alliance = HAI }
-    	war = {
-        	target = HAI
-            attacker_goal = { casus_belli = scripted_war }
-            defender_goal = { casus_belli = war_reparations }
-        }
-		DOM = { military_access = THIS }
-		GCO = { military_access = DOM }
-		DOM = { treasury = 1000 }
-		GCO = { treasury = 1000 } 
-		HAI = { war_exhaustion = 1.0 }
-		ai_chance = { factor = 1 } 
+		treasury = -50000
+		ai_chance = { factor = 1 modifier = { factor = 0 NOT = { money = 30000 } } } 
 	}
 	
 	option = {
-		name = "We can not directly intervene. Let us hope the revolution prevails."
-		prestige = -5
-		GCO = { relation = { who = DOM value = -100 } diplomatic_influence = { who = DOM value = -400 } }
-		ai_chance = { factor = 0 } 
+		name = "It hurts us deeply but we can't support him. Duarte will depart Caracas disappointed..."
+		prestige = -15
+		ai_chance = { factor = 1 modifier = { factor = 0 money = 30000 } }
 	}
 }
 #Victory - and time for a royalist crackdown 
 country_event = { 
 	id = 62041
-	title = "Colombian Hispanola" 
+	title = "The Return of Duarte" 
 	desc = "62041_desc" 
 	picture = "dominican_revolution"
 	fire_only_once = yes 
 	
 	trigger = {
 		tag = GCO
-		has_global_flag = Colombian_Intervention_in_Santo_Domingo
-		HAI = { has_country_flag = lost_the_war truce_with = GCO has_country_flag = DOM_revolt }
+		has_country_flag = restoring_duarte
+		DOM = { vassal_of = THIS }
 	}
 	
+	mean_time_to_happen = { days = 1 }
+	
 	option = {
-		name = "We are righting yet another wrong and realizing Bolivar's vision! Vive Colombian Hispanola!" 
-		HAI = { prestige = -20 clr_country_flag = lost_the_war }
-		ENG = { relation = { who = GCO value = 50 } }
-		USA = { relation = { who = GCO value = 50 } }
-		DOM = { all_core = { add_core = GCO } }
-		GCO = { 
-			set_country_flag = GCO_DOM_UNION
-			inherit = DOM
+		name = "Both Núñez de Cáceres and Bolívar would be proud! Viva el Estado de Santo Domingo!" 
+		create_vassal = DOM
+		diplomatic_influence = { who = DOM value = 400 }
+		DOM = { 
+			government = colonial_company_2
+			ruling_party_ideology = liberal
+			add_accepted_culture = north_andean
+			set_country_flag = colombian_accepted
+			country_event = 600270
 		}
-		HAI = {
-			any_owned = {
-				limit = { region = HAI_2214 }
-				secede_province = THIS
-			}
-		}
+		set_country_flag = GCO_DOM_UNION
+		FRA = { clr_country_flag = dominican_infiltration }
+		BOR = { clr_country_flag = dominican_infiltration }
 		HAI_2214 = { remove_core = HAI }
 		ai_chance = { factor = 1 }
 	}
 }
 
 country_event = { 
+	id = 600270
+	title = "Juan Pablo Duarte's Government" 
+	desc = "EVTDESC600270" 
+	picture = "return_of_duarte"
+	is_triggered_only = yes
+	
+	option = {
+		name = "Our Colombian advisors will deal with this..."
+		GCO = { set_country_flag = santo_domingo_pacification }
+		any_pop = { militancy = 1 consciousness = 2 ideology = { factor = -0.15 value = liberal } }
+		add_country_modifier = { name = unpopular_santo_domingo duration = -1 }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "We will deal with this resistance ourselves..."
+		set_country_flag = santo_domingo_pacification
+		any_pop = { consciousness = 1 ideology = { factor = -0.05 value = liberal } }
+		add_country_modifier = { name = unpopular_santo_domingo duration = -1 }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 600271
+	title = "The Death of Núñez de Cáceres" 
+	desc = "EVTDESC600271" 
+	picture = "nunez_de_caceres"
+	fire_only_once = yes
+	
+	mean_time_to_happen = { days = 11 }
+	
+	trigger = {
+		OR = {
+			tag = GCO
+			tag = DOM
+		}
+		has_country_flag = santo_domingo_pacification 
+		year = 1846
+		month = 9
+		NOT = { year = 1847 }
+	}
+	
+	option = {
+		name = "Promote celebrations in his honor, he deserves it! §R(Pay 10,000-30,000¤)"
+		random_owned = { limit = { owned_by = DOM } owner = { treasury = -10000 } }
+		random_owned = { limit = { owned_by = GCO } owner = { treasury = -30000 } }
+		DOM = { change_variable = { which = domingo_pacification value = 1 } }
+		GCO = { any_pop = { consciousness = 2 ideology = { factor = 0.05 value = liberal } } }
+		DOM = { any_pop = { consciousness = 2 ideology = { factor = 0.15 value = liberal } } }
+		ai_chance = { factor = 1 modifier = { factor = 0 government = presidential_dictatorship } modifier = { factor = 0 NOT = { money = 30000 } } }
+	}
+	
+	option = {
+		name = "His image could be useful, but we won't give light to allies of Páez!"
+		GCO = { any_pop = { consciousness = -1 } }
+		DOM = { any_pop = { consciousness = -1 } }
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600272
+	title = "The Afrancesados and the Santanistas" 
+	desc = "EVTDESC600272" 
+	picture = "arrested"
+	fire_only_once = yes
+	
+	mean_time_to_happen = { months = 6 }
+	
+	trigger = {
+		OR = {
+			tag = GCO
+			tag = DOM
+		}
+		has_country_flag = santo_domingo_pacification 
+		DOM = { NOT = { has_country_modifier = national_confusion } }
+	}
+	
+	option = {
+		name = "They must see the irony of allying with French bootlickers... §R(Pay 7,500-25,000¤)"
+		set_country_flag = divided_opps
+		random_owned = {
+			limit = {
+				owner = {
+					has_country_flag = economical_stability
+					has_country_flag = useful_separatists
+					has_country_flag = bolivarian_intellectuals
+					has_country_flag = divided_opps
+					has_country_flag = duartistas_are_fine
+				}
+			}
+			owner = {
+				clr_country_flag = economical_stability
+				clr_country_flag = useful_separatists
+				clr_country_flag = bolivarian_intellectuals
+				clr_country_flag = divided_opps
+				clr_country_flag = duartistas_are_fine
+				set_country_flag = stabilized_santo_domingo
+			}
+		}
+		random_owned = { limit = { owned_by = DOM } owner = { treasury = -7500 } }
+		random_owned = { limit = { owned_by = GCO } owner = { treasury = -25000 } }
+		DOM = { change_variable = { which = domingo_pacification value = 1 } add_country_modifier = { name = national_confusion duration = 1825 } }
+		DOM = { any_pop = { militancy = -1 ideology = { factor = -0.05 value = reactionary } ideology = { factor = -0.05 value = conservative } } }
+		ai_chance = { factor = 1 modifier = { factor = 0 NOT = { money = 25000 } } }
+	}
+	
+	option = {
+		name = "We better not risk up having more radicals in the opposition."
+		set_country_flag = divided_opps
+		random_owned = {
+			limit = {
+				owner = {
+					has_country_flag = economical_stability
+					has_country_flag = useful_separatists
+					has_country_flag = bolivarian_intellectuals
+					has_country_flag = divided_opps
+					has_country_flag = duartistas_are_fine
+				}
+			}
+			owner = {
+				clr_country_flag = economical_stability
+				clr_country_flag = useful_separatists
+				clr_country_flag = bolivarian_intellectuals
+				clr_country_flag = divided_opps
+				clr_country_flag = duartistas_are_fine
+				set_country_flag = stabilized_santo_domingo
+			}
+		}
+		ai_chance = { factor = 1 modifier = { factor = 0 money = 25000 } }
+	}
+}
+
+country_event = {
+	id = 600273
+	title = "Separatism in Cibao" 
+	desc = "EVTDESC600273" 
+	picture = "market"
+	fire_only_once = yes
+	
+	mean_time_to_happen = { months = 6 }
+	
+	trigger = {
+		OR = {
+			tag = GCO
+			tag = DOM
+		}
+		has_country_flag = santo_domingo_pacification 
+		DOM = { NOT = { has_country_modifier = national_confusion } }
+	}
+	
+	option = {
+		name = "Creating a controlled opposition would be useful to us... §R(Pay 7,500-25,000¤)"
+		set_country_flag = useful_separatists
+		random_owned = {
+			limit = {
+				owner = {
+					has_country_flag = economical_stability
+					has_country_flag = useful_separatists
+					has_country_flag = bolivarian_intellectuals
+					has_country_flag = divided_opps
+					has_country_flag = duartistas_are_fine
+				}
+			}
+			owner = {
+				clr_country_flag = economical_stability
+				clr_country_flag = useful_separatists
+				clr_country_flag = bolivarian_intellectuals
+				clr_country_flag = divided_opps
+				clr_country_flag = duartistas_are_fine
+				set_country_flag = stabilized_santo_domingo
+			}
+		}
+		random_owned = { limit = { owned_by = DOM } owner = { treasury = -7500 } }
+		random_owned = { limit = { owned_by = GCO } owner = { treasury = -25000 } }
+		DOM = { change_variable = { which = domingo_pacification value = 1 } add_country_modifier = { name = national_confusion duration = 1825 } any_pop = { militancy = -1 } }
+		2216 = { add_province_modifier = { name = nationalist_agitation duration = 3650 } any_pop = { militancy = 4 consciousness = 4 } }
+		ai_chance = { factor = 1 modifier = { factor = 0 NOT = { money = 25000 } } }
+	}
+	
+	option = {
+		name = "Promoting a separatist movement could be dangerous."
+		set_country_flag = useful_separatists
+		random_owned = {
+			limit = {
+				owner = {
+					has_country_flag = economical_stability
+					has_country_flag = useful_separatists
+					has_country_flag = bolivarian_intellectuals
+					has_country_flag = divided_opps
+					has_country_flag = duartistas_are_fine
+				}
+			}
+			owner = {
+				clr_country_flag = economical_stability
+				clr_country_flag = useful_separatists
+				clr_country_flag = bolivarian_intellectuals
+				clr_country_flag = divided_opps
+				clr_country_flag = duartistas_are_fine
+				set_country_flag = stabilized_santo_domingo
+			}
+		}
+		2216 = { add_province_modifier = { name = nationalist_agitation duration = 1825 } any_pop = { militancy = 2 consciousness = 2 } }
+		ai_chance = { factor = 1 modifier = { factor = 0 money = 25000 } }
+	}
+}
+
+country_event = {
+	id = 600274
+	title = "Economic Stabilization" 
+	desc = "EVTDESC600274" 
+	picture = "latamcelebration"
+	fire_only_once = yes
+	
+	mean_time_to_happen = { months = 18 }
+	
+	trigger = {
+		OR = {
+			tag = GCO
+			tag = DOM
+		}
+		DOM = { war = no }
+		has_country_flag = santo_domingo_pacification 
+		DOM = { NOT = { has_country_modifier = recently_lost_war } }
+	}
+	
+	option = {
+		name = "Keep the good times coming!"
+		set_country_flag = economical_stability
+		random_owned = {
+			limit = {
+				owner = {
+					has_country_flag = economical_stability
+					has_country_flag = useful_separatists
+					has_country_flag = bolivarian_intellectuals
+					has_country_flag = divided_opps
+					has_country_flag = duartistas_are_fine
+				}
+			}
+			owner = {
+				clr_country_flag = economical_stability
+				clr_country_flag = useful_separatists
+				clr_country_flag = bolivarian_intellectuals
+				clr_country_flag = divided_opps
+				clr_country_flag = duartistas_are_fine
+				set_country_flag = stabilized_santo_domingo
+			}
+		}
+		DOM = {
+			change_variable = { which = domingo_pacification value = 1 }
+			add_country_modifier = { name = economic_boom duration = 1825 }
+			any_owned = { add_province_modifier = { name = local_economic_upturn duration = 1825 } }
+			any_pop = { militancy = -1 }
+		}
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600275
+	title = "Internal Opposition" 
+	desc = "EVTDESC600275" 
+	picture = "election_crowd"
+	fire_only_once = yes
+	
+	mean_time_to_happen = { months = 6 }
+	
+	trigger = {
+		OR = {
+			tag = GCO
+			tag = DOM
+		}
+		has_country_flag = santo_domingo_pacification 
+		DOM = { NOT = { has_country_modifier = national_confusion } }
+	}
+	
+	option = {
+		name = "Duarte will win their hearts back!"
+		set_country_flag = duartistas_are_fine
+		random_owned = {
+			limit = {
+				owner = {
+					has_country_flag = economical_stability
+					has_country_flag = useful_separatists
+					has_country_flag = bolivarian_intellectuals
+					has_country_flag = divided_opps
+					has_country_flag = duartistas_are_fine
+				}
+			}
+			owner = {
+				clr_country_flag = economical_stability
+				clr_country_flag = useful_separatists
+				clr_country_flag = bolivarian_intellectuals
+				clr_country_flag = divided_opps
+				clr_country_flag = duartistas_are_fine
+				set_country_flag = stabilized_santo_domingo
+			}
+		}
+		DOM = { 
+			change_variable = { which = domingo_pacification value = 1 }
+			any_pop = { consciousness = 2 ideology = { factor = 0.05 value = liberal } }
+			add_country_modifier = { name = resistance_to_new_regime duration = 1825 }
+		}
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "We don't want opposition to our rule within our own ranks. Kick them out!"
+		set_country_flag = duartistas_are_fine
+		random_owned = {
+			limit = {
+				owner = {
+					has_country_flag = economical_stability
+					has_country_flag = useful_separatists
+					has_country_flag = bolivarian_intellectuals
+					has_country_flag = divided_opps
+					has_country_flag = duartistas_are_fine
+				}
+			}
+			owner = {
+				clr_country_flag = economical_stability
+				clr_country_flag = useful_separatists
+				clr_country_flag = bolivarian_intellectuals
+				clr_country_flag = divided_opps
+				clr_country_flag = duartistas_are_fine
+				set_country_flag = stabilized_santo_domingo
+			}
+		}
+		DOM = { 
+			any_pop = { consciousness = 1 ideology = { factor = 0.10 value = radical } }
+			add_country_modifier = { name = resistance_to_new_regime duration = 3650 }
+		}
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600276
+	title = "Unionist Inteligentista" 
+	desc = "EVTDESC600276" 
+	picture = "la_trinitaria"
+	fire_only_once = yes
+	
+	mean_time_to_happen = { months = 6 }
+	
+	trigger = {
+		OR = {
+			tag = GCO
+			tag = DOM
+		}
+		has_country_flag = santo_domingo_pacification 
+		DOM = { NOT = { has_country_modifier = national_confusion } }
+	}
+	
+	option = {
+		name = "We will conquer their hearts and minds from top to bottom! §R(Pay 7,500-25,000¤)"
+		set_country_flag = bolivarian_intellectuals
+		random_owned = {
+			limit = {
+				owner = {
+					has_country_flag = economical_stability
+					has_country_flag = useful_separatists
+					has_country_flag = bolivarian_intellectuals
+					has_country_flag = divided_opps
+					has_country_flag = duartistas_are_fine
+				}
+			}
+			owner = {
+				clr_country_flag = economical_stability
+				clr_country_flag = useful_separatists
+				clr_country_flag = bolivarian_intellectuals
+				clr_country_flag = divided_opps
+				clr_country_flag = duartistas_are_fine
+				set_country_flag = stabilized_santo_domingo
+			}
+		}
+		random_owned = { limit = { owned_by = DOM } owner = { treasury = -7500 } }
+		random_owned = { limit = { owned_by = GCO } owner = { treasury = -25000 } }
+		DOM = { 
+			change_variable = { which = domingo_pacification value = 1 }
+			any_pop = { limit = { strata = rich } consciousness = 1 ideology = { factor = 0.05 value = liberal } }
+			any_pop = { limit = { type = clergymen } money = 250 consciousness = 2 ideology = { factor = 0.15 value = liberal } }
+		}
+		ai_chance = { factor = 1 modifier = { factor = 0 money = 25000 } }
+	}
+	
+	option = {
+		name = "Who cares for the opinions of nerds? It is pointless!"
+		set_country_flag = bolivarian_intellectuals
+		random_owned = {
+			limit = {
+				owner = {
+					has_country_flag = economical_stability
+					has_country_flag = useful_separatists
+					has_country_flag = bolivarian_intellectuals
+					has_country_flag = divided_opps
+					has_country_flag = duartistas_are_fine
+				}
+			}
+			owner = {
+				clr_country_flag = economical_stability
+				clr_country_flag = useful_separatists
+				clr_country_flag = bolivarian_intellectuals
+				clr_country_flag = divided_opps
+				clr_country_flag = duartistas_are_fine
+				set_country_flag = stabilized_santo_domingo
+			}
+		}
+		DOM = { 
+			any_pop = { limit = { type = clergymen } consciousness = 2 ideology = { factor = 0.05 value = liberal } }
+		}
+		ai_chance = { factor = 1 modifier = { factor = 0 NOT = { money = 25000 } } }
+	}
+}
+
+country_event = {
+	id = 600277
+	title = "Pro-Colombian Drive" 
+	desc = "EVTDESC600277" 
+	picture = "santo_domingo"
+	
+	mean_time_to_happen = { months = 6 }
+	
+	trigger = {
+		OR = {
+			tag = GCO
+			tag = DOM
+		}
+		has_country_flag = santo_domingo_pacification 
+		has_country_flag = stabilized_santo_domingo
+		DOM = { NOT = { has_country_modifier = national_confusion } }
+	}
+	
+	option = {
+		name = "Let us celebrate their patriotism with them! §R(Pay 7,500-25,000¤)"
+		set_country_flag = bolivarian_intellectuals
+		random_owned = { limit = { owned_by = DOM } owner = { treasury = -7500 } }
+		random_owned = { limit = { owned_by = GCO } owner = { treasury = -25000 } }
+		DOM = { 
+			change_variable = { which = domingo_pacification value = 1 }
+			any_pop = { militancy = -2 consciousness = -2 }
+		}
+		ai_chance = { factor = 1 modifier = { factor = 0 NOT = { money = 25000 } } }
+	}
+	
+	option = {
+		name = "Soon we will be one..."
+		DOM = { 
+			change_variable = { which = domingo_pacification value = 0.5 }
+			any_pop = { militancy = -1 consciousness = -1 }
+		}
+		ai_chance = { factor = 1 modifier = { factor = 0 money = 25000 } }
+	}
+}
+
+country_event = {
+	id = 600278
+	title = "El Estado de Santo Domingo" 
+	desc = "EVTDESC600278" 
+	picture = "return_of_duarte"
+	fire_only_once = yes
+	
+	mean_time_to_happen = { days = 1 }
+	
+	trigger = {
+		OR = {
+			tag = GCO
+			tag = DOM
+		}
+		has_country_flag = santo_domingo_pacification 
+		check_variable = { which = domingo_pacification value = 5 }
+	}
+	
+	option = {
+		name = "Santo Domingo will be welcomed into the union!"
+		clr_country_flag = economical_stability
+		clr_country_flag = useful_separatists
+		clr_country_flag = bolivarian_intellectuals
+		clr_country_flag = divided_opps
+		clr_country_flag = duartistas_are_fine
+		clr_country_flag = stabilized_santo_domingo
+		clr_country_flag = santo_domingo_pacification
+		DOM = { 
+			remove_country_modifier = unpopular_santo_domingo
+			any_pop = { ideology = { factor = 0.15 value = liberal } }
+			all_core = { add_core = GCO }
+			annex_to = GCO
+		}
+		GCO = { add_accepted_culture = caribeno set_country_flag = dr_claimed }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "We got quite used with the current state of things..."
+		clr_country_flag = economical_stability
+		clr_country_flag = useful_separatists
+		clr_country_flag = bolivarian_intellectuals
+		clr_country_flag = divided_opps
+		clr_country_flag = duartistas_are_fine
+		clr_country_flag = stabilized_santo_domingo
+		clr_country_flag = santo_domingo_pacification
+		DOM = { 
+			remove_country_modifier = unpopular_santo_domingo
+			any_pop = { ideology = { factor = 0.15 value = liberal } }
+		}
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = { 
 	id = 62042
-	title = "US President Jackson and Colombia"
+	title = "Andrew Jackson and Colombia"
 	desc = "62042_desc"
 	picture = "andrew_jackson_attack"
 	major = yes
@@ -2508,12 +3019,6 @@ country_event = {
 		name = "Let the world know about the Colombian might!"
 		prestige = 20
 		add_country_modifier = { name = colombia_world_power duration = 3650 }
-		any_owned = {
-			limit = {
-				is_core = THIS
-			}
-			add_province_modifier = { name = small_baby_boom duration = 1825 }
-		}
 	}
 }
 

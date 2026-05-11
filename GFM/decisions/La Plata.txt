@@ -62,7 +62,8 @@ political_decisions = {
         }
 
         allow = {
-            romanticism = 1
+            revolution_n_counterrevolution = 1
+			war_policy = jingoism
             is_greater_power = yes
         }
 
@@ -492,14 +493,181 @@ political_decisions = {
         ai_will_do = { factor = 1 }
     }
 	
+	invest_south_andes = {
+		picture = peru_bolivia
+		potential = {
+			OR = {	
+				tag = ARG
+				tag = ARC
+				tag = LPL
+			}
+			OR = {
+				2313 = { owned_by = THIS is_core = THIS }
+				2310 = { owned_by = THIS is_core = THIS }
+				2302 = { owned_by = THIS is_core = THIS }
+			}
+			NOT = { has_country_modifier = law_changed_by_force accepted_culture = south_andean }
+		}
+		
+		allow = {
+			war = no
+			money = 100000
+		}
+		
+		effect = {
+			treasury = -100000
+			any_pop = {
+				limit = { has_pop_culture = south_andean }
+				militancy = -1 consciousness = -1
+			}
+			add_country_modifier = { name = law_changed_by_force duration = 365 }
+			change_variable = { which = andean_outlook value = 0.50 }
+		}
+		
+		ai_will_do = {
+			factor = 1 
+			modifier = {
+				factor = 0
+				NOT = { money = 125000 }
+			}
+		}
+	}
+	
+	integrate_south_andes = {
+		picture = manuel_belgrano
+		potential = {
+			OR = {	
+				tag = ARG
+				tag = ARC
+				tag = LPL
+			}
+			OR = {
+				2313 = { owned_by = THIS is_core = THIS }
+				2310 = { owned_by = THIS is_core = THIS }
+				2302 = { owned_by = THIS is_core = THIS }
+			}
+			check_variable = { which = andean_outlook value = 3 } 
+			NOT = { accepted_culture = south_andean }
+		}
+		
+		allow = {
+			war = no
+			biologism = 1
+		}
+		
+		effect = {
+			add_accepted_culture = south_andean
+			any_pop = {
+				limit = { has_pop_culture = south_andean }
+				militancy = -2 consciousness = -2
+			}
+			change_variable = { which = andean_outlook value = -3 }
+		}
+		
+		ai_will_do = {
+			factor = 1 
+		}
+	}
+	
+	1816_inca_plan = {
+		picture = manuel_belgrano
+		potential = {
+			OR = {
+				tag = ARC
+				tag = LPL
+			}
+			has_country_flag = inca_monarchy
+			has_country_flag = monarchy_government
+			NOT = { has_country_flag = inca_plan }
+		}
+		
+		allow = {
+			war = no
+			is_greater_power = yes
+			prestige = 200
+			war_policy = jingoism
+			NOT = { has_country_modifier = recently_lost_war }
+		}
+		
+		effect = {
+			badboy = 24.99
+			PEU = { all_core = { add_core = THIS } }
+			CHL = { all_core = { add_core = THIS } }
+			BOL = { all_core = { add_core = THIS } }
+			PBC = { all_core = { add_core = THIS } }
+			set_country_flag = inca_plan
+		}
+		ai_will_do = { factor = 0 modifier = { factor = 0 badboy = 0.01 } }
+	}
+	
+	legacy_of_san_martin = {
+		picture = san_martin
+		potential = {
+			OR = {
+				tag = LPL
+				tag = ARC
+				tag = ARG
+			}
+			OR = {
+				has_country_flag = remember_san_martin
+				invention = colonial_negotiations
+			}
+			NOT = { has_country_flag = legacy_of_san_martin }
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+			is_greater_power = yes
+			war_policy = jingoism
+		}
+		
+		effect = {
+			badboy = 5
+			country_event = 600177
+			set_country_flag = legacy_of_san_martin
+		}
+		
+		ai_will_do = { factor = 1 modifier = { factor = 0 badboy = 0.7 } }
+	}
+	
+	chilean_sister_republic = {
+		picture = san_martin_n_higgins
+		potential = {
+			OR = {
+				tag = LPL
+				tag = ARC
+				tag = ARG
+			}
+			has_country_flag = tainted_legacy
+			NOT = { has_country_flag = the_sister_republic }
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+			is_greater_power = yes
+			war_policy = jingoism
+		}
+		
+		effect = {
+			badboy = 7.5
+			CHL = { all_core = { add_core = THIS } }
+			set_country_flag = the_sister_republic
+		}
+		
+		ai_will_do = { factor = 1 modifier = { factor = 0 badboy = 0.7 } }
+	}
+	
 	cuzco_protectorate = {
 		picture = san_martin_declaration
 		potential = {
 			OR = {
 				tag = LPL
-				AND = { tag = ARC OR = { revolution_n_counterrevolution = 1 has_country_flag = federalist_triumph } }
-				AND = { tag = ARG OR = { revolution_n_counterrevolution = 1 has_country_flag = unitarians_on_top } }
+				tag = ARC
+				tag = ARG
 			}
+			has_country_flag = tainted_legacy
 			OR = {
 				AND = { 2313 = { is_core = THIS owned_by = THIS } 4022 = { is_core = THIS owned_by = THIS } 2310 = { is_core = THIS owned_by = THIS } }
 				is_our_vassal = BOL
@@ -511,6 +679,7 @@ political_decisions = {
 			war = no
 			is_vassal = no
 			is_greater_power = yes
+			war_policy = jingoism
 			SPU = { OR = { exists = no is_vassal = no } }
 			2307 = { OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } empty = yes } } 
 			2308 = { OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } empty = yes } } 
@@ -519,17 +688,16 @@ political_decisions = {
 			2303 = { OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } empty = yes } } 
 			2302 = { OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } empty = yes } } 
 			2301 = { OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } empty = yes } } 
-			war_policy = jingoism
 		}
 		
 		effect = {
 			random_owned = {
 				limit = { 2302 = { OR = { owner = { vassal_of = THIS } owned_by = THIS } } }
-				badboy = 4
+				badboy = 2.5
 			}
 			random_owned = {
 				limit = { NOT = { 2302 = { OR = { owner = { vassal_of = THIS } owned_by = THIS } } } }
-				badboy = 8
+				badboy = 5
 			}
 			2307 = { add_core = SPU }
 			2308 = { add_core = SPU }
@@ -555,7 +723,7 @@ political_decisions = {
 			set_country_flag = cuzco_protectorate
 		}
 		
-		ai_will_do = { factor = 1 modifier = { factor = 0 badboy = 0.68 } }
+		ai_will_do = { factor = 1 modifier = { factor = 0 badboy = 0.8 } }
 	}
 	
 	#Uruguay decisions
@@ -754,7 +922,18 @@ political_decisions = {
 			country_event = 600085
 			set_country_flag = send_varela
 		}
-		ai_will_do = { factor = 1 }
+		ai_will_do = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = {
+					in_sphere = FRA
+					in_sphere = BOR
+					in_sphere = ENG
+					in_sphere = ENL
+				}
+			}
+		}
 	}
 	
 	unite_with_argentina = {
@@ -793,7 +972,7 @@ political_decisions = {
 		}
 		
 		effect = {
-			set_country_flag = unite_with_finland
+			set_country_flag = unite_with_argentina
             THIS = { all_core = { add_core = ARG } }
             random_country = {
                 limit = {

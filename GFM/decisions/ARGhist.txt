@@ -1024,8 +1024,8 @@ political_decisions = {
         potential = {
             OR = {
 				AND = {
-					tag = LPL
-					has_global_flag = la_plata_founded_cv
+					OR = { tag = ARG tag = LPL }
+					has_country_flag = rivadavian_unitarians
 				}
 				AND = {
 					OR = {
@@ -1034,34 +1034,25 @@ political_decisions = {
 					}
 					has_country_flag = corrientes_mesopotamia
 				}
-				AND = {
-					tag = ARG
-					has_global_flag = corrientes_led_argentina
-				}
 			}
-			OR = { is_next_reform = wealth_weighted_voting is_next_reform = landed_voting }
+			OR = { is_next_reform = wealth_weighted_voting is_next_reform = landed_voting is_next_reform = wealth_voting }
 			NOT = { political_parties = secret_ballots }
 			NOT = { has_country_flag = lpl_1826_constitution }
         }
 
         allow = {
 			ruling_party_ideology = liberal
+			prestige = 50
 			OR = {
-				rank = 16
-				prestige = 50
-			}
-			OR = {
-				average_militancy = 5
-				average_consciousness = 5
-				AND = { war_with = BRZ controls = 2463 }
 				AND = {
-					average_consciousness = 3
-					average_militancy = 2
-					is_next_reform = wealth_weighted_voting
+					average_consciousness = 5
+					average_militancy = 3
+					vote_franschise = wealth_weighted_voting
 				}
-				year = 1854
+				has_country_flag = federalists_pacified
+				year = 1856
 			}
-			OR = { war = no war_with = BRZ }
+			war = no 
 			is_vassal = no
 			is_disarmed = no
 		}
@@ -1071,7 +1062,15 @@ political_decisions = {
             set_country_flag = lpl_1826_constitution
 			prestige = 5
 			government = democracy
-            political_reform = wealth_weighted_voting
+            random_owned = {
+				limit = {
+					owner = {
+						vote_franschise = no_voting
+						vote_franschise = landed_voting 
+					}
+				}
+				owner = { political_reform = wealth_weighted_voting }
+			}
             political_reform = censored_press
 			political_reform = state_equal_weight
 			political_reform = jefferson_method
@@ -1079,6 +1078,7 @@ political_decisions = {
 			political_reform = open_borders
 			political_reform = gerrymandering
 			political_reform = unitary
+			clr_country_flag = stay_regionalist
 			add_country_modifier = { name = national_confusion duration = 365 }
 			any_pop = {
 				scaled_militancy = { factor = 1 ideology = conservative }
@@ -1086,6 +1086,7 @@ political_decisions = {
 				scaled_militancy = { factor = -2 ideology = liberal }
 				scaled_militancy = { factor = -5 ideology = radical }
 			}
+			add_country_modifier = { name = small_immigration_boom duration = 1825 }
 		}
         ai_will_do = {
             factor = 1
@@ -1196,4 +1197,55 @@ political_decisions = {
 		}
 	}
 	
+	subdue_the_interior = {
+		picture = conquest_of_the_south
+		potential = {
+			OR = { tag = ARG tag = LPL }
+			has_country_flag = interior_rebels
+			NOT = { has_country_flag = interior_subdued }
+		}
+		
+		allow = {
+			collectivist_theory = 1
+			army_professionalism = 1
+			war_policy = pro_military
+		}
+		
+		effect = {
+			any_owned = {
+				limit = { 
+					has_province_modifier = the_hostile_interior
+				}
+				remove_province_modifier = the_hostile_interior
+				any_pop = {
+					ideology = { value = liberal factor = 0.05 }
+					ideology = { value = conservative factor = 0.1 }
+				}
+			}
+			set_country_flag = interior_subdued
+		}
+	}
+	
+	betray_rivera = {
+		picture = rivera
+		potential = {
+			tag = ARG 
+			has_country_flag = colorado_unitarian_ties
+			URU = { ai = yes exists = yes }
+			NOT = { has_country_flag = betray_rivera }
+		}
+		
+		allow = {
+			war = no
+			URU = { war = no }
+			state_n_government = 1 
+		}
+		
+		effect = {
+			badboy = 2.5
+			URU = { all_core = { add_core = ARG } annex_to = ARG }
+			set_country_flag = betray_rivera
+		}
+		ai_will_do = { factor = 0 }
+	}
 }
