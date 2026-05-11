@@ -13,6 +13,7 @@ political_decisions = {
                 truce_with = HRT
                 has_global_flag = herat_expedition
             }
+			has_country_flag = mohammadshah
         }
 
         allow = {
@@ -20,20 +21,29 @@ political_decisions = {
 			is_vassal = no
 			is_disarmed = no
             HRT = {
-				vassal_of = THIS
+				owns = 1212
 			}
-			year = 1837
+			NOT = { truce_with = HRT }
         }
         effect = {
             set_global_flag = herat_expedition
+			1212 = { add_core = PER }
+			1214 = { add_core = PER }
+			3528 = { add_core = PER }
+			3355 = { add_core = PER }
+			3356 = { add_core = PER }
+			4194 = { add_core = PER }
+			ENG = {
+				leave_alliance = HRT
+				diplomatic_influence = { who = HRT value = -300 }
+			}
 			random_owned = {
 				limit = { owner = { civilized = no } }
 				owner = { military_reform = yes_foreign_officers activate_technology = military_staff_system }
 			}
-			release_vassal = HRT
 			war = {
 				target = HRT
-				attacker_goal = { casus_belli = annex_core_country }
+				attacker_goal = { casus_belli = make_puppet_no_add_wargoal }
 				defender_goal = { casus_belli = humiliate_no_infamy }
 				call_ally = yes
 			}
@@ -55,7 +65,13 @@ political_decisions = {
 				country_event = 992001
 			}
         }
-        ai_will_do = { factor = 1 }
+        ai_will_do = {
+			factor = 1 
+			modifier = {
+                factor = 0
+                NOT = { year = 1837 }
+            }
+		}
     }
 
     second_herat_expedition = {
@@ -97,11 +113,13 @@ political_decisions = {
             set_global_flag = second_herat_expedition
             prestige = 10
             1212 = { add_core = PER }
-            2638 = { add_core = PER }
+			1214 = { add_core = PER }
+			2638 = { add_core = PER }
+			3511 = { add_core = PER }
+			3528 = { add_core = PER }
 			3355 = { add_core = PER }
 			3356 = { add_core = PER }
-			1214 = { add_core = PER }
-			3528 = { add_core = PER }
+			4194 = { add_core = PER }
             random_country = {
                 limit = {
                     tag = ENG
@@ -118,6 +136,61 @@ political_decisions = {
                 factor = 0
                 NOT = { year = 1856 }
             }
+        }
+    }
+
+    kandahar_expedition = {
+        picture = kandahar
+        potential = {
+            tag = PER
+            1212 = { is_core = THIS owned_by = THIS }
+			OR = { has_global_flag = uk_backed_out_of_herat has_global_flag = british_got_rekt }
+            NOT = { has_country_flag = kandahar_expedition }
+        }
+
+        allow = {
+            war = no
+            is_vassal = no
+			is_disarmed = no
+			owns = 1212
+            HRT = { exists = no }
+        }
+
+        effect = {
+            set_country_flag = kandahar_expedition
+            prestige = 10
+			badboy = 4
+			random_owned = {
+				limit = { KND = { exists = yes } }
+				KND = { all_core = { limit = { NOT = { province_id = 3538 } } add_core = PER } country_event = 600209 }
+			}
+			random_owned = {
+				limit = { KND = { exists = no } }
+				owner = {	
+					AFG_1215 = { add_core = THIS }
+					2338 = { add_core = THIS }
+					3509 = { add_core = THIS }
+					1220 = { add_core = THIS }
+					3507 = { add_core = THIS }
+				}
+			}
+        }
+
+        ai_will_do = {
+            factor = 1
+            modifier = {
+                factor = 0
+                NOT = { year = 1858 }
+				has_global_flag = second_herat_expedition
+            }
+            modifier = {
+                factor = 0
+				NOT = { year = 1842 has_global_flag = second_herat_expedition }
+            }
+            modifier = {
+                factor = 0
+				badboy = 0.84
+			}
         }
     }
 
@@ -332,9 +405,12 @@ political_decisions = {
                 is_vassal = no
                 NOT = { vassal_of = ENG }
             }
-            NOT = { war_exhaustion = 1 }
-            NOT = { year = 1855 }
-            NOT = { has_country_flag = anglo_afghan_war }
+            NOT = { 
+				war_exhaustion = 1
+				year = 1855
+				has_country_flag = anglo_afghan_war
+				has_global_flag = afghans_on_witness_protection
+			}
         }
 
         allow = {
@@ -384,7 +460,9 @@ political_decisions = {
             1202 = { add_core = BUK }
             1203 = { add_core = BUK }
             1195 = { add_core = BUK }
-        }
+			4135 = { add_core = BUK }
+			4136 = { add_core = BUK }
+		}
         ai_will_do = { factor = 0 }
     }
 
@@ -444,34 +522,27 @@ political_decisions = {
         potential = {
             tag = AFG
 			exists = KND
-			KND = {
-                vassal_of = THIS
-                civilized = no
-            }
+			KND = { civilized = no }
 			NOT = { truce_with = PER }
 			NOT = { has_global_flag = invasion_of_knd }
 
         }
 
         allow = {
-			year = 1863
+			year = 1855
             exists = KND
-            KND = {
-                civilized = no
-                vassal_of = THIS
-            }
+            KND = { civilized = no }
 			war = no
         }
 
         effect = {
+			prestige = 2
 			badboy = 4
-			release_vassal = KND
             war = {
 				target = KND
 				attacker_goal = { casus_belli = conquest_any }
 				defender_goal = { casus_belli = humiliate_no_infamy }
 			}
-			KND = { all_core = { add_core = AFG } }
 			set_global_flag = invasion_of_knd
         }
         ai_will_do = { factor = 1 }
@@ -529,27 +600,24 @@ political_decisions = {
         picture = kht_attack
         potential = {
             tag = KHT
-			2638 = { owned_by = KND }
-			3511 = { owned_by = KND }
-			3513 = { owned_by = KND }
-			3509 = { owned_by = KND }
-			3507 = { owned_by = KND }
+			2638 = { OR = { owned_by = KND owned_by = AFG } }
+			3511 = { OR = { owned_by = KND owned_by = AFG } }
+			3513 = { OR = { owned_by = KND owned_by = AFG } }
+			3509 = { OR = { owned_by = KND owned_by = AFG } }
+			3507 = { OR = { owned_by = KND owned_by = AFG } }
 			NOT = { has_global_flag = capture_of_nad_ali }
         }
 
         allow = {
-			year = 1856
-            exists = KND
-            KND = {
-                civilized = no
-				war = no
-            }
+			year = 1866
+            OR = { exists = KND exists = AFG }
+            OR = { KND = { civilized = no war = no } AFG = { civilized = no war = no } }
 			war = no
         }
 
         effect = {
 			badboy = 6
-			KND = { country_event = 123692 }
+			1215 = { owner = { country_event = 123692 } }
 			set_global_flag = capture_of_nad_ali
         }
         ai_will_do = { factor = 1 }
@@ -682,7 +750,7 @@ political_decisions = {
             has_global_flag = afghan_2
             tag = ENG
             AFG = {
-                is_disarmed = yes
+                has_country_flag = lost_the_war
 				has_country_modifier = recently_lost_war
                 truce_with = THIS
             }
@@ -690,6 +758,16 @@ political_decisions = {
         allow = {
         }
         effect = {
+			random_owned = {
+				limit = {
+					owner = {
+						HAZ = { vassal_of = AFG }
+					}
+				}
+				owner = {
+					set_global_flag = afghan_hazara
+				}
+			}
 			random_owned = {
 				limit = {
 					owner = {
@@ -721,7 +799,7 @@ political_decisions = {
 				}
 			}
 			create_vassal = AFG
-			AFG = { set_country_flag = colony_exemption }
+			AFG = { set_country_flag = colony_exemption clr_country_flag = lost_the_war }
 			random_owned = {
 				limit = {
 					owner = {
@@ -767,7 +845,7 @@ political_decisions = {
             has_global_flag = afghan_2_b
             tag = ENG
             AFG = {
-                is_disarmed = yes
+                has_country_flag = lost_the_war
 				has_country_modifier = recently_lost_war
                 truce_with = THIS
             }
@@ -780,6 +858,7 @@ political_decisions = {
         }
         effect = {
 			create_alliance = AFG
+			AFG = { clr_country_flag = lost_the_war }
             clr_global_flag = afghan_2_b
 			set_country_flag = durand_line_allowed
 			diplomatic_influence = { who = AFG value = 400 }
@@ -975,21 +1054,13 @@ political_decisions = {
 	core_blc = {
         picture = baluchistan_invasion
         potential = {
-			OR = { tag = PER has_country_flag = is_iran }
+			has_country_flag = is_iran
+			OR = { NOT = { tag = PER } has_country_flag = aga_khan_revolt2 }
 			NOT = { has_country_flag = blc_invaded }
+			OR = { has_global_flag = kalat_has_collapsed owns = 3512 }
         }
 
         allow = {
-			OR = {
-				AND = {
-					year = 1842
-					has_global_flag = kalat_has_collapsed
-				}
-				AND = {
-					year = 1840
-					owns = 3512
-				}
-			}
             war = no
 			is_vassal = no
 			BLC = { exists = no }
@@ -998,6 +1069,7 @@ political_decisions = {
 
         effect = {
             set_country_flag = blc_invaded
+			badboy = 3
 			3512 = { add_core = THIS }
 			1144 = { add_core = THIS }
 			1145 = { add_core = THIS }
@@ -1030,39 +1102,330 @@ political_decisions = {
         }
         ai_will_do = { factor = 1 }
     }
+	
 	found_new_ca_empire = {
         picture = found_new_ca_pic
 		
-		potential = { civilized = no NOT = { government = absolute_empire government = semi_constitutional_empire government = constitutional_empire } OR = { tag = KOK tag = BUK tag = KHI tag = KUN tag = BDK tag = KAZ tag = KYR } }
+		potential = { civilized = no NOT = { government = absolute_empire government = semi_constitutional_empire government = constitutional_empire } OR = { tag = URT tag = DRV tag = KOK tag = BUK tag = KHI tag = KUN tag = BDK tag = KSJ tag = KYR tag = KKP } }
 
-        allow = { 
+        allow = {
 			owns = 1191
 			owns = 1198
 			owns = 1199
 			owns = 1202
 			owns = 1211
+			owns = 3516
 			owns = 1212
-			owns = 1216
+			owns = 3529
 			OR = { 
 				AND = { tag = KOK BUK = { exists = no } KHI = { exists = no } }
 				AND = { tag = BUK KOK = { exists = no } KHI = { exists = no } }
 				AND = { tag = KHI BUK = { exists = no } KOK = { exists = no } }
 				AND = { tag = KUN BUK = { exists = no } KOK = { exists = no } KHI = { exists = no } }
-				AND = { tag = KAZ BUK = { exists = no } KOK = { exists = no } KHI = { exists = no } }
+				AND = { tag = KSJ KAZ = { exists = no } BUK = { exists = no } KOK = { exists = no } KHI = { exists = no } }
 				AND = { tag = KYR BUK = { exists = no } KOK = { exists = no } KHI = { exists = no } }
 				AND = { tag = KUN BUK = { exists = no } KOK = { exists = no } KHI = { exists = no } }
 				AND = { tag = BDK BUK = { exists = no } KOK = { exists = no } KHI = { exists = no } }
+				AND = { tag = KKP BUK = { exists = no } KOK = { exists = no } KHI = { exists = no } }
+				AND = { tag = DRV BUK = { exists = no } KOK = { exists = no } KHI = { exists = no } }
+				AND = { tag = URT BUK = { exists = no } KOK = { exists = no } KHI = { exists = no } }
 			}
 		}
 
         effect = {
 			government = absolute_empire
 			prestige = 20
+			set_country_flag = ca_empire
 			
 			#Core up everything contiguous
 			any_owned = { limit = { is_overseas = no } add_core = THIS }
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 3785 = { is_core = THIS } }
+						2519 = { is_core = THIS }
+						1206 = { is_core = THIS }
+					}
+				}
+				owner = {
+					3785 = { add_core = THIS }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 3298 = { is_core = THIS } }
+						1193 = { is_core = THIS }
+						1197 = { is_core = THIS }
+					}
+				}
+				owner = {
+					3298 = { add_core = THIS }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 4127 = { is_core = THIS } }
+						1198 = { is_core = THIS }
+					}
+				}
+				owner = {
+					4127 = { add_core = THIS }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 29 = { is_core = THIS } }
+						4126 = { is_core = THIS }
+						4127 = { is_core = THIS }
+					}
+				}
+				owner = {
+					29 = { add_core = THIS }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 4140 = { is_core = THIS } }
+						4174 = { is_core = THIS }
+						1193 = { is_core = THIS }
+					}
+				}
+				owner = {
+					4140 = { add_core = THIS }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 1208 = { is_core = THIS } }
+						3518 = { is_core = THIS }
+					}
+				}
+				owner = {
+					1208 = { add_core = THIS }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 686 = { is_core = THIS } }
+						3498 = { is_core = THIS }
+						3785 = { is_core = THIS }
+					}
+				}
+				owner = {
+					686 = { add_core = THIS }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 3442 = { is_core = THIS } }
+						3498 = { is_core = THIS }
+						1204 = { is_core = THIS }
+					}
+				}
+				owner = {
+					3442 = { add_core = THIS }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 3505 = { is_core = THIS } }
+						3502 = { is_core = THIS }
+						1204 = { is_core = THIS }
+					}
+				}
+				owner = {
+					3505 = { add_core = THIS }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 3505 = { is_core = THIS } }
+						3502 = { is_core = THIS }
+						1204 = { is_core = THIS }
+					}
+				}
+				owner = {
+					3505 = { add_core = THIS }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 3505 = { is_core = THIS } }
+						3502 = { is_core = THIS }
+						1204 = { is_core = THIS }
+					}
+				}
+				owner = {
+					3505 = { add_core = THIS }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 1205 = { is_core = THIS } }
+						3505 = { is_core = THIS }
+						1192 = { is_core = THIS }
+					}
+				}
+				owner = {
+					1205 = { add_core = THIS }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 2702 = { is_core = THIS } }
+						2612 = { is_core = THIS }
+						4140 = { is_core = THIS }
+					}
+				}
+				owner = {
+					2702 = { add_core = THIS }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 2656 = { is_core = THIS } }
+						2702 = { is_core = THIS }
+						1205 = { is_core = THIS }
+					}
+				}
+				owner = {
+					2656 = { add_core = THIS }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 1194 = { is_core = THIS } }
+						2656 = { is_core = THIS }
+					}
+				}
+				owner = {
+					1194 = { add_core = THIS }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 1183 = { is_core = THIS } }
+						2702 = { is_core = THIS }
+						2612 = { is_core = THIS }
+					}
+				}
+				owner = {
+					1183 = { add_core = THIS }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 4174 = { is_core = THIS } }
+						3441 = { is_core = THIS }
+						2612 = { is_core = THIS }
+					}
+				}
+				owner = {
+					4174 = { add_core = THIS }
+					4140 = { add_core = THIS }
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = { 1196 = { is_core = THIS } }
+						1205 = { is_core = THIS }
+						3442 = { is_core = THIS }
+					}
+				}
+				owner = {
+					1196 = { add_core = THIS }
+				}
+			}
 			country_event = 700700
 		}
         ai_will_do = { factor = 1 }
+	}
+
+	ca_empire_negotiate_landlocked = {
+		picture = central_asia
+		potential = {
+			has_country_flag = ca_empire
+			NOT = { 
+				any_owned_province = { port = yes }
+				has_country_flag = ca_empire_landlocked_negotiated
+			}
+			NOT = { AND = { OR = { tag = RUS tag = ENG } has_country_flag = ca_empire_landlocked_negotiation_refused } }
+		}
+
+		allow = {
+			war = no
+			invention = battleship_column_doctrine
+			any_neighbor_country = {
+				AND = { OR = { tag = RUS tag = ENG } NOT = { has_country_flag = ca_empire_landlocked_negotiation_refused } }
+				war = no
+				relation = { who = THIS value = 100 }
+			}
+			money = 2000000
+		}
+
+		effect = {
+			money = -2000000
+			random_country = {
+				limit = { OR = { tag = RUS tag = ENG } NOT = { has_country_flag = ca_empire_landlocked_negotiation_refused }  relation = { who = THIS value = 150 } }
+				country_event = 700710
+			}
+		}
+	}
+	
+	kabul_resident = {
+		picture = kabul_court
+		potential = {
+			OR = { tag = ENG tag = ENL }
+			has_country_flag = control_over_kabul
+			NOT = { 
+				has_country_flag = kabul_resident
+				AFG = {
+					OR = {
+						government = absolute_empire
+						government = semi_constitutional_empire
+						government = constitutional_empire
+					}
+				}
+			}
+		}
+		
+		allow = {
+			war = no
+			invention = the_dark_continent
+			AFG = {
+				war = no
+				in_sphere = THIS
+				OR = { is_vassal = no vassal_of = THIS }
+			}
+		}
+		
+		effect = {
+			badboy = 5
+			prestige = 5
+			create_vassal = AFG
+			create_alliance = AFG
+			diplomatic_influence = { who = AFG value = 400 }
+			clr_country_flag = colony_exemption
+			set_country_flag = kabul_resident
+			AFG = { all_core = { add_core = HND } }
+		}
+		ai_will_do = { factor = 1 modifier = { factor = 0 badboy = 0.8 } }
 	}
 }
