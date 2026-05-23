@@ -959,3 +959,169 @@ country_event = {
 		ai_chance = { factor = 1 }
 	}
 }
+
+#Historical Falkalnds Expedition
+ country_event = {
+    id = 620256
+    title = "The Falklands Expedition"
+    desc = "620256_desc"
+    picture = "malvinas"
+    fire_only_once = yes
+    trigger = { 
+        OR = {
+			tag = ARC
+			tag = ARG
+		}
+		OR = {
+			AND = {
+				year = 1831
+				month = 12
+			}
+			year = 1832
+		}
+		2131 = { owned_by = THIS }
+	}
+	
+	mean_time_to_happen = { months = 1 }
+	
+    option = {
+        name = "Dispatch some warships immediately, we must defend our sovereignty!"
+		USA = { 
+			relation = { who = ARC value = -200 }
+			country_event = 620271
+		}
+		ai_chance = { factor = 1 }
+    }
+	
+    option = { 
+        name = "We will not be bullied by Yankees! Declare War immediately!"
+        USA = { country_event = 620257 }
+        war = {
+            target = USA
+            attacker_goal = { casus_belli = scripted_war_minuscule }
+            defender_goal = { casus_belli = scripted_war_small }
+        }
+		ai_chance = { factor = 0 }
+    }
+}
+	
+#Argentina autism
+country_event = {
+    id = 620257
+    title = "Argentina declares war on us!"
+    desc = "620257_desc"
+    picture = "malvinas"
+    is_triggered_only = yes
+	
+    option = {
+        set_global_flag = early_falklands_war
+        name = "Forget shelling the settlement, seize it from them!"
+        2131 = { secede_province = USA }
+        CLN = { add_country_modifier = { name = timer duration = 365 } }
+        ai_chance = { factor = 100 } 
+	}
+}
+
+#US wins the war
+country_event = {
+    id = 620258
+    title = "Victory in the Falklands Conflict"
+    desc = "620258_desc"
+    picture = "malvinas"
+    trigger = { 
+		tag = USA
+		2131 = { owned_by = USA }
+		war = no 
+		has_global_flag = early_falklands_war
+		NOT = { has_country_flag = lost_the_war }
+	}
+    option = {
+        name = "Soon they will learn to appreciate us."
+		4069 = { secede_province = USA }
+		random_country = {
+			limit = {
+				OR = { tag = ARC tag = ARG }
+				owns = 2348
+			}
+			country_event = 620268 
+		}
+	}
+}
+
+#Argentina loses the war
+country_event = {
+    id = 620268
+    title = "Defeat in the Malvinas War"
+    desc = "620268_desc"
+    picture = "malvinas"
+    is_triggered_only = yes
+	
+    option = {
+        name = "A truly embarassing outcome for future generations to mocks us for."
+		prestige = -10
+		clr_country_flag = lost_the_war
+		clr_global_flag = early_falklands_war
+		ai_chance = { factor = 100 }
+	}
+}
+
+#Argentina wins the war, somehow
+country_event = {
+    id = 620269
+    title = "Victory in the Falklands Conflict"
+    desc = "620269_desc"
+    picture = "malvinas"
+    trigger = { 
+		OR = { tag = ARC tag = ARG }
+        NOT = { has_country_flag = lost_the_war }
+		2131 = { owned_by = USA }
+		OR = {
+            AND = { war = no truce_with = USA } 
+            AND = { CLN = { NOT = { has_country_modifier = timer } } 2131 = { controlled_by = THIS } }
+        }
+		has_global_flag = early_falklands_war
+	}
+    option = {
+        name = "Let this be a cautionary tale for the rest of our enemies!"
+        2131 = {
+            add_core = THIS 
+			secede_province = THIS
+			add_province_modifier = { name = province_small_immigration_boom duration = 365 }
+		}
+		USA = { country_event = 620270 }
+		ai_chance = { factor = 100 }
+	}
+}
+#US loses the war
+country_event = {
+    id = 620270
+    title = "Argentine Victory in the Falklands Conflict"
+    desc = "620270_desc"
+    picture = "malvinas"
+    is_triggered_only = yes
+	
+    option = {
+        name = "Wait, we actually lost?"
+		prestige = -10 
+		clr_country_flag = lost_the_war
+        2131 = { add_core = FROM secede_province =  FROM }
+        2133 = { add_core = FROM }
+		4069 = { add_core = FROM }
+        random_owned = { limit = { owner = { ARC = { exists = yes } } } owner = { end_war = ARC } }
+        random_owned = { limit = { owner = { ARG = { exists = yes } } } owner = { end_war = ARG } }
+    }
+}
+country_event = {
+	id = 620271
+	title = "The Falklands Expedition"
+	desc = "620271_desc"
+	picture = "malvinas"
+	is_triggered_only = yes
+	option = { 
+		name = "That'll teach those Argentines that we will not to be trifled with."
+		2131 = { secede_province = THIS }
+        2131 = { secede_province = --- }
+		FROM = { prestige = -5 } 
+		ai_chance = { factor = 100 } 
+	}
+}

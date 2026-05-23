@@ -132,7 +132,8 @@ country_event = {
     mean_time_to_happen = { months = 1 }
 
     option = {
-        name = "Peru will exist no longer!"
+        name = "Peru will exist no longer! §RGain 10 infamy§!"
+		set_global_flag = cuzco_will_happen
 		random_owned = {
 			limit = { owner = { NOT = { has_global_flag = war_of_the_confederation } } }
 			set_global_flag = war_of_the_confederation
@@ -186,12 +187,23 @@ country_event = {
     title = "The Treaty of Quito"
     desc = "62028_desc"
     picture = "peu_civil_seven"
-	fire_only_once = yes
-	is_triggered_only = yes
-
+	fire_only_once = yes 
+	
+	mean_time_to_happen = { days = 1 }
+	
+	trigger = {
+		tag = PBC
+		truce_with = GCO
+		has_global_flag = cuzco_will_happen
+		GCO = { has_country_flag = lost_the_war has_country_flag = fight_the_PBC }
+		OR = { PEU = { vassal_of = THIS } owns = 2295 }
+	}
+	
     option = {
-        name = "We have triumphed against the coalition."
+        name = "We have triumphed against the Colombians."
 		prestige = 20
+		set_global_flag = treaty_of_quito
+		clr_global_flag = cuzco_will_happen
         any_pop = {
             limit = { location = { is_core = PEU } has_pop_culture = south_andean }
             militancy = 2
@@ -262,6 +274,7 @@ country_event = {
     option = {
         name = "Unthinkable! Santa Cruz has defeated us."
 		clr_country_flag = fight_the_PBC
+		clr_country_flag = lost_the_war
 		prestige = -20
         any_pop = {
             limit = { has_pop_culture = north_andean }
@@ -278,12 +291,27 @@ country_event = {
     picture = "peu_civil_seven"
 	major = yes
 	fire_only_once = yes
-	is_triggered_only = yes
+	
+	mean_time_to_happen = { days = 1 }
+	
+	trigger = {
+		tag = GCO
+		truce_with = PBC
+		has_country_flag = fight_the_PBC
+		PBC = { has_country_flag = lost_the_war }
+	}
 
     option = {
         name = "The Viceroyalty of Peru is truly dead now!"
 		prestige = 10
+		end_war = PEU
+		end_war = SPU
+		end_war = PBC
+		end_war = IQC
 		set_global_flag = PEU_partition 
+		set_global_flag = treaty_of_cuzco
+		clr_global_flag = cuzco_will_happen
+		PBC = { clr_country_flag = lost_the_war }
 		inherit = PEU
 		SPU = { all_core = { remove_core = SPU } }
 		4007 = { remove_core = THIS }
@@ -313,17 +341,12 @@ country_event = {
 		}
 		CHL = { country_event = 62030 }
 		BRZ = { country_event = 62031 }
-		random_owned = {
-			limit = { ARC = { exists = yes } }
-			ARC = { country_event = 62032 } 
-		}
-		random_owned = {
-			limit = { ARG = { exists = yes } }
-			ARG = { country_event = 62032 }
-		}
-		random_owned = { 
-			limit = { LPL = { exists = yes } }
-			LPL = { country_event = 6208832 }
+		random_country = {
+			limit = {
+				OR = { tag = ARG tag = ARC }
+				owns = 2348
+			}
+			country_event = 62032
 		}
         any_pop = {
             limit = { has_pop_culture = south_andean }
@@ -354,6 +377,7 @@ country_event = {
    option = {
         name = "The Atacama and her resources are ours to exploit!"
 		prestige = 10
+		clr_country_flag = fight_the_PBC
 		badboy = 5
 		BOL_2309 = { add_core = CHL remove_core = GCO }
 		3554 = { remove_core = CHL }
@@ -435,8 +459,9 @@ country_event = {
     picture = "peu_civil_seven"
 	is_triggered_only = yes
 	option = {
-		name = "Alto Peru is returned to us at last."
+		name = "Alto Peru is returned to us at last. §RGain 5 infamy§!"
 		prestige = 10
+		clr_country_flag = fight_the_PBC
 		badboy = 5
 		random_owned = {
 			limit = { owner = { BOL = { exists = yes } } }

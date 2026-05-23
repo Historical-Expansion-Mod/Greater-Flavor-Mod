@@ -416,10 +416,12 @@ country_event = {
 			tag = ARC
 		}
         neighbour = PBC
-		OR = {
-			CHL = { has_country_flag = fight_the_PBC }
-			CHL = { has_country_flag = peace_with_the_PBC }
-			CHL = { war_with = PBC }
+		CHL = {
+			OR = {
+				has_country_flag = fight_the_PBC 
+				has_country_flag = peace_with_the_PBC 
+				war_with = PBC 
+			}
 		}
         war = no
         NOT = {
@@ -564,6 +566,96 @@ country_event = {
     }
 }
 country_event = {
+    id = 600288
+    title = "The Drums of War"
+    desc = "EVTDESC600288"
+    picture = "deliberation"
+	is_triggered_only = yes
+	
+    option = {
+        name = "War has already been set in motion"
+		set_global_flag = war_of_the_confederation
+        set_country_flag = fight_the_PBC
+        leave_alliance = PBC
+        add_country_modifier = {
+            name = caudillo_leaders
+            duration = 545
+        }
+        any_pop = {
+            dominant_issue = {
+                factor = 0.05
+                value = jingoism
+            }
+        }
+        casus_belli = {
+			target = PEU
+			type = war_reparations
+			months = 24
+		}
+		any_country = {
+			limit = {
+				alliance_with = PBC
+				NOT = { tag = PEU tag = SPU }
+			}
+			leave_alliance = PBC
+		}
+		war = {
+		target = PBC
+		attacker_goal = { casus_belli = scripted_war }
+		defender_goal = { casus_belli = make_puppet_no_infamy }
+		call_ally = no
+		}
+        random_owned = {
+            limit = {
+                owner = {
+                    CHL = { war_with = PBC }
+					2348 = { owner = { war_with = PBC } }
+                }
+            }
+            owner = { PBC = {
+				create_alliance = SPU
+				create_alliance = IQC
+				create_alliance = PEU
+				CLN = { country_event = 97055423 }
+            } }
+        }
+        ai_chance = { factor = 1 }
+    }
+
+    option = {
+        name = "EVT97050OPTB"
+        set_country_flag = peace_with_the_PBC
+        prestige = -3
+        random_owned = {
+            limit = {
+                owner = {
+                    OR = {
+                        tag = ARG
+                        tag = ARC
+                        tag = LPL
+                    }
+                }
+            }
+        }
+        relation = {
+            who = PBC
+            value = 100
+        }
+        any_pop = {
+            dominant_issue = {
+                factor = 0.05
+                value = jingoism
+            }
+            scaled_militancy = {
+                issue = jingoism
+                factor = 4
+            }
+        }
+        ai_chance = { factor = 0 }
+    }
+}
+
+country_event = {
     id = 97055423 #event for them to send allies
     title = "EVTNAME97050"
     desc = "EVTDESC97050"
@@ -665,7 +757,7 @@ country_event = {
                 PEU = { owns = 2304 }
             }
         }
-        NOT = { has_country_flag = end_of_the_confederation }
+        NOT = { has_global_flag = cuzco_will_happen has_country_flag = end_of_the_confederation }
     }
 
     mean_time_to_happen = {
