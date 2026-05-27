@@ -407,19 +407,21 @@ country_event = {
     title = "EVTNAME97050"
     desc = "EVTDESC97050"
     picture = "deliberation"
+	fire_only_once = yes
 
     trigger = {
 		PBC = { owns = 2370 }
 		OR = {
 			tag = ARG
 			tag = ARC
-			tag = LPL
 		}
         neighbour = PBC
-		OR = {
-			CHL = { has_country_flag = fight_the_PBC }
-			CHL = { has_country_flag = peace_with_the_PBC }
-			CHL = { war_with = PBC }
+		CHL = {
+			OR = {
+				has_country_flag = fight_the_PBC 
+				has_country_flag = peace_with_the_PBC 
+				war_with = PBC 
+			}
 		}
         war = no
         NOT = {
@@ -432,7 +434,7 @@ country_event = {
     }
 
     mean_time_to_happen = {
-        months = 1
+        days = 1
     }
 
     option = {
@@ -485,7 +487,7 @@ country_event = {
                 war = {
                     target = PBC
                     attacker_goal = { casus_belli = scripted_war }
-                    defender_goal = { casus_belli = war_reparations }
+                    defender_goal = { casus_belli = make_puppet_no_infamy }
                     call_ally = no
                 }
             }
@@ -564,6 +566,96 @@ country_event = {
     }
 }
 country_event = {
+    id = 600288
+    title = "The Drums of War"
+    desc = "EVTDESC600288"
+    picture = "deliberation"
+	is_triggered_only = yes
+	
+    option = {
+        name = "War has already been set in motion"
+		set_global_flag = war_of_the_confederation
+        set_country_flag = fight_the_PBC
+        leave_alliance = PBC
+        add_country_modifier = {
+            name = caudillo_leaders
+            duration = 545
+        }
+        any_pop = {
+            dominant_issue = {
+                factor = 0.05
+                value = jingoism
+            }
+        }
+        casus_belli = {
+			target = PEU
+			type = war_reparations
+			months = 24
+		}
+		any_country = {
+			limit = {
+				alliance_with = PBC
+				NOT = { tag = PEU tag = SPU }
+			}
+			leave_alliance = PBC
+		}
+		war = {
+		target = PBC
+		attacker_goal = { casus_belli = scripted_war }
+		defender_goal = { casus_belli = make_puppet_no_infamy }
+		call_ally = no
+		}
+        random_owned = {
+            limit = {
+                owner = {
+                    CHL = { war_with = PBC }
+					2348 = { owner = { war_with = PBC } }
+                }
+            }
+            owner = { PBC = {
+				create_alliance = SPU
+				create_alliance = IQC
+				create_alliance = PEU
+				CLN = { country_event = 97055423 }
+            } }
+        }
+        ai_chance = { factor = 1 }
+    }
+
+    option = {
+        name = "EVT97050OPTB"
+        set_country_flag = peace_with_the_PBC
+        prestige = -3
+        random_owned = {
+            limit = {
+                owner = {
+                    OR = {
+                        tag = ARG
+                        tag = ARC
+                        tag = LPL
+                    }
+                }
+            }
+        }
+        relation = {
+            who = PBC
+            value = 100
+        }
+        any_pop = {
+            dominant_issue = {
+                factor = 0.05
+                value = jingoism
+            }
+            scaled_militancy = {
+                issue = jingoism
+                factor = 4
+            }
+        }
+        ai_chance = { factor = 0 }
+    }
+}
+
+country_event = {
     id = 97055423 #event for them to send allies
     title = "EVTNAME97050"
     desc = "EVTDESC97050"
@@ -576,6 +668,61 @@ country_event = {
 			# Audax Validator "." Ignore_NEXT
 			war = { attacker_goal = { casus_belli = call_allies_cb } call_ally = yes }
 		}
+        ai_chance = { factor = 1 }
+    }
+}
+
+country_event = {
+    id = 600258
+    title = "The Treaty of Paucarpata"
+    desc = "EVTDESC600258"
+    picture = "deliberation"
+	
+	fire_only_once = yes
+
+    trigger = {
+		tag = CHL
+        war_with = PBC
+		OR = {
+			PBC = { any_owned_province = { controlled_by = CHL } }
+			PEU = { any_owned_province = { controlled_by = CHL } }
+			SPU = { any_owned_province = { controlled_by = CHL } }
+		}
+        NOT = { PBC = { has_country_flag = end_of_the_confederation } PBC = { has_country_flag = the_confederation_is_legitime } }
+    }
+
+    mean_time_to_happen = {
+        days = 1
+    }
+
+    option = {
+        name = "Throw Encalada in jail and repudiate the treaty!"
+		any_pop = {	militancy = -2 consciousness = -2 }
+        ai_chance = { factor = 1 }
+    }
+
+    option = {
+        name = "This is enough. Accept the treaty! §GLose 2 infamy (Gain 50,000¤)§W"
+		badboy = -2
+		treasury = 50000
+		any_pop = {	militancy = 4 consciousness = 4 }
+		end_war = PBC
+		PBC = { country_event = 600259 }
+        ai_chance = { factor = 0 }
+    }
+}
+
+country_event = {
+    id = 600259 
+    title = "The Treaty of Paucarpata"
+    desc = "EVTDESC600259"
+    picture = "deliberation"
+	is_triggered_only = yes
+
+    option = {
+        name = "The Confederation is unbeatable! §R(Pay 50,000¤)§W"
+		treasury = -50000
+		war_exhaustion = -25
         ai_chance = { factor = 1 }
     }
 }
@@ -601,7 +748,7 @@ country_event = {
 		has_global_flag = war_of_the_confederation
         OR = {
             AND = {
-				OR = { truce_with = CHL truce_with = ARG truce_with = LPL truce_with = ARG }
+				OR = { truce_with = CHL truce_with = ARC truce_with = ARG }
 				has_country_flag = lost_the_war
 			}
             AND = {
@@ -610,7 +757,7 @@ country_event = {
                 PEU = { owns = 2304 }
             }
         }
-        NOT = { has_country_flag = end_of_the_confederation }
+        NOT = { has_global_flag = cuzco_will_happen has_country_flag = end_of_the_confederation }
     }
 
     mean_time_to_happen = {
@@ -624,6 +771,7 @@ country_event = {
     option = {
         name = "EVT97055OPTA"
 		clr_country_flag = lost_the_war
+		clr_global_flag = war_of_the_confederation
         prestige = -5
         badboy = -2
 		any_country = {
@@ -1221,7 +1369,7 @@ country_event = {
     }
 
     option = {
-        name = "EVT33042OPTE" #Don't change
+        name = "Our current capital is fine" #Don't change
         ai_chance = { factor = 90 }
     }
 }

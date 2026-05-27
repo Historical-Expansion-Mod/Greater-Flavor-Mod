@@ -180,6 +180,19 @@ country_event = {
 				}
 			}
 		}
+		random_owned = {
+			limit = {
+				owner = { owns = 1 }
+			}
+			owner = { 
+				release_vassal = LSK
+				create_alliance = LSK
+				diplomatic_influence = {
+					who = LSK
+					value = 400
+				}
+			}
+		}
         set_country_flag = pacific_states
     }
 }
@@ -262,6 +275,15 @@ country_event = {
 				OR = { tag = CAL tag = DES tag = TEX }
 			}
 			annex_to = MEE
+		}
+		random_owned = {
+			limit = {
+				owner = { owns = 1 }
+			}
+			owner = { 
+				release = LSK
+			}
+			FROM = { inherit = LSK }
 		}
         set_country_flag = loss_of_pacific_states
     }
@@ -1591,30 +1613,29 @@ country_event = {
         81 = {
             change_province_name = "Portland"
             secede_province = THIS
+			add_core = UOR
 			any_pop = { limit = { has_pop_culture = yankee } reduce_pop = 2.5 }
         }
         3461 = {
             secede_province = THIS
+			add_core = UOR
 			any_pop = { limit = { has_pop_culture = yankee } reduce_pop = 2.5 }
         }
         3462 = {
             change_province_name = "Eugene"
             life_rating = 15
             secede_province = THIS
+			add_core = UOR
 			any_pop = { limit = { has_pop_culture = yankee } reduce_pop = 2.5 }
         }
-		random_owned = {
-			limit = { owner = { NOT = { has_country_flag = oregon_treaty } } }
-			owner = {
-				3462 = { secede_province = UOR }
-				3461 = { secede_province = UOR }
-				81 = { secede_province = UOR }
-				THIS = { create_vassal = UOR }
-				UOR = { government = prov_gov_conservative }
-				diplomatic_influence = { who = UOR value = 400 }
-				relation = { who = UOR value = 400 }
-			}
-		}
+		3462 = { secede_province = UOR }
+		3461 = { secede_province = UOR }
+		81 = { secede_province = UOR }
+		create_vassal = UOR
+		create_alliance = UOR
+		relation = { who = UOR value = 400 }
+		diplomatic_influence = { who = UOR value = 400 }
+		UOR = { government = prov_gov_conservative }
 		91 = { add_core = THIS }
 		83 = { add_core = THIS }
 		82 = { add_core = THIS }
@@ -1891,7 +1912,7 @@ country_event = {
     }
 
     option = {
-        name = "EVTOPTB441266"
+        name = "Pay their debts and keep the colonies §R(Pay 200,000¤)"
         treasury = -200000
         1887 = { add_core = LIB }
         1888 = { add_core = LIB secede_province = THIS life_rating = 20 trade_goods = sugar }
@@ -3223,5 +3244,112 @@ country_event = {
 				}
 			}
 		}
+	}
+}
+
+#Setup to Banana Republics
+country_event = {
+	id = 600283
+	title = "Bananas join the American diet!"
+	desc = "EVTDESC600283"
+	picture = "emigration"
+	fire_only_once = yes
+
+	trigger = {
+		year = 1870
+		tag = USA
+	}
+
+	mean_time_to_happen = {
+		months = 3
+	}
+
+	option = {
+		name = "Those prices are bananas!"
+		set_country_flag = bananas
+		fruit = 50
+        any_pop = {
+            militancy = -0.75
+        }
+	}
+}
+
+#First Banana Republic
+country_event = {
+	id = 600284
+	title = "Tropical Trading and Transport Company"
+	desc = "EVTDESC600284"
+	picture = "Coffee"
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		revolution_n_counterrevolution = 1
+		has_country_flag = bananas
+		COS = { OR = { all_core = { OR = { owned_by = THIS empty = yes owner = { in_sphere = THIS } } } in_sphere = THIS } }
+	}
+
+	mean_time_to_happen = {
+		months = 3
+	}
+
+	option = {
+		name = "Surely, this can only be good... For us."
+		set_global_flag = banana_politics
+		clr_country_flag = bananas
+        add_country_modifier = { name = banana_profit duration = -1 }
+		random_country = { limit = { owns = 2201 } country_event = 600285 }
+	}
+}
+
+#Banana Republics
+country_event = {
+	id = 600285
+	title = "Fruit Corporations"
+	desc = "EVTDESC600285"
+	picture = "Coffee"
+
+	trigger = {
+		primary_culture = central_american
+		in_sphere = USA
+		has_global_flag = banana_politics
+		NOT = { government = proletarian_dictatorship has_country_modifier = banana_republic }
+	}
+
+	mean_time_to_happen = {
+		months = 3
+	}
+
+	option = {
+		name = "Surely, this can only be good... For the US."
+		prestige = -5
+        add_country_modifier = { name = banana_republic duration = -1 }
+	}
+}
+
+#Banana Republic get free
+country_event = {
+	id = 600286
+	title = "Nationalizing the Fruit Plantations"
+	desc = "EVTDESC600286"
+	picture = "Coffee"
+
+	trigger = {
+		primary_culture = central_american
+		has_country_modifier = banana_republic
+		government = proletarian_dictatorship
+		can_nationalize = yes
+		NOT = { in_sphere = USA war_with = USA }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "Surely, this can only be good... For the US."
+		prestige = 2.5
+		nationalize = yes
+        remove_country_modifier = banana_republic
 	}
 }

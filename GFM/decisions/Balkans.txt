@@ -261,7 +261,11 @@ political_decisions = {
 							}
 						}
 						secede_province = ROM
+						remove_core = HUN
 					}
+					663 = { remove_core = GLM }
+					662 = { remove_core = GLM }
+					HUN = { set_country_flag = lost_claims }
 				}
 			}
 			random_owned = {
@@ -664,148 +668,6 @@ political_decisions = {
 
         ai_will_do = {
             factor = 1
-        }
-    }
-
-    unite_with_croatia = {
-        picture = gtfo
-        potential = {
-            tag = DLM
-            exists = CRO
-			OR = { ai = yes CRO = { ai = yes } }
-            NOT = { has_country_flag = unite_with_croatia }
-        }
-
-        allow = {
-            OR = {
-                part_of_sphere = no
-                sphere_owner = { is_sphere_leader_of = CRO }
-            }
-            CRO = {
-                war = no
-                neighbour = THIS
-				OR = {
-					is_vassal = no
-					CRO = { overlord = { is_sphere_leader_of = THIS } }
-				}
-            }
-			is_vassal = no
-            war = no
-            NOT = { has_global_flag = sw_set }
-        }
-
-        effect = {
-            set_country_flag = unite_with_croatia
-            all_core = { add_core = CRO }
-            
-            random_country = {
-                limit = {
-					tag = POL
-                    THIS = { ai = yes }
-                }
-                inherit = THIS
-            }
-            random_country = {
-                limit = {
-                    tag = CRO
-					is_vassal = no
-                    THIS = { ai = no }
-                }
-                THIS = {
-					inherit = CRO
-                    random_owned = {
-                        limit = { owner = { owns = 771 } }
-                        owner = { capital = 771 }
-                    }
-                    change_tag = CRO
-                }
-            }
-            random_country = {
-                limit = {
-                    tag = CRO
-                    is_vassal = yes
-                    THIS = { ai = no }
-                }
-                CRO = { 
-					overlord = {
-						create_vassal = THIS
-						create_alliance = THIS
-					}
-				}
-				THIS = {
-					inherit = CRO
-                    random_owned = {
-                        limit = { owner = { owns = 771 } }
-                        owner = { capital = 771 }
-                    }
-                    change_tag = CRO
-                }
-            }
-        }
-
-        ai_will_do = {
-            factor = 1
-            modifier = {
-                factor = 0
-                government = fascist_dictatorship
-                CRO = {
-                    NOT = { government = fascist_dictatorship }
-                }
-            }
-            modifier = {
-                factor = 0
-                NOT = { government = fascist_dictatorship }
-                CRO = { government = fascist_dictatorship }
-            }
-            modifier = {
-                factor = 0
-                government = proletarian_dictatorship
-                CRO = {
-                    NOT = { government = proletarian_dictatorship }
-                }
-            }
-            modifier = {
-                factor = 0
-                NOT = { government = proletarian_dictatorship }
-                CRO = { government = proletarian_dictatorship }
-            }
-            modifier = {
-                factor = 0
-                OR = {
-                    government = democracy
-                    government = hms_government
-                    government = constitutional_empire
-                }
-                CRO = {
-                    NOT = {
-                        government = democracy
-                        government = hms_government
-                        government = constitutional_empire
-                    }
-                }
-            }
-            modifier = {
-                factor = 0
-                CRO = {
-                    OR = {
-                        government = democracy
-                        government = hms_government
-                        government = constitutional_empire
-                    }
-                }
-                NOT = {
-                    government = democracy
-                    government = hms_government
-                    government = constitutional_empire
-                }
-            }
-            modifier = {
-                factor = 0
-                OR = {
-                    government = presidential_dictatorship
-                    government = radical_republic
-                }
-            }
         }
     }
 
@@ -1951,6 +1813,7 @@ political_decisions = {
 				YUG = { vassal_of = THIS }
 			}
             NOT = { has_global_flag = bulgaria_in_yugoslavia }
+			NOT = { primary_culture = bulgarian }
         }
         allow = {
             OR = {
@@ -1991,9 +1854,14 @@ political_decisions = {
                     limit = { is_core = BUL NOT = { is_core = THIS } }
                     secede_province = YUG
                 }
-				all_core = {
-					limit = { is_core = BUL }
-					remove_core = BUL remove_core = YUG
+				random_owned = {
+					limit = { owner = { YUG = { is_vassal = yes } } }
+					owner = {
+						all_core = {
+							limit = { is_core = BUL }
+							remove_core = BUL remove_core = YUG
+						}
+					}
 				}
             }
         }
@@ -2572,5 +2440,479 @@ political_decisions = {
         }
         ai_will_do = { factor = 1 }
     }
+
+    create_yugoslavia = {
+        picture = form_yugoslavia
+        potential = {
+			civilized = yes
+            capital_scope = { continent = europe }
+            OR = {
+                primary_culture = french
+                is_sphere_leader_of = SER
+                any_owned_province = { is_core = ALB }
+                any_owned_province = { is_core = BUL }
+                is_sphere_leader_of = MON
+                is_sphere_leader_of = CRO
+                is_sphere_leader_of = BOS
+                is_sphere_leader_of = SLO
+                is_sphere_leader_of = BUL
+            }
+            NOT = {
+                exists = YUG
+				exists = BFR
+                is_culture_group = south_slavic
+                has_global_flag = yugoslavia_formed
+                has_country_flag = i_am_slu
+                tag = TUR
+				tag = ITA
+				tag = RUS
+				tag = AUS
+				tag = KUK
+				tag = AUB
+				tag = DNB
+            }
+			NOT = {
+				AND = {
+					ai = yes
+					OR = {
+						SER = { ai = no }
+						MON = { ai = no }
+						CRO = { ai = no }
+						BOS = { ai = no }
+						SLO = { ai = no }
+						BUL = { ai = no }
+					}
+				}
+			}
+        }
+        allow = {
+            is_greater_power = yes
+            783 = { NOT = { is_core = THIS } }
+            SER = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+            BOS = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+            CRO = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+            war = no
+        }
+        effect = {
+            set_global_flag = yugoslavia_formed
+            prestige = 20
+            badboy = 2
+            SER = { all_core = { add_core = YUG } }
+            MON = { all_core = { add_core = YUG } }
+            CRO = { all_core = { add_core = YUG } }
+            BOS = { all_core = { add_core = YUG } }
+            SLO = { all_core = { add_core = YUG } }
+			DLM = { all_core = { add_core = YUG } }
+            TUR_853 = { add_core = YUG }
+            any_country = {
+                limit = {
+                    OR = {
+                        tag = SER
+                        tag = MON
+                        tag = CRO
+                        tag = BOS
+                        tag = SLO
+						tag = DLM
+                    }
+                    ai = yes
+                    in_sphere = THIS
+                }
+                annex_to = THIS
+            }
+            any_country = {
+                limit = {
+                    in_sphere = THIS
+                    war = no
+                    any_owned_province = {
+                        OR = {
+                            is_core = SER
+                            is_core = BOS
+                            is_core = CRO
+                        }
+                    }
+                }
+                any_owned = {
+                    limit = {
+                        OR = {
+                            is_core = SER
+                            is_core = BOS
+                            is_core = CRO
+                        }
+                    }
+                    secede_province = THIS
+                }
+            }
+            any_owned = {
+                limit = {
+                    is_core = THIS
+                    is_core = YUG
+                }
+                remove_core = YUG
+            }
+            release_vassal = YUG
+            create_alliance = YUG
+            YUG = { 
+				random_owned = { limit = { owner = { government = absolute_empire } } owner = { government = absolute_monarchy } }
+				random_owned = { limit = { owner = { government = semi_constitutional_empire } } owner = { government = prussian_constitutionalism } }
+				random_owned = { limit = { owner = { government = constitutional_empire } } owner = { government = hms_government } }
+			}
+            diplomatic_influence = {
+                who = YUG
+                value = 400
+            }
+            any_country = {
+                limit = {
+                    OR = {
+                        tag = AUS
+                        tag = KUK
+                        tag = HUN
+                        tag = TUR
+                    }
+                    NOT = { tag = THIS }
+                }
+                relation = {
+                    who = THIS
+                    value = -50
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+            modifier = {
+                factor = 0
+                OR = {
+                    tag = HUN
+                    tag = TUR
+                    tag = AUS
+                    tag = KUK
+                }
+            }
+        }
+    }
+	
+	ITA_create_yugoslavia = {
+		picture = form_yugoslavia
+		potential = {
+			tag = ITA
+			OR = {
+				has_country_flag = conquest_adriatic_happened
+                is_sphere_leader_of = SER
+                any_owned_province = { is_core = ALB }
+                any_owned_province = { is_core = BUL }
+                is_sphere_leader_of = MON
+                is_sphere_leader_of = CRO
+                is_sphere_leader_of = BOS
+                is_sphere_leader_of = SLO
+                is_sphere_leader_of = BUL
+            }
+            NOT = {
+                exists = YUG
+				exists = BFR
+                has_global_flag = yugoslavia_formed
+				has_country_flag = italian_yug
+            }
+			NOT = {
+				AND = {
+					ai = yes
+					OR = {
+						SER = { ai = no }
+						MON = { ai = no }
+						CRO = { ai = no }
+						BOS = { ai = no }
+						SLO = { ai = no }
+						BUL = { ai = no }
+					}
+				}
+			}
+        }
+		allow = {
+            is_greater_power = yes
+            783 = { NOT = { is_core = THIS } }
+            SER = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+            BOS = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+            CRO = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+			ALB = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+            war = no
+        }
+        effect = {
+			prestige = 10
+			badboy = 5
+			country_event = 800800
+			set_country_flag = italian_yug
+		}
+		ai_will_do = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.8
+			}
+		}
+	}
+	
+	RUS_create_yugoslavia = {
+		picture = form_yugoslavia
+		potential = {
+			tag = RUS
+			OR = {
+                is_sphere_leader_of = SER
+                any_owned_province = { is_core = ALB }
+                any_owned_province = { is_core = BUL }
+                is_sphere_leader_of = MON
+                is_sphere_leader_of = CRO
+                is_sphere_leader_of = BOS
+                is_sphere_leader_of = SLO
+                is_sphere_leader_of = BUL
+				has_global_flag = establish_panslavism
+            }
+            NOT = {
+                exists = YUG
+				exists = BFR
+                has_global_flag = yugoslavia_formed
+				has_country_flag = russian_yug
+                has_country_flag = i_am_slu
+            }
+			NOT = {
+				AND = {
+					ai = yes
+					OR = {
+						SER = { ai = no }
+						MON = { ai = no }
+						CRO = { ai = no }
+						BOS = { ai = no }
+						SLO = { ai = no }
+						BUL = { ai = no }
+					}
+				}
+			}
+        }
+		allow = {
+            is_greater_power = yes
+            783 = { NOT = { is_core = THIS } }
+            SER = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+            BOS = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+            CRO = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+			BUL = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+            war = no
+        }
+        effect = {
+			prestige = 10
+			badboy = 8
+			country_event = 800801
+			set_country_flag = russian_yug
+		}
+		ai_will_do = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.6
+			}
+		}
+	}
+	
+	AUS_create_yuguslavia = {
+		picture = form_yugoslavia
+		potential = {
+			OR = { 
+				tag = AUS
+				tag = KUK
+				tag = AUB
+				tag = DNB
+			}
+			OR = {
+                is_sphere_leader_of = SER
+                any_owned_province = { is_core = ALB }
+                any_owned_province = { is_core = BUL }
+                is_sphere_leader_of = MON
+                is_sphere_leader_of = BOS
+                is_sphere_leader_of = SLO
+				tag = AUB
+				tag = DNB
+            }
+            NOT = {
+                exists = YUG
+				exists = BFR
+                has_global_flag = yugoslavia_formed
+				has_country_flag = austrian_yug
+            }
+			NOT = {
+				AND = {
+					ai = yes
+					OR = {
+						SER = { ai = no }
+						MON = { ai = no }
+						CRO = { ai = no }
+						BOS = { ai = no }
+						SLO = { ai = no }
+					}
+				}
+			}
+        }
+		
+		allow = {
+            is_greater_power = yes
+            OR = { 
+				owns = 771
+				771 = { owner = { vassal_of = THIS } }
+			}
+            SER = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+            MON = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+            CRO = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+                        }
+                    }
+                }
+            }
+            war = no
+        }
+		
+		effect = {
+			prestige = 10
+			badboy = 5
+			country_event = 800803
+			set_country_flag = austrian_yug
+		}
+		ai_will_do = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.8
+			}
+		}
+	}
 
 }
