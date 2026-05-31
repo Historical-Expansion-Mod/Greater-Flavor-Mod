@@ -97,41 +97,71 @@ political_decisions = {
         ai_will_do = { factor = 1 }
     }
 	
-	#Sikhs attack Kalat, this happens before their collapse so it could also just give them a puppet cb on all the Kalati groups or just cores over all of BLC's traditional cores KAL_1221 = { add_core = BLC } PER_1140 = { add_core = BLC } 1139 = { remove_core = BLC } 1140 = { remove_core = BLC } reference
+	sikh_karachi_port = {
+		picture = rangit_singh
+        potential = {
+            tag = PNJ
+            has_country_flag = singh
+			1288 = { is_core = PNJ }
+			NOT = { has_global_flag = sikh_karachi_built }
+        }
+        allow = {
+			owns = 1288
+			money = 35000
+			any_greater_power = { alliance_with = THIS relation = { who = THIS value = 100 } }
+			OR = { foreign_naval_officers = yes_foreign_naval_officers civilized = yes }
+        }
+        effect = {
+			set_global_flag = sikh_karachi_built
+			treasury = -30000
+            prestige = 5
+            plurality = 2
+			PNJ = {
+				military_reform = yes_western_shipyards activate_technology = post_nelsonian_thought set_country_flag = using_foreign_shipyards 
+				military_reform = yes_foreign_navies activate_technology = clipper_design activate_technology = steamers set_country_flag = using_foreign_ships
+			}
+			1288 = { naval_base = 1 add_province_modifier = { name = recently_built_city duration = 365 } }
+        }
+        ai_will_do = { factor = 1 }
+    }
+	
 	sikh_kalat = {
 		picture = rangit_singh
         potential = {
             tag = PNJ
             has_country_flag = singh
 			1288 = { is_core = PNJ }
-			NOT = { has_country_flag = sindh_partition }
+			NOT = { has_global_flag = sikh_baluch_invasion }
+			has_global_flag = sikh_karachi_built
         }
         allow = {
 			owns = 1288
-			owns = 4217
-			NOT = { truce_with = SIN }
-			NOT = { truce_with = ENG }
+			owns = 4216
+			NOT = { truce_with = KAL }
         }
         effect = {
 			set_global_flag = sikh_baluch_invasion
+			badboy = 7
             prestige = 2
             plurality = 1
 			relation = { who = ENG value = 25 }
-			SIN_1288 = { add_core = THIS }
-			PNJ = { country_event = 960598 }
+			KAL = { all_core = { add_core = THIS } }
         }
         ai_will_do = { factor = 1 }
     }
-	
-	#Either Persia has taken its decision to invade Baluchistan or Sikhs own Bampur for failsafe cases, they either split Baluchistan with 1146, 3508, 2640, 3258, 1222, 1221, 3506, 1220, 3510 going to PNJ and 3507, 3509, 1144, 1145, 3512 going to PER **OR** PNJ keeps its cores on all of BLC and PER does as well except for Kacchi (3510)
+
 	sikh_persia_border = {
 		picture = rangit_singh
         potential = {
             tag = PNJ
             has_country_flag = singh
 			4217 = { is_core = PNJ }
-			NOT = { has_country_flag = sindh_partition }
-			PER = { has_country_flag = blc_invaded OR = { PNJ = { owns = 3512 } } }
+			has_global_flag = sikh_baluch_invasion
+			OR = { 
+				PNJ = { owns = 3512 }
+				PER = { has_country_flag = blc_invaded }
+			}
+			NOT = { has_global_flag = sikh_iran_border }
         }
         allow = {
 			owns = 4216
@@ -141,11 +171,10 @@ political_decisions = {
         }
         effect = {
 			set_global_flag = sikh_iran_border
-            prestige = 2
+            prestige = 3
             plurality = 1
-			relation = { who = ENG value = 25 }
-			SIN_1288 = { add_core = THIS }
-			PNJ = { country_event = 960598 }
+			relation = { who = PER value = 25 }
+			PNJ = { country_event = 960599 }
         }
         ai_will_do = { factor = 1 }
     }
@@ -156,8 +185,8 @@ political_decisions = {
         potential = {
             tag = PNJ
             has_country_flag = singh
-			4217 = { is_core = PNJ }
-			NOT = { has_country_flag = sindh_partition }
+			1288 = { owned_by = PNJ }
+			NOT = { has_global_flag = india_partition }
 			has_global_flag = indus_sutlej_border
 			has_global_flag = sikh_baluch_invasion
 			has_global_flag = 1_anglo_sikh_war
@@ -166,16 +195,110 @@ political_decisions = {
         allow = {
 			owns = 4216
 			owns = 4217
-			NOT = { truce_with = SIN }
+			PNJ = { any_core = { NOT = { owned_by = ENG owned_by = EIC } } }
 			NOT = { truce_with = ENG }
         }
         effect = {
-			set_global_flag = sikh_baluch_invasion
+			set_global_flag = india_partition
             prestige = 2
             plurality = 1
 			relation = { who = ENG value = 25 }
 			SIN_1288 = { add_core = THIS }
 			PNJ = { country_event = 960598 }
+        }
+        ai_will_do = { factor = 1 }
+    }
+	
+	sikh_pamir = {
+		picture = rangit_singh
+        potential = {
+            tag = PNJ
+            has_country_flag = singh
+			has_country_flag = dogra_out_now
+			NOT = { has_global_flag = sikh_pamir_taken }
+        }
+        allow = {
+			OR = { AND = { KAS = { exists = no } 4156 = { owned_by = PNJ } } KAS = { vassal_of = THIS } }
+			OR = { AND = { LAD = { exists = no } 1225 = { owned_by = PNJ } } LAD = { vassal_of = THIS } }
+			owns = 1218
+			OR = { truce_with = AFG NOT = { exists = AFG } }
+			NOT = { has_country_flag = recently_lost_war }
+        }
+        effect = {
+			set_global_flag = sikh_pamir_taken
+			badboy = 4
+            prestige = 2
+            plurality = 1
+			1223 = { add_core = PNJ }
+			3323 = { add_core = PNJ }
+			3517 = { add_core = PNJ }
+			3523 = { add_core = PNJ }
+			3524 = { add_core = PNJ }
+			random_owned = {
+				limit = { owner = { 3523 = { owned_by = AFG } } }
+				owner = { 3523 = { secede_province = PNJ } }
+			}
+			random_owned = {
+				limit = {
+					owner = { KSN = { vassal_of = AFG } } }
+				owner = { AFG = { release_vassal = KSN } 3524 = { secede_province = PNJ } PNJ = { release_vassal = KSN } }
+			}
+			random_owned = {
+				limit = {
+					owner = { CRL = { vassal_of = AFG } } }
+				owner = { AFG = { release_vassal = CRL } 1223 = { secede_province = PNJ } PNJ = { release_vassal = CRL } }
+			}
+			random_owned = {
+				limit = {
+					owner = { HNZ = { vassal_of = AFG } } }
+				owner = { AFG = { release_vassal = HNZ } 3323 = { secede_province = PNJ } PNJ = { release_vassal = HNZ } }
+			}
+			random_owned = {
+				limit = {
+					owner = { WKH = { vassal_of = BDK } } }
+				owner = { BDK = { release_vassal = WKH } 3517 = { secede_province = PNJ } PNJ = { release_vassal = WKH } }
+			}
+        }
+        ai_will_do = { factor = 1 }
+    }
+	
+	sikh_afghanistan = {
+		picture = rangit_singh
+        potential = {
+            tag = PNJ
+            has_country_flag = singh
+			has_global_flag = sikh_pamir_taken
+			has_global_flag = sikh_baluch_invasion
+			NOT = { has_country_flag = sikh_kabul_taken }
+        }
+        allow = {
+			owns = 1218
+			owns = 1221
+			PNJ = { all_core = { OR = { owned_by = THIS empty = yes owner = { vassal_of = THIS } owned_by = EIC owned_by = ENG } } }
+			relation = { who = PER value = 100 }
+			relation = { who = ENG value = 100 }
+			NOT = { truce_with = AFG }
+        }
+        effect = {
+			set_global_flag = sikh_kabul_taken
+			badboy = 5
+            prestige = 5
+            plurality = 2.5
+			#1213 = { add_core = PNJ }
+			#1219 = { add_core = PNJ }
+			#3538 = { add_core = PNJ }
+			#AFG_1209 = { add_core = PNJ }
+			war = {
+				target = AFG
+				attacker_goal = { casus_belli = make_puppet_no_add_wargoal }
+				defender_goal = { casus_belli = humiliate_no_infamy }
+				call_ally = yes
+			}
+			AFG = {
+				create_alliance = KND
+				create_alliance = HAZ
+				war = { attacker_goal = { casus_belli = call_allies_cb } call_ally = yes }
+			}
         }
         ai_will_do = { factor = 1 }
     }
