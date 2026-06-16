@@ -135,7 +135,7 @@ country_event = {
 			ideology = conservative
 			factor = 3
 		}
-		ai_chance = { factor = 1 }
+		ai_chance = { factor = 1 modifier = { factor = 100 WAL = { ai = no } } }
 	}
 }
 
@@ -149,14 +149,16 @@ country_event = {
 
 	option = {
 		name = "The Ottomans have lost their mind! Lets remind them of their place!"
-		casus_belli = { target = WAL type = make_puppet months = 120 }
+		casus_belli = { target = TUR type = free_peoples months = 120 }
 		set_global_flag = romanian_war
 		3372 = { remove_core = WAL add_core = MOL }
 		MOL = { clr_country_flag = colony_exemption }
 		war = {
-			target = WAL
+			target = TUR
 			attacker_goal = {
-				casus_belli = make_puppet
+				casus_belli = free_peoples
+				state_province_id = 674
+				country = WAL
 			}
 			defender_goal = {
 				casus_belli = liberate_country
@@ -166,7 +168,7 @@ country_event = {
 	}
 }
 
-#Russia is informed of Turkey being silly
+#Wallachia is informed of Turkey being silly
 country_event = {
 	id = 800952
 	title = "The Ottoman Empire Denounces the Occupation of Moldavia"
@@ -183,7 +185,7 @@ country_event = {
 	}
 }
 
-#Ottoman Victory in the Moldavian War
+#Ottoman Victory in the Wallachian War
 country_event = {
 	id = 800953
 	title = "Russia is expelled from the Danubian Principalities"
@@ -218,7 +220,7 @@ country_event = {
 	}
 }
 
-#Russian Victory in the Moldavian War
+#Russian Victory in the Wallachian War
 country_event = {
 	id = 800954
 	title = "The Ottomans are expelled from the Danubian Principalities"
@@ -233,7 +235,7 @@ country_event = {
 		has_global_flag = romanian_war
 		truce_with = TUR
 		is_our_vassal = MOL
-		is_our_vassal = WAL
+		WAL = { is_vassal = no owns = 674 }
 	}
 
 	option = {
@@ -348,7 +350,7 @@ country_event = {
 	}
 }
 
-#Wallachian Revolution Fails - Russia retreats from Wallachia
+#Wallachian Revolution Fails - Russia retreats from Moldavia
 country_event = {
 	id = 800955
 	title = "The End of the Occupation of Moldavia"
@@ -375,6 +377,96 @@ country_event = {
 			prestige = -10
 			war_exhaustion = 5
 		}
+	}
+}
+
+country_event = {
+	id = 800963
+	title = "A Celebration in Bucharest"
+	desc = "EVTDESC800963"
+	picture = "wallachian_revolution_major"
+	fire_only_once = yes
+
+	trigger = {
+		has_global_flag = wallachian_revolution
+		tag = WAL
+		truce_with = TUR
+		NOT = { vassal_of = TUR }
+		NOT = { has_country_flag = convention_of_balta_liman }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = "Wait! So that means..."
+		RUS = { country_event = 800964 }
+		prestige = 5
+		casus_belli = { target = RUS type = liberate_country months = 120 }
+	}
+}
+
+
+country_event = {
+	id = 800964
+	title = "Where Others Failed..."
+	desc = "EVTDESC800964"
+	picture = "wallachian_revolution_major"
+	is_triggered_only = yes
+
+	option = {
+		name = "We will succeed."
+		casus_belli = { target = WAL type = make_puppet months = 120 }
+		3372 = { remove_core = WAL add_core = MOL }
+		MOL = { clr_country_flag = colony_exemption }
+		war = {
+			target = WAL
+			attacker_goal = {
+				casus_belli = make_puppet
+			}
+			defender_goal = {
+				casus_belli = liberate_country
+				country = MOL
+			}
+		}
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "Actually, withdraw from Moldavia and let the Romanians be free... §GLose 3 infamy§W"
+		release_vassal = MOL
+		leave_alliance = MOL
+		diplomatic_influence = { who = MOL value = -400 }
+		MOL = { clr_country_flag = colony_exemption }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 800965
+	title = "The Inauguration of the Great Theatre of Moldavia"
+	desc = "EVTDESC800965"
+	picture = "great_theatre_moldavia"
+	fire_only_once = yes
+
+	trigger = {
+		primary_culture = romanian
+		own = 670
+		year = 1840
+		month = 5
+	}
+
+	mean_time_to_happen = {
+		days = 7
+	}
+
+	option = {
+		name = "Another reason to be proud of our culture!"
+		prestige = 5
+		plurality = 5
+		670 = { any_pop = { consciousness = 1 } }
+		ai_chance = { factor = 1 }
 	}
 }
 
@@ -429,4 +521,78 @@ country_event = {
 		create_alliance = MOL
 		MOL = { government = colonial_company }
 	}
+}
+
+# Regulamentul Organic - fires for RUS
+country_event = {
+    id = 800948
+    title = "The Regulamentul Organic"
+    desc = "EVTDESC800948"
+    picture = "Regulamentul_Organic"
+    fire_only_once = yes
+	
+	mean_time_to_happen = { days = 7 }
+	
+	trigger = {
+		tag = RUS
+		is_our_vassal = WAL
+		is_our_vassal = MOL
+		year = 1832
+		NOT = { year = 1836 }
+	}
+
+    option = {
+        name = "We will keep a close eye on the Danube"
+		release_vassal = MOL
+		release_vassal = WAL
+		MOL = { country_event = 160518541 }
+		WAL = { country_event = 160518541 }
+		TUR = { country_event = 800949 }
+    }
+}
+
+# Regulamentul Organic - Turkey is giving its vassals back
+country_event = {
+    id = 800949
+    title = "The Regulamentul Organic"
+    desc = "EVTDESC800949"
+    picture = "Regulamentul_Organic"
+    is_triggered_only = yes
+
+    option = {
+        name = "Russian influence looms over our empire..."
+		prestige = -1
+		create_vassal = WAL
+		create_alliance = WAL
+		WAL = { government = colonial_company }
+		create_vassal = MOL
+		create_alliance = MOL
+		MOL = { government = colonial_company }
+    }
+}
+
+# Regulamentul Organic - Wallachia and Moldavia gets their laws wow
+country_event = {
+    id = 160518541
+    title = "The Regulamentul Organic"
+    desc = "REGULAMENTULORGANIC"
+    picture = "Regulamentul_Organic"
+    is_triggered_only = yes
+    fire_only_once = yes
+
+    option = {
+        name = "Ok."
+		war_countries = { end_war = THIS }
+		clr_country_flag = colony_exemption
+		relation = { who = RUS value = -50 }
+		scaled_consciousness = { factor = 2 ideology = conservative }
+        scaled_militancy = { factor = 2 ideology = conservative }
+		scaled_consciousness = { factor = 4 ideology = reactionary }
+        scaled_militancy = { factor = 4 ideology = reactionary }
+		scaled_consciousness = { factor = -4 ideology = liberal }
+        scaled_militancy = { factor = -4 ideology = liberal }
+		political_reform = restricted_meeting
+		political_reform = landed_voting
+		political_reform = appointed
+    }
 }
