@@ -52,13 +52,15 @@ country_event = {
     trigger = {
         tag = CHL
         2308 = {
-            OR = {
+            NOT = { is_core = THIS }
+			OR = {
                 owner = { NOT = { truce_with = THIS } }
                 owned_by = THIS
             }
         }
-        2305 = {
-            OR = {
+        2309 = {
+            NOT = { is_core = THIS }
+			OR = {
                 owner = { NOT = { truce_with = THIS } }
                 owned_by = THIS
             }
@@ -73,7 +75,7 @@ country_event = {
                 nationalism_n_imperialism = 1
             }
         }
-        NOT = { has_country_modifier = recently_lost_war }
+        NOT = { has_global_flag = PEU_partition has_country_modifier = recently_lost_war }
         NOT = { war_exhaustion = 20 }
     }
 
@@ -90,16 +92,18 @@ country_event = {
         2309 = { add_core = CHL }
         2307 = { add_core = CHL }
         2305 = { trade_goods = sulphur add_core = CHL }
+		4182 = { add_core = CHL }
+		2375 = { add_core = CHL }
 		3554 = { add_core = CHL }
-        2578 = { add_core = CHL }
+		2578 = { add_core = CHL }
 
         any_country = {
             limit = {
                 any_owned_province = {
-                    OR = {
-                        region = BOL_2309
-                        province_id = 2578
-                    }
+                    OR = { 
+						region = BOL_2309
+						province_id = 2578
+					}
                 }
                 OR = {
                     in_sphere = THIS
@@ -110,10 +114,10 @@ country_event = {
             relation = { who = THIS value = -400 }
             any_owned = {
                 limit = {
-                    OR = {
-                        region = BOL_2309
-                        province_id = 2578
-                    }
+                    OR = { 
+						region = BOL_2309
+						province_id = 2578
+					}
                 }
                 secede_province = THIS
             }
@@ -122,10 +126,10 @@ country_event = {
         any_country = {
             limit = {
                 any_owned_province = {
-                    OR = {
-                        region = BOL_2309
-                        province_id = 2578
-                    }
+                    OR = { 
+						region = BOL_2309
+						province_id = 2578
+					}
                 }
                 NOT = {
                     in_sphere = THIS
@@ -149,6 +153,8 @@ country_event = {
         2309 = { add_core = CHL }
         2307 = { add_core = CHL }
         2305 = { trade_goods = sulphur add_core = CHL }
+		4182 = { add_core = CHL }
+		2375 = { add_core = CHL }
 		3554 = { add_core = CHL }
         2578 = { add_core = CHL }
         relation = { who = BOL value = -400 }
@@ -175,6 +181,7 @@ country_event = {
 
     option = {
         name = "Prepare for war."
+		2578 = { add_core = CHL }
         any_country = {
             limit = {
                 NOT = { war_with = THIS }
@@ -206,11 +213,12 @@ country_event = {
             limit = {
                 OR = {
                     province_id = 2305
+                    province_id = 4182
+                    province_id = 2375
 					province_id = 3554
                     province_id = 2309
                     province_id = 2308
                     province_id = 2307
-                    province_id = 2578
                 }
             }
             secede_province = CHL
@@ -250,5 +258,456 @@ country_event = {
             factor = 10
             modifier = { factor = 0 war = yes }
         }
+    }
+}
+
+# Abandonment of Puerto Gallegos
+
+country_event = {
+	id = 160519321
+	title = "The Puerto Gallegos crisis" #fires for argentina
+	desc = "EVTDESC160519321"
+	picture = "rio_gallegos"
+	fire_only_once = yes
+    trigger = {
+		OR = {
+			tag = ARG
+			tag = ARC
+			tag = LPL
+			tag = SBA
+		}
+		2399 = { owned_by = CHL }
+	}
+
+	option = {
+		name = "This is unacceptable. Pressure them into leaving."
+		CHL = { country_event = { id = 160519322 days = 20 } }
+		ai_chance = {
+			factor = 95
+		}
+	}
+
+	option = {
+		name = "There's nothing we can do."
+		ai_chance = {
+			factor = 5
+		}
+	}
+}
+
+country_event = {
+	id = 160519322
+    title = "The Puerto Gallegos crisis" #fires for chile
+    desc = "EVTDESC160519322"
+    picture = "rio_gallegos"
+    
+	is_triggered_only = yes
+
+	option = {
+		name = "We cannot risk conflict with them. Leave... for now."
+		2399 = {
+			secede_province = ---
+			life_rating = 5
+		}
+		FROM = { country_event = { id = 160519323 days = 20 } }
+		ai_chance = {
+            factor = 95
+        }
+	}
+	
+	option = {
+		name = "They'll have to pry it from our cold, dead hands."
+		FROM = { country_event = { id = 160519324 days = 20 } }
+		ai_chance = {
+            factor = 5
+        }
+	}
+}
+
+country_event = {
+	id = 160519323
+	title = "$FROMCOUNTRY$ Gives In To Our Demands"
+	desc = "EVTDESC160519323"
+	picture = "rio_gallegos"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Most wonderful."
+		relation = { who = FROM value = 50 }
+	}
+}
+
+country_event = {
+	id = 160519324
+	title = "The $FROMCOUNTRY_ADJ$ Response"
+	desc = "EVTDESC160519324"
+	picture = "rio_gallegos"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "They'll pay for this insult."
+		relation = { who = FROM value = -100 }
+	}
+}
+
+country_event = {
+	id = 971904
+	title = "EVTNAME971904"
+	desc = "EVTDESC971904"
+	picture = "patagonia_map"
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "I am certain there are better ways to solve this dispute."
+		badboy = 1
+		FROM = { country_event = { id = 971905 days = 0 } }
+		ai_chance = {
+			factor = 95
+		}
+	}
+
+	option = {
+		name = "The far south holds no value for us. Sign the treaty."
+		prestige = 1
+		FROM = { country_event = { id = 971906 days = 0 } }
+		ai_chance = {
+			factor = 5
+		}
+	}
+}
+
+
+country_event = {
+	id = 971905
+	title = "The $FROMCOUNTRY_ADJ$ Response"
+	desc = "EVTDESC971905"
+	picture = "patagonia_map"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "A solution will be found eventually."
+		2348 = { owner = { relation = { who = THIS value = -10 } } }
+	}
+}
+
+country_event = {
+	id = 971906
+	title = "The $FROMCOUNTRY_ADJ$ Response"
+	desc = "EVTDESC971906"
+	picture = "patagonia_map"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Marvelous news!"
+			set_country_flag = no_war_over_patagonia_pls
+			ARG_2391 = { remove_core = THIS }
+			2398 = { add_core = THIS }
+			2399 = { add_core = THIS }
+			2400 = { add_core = THIS }
+			3558 = { add_core = THIS }
+			3950 = { add_core = THIS }
+			4208 = { add_core = THIS }
+			CHL_2332 = { remove_core = ARG remove_core = ARC remove_core = SBA remove_core = LPL }
+			2398 = { remove_core = ARG remove_core = ARC remove_core = SBA remove_core = LPL }
+			2399 = { remove_core = ARG remove_core = ARC remove_core = SBA remove_core = LPL }
+			2400 = { remove_core = ARG remove_core = ARC remove_core = SBA remove_core = LPL }
+			3950 = { remove_core = ARG remove_core = ARC remove_core = SBA remove_core = LPL }
+			4208 = { remove_core = ARG remove_core = ARC remove_core = SBA remove_core = LPL }
+	}
+}
+
+country_event = {
+    id = 971082
+    title = "Pacification of the south"
+    desc = "EVTDESC971082"
+    picture = "pacification_of_patagonia"
+
+	fire_only_once = yes
+
+    trigger = {
+		has_global_flag = occupation_of_araucania
+		OR = {
+            tag = CHL
+			AND = { has_country_flag = i_am_hsa owns = 2324 }
+		}
+		3555 = { empty = no owner = { civilized = yes } }
+		2394 = { empty = no owner = { civilized = yes } }
+		2391 = { empty = no owner = { civilized = yes } }
+		4093 = { empty = no owner = { civilized = yes } }
+		96 = { empty = no owner = { civilized = yes } }
+		4089 = { empty = no owner = { civilized = yes } }
+		2096 = { empty = no owner = { civilized = yes } }
+		2398 = { empty = no owner = { civilized = yes } }
+		3950 = { empty = no owner = { civilized = yes } }
+		2399 = { empty = no owner = { civilized = yes } }
+		2400 = { empty = no owner = { civilized = yes } }
+		4069 = { empty = no owner = { civilized = yes } }
+		3558 = { empty = no owner = { civilized = yes } }
+		4208 = { empty = no owner = { civilized = yes } }
+		3559 = { empty = no owner = { civilized = yes } }
+		2334 = { empty = no owner = { civilized = yes } }
+		2335 = { empty = no owner = { civilized = yes } }
+		2333 = { empty = no owner = { civilized = yes } }
+		3814 = { empty = no owner = { civilized = yes } }
+	    NOT = { has_global_flag = araucania_liferating }
+    }
+
+    mean_time_to_happen = {
+        months = 18
+        modifier = {
+            factor = 0.7
+            machine_guns = 1
+        }
+    }
+
+    option = {
+        name = "EVT97086OPTA" #Excellent!
+        set_global_flag = patagonia_liferating
+		prestige = 3
+        random_owned = {
+			limit = { 3555 = { is_core = THIS owned_by = THIS } }
+			3555 = {
+				life_rating = 18
+				any_pop = {
+					limit = { is_culture_group = native_american }
+					militancy = 8
+					consciousness = 3
+					reduce_pop = 0.97
+				}
+			}
+		}
+		random_owned = {
+			limit = { 3555 = { is_core = THIS owned_by = THIS } }
+			3555 = {
+				life_rating = 18
+				any_pop = {
+					limit = { is_culture_group = native_american }
+					militancy = 8
+					consciousness = 3
+					reduce_pop = 0.97
+				}
+			}
+		}
+		random_owned = {
+			limit = { 2394 = { is_core = THIS owned_by = THIS } }
+			2394 = {
+				life_rating = 18
+				any_pop = {
+					limit = { is_culture_group = native_american }
+					militancy = 8
+					consciousness = 3
+					reduce_pop = 0.97
+				}
+			}
+		}
+		random_owned = {
+			limit = { 2391 = { is_core = THIS owned_by = THIS } }
+			2391 = {
+				life_rating = 18
+				any_pop = {
+					limit = { is_culture_group = native_american }
+					militancy = 8
+					consciousness = 3
+					reduce_pop = 0.97
+				}
+			}
+		}
+		random_owned = {
+			limit = { 4093 = { is_core = THIS owned_by = THIS } }
+			4093 = {
+				life_rating = 18
+				any_pop = {
+					limit = { is_culture_group = native_american }
+					militancy = 8
+					consciousness = 3
+					reduce_pop = 0.97
+				}
+			}
+		}
+		random_owned = {
+			limit = { 96 = { is_core = THIS owned_by = THIS } }
+			96 = {
+				life_rating = 18
+				any_pop = {
+					limit = { is_culture_group = native_american }
+					militancy = 8
+					consciousness = 3
+					reduce_pop = 0.97
+				}
+			}
+		}
+		random_owned = {
+			limit = { 4089 = { is_core = THIS owned_by = THIS } }
+			4089 = {
+				life_rating = 18
+				any_pop = {
+					limit = { is_culture_group = native_american }
+					militancy = 8
+					consciousness = 3
+					reduce_pop = 0.97
+				}
+			}
+		}
+		random_owned = {
+			limit = { 2096 = { is_core = THIS owned_by = THIS } }
+			2096 = {
+				life_rating = 18
+				any_pop = {
+					limit = { is_culture_group = native_american }
+					militancy = 8
+					consciousness = 3
+					reduce_pop = 0.97
+				}
+			}
+		}
+		random_owned = {
+			limit = { 2398 = { is_core = THIS owned_by = THIS } }
+			2398 = {
+				life_rating = 18
+				any_pop = {
+					limit = { is_culture_group = native_american }
+					militancy = 8
+					consciousness = 3
+					reduce_pop = 0.97
+				}
+			}
+		}
+		random_owned = {
+			limit = { 3950 = { is_core = THIS owned_by = THIS } }
+			3950 = {
+				life_rating = 18
+				any_pop = {
+					limit = { is_culture_group = native_american }
+					militancy = 8
+					consciousness = 3
+					reduce_pop = 0.97
+				}
+			}
+		}
+		random_owned = {
+			limit = { 2399 = { is_core = THIS owned_by = THIS } }
+			2399 = {
+				life_rating = 18
+				any_pop = {
+					limit = { is_culture_group = native_american }
+					militancy = 8
+					consciousness = 3
+					reduce_pop = 0.97
+				}
+			}
+		}
+		random_owned = {
+			limit = { 2400 = { is_core = THIS owned_by = THIS } }
+			2400 = {
+				life_rating = 18
+				any_pop = {
+					limit = { is_culture_group = native_american }
+					militancy = 8
+					consciousness = 3
+					reduce_pop = 0.97
+				}
+			}
+		}
+		random_owned = {
+			limit = { 4069 = { is_core = THIS owned_by = THIS } }
+			4069 = {
+				life_rating = 18
+				any_pop = {
+					limit = { is_culture_group = native_american }
+					militancy = 8
+					consciousness = 3
+					reduce_pop = 0.97
+				}
+			}
+		}
+		random_owned = {
+			limit = { 3558 = { is_core = THIS owned_by = THIS } }
+			3558 = {
+				life_rating = 18
+				any_pop = {
+					limit = { is_culture_group = native_american }
+					militancy = 8
+					consciousness = 3
+					reduce_pop = 0.97
+				}
+			}
+		}
+		random_owned = {
+			limit = { 4208 = { is_core = THIS owned_by = THIS } }
+			4208 = {
+				life_rating = 18
+				any_pop = {
+					limit = { is_culture_group = native_american }
+					militancy = 8
+					consciousness = 3
+					reduce_pop = 0.97
+				}
+			}
+		}
+		random_owned = {
+			limit = { 3559 = { is_core = THIS owned_by = THIS } }
+			3559 = {
+				life_rating = 18
+				any_pop = {
+					limit = { is_culture_group = native_american }
+					militancy = 8
+					consciousness = 3
+					reduce_pop = 0.97
+				}
+			}
+		}
+		random_owned = {
+			limit = { 2334 = { is_core = THIS owned_by = THIS } }
+			2334 = {
+				life_rating = 18
+				any_pop = {
+					limit = { is_culture_group = native_american }
+					militancy = 8
+					consciousness = 3
+					reduce_pop = 0.97
+				}
+			}
+		}
+		random_owned = {
+			limit = { 2335 = { is_core = THIS owned_by = THIS } }
+			2335 = {
+				life_rating = 18
+				any_pop = {
+					limit = { is_culture_group = native_american }
+					militancy = 8
+					consciousness = 3
+					reduce_pop = 0.97
+				}
+			}
+		}
+		random_owned = {
+			limit = { 2333 = { is_core = THIS owned_by = THIS } }
+			2333 = {
+				life_rating = 18
+				any_pop = {
+					limit = { is_culture_group = native_american }
+					militancy = 8
+					consciousness = 3
+					reduce_pop = 0.97
+				}
+			}
+		}
+		random_owned = {
+			limit = { 3814 = { is_core = THIS owned_by = THIS } }
+			3814 = {
+				life_rating = 18
+				any_pop = {
+					limit = { is_culture_group = native_american }
+					militancy = 8
+					consciousness = 3
+					reduce_pop = 0.97
+				}
+			}
+		}
     }
 }
