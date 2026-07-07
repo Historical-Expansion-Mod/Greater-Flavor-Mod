@@ -907,8 +907,7 @@ political_decisions = {
                         tag = POL
                         tag = LIT
 						tag = PZN
-						tag = DZG
-						tag = GLM
+						tag = KRA
                     }
                     ai = yes
                     in_sphere = THIS
@@ -931,10 +930,86 @@ political_decisions = {
                 value = 400
             }
 			PLC = { capital = 706 }
-			PLC = { government = colonial_company_2 add_accepted_culture = french set_country_flag = french_accepted }
-            BYE = {
-                all_core = { add_core = PLC }
+			PLC = { government = colonial_company_2 add_accepted_culture = french set_country_flag = french_accepted set_country_flag = create_PLC_FRA }
+        }
+    }
+
+    jean_rapp_danzig = {
+        picture = french_danzig_granadiers
+        potential = {
+			tag = FRA
+            is_greater_power = yes
+			has_country_flag = create_PLC_FRA
+            NOT = {
+                exists = DZG
+                has_country_flag = danzig_free_city
             }
+        }
+        allow = {
+            war = no
+			is_our_vassal = PLC
+            690 = {
+                OR = {
+					owner = { is_disarmed = yes truce_with = THIS }
+                    owned_by = THIS
+                    owner = {
+                        ai = yes
+                        in_sphere = THIS
+                        OR = {
+                            is_vassal = no
+                            vassal_of = THIS
+                        }
+                        war = no
+                    }
+                }
+            }
+        }
+        effect = {
+            set_country_flag = danzig_free_city
+			badboy = 1.5
+			PRU_690 = { add_core = DZG }
+			690 = { secede_province = THIS secede_province = DZG }
+			create_vassal = DZG
+			create_alliance = DZG
+			diplomatic_influence = { who = DZG value = 400 }
+			DZG = { government = colonial_company_2 add_accepted_culture = french set_country_flag = french_accepted }
+			relation = { who = PLC value = -100 }
+			PLC = { any_pop = { limit = { has_pop_culture = polish } militancy = 4 } }
+        }
+		ai_will_do = { factor = 1 modifier = { factor = 0 badboy = 0.94 } }
+    }
+
+    wybickis_request = {
+        picture = become_poland_lithuania
+        potential = {
+			OR = { tag = PLC tag = FRA }
+			has_country_flag = create_PLC_FRA
+            NOT = { has_country_flag = wybicki }
+        }
+        allow = {
+            war = no
+			is_vassal = no
+            PLC = {
+				all_core = {
+					OR = {
+						owned_by = THIS 
+						owner = {
+							ai = yes
+							in_sphere = THIS
+							OR = {
+								is_vassal = no
+								vassal_of = THIS
+							}
+							war = no
+						}
+					}
+				}
+            }
+        }
+        effect = {
+            set_country_flag = wybicki
+			badboy = 7.5
+            BYE = { all_core = { add_core = PLC } }
             3328 = { add_core = PLC }
             RUS_959 = { add_core = PLC }
 			960 = { add_core = PLC }
@@ -947,7 +1022,31 @@ political_decisions = {
             955 = { add_core = PLC }
 			356 = { add_core = PLC }
 			1007 = { add_core = PLC }
+			random_owned = {
+				limit = { owner = { has_country_flag = danzig_free_city } }
+				any_country = { 
+					limit = {
+						any_owned_province = { is_core = PLC }
+						ai = yes
+						in_sphere = THIS
+					}
+					any_owned = { limit = { is_core = PLC NOT = { province_id = 690 } } secede_province = THIS }
+				}
+			}
+			random_owned = {
+				limit = { owner = { NOT = { has_country_flag = danzig_free_city } } }
+				any_country = { 
+					limit = {
+						any_owned_province = { is_core = PLC }
+						ai = yes
+						in_sphere = THIS
+					}
+					any_owned = { limit = { is_core = PLC } secede_province = THIS }
+				}
+			}
+			PLC = { any_pop = { limit = { has_pop_culture = polish } militancy = -2 } }
         }
+		ai_will_do = { factor = 1 modifier = { factor = 0 badboy = 0.7 } }
     }
 
     blockade_rosas = {
