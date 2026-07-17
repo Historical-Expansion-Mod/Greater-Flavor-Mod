@@ -799,8 +799,7 @@ political_decisions = {
                 government = fascist_dictatorship
                 government = proletarian_dictatorship
             }
-            NOT = { has_global_flag = poland_is_russian }
-            NOT = { has_global_flag = create_zapadoslavia }
+            NOT = { has_global_flag = poland_is_russian has_global_flag = create_zapadoslavia has_country_flag = russian_poland_new }
         }
 
         allow = {
@@ -1900,7 +1899,7 @@ political_decisions = {
 
         allow = {
             year = 1884
-			AFG = { exists = yes OR = { is_vassal = no vassal_of = THIS } }
+			AFG = { exists = yes civilized = no OR = { is_vassal = no vassal_of = THIS } }
             war = no
             is_vassal = no
         }
@@ -2043,6 +2042,7 @@ political_decisions = {
 		}
 
 		effect = {
+			clr_country_flag = georgian_puppet
 			money = -25000
 			add_country_modifier = { name = paying_off_bagratid_leeches duration = 3650 }
 			GEO = { 
@@ -2673,8 +2673,8 @@ political_decisions = {
             owns = 2548
             NOT = { has_country_flag = soviet_armenia_georgia }
         }
-
-        allow = {
+		
+		allow = {
             mass_politics = 1
             rank = 8
             TUR = { NOT = { rank = 8 government = proletarian_dictatorship } }
@@ -2696,4 +2696,76 @@ political_decisions = {
             set_country_flag = soviet_armenia_georgia
         }
     }
+	
+	duke_nicholas_manifesto = {
+		picture = grand_duke_nicholas
+		potential = {
+			tag = RUS
+			POL = { exists = no }
+			mass_politics = 1
+			NOT = { 
+				government = absolute_empire
+				government = absolute_monarchy
+				has_country_flag = russian_poland_new 
+				has_global_flag = create_zapadoslavia 
+			}
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+			OR = {
+				ruling_party_ideology = liberal
+				ruling_party_ideology = radical
+				ruling_party_ideology = socialist
+				upper_house = { ideology = liberal value = 0.4 }
+				upper_house = { ideology = radical value = 0.4 }
+				upper_house = { ideology = socialist value = 0.4 }
+			}
+			POL = {
+				all_core = {
+					OR = { 
+						owned_by = THIS
+						owner = {
+							AND = {
+								in_sphere = THIS
+								OR = { is_vassal = no vassal_of = THIS }
+							}
+						}
+						province_id = 3318]
+					}
+				}
+			}
+		}
+		
+		effect = {
+			badboy = -5
+			prestige = 5
+			scaled_militancy = { factor = 10 ideology = reactionary }
+			scaled_militancy = { factor = 7.5 ideology = conservative }
+			scaled_militancy = { factor = -5 ideology = liberal }
+			scaled_militancy = { factor = -5 ideology = radical }
+			scaled_militancy = { factor = -5 ideology = socialist }
+			any_pop = { 
+				limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } } 
+				ideology = { factor = 0.10 value = liberal }
+				ideology = { factor = 0.05 value = radical }
+			}
+			3341 = { remove_core = POL }
+			719 = { remove_core = POL }
+			random_owned = { limit = { owner = { has_country_flag = 4_russias } } owner = { RUT = { all_core = { remove_core = POL } } } }
+			POL = { all_core = { remove_core = THIS } }
+			any_country = {
+				limit = { in_sphere = THIS any_owned_province = { is_core = POL } }
+				any_owned = { limit = { is_core = POL } secede_province = THIS }
+			}
+			release_vassal = POL
+			create_alliance = POL
+			diplomatic_influence = { who = POL value = 400 }
+			POL = { government = colonial_company add_accepted_culture = russian set_country_flag = russian_accepted any_pop = { militancy = -5 consciousness = 1 } }
+			set_country_flag = russian_poland_new
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
 }

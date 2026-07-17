@@ -1,4 +1,31 @@
 country_event = {
+ 	id = 4207061
+ 	title = "The Cholera Riots"
+ 	desc = "EVTDESC4207061"
+ 	picture = "cholera_riots"
+ 	fire_only_once = yes
+
+ 	trigger = {
+ 		year = 1831
+ 		tag = RUS
+ 		owns = 1008
+ 		month = 6
+		NOT = { year = 1833 }
+ 	}
+
+ 	mean_time_to_happen = { days = 1 }
+
+ 	option = {
+ 		name = "Come on, people! It's called social distancing!"
+ 		1008 = {
+ 			any_pop = {
+ 				militancy = 3
+ 			}
+ 		}
+ 	}
+}
+
+country_event = {
     id = 32500
     title = "EVTNAME32500"
     desc = "EVTDESC32500"
@@ -547,9 +574,20 @@ country_event = {
         }
         FROM = {
             any_owned = {
-                limit = { continent = north_america }
+                limit = { region = USA_1 }
                 secede_province = THIS
             }
+        }
+        any_land_province = {
+            limit = {
+                is_core = CAL
+                OR = {
+                    owned_by = RUS
+                    owned_by = LSK
+                }
+            }
+            remove_core = LSK
+            secede_province = THIS secede_province = FROM
         }
         LSK = {
             clr_country_flag = sunni_country
@@ -4860,7 +4898,6 @@ country_event = {
 
     option = {
         name = "Aid California."
-        diplomatic_influence = { who = CAL value = 400 }
 		CAL = {
             create_alliance = RUS
 			# Audax Validator "." Ignore_NEXT
@@ -4886,9 +4923,8 @@ country_event = {
     trigger = {
         tag = RUS
         has_country_flag = monarchy_government
-        CAL = { has_country_flag = cali_revolt_1 NOT = { war_with = MEX } }
+        CAL = { has_country_flag = cali_revolt_1 NOT = { war_with = MEX } exists = yes alliance_with = THIS }
     }
-
     option = {
         name = "California is now independent!"
         84 = { add_core = LSK }
@@ -4909,8 +4945,8 @@ country_event = {
                 secede_province = THIS secede_province = CAL
             }
         }
-        create_vassal = CAL
-        CAL = { clr_country_flag = cali_revolt_1 set_country_flag = colony_exemption add_country_modifier = { name = timer duration = 3650 } government = democracy }
+        diplomatic_influence = { who = CAL value = 400 }
+        CAL = { clr_country_flag = cali_revolt_1 set_country_flag = colony_exemption add_country_modifier = { name = timer duration = 1460 } government = democracy }
     }
 }
 
@@ -4925,7 +4961,7 @@ country_event = {
     trigger = {
         tag = RUS
         has_country_flag = monarchy_government
-        CAL = { NOT = { AND = { has_country_flag = cali_revolt_2 has_country_modifier = timer } } vassal_of = RUS }
+        CAL = { NOT = { AND = { has_country_flag = cali_revolt_2 has_country_modifier = timer } } in_sphere = RUS }
     }
 
     option = {
@@ -4936,7 +4972,10 @@ country_event = {
             war = {
                 target = RUS
                 attacker_goal = {
-                    casus_belli = become_independent
+                    casus_belli = scripted_war_small
+                }
+                defender_goal = {
+                    casus_belli = scripted_war_small
                 }
             }
         }
@@ -4946,13 +4985,13 @@ country_event = {
 ## You win the second Californian Revolt ##
 country_event = {
     id = 600293
-    title = "EVTNAME600293"
+    title = "California is ours!"
     desc = "EVTDESC600293"
     picture = russian_california
     
     trigger = {
         tag = RUS
-        CAL = { has_country_flag = cali_revolt_2 NOT = { war_with = RUS } vassal_of = RUS }
+        CAL = { has_country_flag = cali_revolt_2 NOT = { war_with = RUS } has_country_flag = lost_the_war }
     }
 
     fire_only_once = yes
@@ -4968,3 +5007,27 @@ country_event = {
     }
 }
 
+## You lose the second Californian Revolt (how?) ##
+country_event = {
+    id = 600294
+    title = "California is lost."
+    desc = "EVTDESC600294"
+    picture = russian_california
+    
+    trigger = {
+        tag = RUS
+        has_country_flag = lost_the_war
+        CAL = { has_country_flag = cali_revolt_2 NOT = { war_with = RUS } }
+    }
+
+    fire_only_once = yes
+
+    option = {
+        name = "California is lost for good."
+        CAL = { clr_country_flag = colony_exemption }
+        any_land_province = {
+            limit = { is_core = CAL owned_by = LSK }
+            secede_province = THIS secede_province = CAL
+        }
+    }
+}
