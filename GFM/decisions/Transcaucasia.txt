@@ -505,76 +505,6 @@ political_decisions = {
         ai_will_do = { factor = 1 }
     }
 
-    make_abkhazia_orthodox = {
-        picture = form_transcaucasia
-        potential = {
-            ABK = {
-                exists = yes
-                NOT = { has_country_flag = orthodox_country }
-            }
-            OR = {
-                is_our_vassal = ABK
-                ABK = { in_sphere = THIS }
-            }
-            OR = {
-                has_country_flag = catholic_country
-                has_country_flag = protestant_country
-                has_country_flag = mormon_country
-                has_country_flag = orthodox_country
-                has_country_flag = miaphysite_country
-            }
-        }
-
-        allow = {
-            war = no
-        }
-
-        effect = {
-            ABK = {
-                clr_country_flag = sunni_country
-                set_country_flag = orthodox_country
-                religion = orthodox
-                any_pop = {
-                    limit = { NOT = { has_pop_religion = orthodox } }
-                    militancy = 6
-                }
-            }
-        }
-        ai_will_do = { factor = 1 }
-    }
-
-    make_abkhazia_sunni = {
-        picture = form_transcaucasia
-        potential = {
-            ABK = {
-                exists = yes
-                NOT = { has_country_flag = sunni_country }
-            }
-            OR = {
-                is_our_vassal = TCA
-                ABK = { in_sphere = THIS }
-            }
-            has_country_flag = sunni_country
-        }
-
-        allow = {
-            war = no
-        }
-
-        effect = {
-            ABK = {
-                set_country_flag = sunni_country
-                clr_country_flag = orthodox_country
-                religion = sunni
-                any_pop = {
-                    limit = { NOT = { has_pop_religion = sunni } }
-                    militancy = 6
-                }
-            }
-        }
-        ai_will_do = { factor = 1 }
-    }
-
     recognize_circassia = {
         picture = circassia_flag
         potential = {
@@ -710,6 +640,71 @@ political_decisions = {
         ai_will_do = { factor = 1 }
     }
 	
+	outside_mrnc = {
+		picture = mrnc_congress
+		potential = {
+			OR = {
+				primary_culture = polish
+				primary_culture = turkish
+			}
+			is_greater_power = yes
+			invention = the_dark_continent
+			NOT = { has_global_flag = mrnc_congress }
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+			mass_politics = 1 
+			CIR = { all_core = { war = no OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } } } }
+			CHY = { all_core = { war = no OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } } } }
+			DAG = { all_core = { war = no OR = { owned_by = THIS owner = { in_sphere = THIS OR = { is_vassal = no vassal_of = THIS } } } } }
+		}
+		
+		effect = {
+			prestige = 5
+			badboy = 2
+			CIR = { all_core = { add_core = DAG } } 
+			CHY = { all_core = { add_core = DAG } }
+			any_country = {
+				limit = {
+					in_sphere = THIS
+					any_owned_province = { is_core = DAG }
+				}
+				any_owned = { limit = { is_core = DAG } secede_province = THIS }
+			}
+			any_owned = {
+				limit = { NOT = { is_core = THIS } is_core = DAG }
+				secede_province = DAG
+			}
+			DAG = { capital = 1054 }
+			random_owned = { 
+				limit = { owner = { tag = TUR OR = { government = absolute_monarchy government = prussian_constitutionalism } } }
+				owner = { DAG = { government = absolute_empire civilized = yes } }
+			}
+			random_owned = { 
+				limit = { owner = { NOT = { AND = { tag = TUR OR = { government = absolute_monarchy government = prussian_constitutionalism } } } } }
+				owner = { 
+					DAG = { 
+						government = democracy
+						civilized = yes
+						political_reform = proportional_representation
+						political_reform = universal_voting
+						political_reform = secret_ballots
+						political_reform = federalism
+						political_reform = yes_meeting
+						political_reform = appointed
+						political_reform = free_press
+						political_reform = no_slavery
+						political_reform = non_socialist
+						political_reform = culture_voting_only
+					}
+				}
+			}
+		}
+		ai_will_do = { factor = 1 modifier = { factor = 0 badboy = 0.92 } }
+	}
+	
 #Dagestan Decisions
 	
 	meet_chechen_learders = {
@@ -802,6 +797,36 @@ political_decisions = {
 		}
 		ai_will_do = { factor = 1 modifier = { factor = 0 badboy = 0.7 } }
 	}
+	
+	rein_in_amin = {
+		picture = muhammad_amin
+		potential = {
+			tag = DAG
+			OR = {
+				has_country_flag = naibs_appointed
+				CIR = { government = theocracy }
+			}
+			NOT = { has_country_flag = rein_in }
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+			owns = 1054
+			CIR = { OR = { government = theocracy AND = { neighbours = THIS relation = { who = THIS value = 100 } } exists = no } }
+		}
+		
+		effect = {
+			prestige = 5
+			CIR = { all_core = { add_core = DAG } }
+			random_country = {
+				limit = { tag = CIR exists = yes OR = { is_vassal = no vassal_of = THIS } }
+				country_event = 800993
+			}
+			set_country_flag = rein_in
+		}
+		ai_will_do = { factor = 1 }
+	}
 
 #Circassia Decisions
 	
@@ -833,7 +858,7 @@ political_decisions = {
 		picture = circassia_flag
 		potential = {
 			tag = CIR
-			has_country_flag = CIR
+			has_country_flag = greater_circassia
 			NOT = { has_country_flag = reformed_circassia }
 		}
 		
@@ -841,7 +866,7 @@ political_decisions = {
 			war = no
 			is_vassal = no
 			civilized = yes
-			all_core = { owned_by = THIS }
+			all_core = { OR = { owned_by = THIS province_id = 1095 } }
 		}
 		
 		effect = {
@@ -855,5 +880,135 @@ political_decisions = {
 		}
 		ai_will_do = { factor = 1 }
 	}
+	
+	lead_caucasian_struggle = {
+		picture = shamil_study
+		potential = {
+			tag = CIR
+			has_country_flag = greater_circassia
+			NOT = { has_country_flag = lead_caucasus }
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+			owns = 1054
+			DAG = { OR = { AND = { neighbours = THIS relation = { who = THIS value = 100 } } exists = no } }
+		}
+		
+		effect = {
+			prestige = 5
+			DAG = { all_core = { add_core = CIR } }
+			random_country = {
+				limit = { tag = DAG exists = yes OR = { is_vassal = no vassal_of = THIS } }
+				country_event = 800995
+			}
+			set_country_flag = lead_caucasus
+		}
+		ai_will_do = { factor = 1 }
+	}
 
+#Abkhazia Decisions
+
+    make_abkhazia_orthodox = {
+        picture = form_transcaucasia
+        potential = {
+            ABK = {
+                exists = yes
+                NOT = { has_country_flag = orthodox_country }
+            }
+            OR = {
+                is_our_vassal = ABK
+                ABK = { in_sphere = THIS }
+            }
+            OR = {
+                has_country_flag = catholic_country
+                has_country_flag = protestant_country
+                has_country_flag = mormon_country
+                has_country_flag = orthodox_country
+                has_country_flag = miaphysite_country
+            }
+        }
+
+        allow = {
+            war = no
+        }
+
+        effect = {
+            ABK = {
+                clr_country_flag = sunni_country
+                set_country_flag = orthodox_country
+                religion = orthodox
+                any_pop = {
+                    limit = { NOT = { has_pop_religion = orthodox } }
+                    militancy = 6
+                }
+            }
+        }
+        ai_will_do = { factor = 1 }
+    }
+
+    make_abkhazia_sunni = {
+        picture = form_transcaucasia
+        potential = {
+            ABK = {
+                exists = yes
+                NOT = { has_country_flag = sunni_country }
+            }
+            OR = {
+                is_our_vassal = TCA
+                ABK = { in_sphere = THIS }
+            }
+            has_country_flag = sunni_country
+        }
+
+        allow = {
+            war = no
+        }
+
+        effect = {
+            ABK = {
+                set_country_flag = sunni_country
+                clr_country_flag = orthodox_country
+                religion = sunni
+                any_pop = {
+                    limit = { NOT = { has_pop_religion = sunni } }
+                    militancy = 6
+                }
+            }
+        }
+        ai_will_do = { factor = 1 }
+    }
+	
+	restore_abkhazia = {
+		picture = circassian_patrol
+		potential = {
+			tag = ABK
+			NOT = { has_country_flag = kingdom_abkhazia }
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+			war_policy = jingoism
+			OR = {
+				prestige = 25
+				owns = 1092
+			}
+		}
+		
+		effect = {
+			badboy = 5
+			prestige = 5
+			3274 = { add_core = ABK }
+			1092 = { add_core = ABK }
+			1094 = { add_core = ABK }
+			1096 = { add_core = ABK }
+			886 = { add_core = ABK }
+			1093 = { add_core = ABK }
+			3427 = { add_core = ABK }
+			1091 = { add_core = ABK }
+		}
+		ai_will_do = { factor = 1 modifier = { factor = 0 badboy = 0.8 } }
+	}
 }
