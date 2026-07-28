@@ -1369,6 +1369,10 @@ country_event = {
 		activate_technology = flintlock_rifles
 		set_country_flag = using_foreign_weapons
 		economic_reform = yes_admin_reform
+		military_reform = yes_foreign_navies
+		activate_technology = clipper_design
+		activate_technology = steamers
+		set_country_flag = using_foreign_ships
 		add_country_modifier = { name = white_rajah duration = -1 }
 		set_country_flag = missionary_activity
 		religion = protestant
@@ -1414,122 +1418,178 @@ country_event = {
 
 country_event = {
 
-    id = 18482164
-    title = "Sarawak Occupies the Capital"
-    desc = "SARAWAKREBELLIONBRUH"
-    picture = "sarawakrebellion"
+    id = 801006
+    title = "The Anglo-Bruneian Treaty of $YEAR$"
+    desc = "EVTDESC801006"
+    picture = "bruneian_court"
 
     fire_only_once = yes
 
     trigger = {
-		year = 1840
-        tag = BRU
-		1393 = { controlled_by = SWK }
-		NOT = { year = 1844 }
+		year = 1844
+        tag = SWK
+		month = 9
+		vassal_of = BRU
     }
 
     mean_time_to_happen = { days = 1 }
 
 	option = {
-        name = "We unconditionally surrender to... Sarawak. (game over)"
-		3585 = { add_core = SWK }
-		1395 = { add_core = SWK }
-		3586 = { add_core = SWK }
-		3587 = { add_core = SWK }
+        name = "With Hashim's position and Labuan secured, we can rest easy..."
+		prestige = 5
+		BRU = { country_event = { id = 801007 days = 15 } }
+		ai_chance = { factor = 1 }
+    }
+}
+
+country_event = {
+
+    id = 801007
+    title = "Court Politics"
+    desc = "EVTDESC801007"
+    picture = "bruneian_court"
+
+    fire_only_once = yes
+
+	option = {
+        name = "First Hashim then Brooke. The British lackeys must go. §RThis will lead to war!§W"
+		prestige = 5
+		SWK = { country_event = 801008 }
+		1395 = { add_core = BRU }
+		ai_chance = { factor = 1 }
+    }
+
+	option = {
+        name = "Cooler heads will prevail. Hashim will remain unharmed."
+		prestige = -10
+		ENG = { diplomatic_influence = { who = BRU value = 400 } }
+		economic_reform = yes_admin_reform
+		ai_chance = { factor = 0 }
+    }
+}
+
+country_event = {
+
+    id = 801008
+    title = "The Assassination of Pengiran Muda Hashim"
+    desc = "EVTDESC801008"
+    picture = "bruneian_court"
+
+    is_triggered_only = yes
+
+	option = {
+        name = "We will avenge Hashim's death! §RDeclares war on Brunei§W"
+		prestige = 5
+		# Audax Validator "." Ignore_NEXT
+		define_admiral = {
+			name = "Thomas Cochrane"
+				personality = no_personality
+				background = attack_3.1
+		}
+		BRU = { release_vassal = SWK set_country_flag = anglo_bruneian_war }
+		create_alliance = ENG
+		1394 = {
+			sub_unit = { type = frigate value = current }
+			sub_unit = { type = frigate value = current }
+			sub_unit = { type = frigate value = current }
+			sub_unit = { type = frigate value = current }
+			sub_unit = { type = frigate value = current }
+			sub_unit = { type = frigate value = current }
+		}
+		BRU = { 
+			war = {
+				target = SWK
+				attacker_goal = { casus_belli = conquest_any }
+				defender_goal = { casus_belli = make_puppet_no_infamy }
+			} 
+		}
+		ai_chance = { factor = 1 }
+    }
+
+	option = {
+        name = "We will lower our heads, lest we have the same fate as Hashim."
+		prestige = -10
+		ai_chance = { factor = 0 }
+    }
+}
+
+country_event = {
+
+    id = 18482164
+    title = "Treaty of Labuan"
+    desc = "SARAWAKREBELLIONBRUH"
+    picture = "treaty_of_labuan"
+
+    fire_only_once = yes
+
+    trigger = {
+        tag = BRU
+		has_country_flag = anglo_bruneian_war
+		vassal_of = SWK
+    }
+
+    mean_time_to_happen = { days = 1 }
+
+	option = {
+        name = "We unconditionally surrender to the British and Sarawak. (game over)"
+		1394 = { remove_core = BRU }
 		SWK = { country_event = 18482166 }
     }
 }
 country_event = {
 	id = 18482166
-	title = "The Spoils of War"
+	title = "Treaty of Labuan"
 	desc = "SARAWAKREBELLIONWINS"
-	picture = "sarawakrebellion2"
+	picture = "treaty_of_labuan"
 
     is_triggered_only = yes
-    fire_only_once = yes
 
 	option = {
-        name = "Let them have the North. §RGain 5 infamy§W"
-		badboy = 5
-		end_war = BRU
-        war = {
-            target = BRU
-            attacker_goal = { casus_belli = test_end_war }
-            call_ally = no
-        }
-		3585 = { secede_province = SWK }
-		1395 = { secede_province = SWK }
-		ai_chance = {
-			factor = 0
-		}
+        name = "Let us stick to the plan, cede Labuan to the British"
+		release_vassal = BRU
+		ENG = { diplomatic_influence = { who = ENG value = 400 } relation = { who = BRU value = 200 } }
+		ai_chance = { factor = 1 }
     }
 
 	option = {
-        name = "Humiliate them and let them have the North. §RGain 7.5 infamy§W"
-		badboy = 7.5
-		prestige = 10
-		BRU = { prestige = -100 }
-		end_war = BRU
-        war = {
-            target = BRU
-            attacker_goal = { casus_belli = test_end_war }
-            call_ally = no
-        }
-		3585 = { secede_province = SWK }
-		1395 = { secede_province = SWK }
-		ai_chance = {
-			factor = 0
-		}
+        name = "Let us push them a bit north. §RGain 5 infamy§W"
+		badboy = 5
+		release_vassal = BRU
+		3585 = { add_core = SWK }
+		1395 = { add_core = SWK }
+		BRU = { any_owned = { limit = { is_core = SWK } secede_province = SWK } }
+		ENG = { diplomatic_influence = { who = ENG value = 400 } relation = { who = BRU value = 200 } }
+		ai_chance = { factor = 0 }
     }
 
 	option = {
         name = "Encircle them in their capital. §RGain 10 infamy§W"
 		badboy = 10
-		end_war = BRU
-        war = {
-            target = BRU
-            attacker_goal = { casus_belli = test_end_war }
-            call_ally = no
-        }
-		1396 = { secede_province = SWK }
-		3587 = { secede_province = SWK }
-		3586 = { secede_province = SWK }
-		1395 = { secede_province = SWK }
-		3585 = { secede_province = SWK }
-		ai_chance = {
-			factor = 1
-		}
+		release_vassal = BRU
+		BRU = { all_core = { limit = { NOT = { province_id = 1393 } } add_core = SWK } any_owned = { limit = { NOT = { province_id = 1393 } } secede_province = SWK } }
+		ENG = { diplomatic_influence = { who = ENG value = 400 } relation = { who = BRU value = 200 } }
+		ai_chance = { factor = 0 } 
     }
 
 	option = {
         name = "Puppet them and encircle them in their capital. §RGain 12.5 infamy§W"
 		badboy = 12.5
-		end_war = BRU
-        war = {
-            target = BRU
-            attacker_goal = { casus_belli = test_end_war }
-            call_ally = no
-        }
-		random_owned = { limit = { owner = {
-		BRU = { is_vassal = no }
-		}} owner = { create_vassal = BRU } }
-		1396 = { secede_province = SWK }
-		3587 = { secede_province = SWK }
-		3586 = { secede_province = SWK }
-		1395 = { secede_province = SWK }
-		3585 = { secede_province = SWK }
-		ai_chance = {
-			factor = 0
-		}
+		1396 = { add_core = SWK }
+		3587 = { add_core = SWK }
+		3586 = { add_core = SWK }
+		1395 = { add_core = SWK }
+		3585 = { add_core = SWK }
+		BRU = { all_core = { limit = { NOT = { province_id = 1393 } } add_core = SWK } any_owned = { limit = { NOT = { province_id = 1393 } } secede_province = SWK } }
+		ENG = { diplomatic_influence = { who = ENG value = 400 } relation = { who = BRU value = 200 } }
+		ai_chance = { factor = 0 }
 	}
 
 	option = {
         name = "Annex them completely. §RGain 15 infamy§W"
 		badboy = 15
+		BRU = { all_core = { add_core = SWK } }
 		inherit = BRU
-		ai_chance = {
-			factor = 0
-		}
+		ai_chance = { factor = 0 }
     }
 }
 country_event = {
