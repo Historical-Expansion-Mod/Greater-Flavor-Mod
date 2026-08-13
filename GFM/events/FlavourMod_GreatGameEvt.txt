@@ -1293,7 +1293,10 @@ country_event = {
 	
 	trigger = {
 		tag = KAL
-		owns = 3512
+		OR = {
+			owns = 3512
+			3512 = { owned_by = PER }
+		}
 		owns = 1144
 		owns = 3506
 		owns = 1222
@@ -1453,16 +1456,13 @@ country_event = {
     mean_time_to_happen = { months = 1 }
 
     option = {
-        name = "We will be back."
+        name = "If only they hadn't killed Lieutenant Loveday..."
 		release_vassal = KAL
 		any_owned = {
-			limit = {
-				is_core = KAL
-				owner = { ai = yes }
-			}
+			limit = { is_core = KAL }
 			secede_province = KAL
 		}
-		prestige = -5
+		prestige = -2.5
 		KAL = { country_event = 123690 }
     }
 }
@@ -1471,13 +1471,13 @@ country_event = {
     title = "The Collapse of Kalat"
     desc = "KALATCOLLAPSE"
 	picture = "kalat_collapse"
-	major = yes
 	
 	is_triggered_only = yes
 	fire_only_once = yes
 
     option = {
         name = "All good things must come to an end."
+		FROM = { diplomatic_influence = { who = THIS value = 400 } }
         any_owned = {
 			limit = {
 				OR = {
@@ -1493,9 +1493,14 @@ country_event = {
 			remove_core = KAL
 		}
 		release_vassal = MAK
-		leave_alliance = MAK
 		3512 = {
 			secede_province = THIS
+		}
+		any_owned = {
+			limit = {
+				province_id = 3512
+			}
+			# Audax Validator "." Ignore_NEXT
 			secede_province = ---
 			life_rating = -15
 			remove_core = KAL
@@ -1503,7 +1508,7 @@ country_event = {
 		random_country = {
 			limit = {
 				tag = BLC
-				government = absolute_empire
+				government = prov_gov_conservative
 			}
 			country_event = 800940
 		}
@@ -1516,7 +1521,6 @@ country_event = {
 			remove_core = KAL
 		}
 		release_vassal = LAS
-		leave_alliance = LAS
 		any_owned = {
 			limit = {
 				OR = {
@@ -1528,7 +1532,6 @@ country_event = {
 			add_core = KHN
 		}
 		release_vassal = KHN
-		leave_alliance = KHN
 		3506 = { remove_core = KAL }
 		1144 = { remove_core = KAL }
 		3258 = { remove_core = KAL }
@@ -1543,9 +1546,191 @@ country_event = {
 		1139 = { remove_core = BLC }
 		1140 = { remove_core = BLC }
 		BLC = { government = absolute_monarchy primary_culture = baluchi remove_accepted_culture = kurdish }
+		casus_belli = { target = KHN type = conquest_tiny months = 120 }
+		casus_belli = { target = LAS type = conquest_tiny months = 120 }
+		casus_belli = { target = MAK type = conquest_tiny months = 120 }
 		set_global_flag = kalat_has_collapsed
     }
 }
+
+country_event = {
+    id = 800987
+    title = "The Treaty of Mastung"
+    desc = "EVTDESC800987"
+	picture = "kalat_collapse"
+	
+	fire_only_once = yes
+
+    trigger = {
+		year = 1854
+        tag = KAL
+		in_sphere = ENG
+		civilized = no
+    }
+
+    mean_time_to_happen = { months = 2 }
+
+    option = {
+        name = "A stack of cash and recognition? Not bad..."
+		treasury = 10000
+		years_of_research = 0.75
+		create_alliance = ENG
+		relation = { who = ENG value = 200 }
+		military_reform = yes_foreign_training
+		military_reform = yes_foreign_naval_officers
+		military_reform = yes_foreign_officers
+		activate_technology = military_staff_system
+		ai_chance = { factor = 1 }
+    }
+
+    option = {
+        name = "We don't need their recognition! Our khanate is mighty and powerful!"
+		prestige = 5
+		leave_alliance = ENG
+		ENG = { diplomatic_influence = { who = THIS value = -400 } country_event = 800988 }
+		ai_chance = { factor = 0 }
+    }
+}
+
+country_event = {
+    id = 800988
+    title = "Kalat Rebukes our Influence"
+    desc = "EVTDESC800988"
+	picture = "kalat_collapse"
+	
+	is_triggered_only = yes
+
+    option = {
+        name = "We aren't letting them escape our grasp..."
+		war = { target = KAL attacker_goal = { casus_belli = make_puppet_no_add_wargoal } }
+		ai_chance = { factor = 19 }
+    }
+
+    option = {
+        name = "We will get them eventually..."
+		prestige = -10
+		ai_chance = { factor = 1 }
+    }
+}
+
+country_event = {
+    id = 800989
+    title = "The Treaty of Kalat"
+    desc = "EVTDESC800989"
+	picture = "kalat_palace"
+	
+	is_triggered_only = yes
+
+    option = {
+        name = "A stack of cash and recognition? Not bad..."
+		prestige = -10
+		economic_reform = yes_admin_reform
+		activate_technology = early_classical_theory_and_critique
+		ENG = {
+			create_vassal = THIS
+			create_alliance = THIS
+			diplomatic_influence = { who = THIS value = 400 }
+			diplomatic_influence = { who = LAS value = 50 }
+			diplomatic_influence = { who = KHN value = 50 }
+			diplomatic_influence = { who = MAK value = 50 }
+		}
+		any_country = { limit = { OR = { tag = LAS tag = MAK tag = KHN } exists = yes is_vassal = no } country_event = 800992 }
+		ai_chance = { factor = 1 }
+    }
+
+    option = {
+        name = "We don't need their meddling! Our khanate is mighty and powerful!"
+		prestige = 5
+		leave_alliance = ENG
+		ENG = { war = { target = KAL attacker_goal = { casus_belli = make_puppet_no_add_wargoal } call_ally = yes } }
+		ai_chance = { factor = 0 }
+    }
+}
+
+country_event = {
+    id = 800990
+    title = "Britain's Offer"
+    desc = "EVTDESC800990"
+	picture = "baluch_water_carriers"
+	
+	fire_only_once = yes
+
+    trigger = {
+        tag = LAS
+		has_country_flag = las_bela_bait
+		is_our_vassal = KAL
+		civilized = no
+    }
+
+    mean_time_to_happen = { months = 1 }
+
+    option = {
+        name = "A stack of cash and recognition? Not bad..."
+		treasury = 10000
+		years_of_research = 0.75
+		ENG = {
+			create_vassal = LAS
+			create_alliance = LAS
+			diplomatic_influence = { who = LAS value = 400 }
+			relation = { who = LAS value = 200 }
+			create_vassal = KAL
+			create_alliance = KAL
+			diplomatic_influence = { who = KAL value = 400 }
+			diplomatic_influence = { who = KHN value = 50 }
+			diplomatic_influence = { who = MAK value = 50 }
+		}
+		military_reform = yes_foreign_training
+		military_reform = yes_foreign_naval_officers
+		military_reform = yes_foreign_officers
+		activate_technology = military_staff_system
+		any_country = { limit = { OR = { tag = MAK tag = KHN } exists = yes is_vassal = no } country_event = 800992 }
+		ai_chance = { factor = 1 }
+    }
+
+    option = {
+        name = "We don't need their recognition! We have proved ourselves"
+		prestige = 5
+		leave_alliance = ENG
+		ENG = { diplomatic_influence = { who = THIS value = -400 } diplomatic_influence = { who = KAL value = -400 } }
+		ai_chance = { factor = 0 }
+    }
+}
+
+country_event = {
+    id = 800992
+    title = "The Treaty of Kalat"
+    desc = "EVTDESC800992"
+	picture = "kalat_palace"
+	
+	is_triggered_only = yes
+
+    option = {
+        name = "We better get used to the British..."
+		prestige = -10
+		ENG = {
+			create_vassal = THIS
+			create_alliance = THIS
+			diplomatic_influence = { who = THIS value = 400 }
+		}
+		ai_chance = { factor = 1 }
+    }
+
+    option = {
+        name = "Break off from the Khanate of Kalat. We never needed them."
+		prestige = 5
+		ENG = { 
+			relation = { who = THIS value = -400 }
+			diplomatic_influence = { who = THIS value = -400 }
+			leave_alliance = THIS
+			casus_belli = { target = THIS type = make_puppet_minuscule months = 120 } 
+			casus_belli = { target = THIS type = make_puppet_tiny months = 120 } 
+			casus_belli = { target = THIS type = make_puppet_small months = 120 } 
+			casus_belli = { target = THIS type = make_puppet months = 120 } 
+		}
+		ai_chance = { factor = 0 }
+    }
+}
+
 country_event = {
     id = 800940
     title = "Anarchy in the Sarhad Highlands"
@@ -1556,6 +1741,8 @@ country_event = {
     option = {
         name = "Our freedom turns into anarchy"
 		prestige = -5
+		government = absolute_monarchy
+		any_land_province = { limit = { OR = { is_core = MAK is_core = KHN is_core = KAL is_core = LAS } } add_core = BLC }
 		any_owned = {
 			limit = { province_id = 3512 }
 			# Audax Validator "." Ignore_NEXT
