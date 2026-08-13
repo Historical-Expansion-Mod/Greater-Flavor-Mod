@@ -21,10 +21,10 @@ country_event = {
     trigger = {
         tag = GCF
         owns = 619 #Vienna
-        owns = 599 #Munich
+        owns = 576 #Aachen
+        owns = 559 #Leipzig
         owns = 564 #Frankfurt
-        owns = 534 #Hannover
-        owns = 549 #Berlin
+		owns = 549 #Berlin
     }
 
     mean_time_to_happen = { days = 3 }
@@ -34,22 +34,25 @@ country_event = {
         capital_scope = { any_pop = { consciousness = 2 } }
         564 = { any_pop = { militancy = -1 consciousness = -2 } }
         capital = 564
+        GCF = { set_country_flag = capital_in_frankfurt }
         ai_chance = { factor = 70 }
     }
 
     option = {
-        name = "EVT4813525OPTB" #Munich
+        name = "EVT4813525OPTB" #Aachen
         capital_scope = { any_pop = { consciousness = 2 } }
         599 = { any_pop = { militancy = -1 consciousness = -2 } }
         capital = 599
-        ai_chance = { factor = 15 }
+        GCF = { set_country_flag = capital_in_munich }
+        ai_chance = { factor = 4 }
     }
 
     option = {
-        name = "EVT4813525OPTC" #Hannover
+        name = "EVT4813525OPTC" #Leipzig
         capital_scope = { any_pop = { consciousness = 2 } }
-        534 = { any_pop = { militancy = -1 consciousness = -2 } }
-        capital = 534
+        559 = { any_pop = { militancy = -1 consciousness = -2 } }
+        capital = 559
+        GCF = { set_country_flag = capital_in_hannover }
         ai_chance = { factor = 10 }
     }
 
@@ -57,16 +60,17 @@ country_event = {
         name = "EVT4813525OPTD" #Berlin
         capital_scope = { any_pop = { consciousness = 2 } }
         549 = { any_pop = { militancy = -1 consciousness = -2 } }
-        capital = 549
-        ai_chance = { factor = 4 }
+        capital = 549 
+        GCF = { set_country_flag = capital_in_berlin }
+        ai_chance = { factor = 1 }
     }
 
     option = {
         name = "EVT4813525OPTE" #Vienna
-        capital_scope = { any_pop = { consciousness = 2 } }
         619 = { any_pop = { militancy = -1 consciousness = -2 } }
         capital = 619
-        ai_chance = { factor = 1 }
+        GCF = { set_country_flag = capital_in_wien }
+        ai_chance = { factor = 15 }
     }
 }
 
@@ -106,11 +110,10 @@ country_event = {
             who = FROM
             value = 200
         }
-        random_country = {
+        any_country = {
             limit = {
-                tag = FROM
+                truce_with = THIS
             }
-            set_country_flag = brothers_war_winner
             remove_country_modifier = brothers_war_aggressor
         }
         any_country = {
@@ -142,7 +145,6 @@ country_event = {
             duration = 1825
         }
         remove_country_modifier = brothers_war_aggressor
-        set_country_flag = brothers_war_loser
     }
 }
 
@@ -150,7 +152,7 @@ country_event = {
 country_event = {
     id = 9899810
     title = "Treaty of Prague."
-    desc = "We have won the war against Prussia, now it's time to present our demands."
+    desc = "EVTDESC9899810"
 	picture = "aus_victory_against_pru"
 
     is_triggered_only = yes
@@ -208,6 +210,15 @@ country_event = {
             who = FROM
             value = 200
         }
+		# Schleswig Holstein is puppeted so Denmark don't instantly declares for it
+		random_owned = {
+			limit = {
+				HOL = { vassal_of = THIS }
+			}
+			HOL = { all_core = { add_core = SWH } }
+			SCH = { inherit = HOL all_core = { add_core = SWH } change_tag = SWH }
+			FROM = { create_vassal = SWH create_alliance = SWH } 
+		}
         any_country = {
             limit = {
                 exists = yes
@@ -468,12 +479,15 @@ country_event = {
         #Erfurt is seceded to Saxony
         random_owned = {
             limit = {
-                province_id = 554 #Erfurt
+                OR = {
+                    province_id = 4029 #Merseburg
+                    province_id = 554 #Erfurt
+                }
                 owned_by = PRU
             }
             owner = {
                 any_owned = {
-                    limit = { province_id = 554 }
+                    limit = { OR = { province_id = 4029 province_id = 554 } }
 					add_core = SAX
                     secede_province = SAX
                 }
@@ -514,6 +528,26 @@ country_event = {
                 tag = SGM
             }
             annex_to = AUS
+        }
+		
+        random_country = {
+            limit = {
+                exists = yes
+                tag = SCH
+				ai = yes
+				OR = { vassal_of = PRU is_vassal = no }
+            }
+            AUS = { create_vassal = SCH create_alliance = SCH }
+        }
+		
+        random_country = {
+            limit = {
+                exists = yes
+                tag = SWH
+				ai = yes
+				OR = { vassal_of = PRU is_vassal = no }
+            }
+            AUS = { create_vassal = SWH create_alliance = SWH }
         }
 		
         #Any German province owned by Prussia is seceded to Austria
@@ -581,6 +615,15 @@ country_event = {
             who = FROM
             value = 200
         }
+		# Schleswig Holstein is puppeted so Denmark don't instantly declares for it
+		random_owned = {
+			limit = {
+				HOL = { vassal_of = THIS }
+			}
+			HOL = { all_core = { add_core = SWH } }
+			SCH = { inherit = HOL all_core = { add_core = SWH } change_tag = SWH }
+			FROM = { create_vassal = SWH create_alliance = SWH } 
+		}
         any_country = {
             limit = {
                 exists = yes
@@ -973,12 +1016,15 @@ country_event = {
         #Erfurt is seceded to Saxony
         random_owned = {
             limit = {
-                province_id = 554 #Erfurt
+                OR = {
+                    province_id = 4029 #Merseburg
+                    province_id = 554 #Erfurt
+                }
                 owned_by = PRU
             }
             owner = {
                 any_owned = {
-                    limit = { province_id = 554 }
+                    limit = { OR = { province_id = 4029 province_id = 554 } }
 					add_core = SAX
                     secede_province = SAX
                 }
@@ -1028,6 +1074,26 @@ country_event = {
                 tag = SGM
             }
             annex_to = AUS
+        }
+		
+        random_country = {
+            limit = {
+                exists = yes
+                tag = SWH
+				ai = yes
+				OR = { vassal_of = PRU is_vassal = no }
+            }
+            AUS = { create_vassal = SWH create_alliance = SWH }
+        }
+		
+        random_country = {
+            limit = {
+                exists = yes
+                tag = SCH
+				ai = yes
+				OR = { vassal_of = PRU is_vassal = no }
+            }
+            AUS = { create_vassal = SCH create_alliance = SWH }
         }
 		
         #Any German province owned by Prussia is seceded to Austria
@@ -1190,9 +1256,12 @@ country_event = {
                 who = THIS
                 value = -400
             }
-            release_vassal = THIS
             leave_alliance = THIS
         }
+		random_owned = {
+			limit = { owner = { vassal_of = FROM } }
+			FROM = { release_vassal = THIS }
+		}
     }
 }
 
@@ -1419,7 +1488,7 @@ country_event = {
 	}
 	
 	option = {
-		name = "Propose the new borders in the Federal Convention"
+		name = "Propose the new borders at the Federal Convention"
 		570 = { secede_province = THIS add_core = THIS }
 		2560 = { secede_province = THIS add_core = THIS }
 		3904 = { secede_province = THIS add_core = THIS }
@@ -1434,5 +1503,37 @@ country_event = {
 		3904 = { secede_province = RHI add_core = RHI remove_core = THIS remove_core = BAV }
 		571 = { secede_province = RHI add_core = RHI remove_core = THIS remove_core = BAV }
 		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 800986
+	title = "The State of the Confederation"
+	desc = "EVTDESC800986"
+	picture = "germanistentag"
+	
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = "This has long been the case, we just need to accept it..."
+		FROM = {
+			create_vassal = THIS
+			create_alliance = THIS
+			diplomatic_influence = { who = THIS value = 400 }
+			relation = { who = THIS value = 400 }
+		}
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Someone needs to stand up against this!"
+		FROM = {
+			war = {
+				target = FROM
+				attacker_goal = { casus_belli = make_puppet_no_add_wargoal }
+			}
+		}
+		ai_chance = { factor = 0 }
 	}
 }

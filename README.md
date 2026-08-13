@@ -70,6 +70,9 @@ GFM owes its existence to:
 * RadRadishRadiator
 * ElYisusKing
 * Trigori
+* Valerus9
+* Sneaky Deer
+* Pagaes
 * EtherealTamakii
 
 
