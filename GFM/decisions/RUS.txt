@@ -52,7 +52,7 @@ political_decisions = {
                 }
                 AND = {
                     consciousness = 1
-                    year = 1861
+                    year = 1860
                 }
             }
 			idealism = 1
@@ -732,9 +732,6 @@ political_decisions = {
 
         effect = {
             capital = 1008
-            1008 = {
-                life_rating = 5
-            }
             prestige = 5
         }
         ai_will_do = {
@@ -1114,6 +1111,7 @@ political_decisions = {
 					has_global_flag = 2nd_caucasian_war
 				}
 				revolution_n_counterrevolution = 1
+                    year = 1870
                 great_wars_enabled = yes
             }
             war = no
@@ -1293,90 +1291,171 @@ political_decisions = {
         ai_will_do = { factor = 1 }
     }
 
-    alexander_reforms = {
-        picture = alexander_emancipating
-        potential = {
-            tag = RUS
-            OR = {
-                has_country_flag = crimean_war
-                year = 1870
-                is_greater_power = no
-            }
-            has_country_flag = monarchy_government
-            NOT = { has_country_flag = alexander_reforms }
+alexander_reforms = {
+    picture = alexander_emancipating
+    potential = {
+        tag = RUS
+        OR = {
+            has_country_flag = crimean_war
+            year = 1870
+            is_greater_power = no
         }
-
-        allow = {
-            average_militancy = 1
-            OR = {
-                has_country_modifier = recently_lost_war
-                is_greater_power = no
-                AND = {
-                    NOT = { industrial_score = 400 }
-                    year = 1870
-                }
-            }
-            war = no
-            NOT = { debt_law = serfdom }
-        }
-
-        effect = {
-            set_country_flag = alexander_reforms
-            war_exhaustion = -5
-            tech_school = army_tech_school
-            random_owned = {
-                limit = { owner = { NOT = { border_policy = open_borders } } }
-                owner = { political_reform = open_borders }
-            }
-
-            random_owned = {
-                limit = { owner = { NOT = { conscription = mandatory_service } } }
-                owner = { political_reform = mandatory_service }
-            }
-
-            random_owned = {
-                limit = { owner = { citizens_rights = primary_culture_only } }
-                owner = { political_reform = culture_voting_only }
-            }
-
-            random_owned = {
-                limit = { owner = { school_reforms = no_schools } }
-                owner = { social_reform = low_schools }
-            }
-
-            random_owned = {
-                limit = { owner = { press_rights = state_press } }
-                owner = { political_reform = censored_press }
-            }
-
-            random_owned = {
-                limit = { owner = { public_meetings = no_meeting } }
-                owner = { political_reform = restricted_meeting }
-            }
-
-            any_pop = {
-                militancy = -2
-                consciousness = -4
-            }
-
-            add_country_modifier = { name = total_reform duration = 2920 }
-            any_owned = {
-                limit = {
-                    is_core = RUS
-                    NOT = { is_core = POL is_core = UKR is_core = LAT is_core = FIN is_core = LIT is_core = TUR is_core = BYE }
-                    OR = {
-                        NOT = { terrain = boreal }
-                        NOT = { terrain = arctic }
-                        NOT = { terrain = desert }
-                        NOT = { terrain = steppe }
-                        NOT = { terrain = montane_tundra }
-                    }
-                }
-                add_province_modifier = { name = small_baby_boom duration = 2920 }
-            }
-        }
-        ai_will_do = { factor = 1 }
+        has_country_flag = monarchy_government
+        NOT = { has_country_flag = alexander_reforms }
     }
+    allow = {
+        average_militancy = 0.5
+        OR = {
+            has_country_modifier = recently_lost_war
+            is_greater_power = no
+            AND = {
+                NOT = { industrial_score = 400 }
+                year = 1871
+            }
+        }
+        war = no
+        NOT = { debt_law = serfdom }
+
+        # Block the decision while any relevant province is still colonial
+        NOT = {
+            any_state = {
+                any_owned_province = {
+                    OR = {
+                        AND = {
+                            is_core = RUS
+                            NOT = { is_core = POL is_core = LAT is_core = FIN is_core = LIT is_core = TUR }
+                        }
+                        is_core = UKR
+                        is_core = BYE
+                        AND = {
+                            is_core = URA
+                            NOT = { terrain = boreal }
+                            NOT = { terrain = arctic }
+                            NOT = { terrain = montane_tundra }
+                            NOT = { terrain = marsh }
+                        }
+                        AND = {
+                            is_core = SIB
+                            NOT = { terrain = boreal }
+                            NOT = { terrain = arctic }
+                            NOT = { terrain = montane_tundra }
+                            NOT = { terrain = marsh }
+                        }
+                        is_core = ARM
+                        is_core = AZB
+                        is_core = DAG
+                        is_core = CIR
+                        is_core = GEO
+                    }
+                    is_colonial = yes
+                }
+            }
+        }
+    }
+    effect = {
+        set_country_flag = alexander_reforms
+        war_exhaustion = -5
+        tech_school = army_tech_school
+        random_owned = {
+            limit = { owner = { NOT = { border_policy = open_borders } } }
+            owner = { political_reform = open_borders }
+        }
+        random_owned = {
+            limit = { owner = { NOT = { conscription = mandatory_service } } }
+            owner = { political_reform = mandatory_service }
+        }
+        random_owned = {
+            limit = { owner = { citizens_rights = primary_culture_only } }
+            owner = { political_reform = culture_voting_only }
+        }
+        random_owned = {
+            limit = { owner = { school_reforms = no_schools } }
+            owner = { social_reform = low_schools }
+        }
+        random_owned = {
+            limit = { owner = { press_rights = state_press } }
+            owner = { political_reform = censored_press }
+        }
+        random_owned = {
+            limit = { owner = { public_meetings = no_meeting } }
+            owner = { political_reform = restricted_meeting }
+        }
+        any_pop = {
+            militancy = -2
+            consciousness = -4
+        }
+        add_country_modifier = { name = total_reform duration = 2920 }
+
+        # temporary baby boom
+        any_owned = {
+            limit = {
+                is_core = RUS
+                NOT = { is_core = POL is_core = LAT is_core = FIN is_core = LIT is_core = TUR }
+                OR = {
+                    NOT = { terrain = boreal }
+                    NOT = { terrain = arctic }
+                    NOT = { terrain = desert }
+                    NOT = { terrain = steppe }
+                    NOT = { terrain = montane_tundra }
+                }
+            }
+            add_province_modifier = { name = small_baby_boom duration = 2920 }
+        }
+
+        # permanent russoification – original Alexander filter
+        any_owned = {
+            limit = {
+                is_core = RUS
+                NOT = { is_core = POL is_core = LAT is_core = FIN is_core = LIT is_core = TUR }
+                OR = {
+                    NOT = { terrain = boreal }
+                    NOT = { terrain = arctic }
+                    NOT = { terrain = desert }
+                    NOT = { terrain = steppe }
+                    NOT = { terrain = montane_tundra }
+                }
+            }
+            add_province_modifier = { name = russoification duration = -1 }
+        }
+
+        # permanent russoification – Ukrainian cores
+        any_owned = {
+            limit = { is_core = UKR }
+            add_province_modifier = { name = russoification duration = -1 }
+        }
+
+        # permanent russoification – Belarusian cores
+        any_owned = {
+            limit = { is_core = BYE }
+            add_province_modifier = { name = russoification duration = -1 }
+        }
+
+        # permanent russoification – Ural cores
+        any_owned = {
+            limit = {
+                is_core = URA
+                NOT = { terrain = boreal }
+                NOT = { terrain = arctic }
+                NOT = { terrain = montane_tundra }
+                NOT = { terrain = marsh }
+            }
+            add_province_modifier = { name = russoification duration = -1 }
+        }
+
+        # permanent russoification – Siberian cores
+        any_owned = {
+            limit = {
+                is_core = SIB
+                NOT = { terrain = boreal }
+                NOT = { terrain = arctic }
+                NOT = { terrain = montane_tundra }
+                NOT = { terrain = marsh }
+            }
+            add_province_modifier = { name = russoification duration = -1 }
+        }
+    }
+    ai_will_do = { factor = 1 }
+}
 
     integrate_kazakhstan = {
         picture = unite_turkestan
