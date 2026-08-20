@@ -1446,3 +1446,160 @@ country_event = {
 		ai_chance = { factor = 100 } 
 	}
 }
+#Historical proposal Yucatan sends to Polk for annexation
+country_event = {
+	id = 620291
+	title = "Assistance from the Yankees?"
+	desc = "620291_desc"
+	picture = "yuc_event"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = YUC
+		YUC = { exists = yes is_vassal = no war_with = MEX }
+		USA = { exists = yes } 
+		NOT = { year = 1854 }
+		has_country_flag = new_world_nation
+	}
+
+	option = {
+		name = "We are desperate, send them the offer!"
+		prestige = -1
+		USA = { set_country_flag = yucatan_asked_for_help }
+		ai_chance = { factor = 100 }
+	}
+	
+#Historical bill that died in the US senate for Yucatan statehood
+country_event = {
+	id = 620292
+	title = "Yucatán Bill"
+	desc = "620292_desc"
+	picture = "yuc_event"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 1848
+		has_global_flag = yuc_revolt_happened
+		has_country_flag = yucatan_asked_for_help }
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "The Senate passes the bill to aid the Yucatan State."
+		badboy = 5
+		USA = { relations = { who = MEX value = -400 } influence = { who = MEX value = -600 } }
+        any_state = { limit = { is_slave = yes } any_pop = { consciousness = 3 } any_pop = { militancy = 1 } }
+	    random_owned = { limit = { owner = { YUC = { exists = yes } } } owner = { country_event = 620293 } }
+	    random_owned = { limit = { owner = { YUC = { exists = no } } } owner = { country_event = 620294 } }
+		ai_chance = { factor = 5 } }
+		
+	option = { 
+		name = "The bill is stalled by the Senate... and will never pass."
+		prestige = -5 
+		USA = { relations = { who = MEX value = -100 } }
+		ai_chance = { factor = 95 } }
+	}
+#Yes reply event for Yucatan 
+country_event = {
+	id = 620293 
+	title = "The Americans are finally helping us!"
+	desc = "620293_desc"
+	picture = "yuc_event"
+	is_triggered_only = yes
+		
+	option = { 
+		name = "We will fight for the Stars and Stripes today, if need be!"
+		USA = { create_vassal = YUC influence = { who = YUC value = 600 } create_alliance = YUC }
+		MEX = { country_event = 620294 } 
+		ai_chance = { factor = 100 } } }
+			
+#Mexico mad about this annexation			
+country_event = { 
+	id = 620294 
+	title = "The Americans are aiding the Yucatanean Rebels!"
+	desc = "620294_desc"
+	picture = "mexico_soldiers"
+	is_triggered_only = yes
+	
+	option = {  #War
+		name = "Cut all ties and prepare for war. They will have to pry Yucatan from our cold, dead hands." 
+		all_core = { limit = { is_core = YUC } secede_province = YUC }
+		USA = { create_vassal = YUC influence = { who = YUC value = 600 } create_alliance = YUC }
+		war = {
+            target = USA
+            attacker_goal = { casus_belli = scripted_war_small }
+            defender_goal = { casus_belli = scripted_war_small }
+        }
+		ai_chance = { factor = 95 } }
+	option = { #They give up and let them go
+		name = "They won't stop until all of Mexico is an American State!"
+		all_core = { limit = { is_core = YUC } secede_province = YUC }
+		USA = { create_vassal = YUC influence = { who = YUC value = 600 } create_alliance = YUC }
+		ai_chance = { factor = 5 } } }
+		
+country_event = { 
+	id = 620295
+	title = "Oh, Yucatan..."
+	desc = "620295_desc"
+	picture = "usa_mex_war"
+	fire_only_once = yes
+	
+	trigger = { 
+		tag = USA 
+		has_global_flag = yuc_revolt_happened
+	    truce_with = MEX has_country_flag = yucatan_asked_for_help
+		is_our_vassal = YUC
+		MEX = { has_country_flag = lost_the_war } }
+	
+	option = {
+		name = "I hear Cancun is a lovely place to visit!"
+		prestige = 20
+	    inherit = YUC set_country_flag = USA_YUC_victory
+		YUC = { all_core = { add_core = USA } }
+        any_state = { limit = { is_slave = no } any_pop = { consciousness = 3 militancy = 1 } }
+		MEX = { country_event = 620297 }
+		ai_chance = { factor = 100 } } }
+
+country_event = { 
+	id = 620296
+	title = "Recapture of Yucatan!"
+	desc = "620296_desc"
+	picture = "usa_mex_war"
+	fire_only_once = yes
+	
+	trigger = { 
+		tag = MEX 
+		has_global_flag = yuc_revolt_happened
+		truce_with = USA
+		USA = { has_country_flag = yucatan_asked_for_help has_country_flag = lost_the_war } }
+	
+	option = {
+		name = "Nobody will stop us from securing the Peninsula!"
+		prestige = 20
+		USA = { release_vassal = YUC country_event = 620298 }
+		inherit = YUC set_country_flag = MEX_YUC_victory
+		ai_chance = { factor = 100 } } }
+
+country_event = { 
+	id = 620297
+	title = "American victory in Yucatan"
+	desc = "620297_desc"
+	picture = "usa_mex_war"
+	is_triggered_only = yes
+	option = {
+		name = "When will this nightmare of rebellion end for Mexico?"
+		prestige = -20 
+		ai_chance = { factor = 100 } } }
+		
+country_event = { 
+	id = 620298
+	title = "Yucatan is Lost"
+	desc = "620298_desc"
+	picture = "usa_mex_war"
+	is_triggered_only = yes
+	option = {
+		name = "This is a disaster that the South and our rivals will surely exploit."
+		prestige = -20 
+		ai_chance = { factor = 100 } } }
