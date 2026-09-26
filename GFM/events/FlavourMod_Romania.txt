@@ -510,6 +510,7 @@ country_event = {
 
     option = {
         name = "We will keep a close eye on the Danube"
+		set_country_flag = left_romania
 		release_vassal = MOL
 		release_vassal = WAL
 		MOL = { country_event = 160518541 }
@@ -600,7 +601,7 @@ country_event = {
 		random_country = { limit = { primary_culture = french owns = 425 } country_event = 801083 }
 		random_country = { limit = { primary_culture = british owns = 300 } country_event = 801083 }
 		random_country = { limit = { owns = 641 tag = HUN } country_event = 801083 }
-		random_country = { limit = { owns = 720 NOT = { has_global_flag = no_russian_danube } } country_event = 801083 }
+		random_country = { limit = { owns = 720 is_culture_group = italian } country_event = 801083 }
 		random_country = { limit = { owns = 1008 NOT = { has_global_flag = no_russian_danube } } country_event = 801083 }
 		random_country = { limit = { owns = 641 NOT = { tag = HUN } } country_event = 801084 }
 		ai_chance = { factor = 1 }
@@ -725,6 +726,7 @@ country_event = {
 		tag = MOL
 		has_country_flag = unionist_momentum
 		vassal_of = TUR
+		WAL = { vassal_of = TUR }
 	}
 	
 	mean_time_to_happen = { days = 10 }
@@ -777,10 +779,7 @@ country_event = {
 		name = "That was exactly what we were trying to avoid!"
 		prestige = -5
 		random_country = { 
-			limit = { 
-				tag = WAL
-				MOL = { ai = yes }
-			}
+			limit = { tag = WAL MOL = { ai = yes } }
 			THIS = { release_vassal = MOL }
 			create_vassal = MOL
 			create_alliance = MOL
@@ -788,10 +787,7 @@ country_event = {
 			MOL = { government = colonial_company set_country_flag = colony_exemption }
 		}
 		random_country = { 
-			limit = { 
-				tag = MOL
-				ai = no
-			}
+			limit = { tag = MOL ai = no }
 			THIS = { release_vassal = WAL }
 			create_vassal = WAL
 			create_alliance = WAL
@@ -826,5 +822,91 @@ country_event = {
         ai_chance = { factor = 1 }
     }
 
+}
+
+country_event = {
+	id = 801091
+	title = "The Danubian Principalities"
+	desc = "EVTDESC801091"
+	picture = "proclamation_romania"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = left_romania
+		is_our_vassal = WAL
+		is_our_vassal = MOL
+		NOT = { AND = { MOL = { ai = no } WAL = { ai = no } } }
+	}
+	
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "The Principality of Dacia. Sounds nice, right? §GLose 2 infamy§W"
+		badboy = -2
+		set_country_flag = build_romania
+		random_country = { 
+			limit = { tag = WAL MOL = { ai = yes } }
+			THIS = { release_vassal = MOL }
+			inherit = MOL
+			change_tag = ROM
+			ROM = { government = colonial_company_4 add_accepted_culture = russian set_country_flag = russian_accepted }
+			any_pop = { militancy = -4 consciousness = -2 }
+		}
+		random_country = { 
+			limit = { tag = MOL ai = no }
+			THIS = { release_vassal = WAL }
+			inherit = WAL 
+			change_tag = ROM
+			any_pop = { militancy = -4 consciousness = -2 }
+		}
+		ROM = { government = colonial_company_4 add_accepted_culture = russian set_country_flag = russian_accepted }
+		WAL = { all_core = { remove_core = WAL } }
+		MOL = { all_core = { limit = { NOT = { region = MOL_676 province_id = 3372 } } remove_core = MOL } }
+		all_core = { remove_core = ROM }
+		662 = { remove_core = ROM }
+		795 = { remove_core = SIE }
+		3932 = { remove_core = SIE }
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "Unite the Principalities and give Bessarabia to them. §GLose 4 infamy§W"
+		badboy = -4
+		set_country_flag = no_bukovina
+		random_country = { 
+			limit = { tag = WAL MOL = { ai = yes } }
+			THIS = { release_vassal = MOL }
+			inherit = MOL
+			change_tag = ROM
+			ROM = { government = colonial_company_4 add_accepted_culture = russian set_country_flag = russian_accepted }
+			any_pop = { militancy = -8 consciousness = -4 }
+		}
+		random_country = { 
+			limit = { tag = MOL ai = no }
+			THIS = { release_vassal = WAL }
+			inherit = WAL 
+			change_tag = ROM
+			ROM = { government = colonial_company_4 add_accepted_culture = russian set_country_flag = russian_accepted }
+			any_pop = { militancy = -8 consciousness = -4 }
+		}
+		ROM = { government = colonial_company_4 add_accepted_culture = russian set_country_flag = russian_accepted }
+		WAL = { all_core = { remove_core = WAL } }
+		MOL = { all_core = { remove_core = MOL } }
+		MOL_676 = { remove_core = RUS }
+		3372 = { remove_core = RUS }
+		662 = { remove_core = RUS }
+		795 = { remove_core = SIE }
+		3932 = { remove_core = SIE }
+		any_owned = { limit = { is_core = ROM } secede_province = ROM }
+		ai_chance = { factor = 1 modifier = { factor = 100 OR = { WAL = { ai = no } MOL = { ai = no } } } }
+	}
+
+	option = {
+		name = "We have other plans for Romania..."
+		WAL = { any_pop = { militancy = 4 consciousness = 2 } }
+		MOL = { any_pop = { militancy = 4 consciousness = 2 } }
+		ai_chance = { factor = 0 }
+	}
 }
 
