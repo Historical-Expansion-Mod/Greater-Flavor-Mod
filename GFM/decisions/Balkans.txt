@@ -2,100 +2,35 @@ political_decisions = {
     unite_moldavia_wallachia = {
         picture = create_romania
         potential = {
-            OR = {
-                tag = WAL
-                tag = MOL
-            }
-            NOT = { exists = ROM }
-			NOT = { has_global_flag = romanians_in_bfr }
+            OR = { tag = WAL tag = MOL }
+			OR = {
+				AND = { MOL = { ai = yes } WAL = { ai = yes } }
+				AND = { tag = MOL MOL = { ai = no } WAL = { ai = yes } }
+				AND = { tag = WAL MOL = { ai = yes } WAL = { ai = no } }
+			}
+            NOT = { exists = ROM has_global_flag = romanians_in_bfr has_global_flag = sw_set }
         }
 
         allow = {
+            war = no
+            OR = { tag = WAL is_our_vassal = WAL AND = { WAL = { exists = no } owns = 664 } }
+            OR = { tag = MOL is_our_vassal = MOL AND = { MOL = { exists = no } owns = 670 } }
             OR = {
-                nationalism_n_imperialism = 1
                 is_vassal = no
                 AND = {
                     TUR = { is_greater_power = no }
-                    WAL = {
-                        NOT = {
-                            neighbour = TUR
-                            any_neighbor_country = { vassal_of = TUR }
-                        }
-                    }
-                    MOL = {
-                        NOT = {
-                            neighbour = TUR
-                            any_neighbor_country = { vassal_of = TUR }
-                        }
-                    }
-                    MOL = { NOT = { neighbour = TUR } }
+                    WAL = { NOT = { neighbour = TUR any_neighbor_country = { vassal_of = TUR } } }
+                    MOL = { NOT = { neighbour = TUR any_neighbor_country = { vassal_of = TUR } } }
                 }
+                AND = { OR = { is_our_vassal = WAL is_our_vassal = MOL } OR = { empiricism = 1 year = 1863 } }
             }
-            WAL = {
-                war = no
-                has_country_flag = monarchy_government
-            }
-            MOL = {
-                war = no
-                has_country_flag = monarchy_government
-            }
-            NOT = { has_global_flag = sw_set }
-			OR = {
-				AND = {
-					MOL = { ai = yes }
-					WAL = { ai = yes }
-				}
-				AND = {
-					tag = MOL
-					MOL = { ai = no }
-					WAL = { ai = yes }
-				}
-				AND = {
-					tag = WAL
-					MOL = { ai = yes }
-					WAL = { ai = no }
-				}
-			}
         }
 
         effect = {
             prestige = 10
-            change_tag = ROM
+            country_event = 97513 
             795 = { remove_core = SIE }
 			3932 = { remove_core = SIE }
-            random_country = {
-                limit = {
-                    tag = WAL
-                    exists = yes
-                    ai = yes
-                }
-                THIS = { inherit = WAL }
-            }
-            random_country = {
-                limit = {
-                    tag = WAL
-                    exists = yes
-                    ai = no
-                }
-                country_event = 11101
-            }
-            random_country = {
-                limit = {
-                    tag = MOL
-                    exists = yes
-                    ai = yes
-                }
-                THIS = { inherit = MOL }
-            }
-            random_country = {
-                limit = {
-                    tag = MOL
-                    exists = yes
-                    ai = no
-                }
-                country_event = 11101
-            }
-            capital = 664
             any_land_province = {
 				limit = {
 					is_core = ROM
@@ -109,33 +44,6 @@ political_decisions = {
 				remove_core = WAL
 				remove_core = MOL
 			}
-            random_country = {
-				limit = { tag = MOL exists = no }
-				all_core = {
-					limit = {
-						NOT = {
-							province_id = 677
-							province_id = 676
-							province_id = 678
-							province_id = 673
-						}
-					}
-					remove_core = MOL
-				}
-			}
-            random_country = { limit = { tag = WAL exists = no } all_core = { remove_core = WAL } }
-            random_owned = { limit = { owner = { accepted_culture = ukrainian } } owner = { remove_accepted_culture = ukrainian } }
-            random_owned = {
-                limit = { owner = { NOT = { neighbour = TUR } } }
-                TUR = {
-                    release_vassal = THIS
-                    casus_belli = {
-                        target = ROM
-                        type = make_puppet_no_infamy
-                        months = 24
-                    }
-                }
-            }
         }
 
         ai_will_do = { factor = 1 }
@@ -527,6 +435,7 @@ political_decisions = {
                             owner = {
                                 is_culture_group = czecho_slovak_culture_group
                                 relation = { who = THIS value = 100 }
+                                is_vassal = no
                             }
                         }
                     }
@@ -563,6 +472,7 @@ political_decisions = {
                             owner = {
                                 is_culture_group = czecho_slovak_culture_group
                                 relation = { who = THIS value = 100 }
+                                is_vassal = no
                             }
                         }
                     }

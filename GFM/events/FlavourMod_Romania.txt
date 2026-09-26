@@ -206,6 +206,8 @@ country_event = {
 	option = {
 		name = "The Danubian Principalities are ours now!"
 		prestige = 10
+		set_global_flag = no_russian_danube
+		clr_country_flag = romanian_war
 		create_vassal = MOL
 		create_alliance = MOL
 		diplomatic_influence = { who = MOL value = 500 }
@@ -241,6 +243,7 @@ country_event = {
 	option = {
 		name = "The Danubian Principalities are ours now!"
 		prestige = 5
+		clr_country_flag = romanian_war
 		create_vassal = WAL
 		create_alliance = WAL
 		diplomatic_influence = { who = WAL value = 500 }
@@ -293,60 +296,24 @@ country_event = {
 		war_exhaustion = 5
 		RUS = { country_event = 800955 }
 		random_country = {
-			limit = {
-				tag = TUR
-				is_greater_power = yes
-			}
-			diplomatic_influence = {
-				who = THIS
-				value = 50
-			}
-			relation = {
-				who = THIS
-				value = 100
-			}
+			limit = { tag = TUR is_greater_power = yes }
+			diplomatic_influence = { who = THIS value = 50 }
+			relation = { who = THIS value = 100 }
 			create_alliance = THIS
-
-			diplomatic_influence = {
-				who = MOL
-				value = 50
-			}
-			relation = {
-				who = MOL
-				value = 100
-			}
+			diplomatic_influence = { who = MOL value = 50 }
+			relation = { who = MOL value = 100 }
 			create_alliance = MOL
 		}
 		random_country = {
-			limit = {
-				tag = RUS
-				is_greater_power = yes
-			}
-			diplomatic_influence = {
-				who = THIS
-				value = 400
-			}
-			relation = {
-				who = THIS
-				value = 100
-			}
+			limit = { tag = RUS is_greater_power = yes }
+			diplomatic_influence = { who = THIS value = 400 }
+			relation = { who = THIS value = 100 }
 			create_alliance = THIS
-
-			diplomatic_influence = {
-				who = MOL
-				value = 400
-			}
-			relation = {
-				who = MOL
-				value = 100
-			}
+			diplomatic_influence = { who = MOL value = 400 }
+			relation = { who = MOL value = 100 }
 			create_alliance = MOL
 		}
-		any_pop = {
-			limit = { is_primary_culture = yes }
-			militancy = 2
-			consciousness = 2
-		}
+		any_pop = { limit = { is_primary_culture = yes } militancy = 2 consciousness = 2 }
 	}
 }
 
@@ -542,7 +509,8 @@ country_event = {
 	}
 
     option = {
-        name = "We will keep a close eye on the Danube."
+        name = "We will keep a close eye on the Danube"
+		set_country_flag = left_romania
 		release_vassal = MOL
 		release_vassal = WAL
 		MOL = { country_event = 160518541 }
@@ -596,3 +564,384 @@ country_event = {
 		political_reform = appointed
     }
 }
+
+country_event = {
+	id = 801081
+	title = "Caimacam Vogoride Rigs the Election"
+	desc = "EVTDESC801081"
+	picture = "vogoride"
+
+	fire_only_once = yes
+
+	trigger = {
+		year = 1858
+		has_global_flag = treaty_of_paris_1856
+		tag = MOL
+		vassal_of = TUR
+	}
+
+	mean_time_to_happen = { days = 30 }
+
+	option = {
+		name = "This crisis will pass."
+		TUR = { country_event = 801082 }
+		any_pop = { scaled_militancy = { ideology = liberal factor = 5 } scaled_militancy = { ideology = conservative factor = 1 } scaled_militancy = { ideology = reactionary factor = -3 } }
+	}
+}
+
+country_event = {
+	id = 801082
+	title = "Caimacam Vogoride's Foulplay"
+	desc = "EVTDESC801082"
+	picture = "vogoride"
+	is_triggered_only = yes
+
+	option = {
+		name = "Sanction the election. We ought to keep them divided!"
+		random_country = { limit = { primary_culture = french owns = 425 } country_event = 801083 }
+		random_country = { limit = { primary_culture = british owns = 300 } country_event = 801083 }
+		random_country = { limit = { owns = 641 tag = HUN } country_event = 801083 }
+		random_country = { limit = { owns = 720 is_culture_group = italian } country_event = 801083 }
+		random_country = { limit = { owns = 1008 NOT = { has_global_flag = no_russian_danube } } country_event = 801083 }
+		random_country = { limit = { owns = 641 NOT = { tag = HUN } } country_event = 801084 }
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "Remove Vogoride before the situation worsens"
+		prestige = -5
+		MOL = { country_event = 801087 }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 801083
+	title = "Ottoman Meddling in Moldavia"
+	desc = "EVTDESC801083"
+	picture = "vogoride"
+	is_triggered_only = yes
+
+	option = {
+		name = "Demand they overturn the election, or else."
+		prestige = 2.5
+		set_country_flag = pressuring_ottomans
+		relation = { who = WAL value = 50 }
+		relation = { who = MOL value = 50 }
+		TUR = { country_event = { id = 801085 days = 1 } }
+		random_owned = { limit = { owner = { primary_culture = french } } owner = { any_pop = { consciousness = 1 } } }
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "Moldavia is Ottoman turf for all I care."
+		prestige = -10
+		random_owned = { limit = { owner = { primary_culture = french } } owner = { any_pop = { consciousness = 1 } } }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 801084
+	title = "Ottoman Meddling in Moldavia"
+	desc = "EVTDESC801084"
+	picture = "vogoride"
+	is_triggered_only = yes
+
+	option = {
+		name = "Support the Ottomans, no matter the cost."
+		prestige = 2.5
+		create_alliance = TUR
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "This is a sinking matter and we rather not go with the ship"
+		prestige = -5
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 801085
+	title = "Meddling Turns into Diplomatic Fiasco"
+	desc = "EVTDESC801085"
+	picture = "vogoride"
+	is_triggered_only = yes
+	fire_only_once = yes
+
+	option = {
+		name = "We better try to reach a compromise while we can..."
+		prestige = -10
+		set_country_flag = no_dabunian_princes
+		FROM = { country_event = 801086 }
+		MOL = { country_event = 801087 }
+		random_owned = { limit = { owner = { primary_culture = french } } owner = { any_pop = { consciousness = 1 } } }
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "The election's results are final, rigged or not. §RGain 2.5 infamy§W"
+		badboy = 2.5
+		MOL = { set_country_flag = free_myself }
+		random_country = { limit = { primary_culture = french has_country_flag = pressuring_ottomans } war = { target = TUR attacker_goal = { casus_belli = release_puppet_no_infamy country = MOL } } }
+		random_country = { limit = { primary_culture = british has_country_flag = pressuring_ottomans } war = { target = TUR attacker_goal = { casus_belli = release_puppet_no_infamy  country = MOL} } }
+		random_country = { limit = { owns = 641 has_country_flag = pressuring_ottomans } war = { target = TUR attacker_goal = { casus_belli = release_puppet_no_infamy country = MOL } } }
+		random_country = { limit = { owns = 720 has_country_flag = pressuring_ottomans } war = { target = TUR attacker_goal = { casus_belli = release_puppet_no_infamy country = MOL } } }
+		random_country = { limit = { owns = 1008 has_country_flag = pressuring_ottomans } war = { target = TUR attacker_goal = { casus_belli = release_puppet_no_infamy country = MOL } } }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 801086
+	title = "The Paris Convention ($YEAR$)"
+	desc = "EVTDESC801086"
+	picture = "vogoride"
+	is_triggered_only = yes
+
+	option = {
+		name = "A most satisfying development."
+		prestige = 2.5
+		relation = { who = TUR value = 25 }
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 801087
+	title = "Vogoride's Folly"
+	desc = "EVTDESC801087"
+	picture = "vogoride"
+	is_triggered_only = yes
+
+	option = {
+		name = "Iasi and Bucharest inch closer to uniting..."
+		set_country_flag = unionist_momentum
+		any_pop = { scaled_militancy = { ideology = liberal factor = -8 } scaled_militancy = { ideology = conservative factor = -2 } scaled_militancy = { ideology = reactionary factor = 1 } }
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 801088
+	title = "Alexandru Ioan Cuza — The Prince of Moldavia?"
+	desc = "EVTDESC801088"
+	picture = "cuza_parade"
+	fire_only_once = yes
+	
+	trigger = {
+		year = 1859
+		tag = MOL
+		has_country_flag = unionist_momentum
+		vassal_of = TUR
+		WAL = { vassal_of = TUR }
+	}
+	
+	mean_time_to_happen = { days = 10 }
+
+	option = {
+		name = "Only Cuza can unite our principalities!"
+		clr_country_flag = unionist_momentum
+		WAL = { country_event = 801089 }
+		any_pop = { militancy = -4 consciousness = -2 }
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "A union is simply not meant to happen"
+		clr_country_flag = unionist_momentum
+		any_pop = { scaled_militancy = { ideology = liberal factor = 8 } scaled_militancy = { ideology = conservative factor = 2 } scaled_militancy = { ideology = reactionary factor = -5 } }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 801089
+	title = "Alexandru Ioan Cuza — The Prince of Wallachia and Moldavia?"
+	desc = "EVTDESC801089"
+	picture = "cuza_parade"
+	is_triggered_only = yes
+
+	option = {
+		name = "Union can only be achieved through Cuza"
+		TUR = { country_event = 801090 }
+		any_pop = { militancy = -4 consciousness = -2 }
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "We won't crown a prince that relies on mob rule"
+		any_pop = { militancy = 8 }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 801090
+	title = "Alexandru Ioan Cuza — The Prince of Wallachia and Moldavia"
+	desc = "EVTDESC801090"
+	picture = "cuza_parade"
+	is_triggered_only = yes
+
+	option = {
+		name = "That was exactly what we were trying to avoid!"
+		prestige = -5
+		random_country = { 
+			limit = { tag = WAL MOL = { ai = yes } }
+			THIS = { release_vassal = MOL }
+			create_vassal = MOL
+			create_alliance = MOL
+			THIS = { create_alliance = MOL }
+			MOL = { government = colonial_company set_country_flag = colony_exemption }
+		}
+		random_country = { 
+			limit = { tag = MOL ai = no }
+			THIS = { release_vassal = WAL }
+			create_vassal = WAL
+			create_alliance = WAL
+			THIS = { create_alliance = WAL }
+			WAL = { government = colonial_company set_country_flag = colony_exemption }
+		}
+		ai_chance = { factor = 1 }
+	}
+	
+}
+
+country_event = {
+    id = 97513
+    title = "The Union of the Romanian Principalities"
+    desc = "EVTDESC97513"
+    picture = "proclamation_romania"
+    major = yes
+    is_triggered_only = yes
+
+    option = {
+        name = "Toti în unu!"
+        prestige = 10
+        change_tag = ROM
+		inherit = WAL
+		inherit = MOL
+		WAL = { all_core = { remove_core = WAL } clr_country_flag = colony_exemption }
+		MOL = { all_core = { limit = { NOT = { region = MOL_676 } } remove_core = MOL  } clr_country_flag = colony_exemption }
+		random_owned = { limit = { owner = { government = absolute_monarchy } } owner = { government = absolute_empire } }
+		random_owned = { limit = { owner = { OR = { government = colonial_company government = prussian_constitutionalism } } } owner = { government = semi_constitutional_empire } }
+		random_owned = { limit = { owner = { government = hms_government } } owner = { government = constitutional_empire } }
+		capital = 664
+        ai_chance = { factor = 1 }
+    }
+
+}
+
+country_event = {
+	id = 801091
+	title = "The Danubian Principalities"
+	desc = "EVTDESC801091"
+	picture = "proclamation_romania"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = left_romania
+		is_our_vassal = WAL
+		is_our_vassal = MOL
+		NOT = { AND = { MOL = { ai = no } WAL = { ai = no } } }
+	}
+	
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "The Principality of Dacia. Sounds nice, right? §GLose 2 infamy§W"
+		badboy = -2
+		set_country_flag = build_romania
+		random_country = { 
+			limit = { tag = WAL MOL = { ai = yes } }
+			THIS = { release_vassal = MOL }
+			inherit = MOL
+			change_tag = ROM
+			ROM = { government = colonial_company_4 add_accepted_culture = russian set_country_flag = russian_accepted }
+			any_pop = { militancy = -4 consciousness = -2 }
+		}
+		random_country = { 
+			limit = { tag = MOL ai = no }
+			THIS = { release_vassal = WAL }
+			inherit = WAL 
+			change_tag = ROM
+			any_pop = { militancy = -4 consciousness = -2 }
+		}
+		ROM = { government = colonial_company_4 add_accepted_culture = russian set_country_flag = russian_accepted }
+		WAL = { all_core = { remove_core = WAL } }
+		MOL = { all_core = { limit = { NOT = { region = MOL_676 province_id = 3372 } } remove_core = MOL } }
+		all_core = { remove_core = ROM }
+		662 = { remove_core = ROM }
+		795 = { remove_core = SIE }
+		3932 = { remove_core = SIE }
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "Unite the Principalities and give Bessarabia to them. §GLose 4 infamy§W"
+		badboy = -4
+		set_country_flag = no_bukovina
+		random_country = { 
+			limit = { tag = WAL MOL = { ai = yes } }
+			THIS = { release_vassal = MOL }
+			inherit = MOL
+			change_tag = ROM
+			ROM = { government = colonial_company_4 add_accepted_culture = russian set_country_flag = russian_accepted }
+			any_pop = { militancy = -8 consciousness = -4 }
+		}
+		random_country = { 
+			limit = { tag = MOL ai = no }
+			THIS = { release_vassal = WAL }
+			inherit = WAL 
+			change_tag = ROM
+			ROM = { government = colonial_company_4 add_accepted_culture = russian set_country_flag = russian_accepted }
+			any_pop = { militancy = -8 consciousness = -4 }
+		}
+		ROM = { government = colonial_company_4 add_accepted_culture = russian set_country_flag = russian_accepted }
+		WAL = { all_core = { remove_core = WAL } }
+		MOL = { all_core = { remove_core = MOL } }
+		MOL_676 = { remove_core = RUS }
+		3372 = { remove_core = RUS }
+		662 = { remove_core = RUS }
+		795 = { remove_core = SIE }
+		3932 = { remove_core = SIE }
+		any_owned = { limit = { is_core = ROM } secede_province = ROM }
+		ai_chance = { factor = 1 modifier = { factor = 100 OR = { WAL = { ai = no } MOL = { ai = no } } } }
+	}
+
+	option = {
+		name = "We have other plans for Romania..."
+		WAL = { any_pop = { militancy = 4 consciousness = 2 } }
+		MOL = { any_pop = { militancy = 4 consciousness = 2 } }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 801092
+	title = "320 Years of Vassalage"
+	desc = "EVTDESC801092"
+	picture = "cuza_parade"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = MOL
+		war = no
+		has_country_flag = free_myself
+		is_vassal = no
+	}
+	
+	mean_time_to_happen = { days = 10 }
+
+	option = {
+		name = "Quick! Enact the National Party's plan to unite the Principalities!"
+		TUR = { release_vassal = WAL }
+		random_country = { limit = { tag = WAL ai = yes } MOL = { create_vassal = MOL create_alliance = MOL } }
+		random_country = { limit = { tag = WAL ai = no } create_vassal = MOL create_alliance = MOL }
+		any_pop = { militancy = -4 consciousness = -2 }
+		ai_chance = { factor = 1 }
+	}
+}
+
