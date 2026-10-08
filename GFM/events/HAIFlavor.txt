@@ -447,11 +447,11 @@ country_event = {
 		set_country_flag = san_cristobal_const
 		clr_country_flag = santana_in_power
 		random_owned = {
-			limit = { owner = { NOT = { OR = { upper_house_composition =  state_equal_weight upper_house_composition = population_equal_weight } } } }
+			limit = { owner = { upper_house_composition = party_appointed } }
 			owner = { political_reform = appointed }
 		}
 		random_owned = {
-			limit = { owner = { OR = { vote_franschise =  none_voting vote_franschise = landed_voting } } }
+			limit = { owner = { OR = { vote_franschise = none_voting vote_franschise = landed_voting } } }
 			owner = { political_reform = wealth_weighted_voting }
 		}
 		political_reform = first_past_the_post
@@ -636,15 +636,49 @@ country_event = {
 	
 	option = {
 		name = "Cibao had enough!"
-		plurality = 5
 		ruling_party_ideology = liberal
 		clr_country_flag = baez_gov
 		set_country_flag = cute_civ_gov
 		add_country_modifier = { name = resistance_to_new_regime duration = 365 }
 		add_country_modifier = { name = national_confusion duration = 765 }
 		any_pop = { militancy = -1 consciousness = -1 }
-		any_pop = { limit = { has_pop_type = aristocrats } militancy = -2 money = -1000 }
-		ai_chance = { factor = 4 }
+		any_pop = { limit = { has_pop_type = aristocrats } militancy = -2 }
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600296
+	title = "The Moca Constitution" 
+	desc = "EVTDESC600296" 
+	picture = "ozama_fortress"
+	fire_only_once = yes
+	
+	mean_time_to_happen = { months = 1 }
+	
+	trigger = {
+		tag = DOM
+		has_country_flag = cute_civ_gov
+		NOT = { has_country_modifier = resistance_to_new_regime }
+	}
+	
+	option = {
+		name = "Onwards! To the 1st year of liberty!"
+		plurality = 5
+		capital = 2216
+		random_owned = {
+			limit = { owner = { NOT = { upper_house_composition = population_equal_weight } } }
+			owner = { political_reform = state_equal_weight }
+		}
+		random_owned = {
+			limit = { owner = { NOT = { vote_franschise = universal_voting vote_franschise = universal_weighted_voting } } }
+			owner = { political_reform = wealth_voting }
+		}
+		clr_country_flag = cute_civ_gov
+		set_country_flag = moca_constitution
+		add_country_modifier = { name = small_immigration_boom duration = 1825 }
+		any_pop = { scaled_militancy = { ideology = conservative factor = 4 } scaled_militancy = { ideology = reactionary factor = 8 } }
+		ai_chance = { factor = 1 }
 	}
 }
 
@@ -659,17 +693,22 @@ country_event = {
 	
 	trigger = {
 		tag = DOM
-		has_country_flag = cute_civ_gov
+		has_country_flag = moca_constitution
 		NOT = { has_country_modifier = national_confusion }
 	}
+
+	immediate = { set_country_flag = santana_is_back random_owned = { limit = { owner = { has_country_flag = santana_is_back } } owner = { remove_country_modifier = slow_immigration_boom } } }
 	
 	option = {
-		name = "What next? Báez will return once again?"
+		name = "The revolution of the few meets its end."
 		plurality = -5
-		clr_country_flag = cute_civ_gov
-		set_country_flag = santana_is_back
+		capital = 2214
+		political_reform = state_equal_weight
+		political_reform = wealth_voting
+		clr_country_flag = moca_constitution
 		ruling_party_ideology = reactionary
-		USA = { diplomatic_influence = { who = DOM value = -200 } }
+		random_country = { limit = { tag = USA is_sphere_leader_of = DOM } add_casus_belli = { target = DOM type = add_to_sphere months = 60 } }
+		USA = { diplomatic_influence = { who = DOM value = -400 } }
 		any_pop = { scaled_militancy = { ideology = liberal factor = 4 } scaled_militancy = { ideology = radical factor = 8 } }
 		ai_chance = { factor = 1 }
 	}
@@ -692,36 +731,19 @@ country_event = {
             government = presidential_dictatorship
         }
         war = no
-        NOT = {
-            year = 1902
-        }
+        NOT = { year = 1902 }
     }
 
     mean_time_to_happen = {
         months = 8
-
-        modifier = {
-            factor = 0.75 #increase likelihood to happen
-            year = 1899
-        }
-
-
-        modifier = {
-            factor = 0.95 #increase likelihood to happen
-            year = 1900
-        }
-
-        modifier = {
-            factor = 0.95 #increase likelihood to happen
-            year = 1901
-        }
+        modifier = { factor = 0.75 year = 1899 }
+        modifier = { factor = 0.95 year = 1900 }
+        modifier = { factor = 0.95 year = 1901 }
     }
 
     option = {
         name = "EVTOPTA45006"
-        any_pop = {
-            consciousness = 2
-        }
+        any_pop = { consciousness = 2 }
     }
 }
 
@@ -1263,9 +1285,7 @@ country_event = {
         badboy = -2
         prestige = -20
         relation = { who = HAI value = 200 }
-        ai_chance = {
-            factor = 1
-        }
+        ai_chance = { factor = 1 }
     }
 }
 
@@ -1286,15 +1306,7 @@ country_event = {
         name = "Vive la Haiti!"
         prestige = 20
         years_of_research = 1
-        any_owned = {
-			limit = {
-				is_core = THIS
-			}
-            add_province_modifier = {
-                name = colonial_recruitment
-                duration = 365
-            }
-        }
+        any_owned = { limit = { is_core = THIS } add_province_modifier = { name = colonial_recruitment duration = 365 } }
     }
 }
 
@@ -1320,9 +1332,7 @@ country_event = {
         NOT = { exists = DOM }
     }
     
-    mean_time_to_happen = {
-        months = 2
-    }
+    mean_time_to_happen = { months = 2 }
     
     option = {
         name = "Haiti, the land of high mountains, shall reunite with Quisqueya, the motherland."
@@ -1334,20 +1344,11 @@ country_event = {
     option = {
         name = "Haiti is indivisible. The Dominicans will never be our equals."
         any_pop = {
-            limit = {
-                location = { is_core = DOM }
-                has_pop_culture = caribeno
-            }
+            limit = { location = { is_core = DOM } has_pop_culture = caribeno }
             militancy = 5
             consciousness = 5
         }
-        any_owned = {
-            limit = { is_core = DOM }
-            add_province_modifier = {
-                name = nationalist_agitation
-                duration = 2190
-            }
-        }
+        any_owned = { limit = { is_core = DOM } add_province_modifier = { name = nationalist_agitation duration = 2190 } }
     }
 }
 
