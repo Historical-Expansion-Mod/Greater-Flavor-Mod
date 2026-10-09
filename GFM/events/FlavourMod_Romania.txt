@@ -122,11 +122,7 @@ country_event = {
 		set_global_flag = romanian_war
 		3372 = { remove_core = WAL add_core = MOL }
 		MOL = { clr_country_flag = colony_exemption }
-		war = {
-			target = TUR
-			attacker_goal = { casus_belli = free_peoples state_province_id = 674 country = WAL }
-			defender_goal = { casus_belli = liberate_country country = MOL }
-		}
+		war = { target = TUR attacker_goal = { casus_belli = release_puppet_no_infamy country = WAL } defender_goal = { casus_belli = release_puppet_no_infamy country = MOL } }
 	}
 }
 
@@ -159,7 +155,7 @@ country_event = {
 		has_global_flag = romanian_war
 		truce_with = RUS
 		is_our_vassal = WAL
-		MOL = { is_vassal = no owns = 677 }
+		MOL = { is_vassal = no }
 	}
 	
 	option = {
@@ -196,7 +192,7 @@ country_event = {
 		has_global_flag = romanian_war
 		truce_with = TUR
 		is_our_vassal = MOL
-		WAL = { is_vassal = no owns = 674 }
+		WAL = { is_vassal = no }
 	}
 
 	option = {
@@ -684,6 +680,10 @@ country_event = {
 	option = {
 		name = "Only Cuza can unite our principalities!"
 		clr_country_flag = unionist_momentum
+		random_owned = { limit = { owner = { debt_law = serfdom } } owner = { political_reform = peonage } }
+		random_owned = { limit = { owner = { school_reforms = no_schools } } owner = { social_reform = low_schools } }
+		random_owned = { limit = { owner = { school_reforms = low_schools } } owner = { social_reform = acceptable_schools } }
+		random_owned = { limit = { owner = { school_reforms = acceptable_schools } } owner = { social_reform = good_schools } }
 		WAL = { country_event = 801089 }
 		any_pop = { militancy = -4 consciousness = -2 }
 		ai_chance = { factor = 1 }
@@ -707,6 +707,10 @@ country_event = {
 	option = {
 		name = "Union can only be achieved through Cuza"
 		TUR = { country_event = 801090 }
+		random_owned = { limit = { owner = { debt_law = serfdom } } owner = { political_reform = peonage } }
+		random_owned = { limit = { owner = { school_reforms = no_schools } } owner = { social_reform = low_schools } }
+		random_owned = { limit = { owner = { school_reforms = low_schools } } owner = { social_reform = acceptable_schools } }
+		random_owned = { limit = { owner = { school_reforms = acceptable_schools } } owner = { social_reform = good_schools } }
 		any_pop = { militancy = -4 consciousness = -2 }
 		ai_chance = { factor = 1 }
 	}
@@ -734,6 +738,8 @@ country_event = {
 			create_vassal = MOL
 			create_alliance = MOL
 			THIS = { create_alliance = MOL }
+			set_country_flag = cuza_romania
+			add_country_modifier = { name = great_reformer duration = -1 }
 			MOL = { government = colonial_company set_country_flag = colony_exemption }
 		}
 		random_country = { 
@@ -742,6 +748,8 @@ country_event = {
 			create_vassal = WAL
 			create_alliance = WAL
 			THIS = { create_alliance = WAL }
+			set_country_flag = cuza_romania
+			add_country_modifier = { name = great_reformer duration = -1 }
 			WAL = { government = colonial_company set_country_flag = colony_exemption }
 		}
 		ai_chance = { factor = 1 }
@@ -886,3 +894,61 @@ country_event = {
 	}
 }
 
+country_event = {
+	id = 801093
+	title = "The Montruous Coalition topples Cuza!"
+	desc = "EVTDESC801093"
+	picture = "cuza_assembly"
+	fire_only_once = yes
+	
+	trigger = {
+		year = 1866
+		tag = ROM
+		has_country_flag = cuza_romania
+		has_country_flag = monarchy_government
+	}
+	
+	mean_time_to_happen = { month = 1 }
+
+	option = {
+		name = "A new prince is in order, but who?"
+		set_country_flag = carol_i
+		remove_country_modifier = great_reformer
+		clr_country_flag = cuza_romania
+		add_country_modifier = { name = national_confusion duration = 365 }
+		RUS = { diplomatic_influence = { who = ROM value = -100 } }
+		random_country = { limit = { primary_culture = french capital = 425 } diplomatic_influence = { who = ROM value = 50 } }
+		set_country_flag = hide_tooltip
+		random_owned = { limit = { owner = { has_country_flag = hide_tooltip } } owner = { country_event = { id = 801094 days = 60 } } }
+		clr_country_flag = hide_tooltip
+		any_pop = { scaled_militancy = { ideology = conservative factor = -5 } scaled_militancy = { ideology = radical factor = -5 } }
+		any_pop = { limit = { location = { OR = { region = MOL_673 region = MOL_676 } } } militancy = 4 consciousness = 4 }
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 801094
+	title = "Prince Karol I and the $YEAR$ Romanian Constitution"
+	desc = "EVTDESC801094"
+	picture = "karol_arrival"
+	is_triggered_only = yes
+
+	option = {
+		name = "That is not quite what the liberals wanted, but it is good enough..."
+		set_country_flag = francophiles_mad
+		random_owned = { limit = { owner = { government = absolute_empire } } owner = { government = absolute_monarchy } }
+		random_owned = { limit = { owner = { government = semi_constitutional_empire } } owner = { government = prussian_constitutionalism } }
+		random_owned = { limit = { owner = { government = constitutional_empire } } owner = { government = hms_government } }
+		random_owned = { limit = { owner = { NOT = { vote_franschise = universal_voting } } } owner = { political_reform = universal_weighted_voting } }
+		political_reform = yes_meeting
+		political_reform = free_press
+		random_owned = { limit = { owner = { NOT = { vote_franschise = underground_parties } } } owner = { political_reform = harassment } }
+		random_owned = { limit = { owner = { NOT = { vote_franschise = primary_culture_only } } } owner = { political_reform = culture_voting_only } }
+		random_country = { limit = { primary_culture = french capital = 425 } diplomatic_influence = { who = ROM value = -50 } }
+		random_country = { limit = { primary_culture = north_german capital = 549 } diplomatic_influence = { who = ROM value = 50 } }
+		any_pop = { scaled_militancy = { ideology = liberal factor = 3 } scaled_militancy = { ideology = radical factor = 3 } }
+		any_pop = { limit = { location = { OR = { region = MOL_673 region = MOL_676 } } } militancy = -1 consciousness = -1 }
+		ai_chance = { factor = 1 }
+	}
+}
