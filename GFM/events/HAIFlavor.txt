@@ -675,6 +675,7 @@ country_event = {
 			limit = { owner = { NOT = { vote_franschise = universal_voting vote_franschise = universal_weighted_voting } } }
 			owner = { political_reform = wealth_voting }
 		}
+		nationalvalue = nv_liberty
 		clr_country_flag = cute_civ_gov
 		set_country_flag = moca_constitution
 		add_country_modifier = { name = small_immigration_boom duration = 1825 }
@@ -704,6 +705,7 @@ country_event = {
 		name = "The revolution of the few meets its end."
 		plurality = -5
 		capital = 2214
+		nationalvalue = nv_order
 		political_reform = state_equal_weight
 		political_reform = wealth_voting
 		clr_country_flag = moca_constitution
@@ -738,7 +740,7 @@ country_event = {
 		clr_country_flag = santana_rebuked
 		clr_country_flag = moca_constitution
 		2216 = { add_province_modifier = { name = local_economic_upturn duration = 1825 } }
-		any_pop = { limit = { is_primary_culture = yes } ideology = { value = liberal factor = 0.025 } }
+		any_pop = { limit = { is_primary_culture = yes } ideology = { value = liberal factor = 0.02 } }
 		relation = { who = USA value = 50 }
 		USA = { country_event = 600298 }
 		ai_chance = { factor = 1 }
@@ -780,7 +782,7 @@ country_event = {
 	option = {
 		name = "Our feelings toward Spain remain the same..."
 		set_country_flag = ready_for_annexation
-		any_pop = { limit = { is_primary_culture = yes } ideology = { value = liberal factor = 0.025 } }
+		add_country_modifier = { name = european_military_mission duration = 1000 }
 		random_country = { limit = { OR = { tag = SPA tag = SPC tag = IBR owns = 487 } } relation = { who = DOM value = 50 } country_event = 600300 }
 		ai_chance = { factor = 1 }
 	}
@@ -800,6 +802,151 @@ country_event = {
 		diplomatic_influence = { who = DOM value = 100 }
 		any_country = { limit = { is_greater_power = yes NOT = { tag = THIS } } diplomatic_influence = { who = DOM value = -50 } }
 		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600301
+	title = "The Plebiscite for Annexation" 
+	desc = "EVTDESC600301" 
+	picture = "tobbaco_plantation"
+	fire_only_once = yes
+	
+	mean_time_to_happen = { months = 2 }
+	
+	trigger = {
+		year = 1861
+		tag = DOM
+		is_vassal = no
+		has_country_flag = ready_for_annexation
+	}
+	
+	option = {
+		name = "They will be forced to annex us now, or else."
+		clr_country_flag = ready_for_annexation
+		random_owned = { limit = { owner = { has_country_flag = santana_in_power } } owner = { random_country = { limit = { OR = { tag = SPA tag = SPC tag = IBR owns = 487 } } country_event = 600302 } } }
+		random_owned = { limit = { owner = { NOT = { has_country_flag = santana_in_power } } } owner = { USA = { country_event = 600302 } } }
+		ai_chance = { factor = 1 modifier = { factor = 0 part_of_sphere = yes } }
+	}
+	
+	option = {
+		name = "We know exactly who to protect us."
+		clr_country_flag = ready_for_annexation
+		random_owned = { limit = { owner = { part_of_sphere = no has_country_flag = santana_in_power } } owner = { random_country = { limit = { OR = { tag = SPA tag = SPC tag = IBR owns = 487 } } country_event = 600302 } } }
+		random_owned = { limit = { owner = { part_of_sphere = no NOT = { has_country_flag = santana_in_power } } } owner = { USA = { country_event = 600302 } } }
+		random_owned = { limit = { owner = { part_of_sphere = yes } } owner = { sphere_owner = { country_event = 600302 } } }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Maybe it is time for us to put the protectorate idea to rest..."
+		clr_country_flag = ready_for_annexation
+		any_pop = { limit = { is_primary_culture = yes } consciousness = 1 }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 600302
+	title = "The Dominican Plebiscite" 
+	desc = "EVTDESC600302" 
+	picture = "governor_santana"
+	is_triggered_only = yes
+	
+	option = {
+		name = "Accepting is the obvious option..."
+		prestige = 5
+		create_vassal = DOM
+		create_alliance = DOM
+		relation = { who = DOM value = 400 }
+		diplomatic_influence = { who = DOM value = 400 }
+		any_country = { limit = { is_greater_power = yes NOT = { tag = THIS } } diplomatic_influence = { who = DOM value = -100 } }
+		random_owned = { limit = { owner = { primary_culture = spanish } } owner = { DOM = { government = colonial_company_4 add_accepted_culture = spanish set_country_flag = spanish_accepted } } }
+		random_owned = { limit = { owner = { primary_culture = yankee } } owner = { DOM = { government = colonial_company_3 add_accepted_culture = yankee add_accepted_culture = dixie	set_country_flag = american_accepted } } }
+		random_owned = { limit = { owner = { primary_culture = north_andean } } owner = { DOM = { government = colonial_company_2 add_accepted_culture = north_andean set_country_flag = colombian_accepted } } }
+		random_owned = { limit = { owner = { primary_culture = french } } owner = { DOM = { government = colonial_company add_accepted_culture = french set_country_flag = french_accepted } } }
+		random_owned = { limit = { owner = { NOT = { primary_culture = french primary_culture = north_andean primary_culture = yankee primary_culture = spanish } } } owner = { DOM = { government = democracy } } }
+		DOM = { country_event = 600303 }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Inform the Dominicans we lost interest..."
+		prestige = -10
+		relation = { who = DOM value = -400 }
+		diplomatic_influence = { who = DOM value = -400 }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 600303
+	title = "The $COUNTRY_ADJ$ Annexation of Dominican Republic" 
+	desc = "EVTDESC600303" 
+	picture = "governor_santana"
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		name = "Loyalty, Altruism and Affection!"
+		set_country_flag = ready_for_restoration
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600304
+	title = "The Dominican Restoration War" 
+	desc = "EVTDESC600304" #Temporary loc
+	picture = "battle_of_monte_cristi"
+	fire_only_once = yes
+	
+	mean_time_to_happen = { months = 4 }
+	
+	trigger = {
+		year = 1865
+		tag = DOM
+		is_vassal = yes
+		has_country_flag = ready_for_restoration
+	}
+	
+	option = {
+		name = "Annexation was a disaster for both of us"
+		clr_country_flag = ready_for_annexation
+		overlord = { country_event = 600305 }
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600305
+	title = "The Dominican Restoration War" 
+	desc = "EVTDESC600305" #Temporary loc
+	picture = "battle_of_monte_cristi"
+	is_triggered_only = yes
+	
+	option = {
+		name = "Annul the annexation. Santo Domingo is just not worth it. §GLose 2 infamy§W"
+		badboy = -2
+		war_exhaustion = -10
+		release_vassal = DOM
+		leave_alliance = DOM
+		relation = { who = DOM value = -100 }
+		diplomatic_influence = { who = DOM value = -100 }
+		any_pop = { militancy = -2 consciousness = -1 }
+		ai_chance = { factor = 1 modifier = { factor = 0 ai = no } }
+	}
+	
+	option = {
+		name = "We will fight until the bitter end."
+		war_exhaustion = 5
+		any_pop = { militancy = 2 }
+		release_vassal = DOM
+		leave_alliance = DOM
+		relation = { who = DOM value = -200 }
+		diplomatic_influence = { who = DOM value = -400 }
+        war = { target = DOM attacker_goal = { casus_belli = conquest_any } }
+		ai_chance = { factor = 1  modifier = { factor = 0 ai = yes } }
 	}
 }
 
@@ -951,7 +1098,7 @@ country_event = {
         remove_accepted_culture = caribeno
         remove_accepted_culture = afro_latino
         any_owned = {
-            limit = { is_core = DOM }
+            limit = { is_core = DOM NOT = { province_id = 3309 } }
             any_pop = { militancy = -9 consciousness = -9 }
             remove_province_modifier = nationalist_agitation
             secede_province = DOM
