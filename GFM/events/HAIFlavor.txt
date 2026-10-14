@@ -583,11 +583,10 @@ country_event = {
 	}
 	
 	option = {
-		name = "Santana is our hero, but Jimenes is our president!" #change the loc to indicate that Jimenes doesn't win but wear out Santana
+		name = "Jimenes will fight to the bitter end!"
 		plurality = -5
 		clr_country_flag = santana_returned
 		set_country_flag = santo_domingo_sieged
-		set_country_flag = santana_rebuked
 		government = democracy
 		2214 = { any_pop = { militancy = 2 consciousness = 2 } }
 		add_country_modifier = { name = resistance_to_new_regime duration = 60 }
@@ -652,7 +651,6 @@ country_event = {
 		set_country_flag = mota_presidency
 		random_country = { limit = { OR = { tag = SPC tag = SPA } } diplomatic_influence = { who = DOM value = 25 } }
 		any_owned = { limit = { is_core = DOM } add_province_modifier = { name = local_economic_downturn duration = 485 } } 
-		change_variable = { which = santana_weak value = 1 }
 		ai_chance = { factor = 1 }
 	}
 }
@@ -702,14 +700,13 @@ country_event = {
 		plurality = -5
 		set_country_flag = santana_exiled
 		any_pop = { scaled_militancy = { ideology = reactionary factor = 4 } }
-		change_variable = { which = santana_weak value = 1 }
 		ai_chance = { factor = 1 }
 	}
 }
 
 country_event = {
 	id = 600293
-	title = "Báez's 2nd Presidency" 
+	title = "Báez's Scheme" 
 	desc = "EVTDESC600293" 
 	picture = "tobbaco_plantation"
 	fire_only_once = yes
@@ -717,17 +714,16 @@ country_event = {
 	mean_time_to_happen = { days = 7 }
 	
 	trigger = {
-		year = 1856
 		tag = DOM
+		has_country_flag = santana_exiled
 		government = democracy
-		has_country_flag = baez_presidency
-		month = 10
+		month = 6
 	}
 	
 	option = {
 		name = "Suffering from 1000% devaluation is not very fun, is it?"
 		prestige = -2.5
-		set_country_flag = cibao_swindled
+		country_event = { id = 600294 days = 28 }
 		any_pop = { limit = { type = aristocrats } militancy = 7 consciousness = 7 money = -500 }
 		ai_chance = { factor = 4 }
 	}
@@ -738,18 +734,7 @@ country_event = {
 	title = "Cibaeño Revolution" 
 	desc = "EVTDESC600294" 
 	picture = "tobbaco_plantation"
-	fire_only_once = yes
-	
-	mean_time_to_happen = { days = 7 }
-	
-	trigger = {
-		tag = DOM
-		has_country_flag = cibao_swindled
-		has_country_flag = santana_exiled
-		government = democracy
-		month = 6
-	}
-	
+	is_triggered_only = yes
 	option = {
 		name = "Cibao had enough!"
 		ruling_party_ideology = liberal
@@ -774,15 +759,77 @@ country_event = {
 	option = {
 		name = "With his help, Báez stand no chance!"
 		any_pop = { limit = { OR = { type = officers type = soldiers } } ideology = { value = reactionary factor = 0.10 } }
-		change_variable = { which = santana_weak value = -1 }
+		set_country_flag = santana_is_back
+		set_variable = { which = santana_weak value = 0 }
 		ai_chance = { factor = 1 }
 	}
 	
 	option = {
 		name = "We welcome him, but he isn't needed in the army."
 		any_pop = { limit = { type = soldiers location = { region = HAI_2214 } } reduce_pop = 0.9 }
+		set_country_flag = santana_is_back
 		change_variable = { which = santana_weak value = 1 }
 		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 600311
+	title = "Santana Imprisions Domingo de Soto" 
+	desc = "EVTDESC600311" 
+	picture = "Arrested"
+	fire_only_once = yes
+	
+	mean_time_to_happen = { days = 1 }
+	
+	trigger = {
+		tag = DOM
+		has_country_flag = santana_is_back
+	}
+	
+	option = {
+		name = "Let it slide. We can't afford to provoke him."
+		any_pop = { scaled_militancy = { ideology = liberal factor = 1 } scaled_militancy = { ideology = radical factor = 2 } }
+		ai_chance = { factor = 9 }
+	}
+	
+	option = {
+		name = "Send our men to arrest Santana and free de Soto."
+		random_owned = { limit = { owner = { NOT = { check_variable = { which = santana_weak value = 3 } } } } owner = { country_event = 600312 } }
+		random_owned = { limit = { owner = { check_variable = { which = santana_weak value = 3 } } } owner = { country_event = 600313 } }
+		any_pop = { scaled_militancy = { ideology = reactionary factor = 2 } scaled_consciousness = { ideology = reactionary factor = 2 } }
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600312
+	title = "Soldiers Refuse!" 
+	desc = "EVTDESC600312" 
+	picture = "Arrested"
+	is_triggered_only = yes
+	
+	option = {
+		name = "We have no choice but to bide our time..."
+		set_variable = { which = santana_weak value = 0 }
+		any_pop = { limit = { OR = { type = officers type = soldiers } } ideology = { value = reactionary factor = 0.10 } }
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600313
+	title = "Santana Is Imprisioned!" 
+	desc = "EVTDESC600313" 
+	picture = "Arrested"
+	is_triggered_only = yes
+	
+	option = {
+		name = "We are saved!"
+		set_variable = { which = santana_weak value = 0 }
+		set_country_flag = santana_rebuked
+		any_pop = { ideology = { value = liberal factor = 0.10 } ideology = { value = reactionary factor = -0.10 } }
+		ai_chance = { factor = 1 }
 	}
 }
 
@@ -859,7 +906,7 @@ country_event = {
 	id = 600297
 	title = "Our Partners in Washington" 
 	desc = "EVTDESC600297" 
-	picture = "annexation_santo_domingo"
+	picture = "american_santo_domingo"
 	fire_only_once = yes
 	
 	mean_time_to_happen = { days = 1 }
@@ -889,7 +936,7 @@ country_event = {
 	id = 600298
 	title = "A Tropical Partnership" 
 	desc = "EVTDESC600298" 
-	picture = "annexation_santo_domingo"
+	picture = "american_santo_domingo"
 	is_triggered_only = yes
 	
 	option = {
@@ -1087,6 +1134,7 @@ country_event = {
 		ai_chance = { factor = 1  modifier = { factor = 0 ai = yes } }
 	}
 }
+
 
 country_event = {
 
@@ -1694,7 +1742,8 @@ country_event = {
     picture = "twin_republic" 
     fire_only_once = yes
     
-    trigger = {OR = { tag = HAI AND = { tag = FWI has_country_flag = haiti_formed_FWI } }
+    trigger = {
+		OR = { tag = HAI AND = { tag = FWI has_country_flag = haiti_formed_FWI } }
         OR = {
             ruling_party_ideology = liberal
             ruling_party_ideology = socialist
