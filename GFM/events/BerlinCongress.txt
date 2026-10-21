@@ -484,6 +484,100 @@ country_event = {
     }
 }
 
+# The Lebanon Convention
+country_event = {
+    id = 801107
+    title = "The Lebanon Convention" #The Lebanon Convention
+    desc = "EVTDESC801107"
+    picture = "beirut"
+
+    fire_only_once = yes
+
+    trigger = {
+            primary_culture = french
+            has_country_flag = shihab_lebanon
+            has_country_flag = attending_berlin_congress
+            LBN = { vassal_of = TUR in_sphere = THIS }
+            NOT = { has_global_flag = berlin_congress_held }
+    }
+
+    mean_time_to_happen = { days = 3 }
+
+    option = {
+            name = "Make the offer."
+            TUR = { country_event = 801108 }
+            ai_chance = { factor = 1 }
+    }
+
+    option = {
+            name = "We have no interest in this."
+            ai_chance = { factor = 0 }
+    }
+}
+
+country_event = {
+    id = 801108
+    title = "The Lebanon Convention" #The Lebanon Convention - to the OE
+    desc = "EVTDESC801108"
+    picture = "beirut"
+    is_triggered_only = yes
+
+    option = {
+        name = "Agree to the deal"
+        set_country_flag = giving_up_lebanon
+        FROM = { country_event = 801109 }
+        ai_chance = { factor = 1 }
+    }
+
+    option = {
+        name = "No. They have already hurt us enough over Lebanon."
+        FROM = { country_event = 801110 }
+        ai_chance = { factor = 0 }
+    }
+}
+
+country_event = {
+    id = 801109
+    title = "The Deal is Struck"
+    desc = "EVTDESC801109"
+    picture = "beirut"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "We shall do our best"
+        set_country_flag = receiving_lebanon
+        relation = { who = TUR value = 50 }
+        TUR = {
+            change_variable = { which = berlin_congress_support_balkans value = -1 }
+            change_variable = { which = berlin_congress_support_OE value = 1 }
+        }
+    }
+}
+
+country_event = {
+    id = 801110
+    title = "The Ottomans Have Refused"
+    desc = "EVTDESC801110"
+    picture = "beirut"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "We accept their decision."
+        prestige = -5
+    }
+
+    option = {
+        name = "Then they shall receive no support from us whatsoever."
+        relation = { who = TUR value = -50 }
+        TUR = {
+            change_variable = { which = berlin_congress_support_balkans value = 1 }
+            change_variable = { which = berlin_congress_support_OE value = -1 }
+        }
+    }
+}
+
 # The Cyprus Convention
 country_event = {
     id = 900640
@@ -1893,6 +1987,7 @@ country_event = {
     option = {
         name = "EVT90067OPTB"
         clr_country_flag = giving_up_cyprus
+        clr_country_flag = giving_up_lebanon
         prestige_factor = -0.2
         # Send refusal to attending countries
         any_greater_power = {
@@ -2811,6 +2906,7 @@ country_event = {
     option = {
         name = "EVT90067OPTB"
         clr_country_flag = giving_up_cyprus
+        clr_country_flag = giving_up_lebanon
         prestige = -20
         # Send refusal to attending countries
         any_greater_power = {
@@ -3053,6 +3149,7 @@ country_event = {
         clr_country_flag = claimed_croatia
         clr_country_flag = claimed_bosnia
         clr_country_flag = receiving_cyprus
+        clr_country_flag = receiving_lebanon
         relation = {
             who = TUR
             value = -200
@@ -3084,6 +3181,58 @@ country_event = {
         clr_country_flag = hosting_berlin_congress
         prestige_factor = -0.1
         ai_chance = { factor = 0 }
+    }
+}
+
+#Lebanon Convention Results
+country_event = {
+    id = 801111
+    title = "Giving Up Lebanon"
+    desc = "EVTDESC801111"
+    picture = "beirut"
+
+    fire_only_once = yes
+
+    trigger = {
+        has_global_flag = berlin_congress_held
+        is_our_vassal = LBN
+        has_country_flag = giving_up_lebanon
+        war = no
+    }
+
+    mean_time_to_happen = { days = 3 }
+
+    option = {
+        name = "We have no choice but to abide by our agreement."
+        clr_country_flag = giving_up_lebanon
+        EGY_915 = { remove_core = TUR } # Lebanon
+        random_country = {
+            limit = { has_country_flag = receiving_lebanon }
+            clr_country_flag = receiving_lebanon
+            country_event = 801112
+        }
+        ai_chance = { factor = 70 }
+    }
+}
+
+country_event = {
+    id = 801112
+    title = "The Lebanon Convention"
+    desc = "EVTDESC801112"
+    picture = "beirut"
+
+    is_triggered_only = yes
+
+    option = {
+        name = "Considering our previous arrangement, not much will change..."
+        FROM = { release_vassal = LBN }
+        create_vassal = LBN
+        create_alliance = LBN
+        relation = { who = LBN value = 100 }
+        diplomatic_influence = { who = LBN value = 400 }
+        relation = { who = FROM value = 100 }
+        diplomatic_influence = { who = FROM value = 50 }
+        ai_chance = { factor = 1 }
     }
 }
 
