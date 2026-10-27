@@ -140,6 +140,7 @@ country_event = {
         tag = ENG
 		year = 1831
 		owns = 2217 # Jamaica
+		NOT = { slavery = no_slavery }
 		NOT = { year = 1833 }
     }
 
@@ -161,7 +162,7 @@ country_event = {
     }
 	option = {
         name = "Long Live Jamaica. §BPlay as Jamaica§W"
-		2217 = { secede_province = JAM add_core = JAM }
+		2217 = { secede_province = JAM }
 		HAI = { create_alliance = JAM }
 		war = {
             target = JAM
@@ -204,12 +205,13 @@ country_event = {
 
 	option = {
         name = "Fully support them §BStart a revolt in Jamaica and ally them§!."
+		set_country_flag = helpedJamaica
         any_pop = {
             limit = { has_pop_culture = afro_french }
             consciousness = -4
         }
-		treasury = -100000
-		JAM = { treasury = 100000 }
+		treasury = -10000
+		JAM = { treasury = 10000 }
 		ENG = { country_event = { id = 127859 days = 2 } }
 		ai_chance = { factor = 0 }
     }
@@ -219,7 +221,7 @@ country_event = {
 country_event = {
     id = 127859
     title = "The Baptist War"
-    desc = "Haiti supports Jamaica!"
+    desc = "EVTDESC127859"
     picture = "jamaica_slaverev"
 
     fire_only_once = yes
@@ -236,7 +238,7 @@ country_event = {
             defender_goal = { casus_belli = humiliate_no_infamy }
 			call_ally = yes
         }
-		JAM = { political_reform = no_slavery government = democracy }
+		JAM = { political_reform = no_slavery government = prov_gov_liberal }
 		set_global_flag  = jamaicanrebell1831
 		diplomatic_influence = { who = JAM value = -400 }
     }
@@ -247,7 +249,7 @@ country_event = {
 country_event = {
     id = 127961
     title = "Victory in the Baptist War"
-    desc = "After fighting the Jamaican slaves, we finally have won the war."
+    desc = "EVTDESC127961"
     picture = "jamaica_slaverev"
 
     fire_only_once = yes
@@ -265,7 +267,7 @@ country_event = {
 
     option = {
         name = "Perfect!"
-        JAM = { all_core = { remove_core = JAM } }
+		clr_global_flag = jamaicanrebell1831
 		random_owned = {
 			limit = {
 				owner = {
@@ -282,6 +284,68 @@ country_event = {
 		}
         ai_chance = { factor = 100 }
     }
+}
+
+# Baptist War win event for Jamaica - the inverse of the previous scenario
+country_event = {
+	id = 127962
+	title = "Victory Against the British"
+	desc = "EVTDESC127962"
+	picture = "baptist_war_victory"
+
+	fire_only_once = yes
+
+	trigger = {
+		has_global_flag = jamaicanrebell1831
+		tag = JAM
+		government = prov_gov_liberal
+		owns = 2217
+		year = 1831
+		war = no
+		NOT = { year = 1835 }
+	}
+
+	mean_time_to_happen = { days = 1 }
+
+	option = {
+		name = "Other colonies should take example"
+		clr_global_flag = jamaicanrebell1831
+		set_country_flag = slave_revolution
+		wage_reform = low_minimum_wage
+		prestige = 15
+		any_pop = {
+			limit = {
+				has_pop_culture = afro_caribbean
+			}
+			militancy = -5
+			consciousness = -2
+		}
+		any_country = {
+			limit = { has_country_flag = helpedJamaica }
+			country_event = { id = 127963 days = 2 }
+		}
+	}
+}
+
+#Victory event for Haiti if they decided to send money to Jamaica
+country_event = {
+	id = 127963
+	title = "The Jamaicans emerge victorious"
+	desc = "EVTDESC127963"
+	picture = "toussaint"
+
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "The revolution continues to spread"
+		any_pop = {
+			limit = { has_pop_culture = afro_french }
+			militancy = -2
+			consciousness = -2
+		}
+		prestige = 15
+	}
 }
 
 # The Great Trek - fires for an ENG who owns Cape town [2087] and Port Elizabeth [2096]
@@ -366,7 +430,7 @@ country_event = {
 country_event = {
     id = 183518367
     title = "The Great Trek"
-    desc = "Boers have gained effective control over Botshabelo."
+    desc = "EVTDESC183518367"
     picture = "trekboers_crossing_the_karoo"
 
     fire_only_once = yes
@@ -394,7 +458,7 @@ country_event = {
 country_event = {
     id = 183518362
     title = "The Great Trek"
-    desc = "Boers have gained effective control over Botshabelo."
+    desc = "EVTDESC183518362"
     picture = "trekboers_crossing_the_karoo"
 
     fire_only_once = yes
@@ -626,7 +690,7 @@ country_event = {
 
 # Black War - fires of an ENG who owns Van Dimen's Land [2482]
 country_event = {
-	id = 160519379
+	id = 16051938
 	title = "The Black War"
 	desc = "BLACKWAR"
 	picture = "black_war"
@@ -651,7 +715,7 @@ country_event = {
 
 # Kol Uprising - fires for ENG
 country_event = {
-	id = 16051938
+	id = 16051939
 	title = "The Kol Uprising"
 	desc = "KOLUPRISING"
 	picture = "kol_uprising"
@@ -718,6 +782,7 @@ country_event = {
 	option = {
         name = "Huzzah!"
 		46 = { change_province_name = "Toronto" any_pop = { consciousness = -1 } }
+		set_global_flag = toronto_exists
 	}
 }
 
@@ -743,6 +808,11 @@ country_event = {
 	option = {
         name = "There is nothing we can do."
 		prestige = -5
+		war = {
+			target = FROM
+			attacker_goal = { casus_belli = test_end_war_2 }
+			call_ally = no
+		}
         ai_chance = { factor = 100 }
 	}
 }
@@ -1011,7 +1081,7 @@ country_event = {
 country_event = {
     id = 368793964
     title = "The Nagar Revolt"
-    desc = "The British, in spite of our recent revolt, have recognized our independence."
+    desc = "EVTDESC368793964"
     picture = "nagar_revolt"
     fire_only_once = yes
 	is_triggered_only = yes
