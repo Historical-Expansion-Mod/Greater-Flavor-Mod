@@ -3,11 +3,13 @@ political_decisions = {
         picture = german_confederation
         potential = {
             capital = 619
-            tag = GCF
-            OR = {
-                government = hms_government
-                government = prussian_constitutionalism
-                government = absolute_monarchy
+			OR = {
+			    tag = GCF
+				has_country_flag = centralization_begun
+			}
+            has_country_flag = monarchy_government
+		    NOT = {
+			    has_country_modifier = holy_roman_emperor
             }
         }
 
@@ -19,7 +21,15 @@ political_decisions = {
         }
 
         effect = {
-            prestige = -20
+		    relation = {
+			  who = FRA
+			  value = -100
+			}
+			prestige = 100
+			add_country_modifier = {
+			  name = holy_roman_emperor
+              duration = -1
+			}
             random_owned = { limit = { owner = { government = absolute_monarchy } } owner = { government = absolute_empire } }
             random_owned = { limit = { owner = { government = prussian_constitutionalism } } owner = { government = semi_constitutional_empire } }
             random_owned = { limit = { owner = { government = hms_government } } owner = { government = constitutional_empire } }
@@ -212,10 +222,8 @@ political_decisions = {
     von_moltkes_staff_reforms = {
         picture = von_moltkes_staff_reforms
         potential = {
-			tag = PRU
-            NOT = {
-                has_country_flag = von_moltke
-            }
+			OR = { tag = PRU tag = NGF }
+            NOT = { has_country_flag = von_moltke }
         }
         allow = {
             OR = {
@@ -230,19 +238,11 @@ political_decisions = {
             }
         }
         effect = {
-            add_country_modifier = {
-                name = prussian_general_staff
-                duration = 3650
-            }
+            add_country_modifier = { name = prussian_general_staff duration = 3650 }
             prestige = 5
             set_country_flag = von_moltke
         }
-        ai_will_do = {
-            factor = 1
-            modifier = {
-                factor = 0
-                NOT = { year = 1850 }
-            }
+        ai_will_do = { factor = 1 modifier = { factor = 0 NOT = { year = 1850 } }
         }
     }
 
@@ -566,6 +566,7 @@ political_decisions = {
                 690 = { NOT = { is_core = GER is_core = GCF } }
                 699 = { NOT = { is_core = GER is_core = GCF } }
             }
+			NOT = { has_country_flag = renounced_egoism }
         }
 
         allow = {
@@ -656,6 +657,7 @@ political_decisions = {
 		picture = appoint_von_bismarck
         potential = {
             OR = {
+				tag = PRU
                 tag = NGF
                 tag = GER
             }
@@ -994,5 +996,31 @@ political_decisions = {
                 badboy = 0.8
             }
         }
+    }
+	
+    finalize_the_italian_border = {
+        picture = italian_trentino
+        potential = {
+            OR = { tag = GER tag = GCF }
+			ITA = { owns = 730 }
+            owns = 734
+            owns = 735
+            NOT = { exists = AUS exists = KUK has_country_flag = concessions_to_italy }
+        }
+
+        allow = {
+            war = no
+            is_greater_power = yes
+            ITA = { war = no }
+            NOT = { truce_with = ITA }
+        }
+        
+        effect = {
+            set_country_flag = concessions_to_italy
+            prestige = -10
+            badboy = -2
+            ITA = { country_event = 801078 }
+        }
+        ai_will_do = { factor = 0.2 }
     }
 }

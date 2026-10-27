@@ -2,100 +2,35 @@ political_decisions = {
     unite_moldavia_wallachia = {
         picture = create_romania
         potential = {
-            OR = {
-                tag = WAL
-                tag = MOL
-            }
-            NOT = { exists = ROM }
-			NOT = { has_global_flag = romanians_in_bfr }
+            OR = { tag = WAL tag = MOL }
+			OR = {
+				AND = { MOL = { ai = yes } WAL = { ai = yes } }
+				AND = { tag = MOL MOL = { ai = no } WAL = { ai = yes } }
+				AND = { tag = WAL MOL = { ai = yes } WAL = { ai = no } }
+			}
+            NOT = { exists = ROM has_global_flag = romanians_in_bfr has_global_flag = sw_set }
         }
 
         allow = {
+            war = no
+            OR = { tag = WAL is_our_vassal = WAL AND = { WAL = { exists = no } owns = 664 } }
+            OR = { tag = MOL is_our_vassal = MOL AND = { MOL = { exists = no } owns = 670 } }
             OR = {
-                nationalism_n_imperialism = 1
                 is_vassal = no
                 AND = {
                     TUR = { is_greater_power = no }
-                    WAL = {
-                        NOT = {
-                            neighbour = TUR
-                            any_neighbor_country = { vassal_of = TUR }
-                        }
-                    }
-                    MOL = {
-                        NOT = {
-                            neighbour = TUR
-                            any_neighbor_country = { vassal_of = TUR }
-                        }
-                    }
-                    MOL = { NOT = { neighbour = TUR } }
+                    WAL = { NOT = { neighbour = TUR any_neighbor_country = { vassal_of = TUR } } }
+                    MOL = { NOT = { neighbour = TUR any_neighbor_country = { vassal_of = TUR } } }
                 }
+                AND = { OR = { is_our_vassal = WAL is_our_vassal = MOL } OR = { empiricism = 1 year = 1863 } }
             }
-            WAL = {
-                war = no
-                has_country_flag = monarchy_government
-            }
-            MOL = {
-                war = no
-                has_country_flag = monarchy_government
-            }
-            NOT = { has_global_flag = sw_set }
-			OR = {
-				AND = {
-					MOL = { ai = yes }
-					WAL = { ai = yes }
-				}
-				AND = {
-					tag = MOL
-					MOL = { ai = no }
-					WAL = { ai = yes }
-				}
-				AND = {
-					tag = WAL
-					MOL = { ai = yes }
-					WAL = { ai = no }
-				}
-			}
         }
 
         effect = {
             prestige = 10
-            change_tag = ROM
+            country_event = 97513 
             795 = { remove_core = SIE }
 			3932 = { remove_core = SIE }
-            random_country = {
-                limit = {
-                    tag = WAL
-                    exists = yes
-                    ai = yes
-                }
-                THIS = { inherit = WAL }
-            }
-            random_country = {
-                limit = {
-                    tag = WAL
-                    exists = yes
-                    ai = no
-                }
-                country_event = 11101
-            }
-            random_country = {
-                limit = {
-                    tag = MOL
-                    exists = yes
-                    ai = yes
-                }
-                THIS = { inherit = MOL }
-            }
-            random_country = {
-                limit = {
-                    tag = MOL
-                    exists = yes
-                    ai = no
-                }
-                country_event = 11101
-            }
-            capital = 664
             any_land_province = {
 				limit = {
 					is_core = ROM
@@ -109,33 +44,6 @@ political_decisions = {
 				remove_core = WAL
 				remove_core = MOL
 			}
-            random_country = {
-				limit = { tag = MOL exists = no }
-				all_core = {
-					limit = {
-						NOT = {
-							province_id = 677
-							province_id = 676
-							province_id = 678
-							province_id = 673
-						}
-					}
-					remove_core = MOL
-				}
-			}
-            random_country = { limit = { tag = WAL exists = no } all_core = { remove_core = WAL } }
-            random_owned = { limit = { owner = { accepted_culture = ukrainian } } owner = { remove_accepted_culture = ukrainian } }
-            random_owned = {
-                limit = { owner = { NOT = { neighbour = TUR } } }
-                TUR = {
-                    release_vassal = THIS
-                    casus_belli = {
-                        target = ROM
-                        type = make_puppet_no_infamy
-                        months = 24
-                    }
-                }
-            }
         }
 
         ai_will_do = { factor = 1 }
@@ -186,6 +94,7 @@ political_decisions = {
             war = no
         }
         effect = {
+			set_country_flag = build_romania
             prestige = 20
             badboy = 2
             any_country = {
@@ -220,7 +129,18 @@ political_decisions = {
 				}
 				any_owned = {
 					limit = {
-						OR = { is_core = ROM is_core = SIE }
+						OR = { 
+							is_core = ROM
+							AND = {
+								is_core = SIE
+								NOT = {
+									province_id = 3331
+									province_id = 792
+									province_id = 3932
+									province_id = 795
+								}
+							}
+						}
 					}
 					secede_province = THIS
 				}
@@ -234,9 +154,47 @@ political_decisions = {
             }
 			any_owned = {
 				limit = {
-					OR = { is_core = ROM is_core = SIE }
+					is_core = ROM
+					NOT = { is_core = SIE }
 				}
 				secede_province = ROM
+			}
+			random_owned = {
+				limit = { owner = { tag = AUS } }
+				owner = {
+					any_owned = {
+						limit = {
+							OR = { 
+								region = AUS_654
+								region = AUS_657
+							}
+						}
+						secede_province = ROM
+						remove_core = HUN
+					}
+					663 = { remove_core = GLM }
+					662 = { remove_core = GLM }
+					HUN = { set_country_flag = lost_claims }
+				}
+			}
+			random_owned = {
+				limit = { owner = { NOT = { tag = AUS } } }
+				owner = {
+					any_owned = {
+						limit = {
+							AND = {
+								is_core = SIE
+								NOT = {
+									province_id = 3331
+									province_id = 792
+									province_id = 3932
+									province_id = 795
+								}
+							}
+						}
+						secede_province = ROM
+					}
+				}
 			}
             create_vassal = ROM
             create_alliance = ROM
@@ -418,6 +376,7 @@ political_decisions = {
     }
 
     form_czechoslovakia = {
+        picture = form_czechoslovakia
         potential = {
             OR = {
                 tag = BOH
@@ -476,6 +435,7 @@ political_decisions = {
                             owner = {
                                 is_culture_group = czecho_slovak_culture_group
                                 relation = { who = THIS value = 100 }
+                                is_vassal = no
                             }
                         }
                     }
@@ -512,6 +472,7 @@ political_decisions = {
                             owner = {
                                 is_culture_group = czecho_slovak_culture_group
                                 relation = { who = THIS value = 100 }
+                                is_vassal = no
                             }
                         }
                     }
@@ -551,6 +512,115 @@ political_decisions = {
             factor = 1
         }
     }
+
+    create_czechoslovakia = {
+        picture = form_czechoslovakia
+        potential = {
+            OR = {
+                primary_culture = french
+                tag = RUS
+            }
+			OR = {
+				3483 = { OR = { owned_by = THIS owner = { in_sphere = THIS } owner = { vassal_of = THIS } } }
+				633 = { OR = { owned_by = THIS owner = { in_sphere = THIS } owner = { vassal_of = THIS } } }
+			}
+            NOT = {
+				exists = CZH
+				has_global_flag = czechoslovakia_formed
+            }
+        }
+
+        allow = {
+			is_vassal = no
+            war = no
+            nationalism_n_imperialism = 1
+			BOH = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+							OR = {
+								is_vassal = no
+								vassal_of = THIS
+							}
+                            NOT = {
+                                tag = AUS
+                                tag = KUK
+								tag = AUB
+								tag = DNB
+                            }
+                        }
+                    }
+                }
+            }
+			SLV = {
+                all_core = {
+                    OR = {
+                        owned_by = THIS
+                        owner = {
+                            in_sphere = THIS
+                            war = no
+							OR = {
+								is_vassal = no
+								vassal_of = THIS
+							}
+                            NOT = {
+                                tag = AUS
+                                tag = KUK
+								tag = AUB
+								tag = DNB
+                            }
+                        }
+                    }
+                }
+            }
+		}
+
+        effect = {
+            set_global_flag = czechoslovakia_formed
+			badboy = 2
+            prestige = 10
+            BOH = { all_core = { add_core = CZH } }
+            SLV = { all_core = { add_core = CZH } }
+            any_country = {
+                limit = {
+                    OR = {
+						tag = BOH
+						tag = SLV
+						tag = MRV
+                    }
+                    ai = yes
+                    in_sphere = THIS
+                    OR = {
+                        is_vassal = no
+                        vassal_of = THIS
+                    }
+                }
+                annex_to = THIS
+            }
+            any_country = {
+                limit = {
+                    OR = {
+                        in_sphere = THIS
+                        vassal_of = THIS
+                    }
+                    any_owned_province = { is_core = CZH }
+                    war = no
+                }
+                any_owned = { limit = { is_core = CZH } secede_province = THIS }
+            }
+			all_core = { remove_core = CZH }
+			any_owned = { limit = { is_core = CZH } secede_province = CZH }
+			create_vassal = CZH
+			create_alliance = CZH
+			diplomatic_influence = { who = CZH value = 400 }
+			relation = { who = CZH value = 400 }
+        }
+
+        ai_will_do = { factor = 1 modifier = { factor = 0 badboy = 0.92 } }
+	}
 
     end_of_czechoslovakia_bohemia = {
         picture = form_czechoslovakia
@@ -619,148 +689,6 @@ political_decisions = {
 
         ai_will_do = {
             factor = 1
-        }
-    }
-
-    unite_with_croatia = {
-        picture = gtfo
-        potential = {
-            tag = DLM
-            exists = CRO
-			OR = { ai = yes CRO = { ai = yes } }
-            NOT = { has_country_flag = unite_with_croatia }
-        }
-
-        allow = {
-            OR = {
-                part_of_sphere = no
-                sphere_owner = { is_sphere_leader_of = CRO }
-            }
-            CRO = {
-                war = no
-                neighbour = THIS
-				OR = {
-					is_vassal = no
-					CRO = { overlord = { is_sphere_leader_of = THIS } }
-				}
-            }
-			is_vassal = no
-            war = no
-            NOT = { has_global_flag = sw_set }
-        }
-
-        effect = {
-            set_country_flag = unite_with_croatia
-            all_core = { add_core = CRO }
-            
-            random_country = {
-                limit = {
-					tag = POL
-                    THIS = { ai = yes }
-                }
-                inherit = THIS
-            }
-            random_country = {
-                limit = {
-                    tag = CRO
-					is_vassal = no
-                    THIS = { ai = no }
-                }
-                THIS = {
-					inherit = CRO
-                    random_owned = {
-                        limit = { owner = { owns = 771 } }
-                        owner = { capital = 771 }
-                    }
-                    change_tag = CRO
-                }
-            }
-            random_country = {
-                limit = {
-                    tag = CRO
-                    is_vassal = yes
-                    THIS = { ai = no }
-                }
-                CRO = { 
-					overlord = {
-						create_vassal = THIS
-						create_alliance = THIS
-					}
-				}
-				THIS = {
-					inherit = CRO
-                    random_owned = {
-                        limit = { owner = { owns = 771 } }
-                        owner = { capital = 771 }
-                    }
-                    change_tag = CRO
-                }
-            }
-        }
-
-        ai_will_do = {
-            factor = 1
-            modifier = {
-                factor = 0
-                government = fascist_dictatorship
-                CRO = {
-                    NOT = { government = fascist_dictatorship }
-                }
-            }
-            modifier = {
-                factor = 0
-                NOT = { government = fascist_dictatorship }
-                CRO = { government = fascist_dictatorship }
-            }
-            modifier = {
-                factor = 0
-                government = proletarian_dictatorship
-                CRO = {
-                    NOT = { government = proletarian_dictatorship }
-                }
-            }
-            modifier = {
-                factor = 0
-                NOT = { government = proletarian_dictatorship }
-                CRO = { government = proletarian_dictatorship }
-            }
-            modifier = {
-                factor = 0
-                OR = {
-                    government = democracy
-                    government = hms_government
-                    government = constitutional_empire
-                }
-                CRO = {
-                    NOT = {
-                        government = democracy
-                        government = hms_government
-                        government = constitutional_empire
-                    }
-                }
-            }
-            modifier = {
-                factor = 0
-                CRO = {
-                    OR = {
-                        government = democracy
-                        government = hms_government
-                        government = constitutional_empire
-                    }
-                }
-                NOT = {
-                    government = democracy
-                    government = hms_government
-                    government = constitutional_empire
-                }
-            }
-            modifier = {
-                factor = 0
-                OR = {
-                    government = presidential_dictatorship
-                    government = radical_republic
-                }
-            }
         }
     }
 
@@ -2669,11 +2597,6 @@ political_decisions = {
             }
             release_vassal = YUG
             create_alliance = YUG
-            YUG = { 
-				random_owned = { limit = { owner = { government = absolute_empire } } owner = { government = absolute_monarchy } }
-				random_owned = { limit = { owner = { government = semi_constitutional_empire } } owner = { government = prussian_constitutionalism } }
-				random_owned = { limit = { owner = { government = constitutional_empire } } owner = { government = hms_government } }
-			}
             diplomatic_influence = {
                 who = YUG
                 value = 400
@@ -2693,6 +2616,8 @@ political_decisions = {
                     value = -50
                 }
             }
+            random_owned = { limit = { owner = { NOT = { YUG = { owns = 768 } } } } owner = { country_event = 801076 } }
+            random_owned = { limit = { owner = { YUG = { owns = 768 } } } owner = { country_event = 801077 } }
         }
         ai_will_do = {
             factor = 1
