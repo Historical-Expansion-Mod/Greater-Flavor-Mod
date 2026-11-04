@@ -2,28 +2,47 @@ country_event = {
 	id = 80432207
 	title = "EVTNAME00207"
 	desc = "EVTDESC00207"
-	picture = "spa_anti_slavery"
+	picture = "no_slavery_spain"
 	fire_only_once = yes
 
 	trigger = {
-		owns = 2209
-		slavery = no_slavery
+		has_country_flag = the_slavery_debate
+        war = no
+        OR = {
+            slavery = no_slavery
+            AND = {
+                has_country_flag = cuba_patronage
+                2209 = { owned_by = THIS NOT = { has_province_modifier = patronage } }
+            }
+            AND = {
+                has_country_flag = moret_law
+                OR = {
+                    2209 = { NOT = { owned_by = THIS is_core = THIS } }
+                    2209 = { owned_by = THIS state_scope = { is_slave = no } }
+                }
+            }
+        }
 		OR = {
 			tag = SPC
 			tag = SPA
-			tag = IBR
+			AND = { tag = IBR primary_culture = spanish }
 		}
 	}
 
-	mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { days = 1 }
 
 	option = {
 		name = "EVTOPTA00207"
-		set_country_flag = spain_anti_slavery_tract
+        clr_country_flag = the_slavery_debate
+        prestige = 10
+        random_owned = { limit = { owner = { has_country_modifier = british_sanctions } } owner = { remove_country_modifier = british_sanctions } }
+        random_owned = { limit = { owner = { NOT = { slavery = no_slavery } } } owner = { political_reform = no_slavery } }
 		any_owned = {
-			limit = { OR = { is_core = CUB is_core = PRI } }
-			aristocrats = { militancy = 10 consciousness = 10 }
-			add_province_modifier = { name = local_economic_downturn duration = 7300 }
+			limit = { region = SPA_2209 }
+			aristocrats = { militancy = 5 consciousness = 5 }
+            remove_province_modifier = colonial_exploitation
+            remove_province_modifier = patronage
+			add_province_modifier = { name = local_economic_downturn duration = 1825 }
 		}
 	}
 }
@@ -5099,4 +5118,124 @@ country_event = {
 	}
 
 	mean_time_to_happen = { months = 5 }
+}
+
+country_event = {
+    id = 31752
+    title = "La Sociedad Abolicionista Española"
+    desc = "EVTDESC31752"
+    picture = "treaty"
+
+    fire_only_once = yes
+
+    trigger = {
+        year = 1864
+        month = 11
+        OR = {
+            tag = SPA
+            tag = SPC
+            tag = IBR
+        }
+        NOT = { slavery = no_slavery }
+        2222 = { owned_by = THIS }
+    }
+
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "Let's see how they fair"
+        any_pop = {
+            dominant_issue = { factor = 0.05 value = no_slavery }
+            random_list = {
+                33 = { ideology = { factor = 0.02 value = liberal } }
+                33 = { ideology = { factor = 0.02 value = radical } }
+                33 = { ideology = { factor = 0.02 value = socialist } }
+            }
+        }
+    }
+}
+
+country_event = {
+    id = 31753
+    title = "El Bando Contra la Raza Negra"
+    desc = "EVTDESC31753"
+    picture = "treaty"
+
+    fire_only_once = yes
+
+    trigger = {
+        OR = {
+            tag = SPA
+            tag = SPC
+            tag = IBR
+        }
+        has_global_flag = french_revolution_1848
+        2222 = { owned_by = THIS state_scope = { is_slave = yes } }
+        2228 = {
+            NOT = { owned_by = THIS }
+            owner = {
+                capital_scope = { continent = europe }
+                slavery = no_slavery
+            }
+        }
+    }
+
+    mean_time_to_happen = { months = 2 }
+
+    option = {
+        name = "Hopefully the situation doesn't spiral out of control"
+        2222 = {
+            any_pop = {
+                limit = { has_pop_culture = afro_latino }
+                militancy = 5
+                consciousness = 5
+                ideology = { factor = 0.15 value = radical }
+            }
+            any_pop = {
+                limit = { pop_type = aristocrats }
+                militancy = -10
+                consciousness = -10
+                ideology = { factor = 0.1 value = reactionary }
+            }
+        }
+    }
+}
+
+country_event = {
+    id = 31754
+    title = "Sab"
+    desc = "EVTDESC31754"
+    picture = "treaty"
+
+    fire_only_once = yes
+    
+    trigger = {
+        OR = {
+            tag = SPA
+            tag = SPC
+            tag = IBR
+        }
+        year = 1841
+        487 = { owned_by = THIS }
+        2209 = { owned_by = THIS state_scope = { is_slave = yes } }
+    }
+    
+    mean_time_to_happen = {
+        months = 3
+    }
+
+    option = {
+        name = "treaty"
+        487 = { any_pop = { consciousness = 1.0  ideology = { factor = 0.03 value = liberal } dominant_issue = { factor = 0.02 value = no_slavery } } }
+        any_owned = {
+            limit = { continent = europe }
+            any_pop = {
+                limit = { OR = { has_pop_culture = caribeno has_pop_culture = afro_latino } }
+                militancy = 3
+                consciousness = 3
+                ideology = { factor = 0.05 value = radical }
+                dominant_issue = { factor = 0.10 value = no_slavery }
+            }
+        }
+    }
 }

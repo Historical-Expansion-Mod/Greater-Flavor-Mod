@@ -895,8 +895,7 @@ country_event = {
 		political_reform = wealth_voting
 		clr_country_flag = moca_constitution
 		ruling_party_ideology = reactionary
-		random_country = { limit = { tag = USA is_sphere_leader_of = DOM } add_casus_belli = { target = DOM type = add_to_sphere months = 60 } }
-		USA = { diplomatic_influence = { who = DOM value = -500 } relation = { who = DOM value = -100 } }
+		USA = { diplomatic_influence = { who = DOM value = -500 } relation = { who = DOM value = -50 } }
 		any_pop = { scaled_militancy = { ideology = liberal factor = 4 } scaled_militancy = { ideology = radical factor = 8 } }
 		ai_chance = { factor = 1 }
 	}
@@ -921,7 +920,6 @@ country_event = {
 	
 	option = {
 		name = "Finally! Someone we can rely on!"
-		set_country_flag = ready_for_annexation
 		clr_country_flag = santana_rebuked
 		clr_country_flag = moca_constitution
 		2216 = { add_province_modifier = { name = local_economic_upturn duration = 1825 } }
@@ -942,9 +940,9 @@ country_event = {
 	option = {
 		name = "The start of a profitable partnership!"
 		prestige = 2.5
+		set_country_flag = prefered_partner
 		relation = { who = DOM value = 50 }
-		diplomatic_influence = { who = DOM value = 100 }
-		any_country = { limit = { is_greater_power = yes NOT = { tag = THIS } } diplomatic_influence = { who = DOM value = -50 } }
+		diplomatic_influence = { who = DOM value = 50 }
 		ai_chance = { factor = 1 }
 	}
 }
@@ -966,9 +964,8 @@ country_event = {
 	
 	option = {
 		name = "Our feelings toward Spain remain the same..."
-		set_country_flag = ready_for_annexation
+		clr_country_flag = santana_is_back
 		add_country_modifier = { name = european_military_mission duration = 1000 }
-		random_country = { limit = { OR = { tag = SPA tag = SPC tag = IBR owns = 487 } } relation = { who = DOM value = 50 } country_event = 600300 }
 		ai_chance = { factor = 1 }
 	}
 }
@@ -983,10 +980,33 @@ country_event = {
 	option = {
 		name = "A former colony that likes us? Is that possible?"
 		prestige = 2.5
+		set_country_flag = prefered_partner
 		relation = { who = DOM value = 50 }
-		diplomatic_influence = { who = DOM value = 100 }
-		relation = { who = DOM value = 100 }
+		diplomatic_influence = { who = DOM value = 50 }
 		any_country = { limit = { is_greater_power = yes NOT = { tag = THIS } } diplomatic_influence = { who = DOM value = -75 } relation = { who = DOM value = -100 } }
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600339
+	title = "The Domincan Question" 
+	desc = "EVTDESC600339" 
+	picture = "tobbaco_plantation"
+	fire_only_once = yes
+	
+	mean_time_to_happen = { months = 2 }
+	
+	trigger = {
+		year = 1861
+		OR = { tag = SPA tag = SPC tag = IBR tag = USA }
+		is_vassal = no
+		has_country_flag = prefered_partner
+	}
+	
+	option = {
+		name = "That should put the matter to rest..."
+		DOM = { country_event = 600301 }
 		ai_chance = { factor = 1 }
 	}
 }
@@ -996,37 +1016,23 @@ country_event = {
 	title = "The Plebiscite for Annexation" 
 	desc = "EVTDESC600301" 
 	picture = "tobbaco_plantation"
-	fire_only_once = yes
-	
-	mean_time_to_happen = { months = 2 }
-	
-	trigger = {
-		year = 1861
-		tag = DOM
-		is_vassal = no
-		has_country_flag = ready_for_annexation
-	}
+	is_triggered_only = yes
 	
 	option = {
 		name = "They will be forced to annex us now, or else."
-		clr_country_flag = ready_for_annexation
-		random_owned = { limit = { owner = { has_country_flag = santana_in_power } } owner = { random_country = { limit = { OR = { tag = SPA tag = SPC tag = IBR owns = 487 } } country_event = 600302 } } }
-		random_owned = { limit = { owner = { NOT = { has_country_flag = santana_in_power } } } owner = { USA = { country_event = 600302 } } }
-		ai_chance = { factor = 1 modifier = { factor = 0 part_of_sphere = yes } }
+		FROM = { USA = { country_event = 600302 } }
+		ai_chance = { factor = 1 modifier = { factor = 0 part_of_sphere = yes sphere_owner = { ai = no } } }
 	}
 	
 	option = {
 		name = "We know exactly who to protect us."
-		clr_country_flag = ready_for_annexation
-		random_owned = { limit = { owner = { part_of_sphere = no has_country_flag = santana_in_power } } owner = { random_country = { limit = { OR = { tag = SPA tag = SPC tag = IBR owns = 487 } } country_event = 600302 } } }
-		random_owned = { limit = { owner = { part_of_sphere = no NOT = { has_country_flag = santana_in_power } } } owner = { USA = { country_event = 600302 } } }
+		random_owned = { limit = { owner = { part_of_sphere = no } } owner = { FROM = { country_event = 600302 } } }
 		random_owned = { limit = { owner = { part_of_sphere = yes } } owner = { sphere_owner = { country_event = 600302 } } }
 		ai_chance = { factor = 1 }
 	}
 	
 	option = {
 		name = "Maybe it is time for us to put the protectorate idea to rest..."
-		clr_country_flag = ready_for_annexation
 		any_pop = { limit = { is_primary_culture = yes } consciousness = 1 }
 		ai_chance = { factor = 0 }
 	}
@@ -1068,7 +1074,7 @@ country_event = {
 
 country_event = {
 	id = 600303
-	title = "The $COUNTRY_ADJ$ Annexation of Dominican Republic" 
+	title = "The $FROMCOUNTRY_ADJ$ Annexation of Dominican Republic" 
 	desc = "EVTDESC600303" 
 	picture = "governor_santana"
 	is_triggered_only = yes
@@ -1113,7 +1119,7 @@ country_event = {
 	
 	option = {
 		name = "Annexation was a disaster for both of us"
-		clr_country_flag = ready_for_annexation
+		clr_country_flag = ready_for_restoration
 		overlord = { country_event = 600305 }
 		ai_chance = { factor = 1 }
 	}
