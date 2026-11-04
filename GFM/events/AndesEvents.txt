@@ -9,22 +9,9 @@ country_event = {
     picture = "peru_bolivia"
 
     mean_time_to_happen = { months = 1 }
-
+	
     trigger = {
-	    is_vassal = no
-        tag = PBC
-	    SPU = { exists = no }
-	    PEU = { exists = no }
-	    BOL = { exists = no }
-	    owns = 2295
-	    owns = 2304
-		war = no
-		is_disarmed = no
-		OR = {
-			CHL = { truce_with = THIS }
-			year = 1842
-		}
-		NOT = { year = 1850 }
+	    always = no
     }
 
 	option = {
@@ -173,70 +160,188 @@ country_event = {
 
 country_event = {
     id = 610081
-    title = "The Treaty of La Paz"
+    title = "The 2nd Congress of Tacna?"
     desc = "61008_desc"
     fire_only_once = yes
-    picture = "peru_bolivia"
+    picture = "arica"
     
-    mean_time_to_happen = { months = 1 }
+    mean_time_to_happen = { days = 1 }
     
     trigger = {
         tag = PBC
         year = 1838
         war = no
+		is_our_vassal = PEU
+		is_our_vassal = SPU
 		OR = { truce_with = CHL CHL = { exists = no } CHL = { has_country_flag = peace_with_the_PBC } }
 		is_disarmed = no
         NOT = { has_country_flag = pbc_reunited has_country_flag = the_confederation_is_legitime }
     }
     
     option = {
-        name = "We need more time to recover before we unify the nation."
+        name = "Peru is such a mess. We have no choice but to compromise with Orbegoso."
             set_country_flag = the_confederation_is_legitime
+			plurality = 5
             prestige = -5
-            random_owned = {
-                limit = { owner = { NOT = { has_country_flag = end_of_the_confederation } } }
-                owner = {
-					PEU = { all_core = { add_core = PBC } }
-                	SPU = { all_core = { add_core = PBC } }
-				}
-            }
+			political_reform = confederalism
+			set_country_flag = stay_confederalist
+			PEU = { all_core = { add_core = PBC } country_event = 600340 }
+			SPU = { all_core = { add_core = PBC } country_event = 600341 }
             BOL = { all_core = { add_core = PBC } }
-			ai_chance = { factor = 0 }
+			random_owned = { limit = { owner = { has_country_flag = the_confederation_is_legitime } } owner = { country_event = { id = 600342 days = 15 } } }
+			ai_chance = { factor = 3 }
     }
     
     option = {
-        name = "It's time to centralize our nation!"
+        name = "Santa Cruz can't trust Orbegoso after his betrayal. It is time to pacify Peru."
         set_country_flag = pbc_united
+		set_country_flag = the_confederation_is_legitime
         prestige = 5
-        random_owned = {
-            limit = { owner = { NOT = { has_country_flag = end_of_the_confederation } } }
-            owner = {
-				PEU = { all_core = { add_core = PBC } }
-                SPU = { all_core = { add_core = PBC remove_core = SPU } }
-			}
-        }
+		political_reform = unitary
+		PEU = { all_core = { add_core = PBC } country_event = 600344 }
+		SPU = { all_core = { add_core = PBC } country_event = 600344 }
         BOL = { all_core = { add_core = PBC } }
-        any_country = {
-            limit = {
-                OR = {
-                	tag = SPU
-                	tag = PEU
-                	tag = BOL
-                }
-                primary_culture = south_andean
-                OR = {
-                	in_sphere = PBC
-                	vassal_of = PBC
-				}
-            }
-            annex_to = PBC
-        }
-        random_country = {
-            limit = { tag = SPU exists = no }
-            SPU = { all_core = { remove_core = SPU } }
-        }
 		ai_chance = { factor = 1 }
     }
+}
+
+country_event = {
+    id = 600340
+    title = "The 2nd Congress of Tacna"
+    desc = "EVTDESC600340"
+    is_triggered_only = yes
+    picture = "arica"
+    
+    option = {
+        name = "A little piece of quid pro quo..."
+        plurality = 5
+		prestige = 5
+		any_pop = { militancy = -4 consciousness = 2 }
+		ai_chance = { factor = 1 }
+    }
+
+}
+
+country_event = {
+    id = 600341
+    title = "The 2nd Congress of Tacna"
+    desc = "EVTDESC600341"
+    is_triggered_only = yes
+    picture = "arica"
+	major = yes
+    
+    option = {
+        name = "A little piece of quid pro quo..."
+        plurality = 5
+		prestige = 5
+		any_pop = { militancy = -4 consciousness = 2 }
+		ai_chance = { factor = 1 }
+    }
+
+}
+
+country_event = {
+    id = 600342
+    title = "The Bolivian Opposition"
+    desc = "EVTDESC600342"
+    is_triggered_only = yes
+    picture = "arica"
+    
+    option = {
+        name = "A set of reforms is necessary to placate the Bolivians..."
+        plurality = 5
+		prestige = -5
+		any_pop = { militancy = -4 consciousness = 2 }
+		nationalvalue = nv_equality
+		government = democracy
+        random_owned = { limit = { owner = { vote_franschise = none_voting } } owner = { political_reform = landed_voting } }
+		political_reform = no_slavery
+		political_reform = population_equal_weight
+		political_reform = yes_meeting
+		political_reform = free_press
+        random_owned = { limit = { owner = { trade_unions = no_trade_unions } } owner = { political_reform = state_controlled } }
+        random_owned = { limit = { owner = { OR = { political_parties = underground_parties political_parties = harassment } } } owner = { political_reform = gerrymandering } }
+		add_country_modifier = { name = small_immigration_boom duration = 1825 }
+        add_country_modifier = { name = national_confusion duration = 365 }
+		ai_chance = { factor = 1 }
+    }
+    
+    option = {
+        name = "The Supreme Leader won't be intimidated!"
+        plurality = -5
+		prestige = -5
+		any_pop = { militancy = 4 consciousness = 2 }
+		set_country_flag = hide_tooltip
+		random_owned = { limit = { owner = { has_country_flag = hide_tooltip } } owner = { country_event = { id = 600343 days = 30 } } }
+		clr_country_flag = hide_tooltip
+		ai_chance = { factor = 0 }
+    }
+
+}
+
+country_event = {
+    id = 600343
+    title = "Bolivia Revolts!"
+    desc = "EVTDESC600343"
+    is_triggered_only = yes
+    picture = "rosistas"
+    
+    option = {
+        name = "To hell! We will crush the Bolivian rebels!"
+		prestige = -5
+		any_owned = { limit = { NOT = { province_id = 2130 province_id = 4006 province_id = 4091 province_id = 2293 province_id = 2319 } } secede_province = BOL }
+		war = {
+            target = BOL
+            attacker_goal = { casus_belli = conquest_any }
+        	defender_goal = { casus_belli = conquest_any }
+        }
+
+		ai_chance = { factor = 1 }
+    }
+    
+    option = {
+        name = "Santa Cruz isn't fit to rule Bolivia! §BPlay as Bolivia§!"
+		prestige = -5
+		any_owned = { limit = { NOT = { province_id = 2130 province_id = 4006 province_id = 4091 province_id = 2293 province_id = 2319 } } secede_province = BOL }
+		war = {
+            target = BOL
+            attacker_goal = { casus_belli = conquest_any }
+        	defender_goal = { casus_belli = conquest_any }
+        }
+		change_tag_no_core_switch = BOL
+		ai_chance = { factor = 1 }
+    }
+
+}
+
+country_event = {
+    id = 600344
+    title = "The Pacification Campaign"
+    desc = "EVTDESC600344"
+    is_triggered_only = yes
+    picture = "rosistas"
+    
+    option = {
+        name = "We won't go down without a fight!"
+		prestige = 5
+        FROM = {
+			war = {
+				target = THIS
+				attacker_goal = { casus_belli = conquest_any }
+				defender_goal = { casus_belli = status_quo }
+			}
+		}
+		any_pop = { militancy = -4 consciousness = 2 }
+		ai_chance = { factor = 1 modifier = { factor = 0 tag = SPU } }
+    }
+    
+    option = {
+        name = "We have no chance..."
+		any_pop = { militancy = 4 consciousness = 2 }
+		annex_to = PBC
+		ai_chance = { factor = 1 modifier = { factor = 0 tag = PEU } }
+    }
+
 }
 
 # GCO events
