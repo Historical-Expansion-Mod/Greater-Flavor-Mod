@@ -279,7 +279,7 @@ political_decisions = {
                 limit = {
                     NOT = { strata = rich } 
                 }
-                ideology = { factor = 0.1 value = communist } 
+                ideology = { factor = 0.25 value = communist } 
             }
             any_pop = {
                 limit = {
@@ -310,6 +310,10 @@ political_decisions = {
     
         effect = {
             add_country_modifier = { name = rabfaks_created duration = -1 }
+            any_pop = {
+                limit = { NOT = { literacy = 0.5 } }
+                ideology = { factor = 0.2 value = communist }
+            }
         }
     
         ai_will_do = {
@@ -333,6 +337,10 @@ political_decisions = {
     
         effect = {
             add_country_modifier = { name = state_grain_monopoly duration = -1 }
+            any_pop = {
+                limit = { NOT = { strata = rich } }
+                ideology = { factor = 0.1 value = communist }
+            }
         }
     
         ai_will_do = {
@@ -355,6 +363,10 @@ political_decisions = {
     
         effect = {
             add_country_modifier = { name = peoples_bank duration = -1 }
+            any_pop = {
+                limit = { NOT = { strata = rich } }
+                ideology = { factor = 0.05 value = communist }
+            }
         }
     
         ai_will_do = {
@@ -362,12 +374,12 @@ political_decisions = {
         }
     }
 
-    establish_correctional_labor_camps = {
-        picture = establish_correctional_labor_camps
+    establish_corrective_labor_camps = {
+        picture = establish_corrective_labor_camps
     
         potential = { 
             government = proletarian_dictatorship
-            NOT = { has_country_modifier = correctional_labor_camps }
+            NOT = { has_country_modifier = corrective_labor_camps }
         }
     
         allow = {
@@ -376,13 +388,105 @@ political_decisions = {
         }
     
         effect = {
-            add_country_modifier = { name = correctional_labor_camps duration = -1 }
+            add_country_modifier = { name = corrective_labor_camps duration = -1 }
         }
     
         ai_will_do = {
             factor = 1
         }
     }
+
+    decree_on_land = {
+        picture = decree_on_land
+    
+        potential = { 
+            government = proletarian_dictatorship
+            NOT = { has_country_flag = decree_on_land }
+        }
+    
+        allow = {
+            revolution_n_counterrevolution = 1
+        }
+    
+        effect = {
+            add_country_modifier = { name = smallholders_dominant duration = -1 } # could later link to collectivization
+            any_pop = {
+                limit = {
+                    OR = {
+                        type = serfs
+                        type = slaves
+                    }
+                }
+                pop_type = farmers
+            }
+            any_pop = {
+                limit = { type = farmers }
+                militancy = -5
+                ideology = { factor = 0.5 value = communist }
+            }
+        }
+    
+        ai_will_do = {
+            factor = 1
+        }
+    }
+
+    decree_eight_hour_workday = {
+        picture = decree_eight_hour_workday
+    
+        potential = { 
+            government = proletarian_dictatorship
+            NOT = { work_hours = eight_hours }
+        }
+    
+        allow = {
+            revolution_n_counterrevolution = 1
+        }
+    
+        effect = {
+            social_reform = eight_hours
+            any_pop = {
+                limit = {
+                    OR = {
+                        type = craftsmen
+                        type = clerks
+                        type = bureaucrats
+                    }
+                }
+                militancy = -3
+                ideology = { factor = 0.25 value = communist }
+            }
+        }
+    
+        ai_will_do = {
+            factor = 1
+        }
+    }
+
+    decree_seven_hour_workday = {
+        picture = decree_eight_hour_workday
+    
+        potential = { 
+            government = proletarian_dictatorship
+            work_hours = eight_hours
+            NOT = { has_country_modifier = seven_hour_workday }
+        }
+    
+        allow = {
+            revolution_n_counterrevolution = 1
+            check_variable = { which = number_five_year_plans value = 1.99 }
+        }
+    
+        effect = {
+            add_country_modifier = { name = seven_hour_workday duration = -1 }
+        }
+    
+        ai_will_do = {
+            factor = 1
+        }
+    }
+
+    # add safety standards, pensions, education, healthcare
 
     the_fascist_terror = {
         picture = the_red_terror
@@ -577,6 +681,7 @@ political_decisions = {
                 government = hms_government
                 government = constitutional_empire
                 government = democracy
+                government = proletarian_dictatorship
             }
             NOT = { slavery = no_slavery }
             NOT = { any_pop = { type = slaves } }
@@ -601,6 +706,10 @@ political_decisions = {
 
         effect = {
             political_reform = no_slavery
+            scaled_militancy = {
+                ideology = communist
+                factor = -1
+            }
             scaled_militancy = {
                 ideology = socialist
                 factor = -1
@@ -1132,26 +1241,46 @@ political_decisions = {
 
         ai_will_do = { factor = 1 }
     }
-    five_year_plan = {
+    first_five_year_plan = {
         picture = five_year_plan
         potential = {
             government = proletarian_dictatorship
             NOT = { has_country_modifier = five_year_plan }
-            NOT = { has_country_flag = five_year_plan }
+            has_country_modifier = peoples_bank
         }
 
         allow = {
             government = proletarian_dictatorship
 			ruling_party_ideology = communist
             state_n_government = 1
-            war = no
-            NOT = { ruling_party_ideology = socialist }
         }
 
         effect = {
             prestige = 5
             add_country_modifier = { name = five_year_plan duration = 1825 }
-            set_country_flag = five_year_plan
+            set_variable = { which = number_five_year_plans value = 1 }
+        }
+        ai_will_do = { factor = 1 }
+    }
+
+    five_year_plan = {
+        picture = five_year_plan
+        potential = {
+            government = proletarian_dictatorship
+            NOT = { has_country_modifier = five_year_plan }
+            has_country_modifier = peoples_bank
+        }
+
+        allow = {
+            government = proletarian_dictatorship
+			ruling_party_ideology = communist
+            state_n_government = 1
+        }
+
+        effect = {
+            prestige = 5
+            add_country_modifier = { name = five_year_plan duration = 1825 }
+            change_variable = { which = number_five_year_plans value = 1 }
         }
         ai_will_do = { factor = 1 }
     }
