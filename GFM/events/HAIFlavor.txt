@@ -44,7 +44,7 @@ country_event = {
     id = 45101
     title = "EVTNAME45101"
     desc = "EVTDESC45101"
-    picture = "monarchy"
+    picture = "soulouque_coronation"
 
     fire_only_once = yes
 
@@ -78,18 +78,8 @@ country_event = {
 	option = {
 		name = "NO! The republic must stand! The military of Haiti will defend our constitution."
 		set_country_flag = faustin
-		any_pop = {
-			limit = {
-				pop_majority_ideology = reactionary
-			}
-			militancy = 9
-		}
-		any_pop = {
-			limit = {
-				pop_majority_ideology = liberal
-			}
-			militancy = -2
-		}
+		any_pop = { limit = { pop_majority_ideology = reactionary } militancy = 9 }
+		any_pop = { limit = { pop_majority_ideology = liberal } militancy = -2 }
 		ai_chance = { factor = 0 }
 	}
 
@@ -119,21 +109,8 @@ country_event = {
 
     option = {
         name = "EVT45102OPTA"
-        any_pop = {
-            limit = {
-                location = { is_core = DOM }
-                has_pop_culture = caribeno
-            }
-            militancy = 5
-            consciousness = 5
-        }
-        any_owned = {
-            limit = { is_core = DOM }
-            add_province_modifier = {
-                name = nationalist_agitation
-                duration = 2190
-            }
-        }
+        any_pop = { limit = { location = { is_core = DOM } has_pop_culture = caribeno } militancy = 5 consciousness = 5 }
+        any_owned = { limit = { is_core = DOM } add_province_modifier = { name = nationalist_agitation duration = 2190 } }
     }
 }
 
@@ -1048,6 +1025,7 @@ country_event = {
 	option = {
 		name = "Accepting is the obvious option..."
 		prestige = 5
+		set_country_flag = dominican_overlord
 		create_vassal = DOM
 		create_alliance = DOM
 		relation = { who = DOM value = 400 }
@@ -1102,6 +1080,137 @@ country_event = {
 }
 
 country_event = {
+	id = 600362
+	title = "An Economy in Ruins" 
+	desc = "EVTDESC600362"
+	picture = "dominican_village"
+	fire_only_once = yes
+	
+	mean_time_to_happen = { months = 2 }
+	
+	trigger = {
+		year = 1861
+		has_country_flag = dominican_overlord
+		is_our_vassal = DOM
+	}
+	
+	option = {
+		name = "A bailout is necessary if we want them to be useful. §R(Pay 50,000¤)§W"
+		random_owned = { limit = { owner = { ai = no } } owner = { treasury = -50000 } }
+		random_owned = { limit = { owner = { ai = yes } } owner = { set_variable = { which = owed_cash_money value = 500 } } }
+		DOM = { country_event = 600363 }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Let their economy bleed."
+		prestige = -5
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 600363
+	title = "A Bailout from $FROMCOUNTRY$" 
+	desc = "EVTDESC600363"
+	picture = "dominican_village"
+	is_triggered_only = yes
+	
+	option = {
+		name = "What a relief..."
+		treasury = 50000
+		any_owned = { limit = { is_core = THIS } add_province_modifier = { name = local_economic_upturn duration = 365 } }
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = 600364
+	title = "A Prelude to Trouble" 
+	desc = "EVTDESC600364"
+	picture = "funeral_sanchez"
+	fire_only_once = yes
+	
+	mean_time_to_happen = { days = 1 }
+	
+	trigger = {
+		year = 1862
+		tag = DOM
+		has_country_flag = ready_for_restoration
+	}
+	
+	option = {
+		name = "Dissidents like Rodríguez will begin preparations to liberate the Republic..."
+		clr_country_flag = ready_for_restoration
+		any_pop = { limit = { has_pop_culture = caribeno } militancy = 2 consciousness = 2}
+		set_country_flag = restoration_can_begin
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "We will bide our time. Dismiss Haitian support on the matter..."
+		clr_country_flag = ready_for_restoration
+		any_pop = { limit = { has_pop_culture = caribeno } militancy = 2 consciousness = 2}
+		set_country_flag = grito_de_moca
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 600365
+	title = "The Catholic Church in Santo Domingo" 
+	desc = "EVTDESC600365"
+	picture = "archbishop_bienvenido"
+	fire_only_once = yes
+	
+	mean_time_to_happen = { days = 4 }
+	
+	trigger = {
+		year = 1862
+		has_country_flag = dominican_overlord
+		has_country_flag = catholic_country
+		is_our_vassal = DOM
+		month = 3
+	}
+	
+	option = {
+		name = "Pull a few strings so we can get a new archbishop in Santo Domingo."
+		any_pop = { dominant_issue = { value = moralism factor = 0.05 } scaled_militancy = { issue = moralism factor = -2 } scaled_consciousness = { issue = moralism factor = -2 } }
+		DOM = { country_event = 600366 }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "We shouldn't use the Holy Church for our own ends."
+		prestige = -5
+		any_pop = { scaled_consciousness = { issue = moralism factor = 2 } }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 600366
+	title = "The Catholic Church in Santo Domingo" 
+	desc = "EVTDESC600366"
+	picture = "archbishop_bienvenido"
+	is_triggered_only = yes
+	
+	option = {
+		name = "Pull a few strings so we can get a new archbishop in Santo Domingo."
+		any_pop = { dominant_issue = { value = moralism factor = 0.05 } scaled_militancy = { issue = moralism factor = -2 } scaled_consciousness = { issue = moralism factor = -2 } }
+		DOM = { country_event = 600366 }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "We shouldn't use the Holy Church for our own ends."
+		prestige = -5
+		any_pop = { scaled_consciousness = { issue = moralism factor = 2 } }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
 	id = 600304
 	title = "The Dominican Restoration War" 
 	desc = "EVTDESC600304" #Temporary loc
@@ -1114,12 +1223,12 @@ country_event = {
 		year = 1865
 		tag = DOM
 		is_vassal = yes
-		has_country_flag = ready_for_restoration
+		has_country_flag = restoration_can_begin
 	}
 	
 	option = {
 		name = "Annexation was a disaster for both of us"
-		clr_country_flag = ready_for_restoration
+		clr_country_flag = restoration_can_begin
 		overlord = { country_event = 600305 }
 		ai_chance = { factor = 1 }
 	}
