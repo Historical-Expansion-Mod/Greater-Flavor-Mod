@@ -24,3 +24,204 @@ country_event = {
         name = "§BWe will have to decide soon...§W"
     }
 }
+
+#-----NEW RECONQUISTA START CHAIN, also known as the Spanish-Haitian war----- Made by Wobboppler
+
+#Starting event for Spain, player can start the war
+country_event = {
+    id = 999881
+    title = "Don Felipe De Castro Returns from Haiti"
+    desc = "DECASTRORETURNS"
+    picture = "mission_of_the_vixen"
+    fire_only_once = yes
+	
+	trigger = {
+		tag = SPA
+		year = 1830
+		month = 1
+		NOT = { year = 1831 }
+		2214 = { owned_by = HAI }
+		NOT = { war_with = HAI }
+	}
+	
+	mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "Such an insult can't go unpunished §RGain 5 infamy§W"
+		set_country_flag = hai_spa_war
+		badboy = 5
+		HAI = { add_country_modifier = { name = fanatic_army duration = 3650 } }
+		war = {
+			target = HAI
+			attacker_goal = { casus_belli = acquire_any_state state_province_id = 2214 }
+			defender_goal = { casus_belli = status_quo }
+		}
+		
+		ai_chance = { factor = 0 }
+    }
+	
+	option = {
+		name = "Santo Domingo isn't really important to us"
+		HAI = { country_event = { id = 999882 days = 5 } }
+		
+		ai_chance = { factor = 1 }
+	}
+}
+
+#Haiti gets notified if Spain declines
+country_event = {
+    id = 999882
+    title = "A Meeting With the Spaniards"
+    desc = "HAITISPAINNOWAR"
+    picture = "haitian_spanish_meeting"
+	is_triggered_only = yes
+
+    option = {
+        name = "One and Indivisible!"
+		prestige = 5
+		any_pop = {
+			limit = { OR = { has_pop_culture = caribeno has_pop_culture = afro_latino } }
+			consciousness = 1
+		}
+    }
+}
+
+#SPANISH VICTORY - Victory event for Spain, player can start third reconquista or not. Gets cores on DOM regardless
+country_event = {
+    id = 999883
+    title = "A Third Reconquista"
+    desc = "THIRDRECONQUISTA"
+    picture = "reconquista_ok"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = SPA
+		has_country_flag = hai_spa_war
+		owns = 2214
+		truce_with = HAI
+		NOT = { has_global_flag = fernando_died }
+	}
+	
+	mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "Spain will rise once again §BStart Reconquista§W"
+		set_country_flag = cored_hispaniola_sp
+		set_country_flag = only_one_reconquista
+		any_owned = {
+			limit = { is_core = DOM }
+			secede_province = UTI
+		}
+		UTI = {
+			any_owned = {
+				limit = { is_core = DOM }
+				secede_province = SPA add_core = SPA
+				add_province_modifier = { name = baby_boom duration = 3650 }
+				state_scope = { is_slave = yes }
+			}
+		}
+        any_country = {
+            limit = {
+                OR = {
+                    capital_scope = { continent = south_america }
+                    capital_scope = { continent = north_america }
+                }
+                NOT = {
+                    tag = USA
+                    tag = BRZ
+                    tag = USS
+					tag = HAI
+                }
+            }
+            country_event = { id = 99988 days = 15 }
+        }
+		set_global_flag = reconquista
+		country_event = 999880
+		HAI = { country_event = 999884 }
+		
+		ai_chance = { factor = 0 }
+    }
+	
+	option = {
+		name = "Let's not get too high on our victory §GLose 2 infamy§W"
+		set_country_flag = cored_hispaniola_sp
+		badboy = -2
+		any_owned = {
+			limit = { is_core = DOM }
+			secede_province = UTI
+		}
+		UTI = {
+			any_owned = {
+				limit = { is_core = DOM }
+				secede_province = SPA add_core = SPA
+				add_province_modifier = { name = baby_boom duration = 3650 }
+				state_scope = { is_slave = yes }
+			}
+		}
+		HAI = { country_event = 999884 }
+		
+		ai_chance = { factor = 1 }
+	}
+}
+
+#SPANISH VICTORY - Loss event for Haiti, removes cores on DOM (I'm still doubting if it should remove the core on Hincha)
+country_event = {
+    id = 999884
+    title = "The Loss of Eastern Side"
+    desc = "HAITILOSSSPAIN"
+    picture = "annexation_santo_domingo"
+	is_triggered_only = yes
+
+    option = {
+        name = "What a catastrophe for our young nation"
+		prestige = -5
+		any_land_province = {
+			limit = { is_core = DOM }
+			remove_core = HAI
+		}
+        any_pop = { consciousness = 3 }
+    }
+}
+
+#HAITIAN VICTORY - Victory Event for Haiti
+country_event = {
+    id = 999885
+    title = "Victory Against the Spanish Threat"
+    desc = "HAITIVICTORYSPAIN"
+    picture = "haitian_spanish_meeting"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = HAI
+		SPA = { has_country_flag = hai_spa_war }
+		owns = 2214
+		truce_with = SPA
+		NOT = { has_global_flag = fernando_died }
+	}
+	
+	mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "Another colonizer crumbles against us"
+		prestige = 15
+		SPA = { country_event = 999886 }
+    }
+}
+
+#HAITIAN VICTORY - Loss event for Spain
+country_event = {
+    id = 999886
+    title = "The End of Our Ambitions"
+    desc = "SPAINLOSSHAITI"
+    picture = "nunez_de_caceres"
+	is_triggered_only = yes
+	
+    option = {
+        name = "We have to embrace the sad reality"
+		prestige = -10
+        any_pop = {
+            limit = { is_accepted_culture = yes }
+            consciousness = 2
+        }
+    }
+}
