@@ -234,7 +234,7 @@ country_event = {
     mean_time_to_happen = { days = 1 }
 
     option = {
-        name = "¡La monarquía es invencible!"
+        name = "Como dijimos, ¡La monarquía es invencible!"
         set_country_flag = 1868_rev_fail
         prestige = 5
         512 = { add_province_modifier = { name = war_torn duration = 730 } any_pop = { militancy = 5 consciousness = 5 } }
@@ -612,7 +612,135 @@ country_event = {
     }
 }
 
-#Comes after the constitution
+#Candidacy of Fernando de Coburgo (father of the Portuguse king)
+country_event = {
+    id = 46872845
+    title = "The Progressive Candidate"
+    desc = "PROGRESSIVECANDIDATE"
+    picture = "spa_progressive_candidate"
+    fire_only_once = yes
+
+    trigger = {
+        tag = SPA
+		has_country_flag = spa_1869_constitution
+		year = 1869
+		month = 5
+		government = prov_gov_liberal
+        has_global_flag = por_liberal_victory
+        474 = { NOT = { owned_by = POR } }
+        477 = { NOT = { owned_by = POR } }
+        484 = { NOT = { owned_by = POR } }
+        512 = { NOT = { owned_by = POR } }
+        518 = { NOT = { owned_by = SPA } }
+        521 = { NOT = { owned_by = SPA } }
+        525 = { NOT = { owned_by = SPA } }
+        POR = { exists = yes OR = { government = prussian_constitutionalism government = semi_constitutional_empire government = hms_government government = constitutional_empire } }
+    }
+
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "Ask him. For a United Iberia! §RMay lead to 5 infamy§W"
+        any_owned = {
+            limit = { is_core = THIS continent = europe }
+            any_pop = {
+                scaled_militancy = { ideology = conservative factor = 1 }
+                scaled_consciousness = { ideology = conservative factor = 2 }
+                scaled_militancy = { ideology = radical factor = 1 }
+                scaled_consciousness = { ideology = radical factor = 2 }
+            }
+        }
+        POR = { country_event = { id = 46872846 days = 15 } }
+        ai_chance = { factor = 99 modifier = { factor = 0 NOT = { in_sphere = POR } } }
+    }
+    
+    option = {
+        name = "It's worthless, he will never accept"
+        ai_chance = { factor = 1 }
+    }
+}
+
+country_event = {
+    id = 46872846
+    title = "The Spanish Throne"
+    desc = "SPANISHTHRONE"
+    picture = "iberia_map"
+    is_triggered_only = yes
+
+    option = {
+        name = "My future and that of Portugal's are with Spain"
+        set_global_flag = king_fernando_rules
+        any_owned = {
+            limit = { is_core = THIS }
+            any_pop = {
+                scaled_militancy = { ideology = reactionary factor = 2 }
+                scaled_consciousness = { ideology = reactionary factor = 4 }
+                scaled_militancy = { ideology = conservative factor = 2 }
+                scaled_consciousness = { ideology = conservative factor = 4 }
+                scaled_militancy = { ideology = liberal factor = 1 }
+                scaled_consciousness = { ideology = liberal factor = 2 }
+            }
+        }
+        relation = { who = FROM value = 200 }
+        FROM = { country_event = { id = 46872847 days = 15 } }
+        ai_chance = { factor = 99 modifier = { factor = 0 NOT = { in_sphere = SPA } } }
+    }
+
+    option = {
+        name = "Portugal does not wish to be a Spanish puppet"
+        relation = { who = FROM value = -15 }
+        FROM = { country_event = { id = 46872848 days = 15 } }
+        ai_chance = { factor = 1 }
+    }
+}
+
+country_event = {
+    id = 46872847
+    title = "Fernando VIII of Spain"
+    desc = "FERNANDOVIII"
+    picture = "dom_fernando"
+    is_triggered_only = yes
+
+    option = {
+        name = "May his reign bring greatness upon our nation §RGain 5 infamy§W"
+        set_country_flag = spanish_monarch_chosen
+        badboy = 5
+        prestige = 10
+        ruling_party_ideology = liberal
+        add_country_modifier = { name = national_instability duration = 1460 }
+        relation = {  who = POR value = 200 }
+        create_alliance = POR
+        random_owned = {
+            limit = { owner = { is_greater_power = yes } }
+            owner = { diplomatic_influence = { who = POR value = 600 } }
+        }
+        any_owned = {
+            limit = { is_core = THIS continent = europe }
+            any_pop = {
+                scaled_consciousness = { ideology = reactionary factor = 4 }
+                scaled_consciousness = { ideology = conservative factor = 2 }
+                scaled_consciousness = { ideology = liberal factor = -2 }
+                scaled_consciousness = { ideology = radical factor = 2 }
+            }
+        }
+    }
+}
+
+country_event = {
+    id = 46872848
+    title = "Fernando Rejects the Offer"
+    desc = "FERNANDOREJECTS"
+    picture = "dom_fernando_rejects"
+    is_triggered_only = yes
+
+    option = {
+        name = "Another monarch will be then"
+        prestige = -5
+        relation = { who = POR value = -15 }
+    }
+}
+
+#Choosing a king if Fernando rejects or isn't chosen
 country_event = {
     id = 46872844
     title = "Selecting a Monarch" #Spain chooses king
@@ -627,6 +755,7 @@ country_event = {
 		year = 1870
 		month = 11
 		government = prov_gov_liberal
+        NOT = { has_country_flag = spanish_monarch_chosen }
     }
 
     immediate = { set_country_flag = spanish_monarch_chosen }
@@ -1644,6 +1773,94 @@ country_event = {
     }
 }
 
+#Fernando is couped by Pavia
+country_event = {
+    id = 37737
+    title = "The Coup Against Fernando"
+    desc = "PAVIAVSFERNANDO"
+	major = yes
+    picture = "coup_pavia_1874"
+    fire_only_once = yes
+
+    trigger = {
+        tag = SPA
+        has_global_flag = king_fernando_rules
+		year = 1873
+        government = prov_gov_liberal
+		month = 2
+    }
+
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "Fernando complies and runs back to Portugal"
+        clr_global_flag = king_fernando_rules
+		set_country_flag = pavia_coup
+		political_reform = regionalism
+		set_country_flag = stay_regionalist
+		clr_country_flag = stay_federalist
+		remove_accepted_culture = catalan
+		remove_accepted_culture = basque
+		remove_accepted_culture = galician
+        random_owned = {
+            limit = { owner = { CLN = { has_country_flag = global_mc_setup_complete } } }
+            owner = { country_event = 8365937 }
+        }
+        add_country_modifier = {
+            name = national_confusion
+            duration = 730
+        }
+        remove_country_modifier = national_instability
+        ruling_party_ideology = conservative
+		government = presidential_dictatorship
+		political_reform = non_socialist
+		political_reform = no_meeting
+		political_reform = censored_press
+		political_reform = none_voting
+		political_reform = party_appointed
+		political_reform = first_past_the_post
+		political_reform = harassment
+        any_pop = {
+            scaled_militancy = { ideology = conservative factor = -6 }
+            scaled_consciousness = { ideology = conservative factor = -6 }
+            scaled_militancy = { ideology = liberal factor = 4 }
+            scaled_consciousness = { ideology = liberal factor = 4 }
+            scaled_militancy = { ideology = radical factor = 2 }
+        }
+        #POR = { country_event = { } }
+		ai_chance = { factor = 1 }
+    }
+
+    option = {
+        name = "The king will push back with his loyal troops"
+        add_country_modifier = {
+            name = national_confusion
+            duration = 790
+        }
+		any_owned = {
+			limit = { is_core = SPA continent = europe }
+			add_province_modifier = { name = peasant_revolt duration = 365 }
+		}
+        any_pop = {
+            scaled_militancy = {
+                ideology = reactionary
+                factor = 10
+            }
+            scaled_militancy = {
+                ideology = conservative
+                factor = 8
+            }
+            scaled_militancy = {
+                ideology = liberal
+                factor = 2
+            }
+        }
+		ai_chance = { factor = 0 }
+    }
+}
+
+
+
 country_event = {
     id = 18482339
     title = "The Proclamation of the Catalan State"
@@ -1802,7 +2019,10 @@ country_event = {
 		remove_accepted_culture = catalan
 		remove_accepted_culture = basque
 		remove_accepted_culture = galician
-		country_event = 8365937
+		random_owned = {
+            limit = { owner = { CLN = { has_country_flag = global_mc_setup_complete } } }
+            owner = { country_event = 8365937 }
+        }
         add_country_modifier = {
             name = national_confusion
             duration = 365
