@@ -78,7 +78,7 @@ country_event = {
             scaled_militancy = { ideology = reactionary factor = -5 }
             scaled_consciousness = { ideology = reactionary factor = -5 }
 		}
-        ai_chance = { factor = 8 modifier = { factor = 98 in_sphere = POR } }
+        ai_chance = { factor = 8 modifier = { factor = 99 in_sphere = POR } }
     }
     
     option = {
@@ -640,7 +640,7 @@ country_event = {
     mean_time_to_happen = { days = 1 }
 
     option = {
-        name = "Ask him. For a United Iberia! §RMay lead to 5 infamy§W"
+        name = "Ask him. For a United Iberia! §RMay lead to gaining 5 infamy§W"
         any_owned = {
             limit = { is_core = THIS continent = europe }
             any_pop = {
@@ -1832,10 +1832,10 @@ country_event = {
     }
 
     option = {
-        name = "The king will push back with his loyal troops"
+        name = "The king pushes back with his loyal troops"
         add_country_modifier = {
-            name = national_confusion
-            duration = 790
+            name = national_instability
+            duration = 1095
         }
 		any_owned = {
 			limit = { is_core = SPA continent = europe }
@@ -1858,8 +1858,6 @@ country_event = {
 		ai_chance = { factor = 0 }
     }
 }
-
-
 
 country_event = {
     id = 18482339
@@ -2158,6 +2156,7 @@ country_event = {
 		tag = SPA
 		year = 1885
 		month = 11
+        has_country_flag = king_alfonso_rules
 		OR = {
 			government = absolute_monarchy
 			government = prussian_constitutionalism
@@ -2177,3 +2176,177 @@ country_event = {
 		}
 	}
 }
+
+#------TREATY OF FUSION EVENTS (Spanish Fernandine Iberia Events)------
+
+#Portugal gets notified of the treaty
+country_event = {
+    id = 37738
+    title = "The Treaty of Fusion"
+    desc = "TREATYOFFUSION"
+    picture = "spa_progressive_candidate"
+    is_triggered_only = yes
+
+    option = {
+        name = "Go with our king's proposal" #Proposes a harsher treaty for Spain
+        SPA = { country_event = { id = 46872849 days = 10 } }
+        ai_chance = { factor = 1 }
+    }
+
+    option = {
+        name = "The concessions they offer are more than enough" #Accepts the treaty as it is (AI will never do)
+        prestige = -20
+        any_pop = {
+            limit = { location = { is_core = POR continent = europe } }
+            militancy = 5
+            consciousness = 5
+        }
+        SPA = { country_event = { id = 46872850 days = 10 } }
+        ai_chance = { factor = 0 }
+    }
+}
+
+#Spain recieves the news of the Portuguese counteroffer
+country_event = {
+    id = 46872849
+    title = "The Portuguese Demands"
+    desc = "PORTUGALDEMANDSTOF"
+    picture = ""
+    is_triggered_only = yes
+
+    option = {
+        name = "A hard pill to swallow, but necessary to do" #Accept the offer (leads to CONFEDERATIONAL IBERIA)
+        set_country_flag = harsh_fusion_treaty
+        prestige = -20
+        any_pop = {
+            limit = { location = { is_core = SPA continent = europe } }
+            scaled_militancy = { ideology = conservative factor = 5 }
+            scaled_consciousness = { ideology = conservative factor = 5 }
+            scaled_militancy = { ideology = reactionary factor = 2 }
+            scaled_consciousness = { ideology = reactionary factor = 2 }
+        }
+        any_pop = {
+            limit = { is_accepted_culture = yes NOT = { is_culture = spanish } location = { is_core = SPA continent = europe } }
+            militancy = -8
+            consciousness = -8
+        }
+        POR = { country_event = { id = 46872851 days = 10 } }
+        ai_chance = { factor = 1 }
+    }
+
+    option = {
+        name = "This would be a humilliation to our great country" #Rejects the offer
+        POR = { country_event = { id = 46872852 days = 10 } }
+        ai_chance = { factor = 1 }
+    }
+}
+
+#Spain gets notified if Portugal accepts the original treaty
+country_event = {
+    id = 46872850
+    title = "Portugal Agrees To The Treaty"
+    desc = "PORTUGALAGREESTOF"
+    picture = ""
+    is_triggered_only = yes
+
+    option = {
+        name = "It's all set in stone"
+        set_country_flag = fusion_treaty_done
+        prestige = 10
+    }
+}
+
+#Portugal gets notified if Spain accepts their harsher countertreaty
+country_event = {
+    id = 46872851
+    title = "Spain Agrees"
+    desc = "SPAINAGREESTOF"
+    picture = ""
+    is_triggered_only = yes
+
+    option = {
+        name = "It's a deal then"
+        SPA = { set_country_flag = fusion_treaty_done }
+        prestige = -5
+        any_pop = {
+            limit = { location = { is_core = POR continent = europe } }
+            militancy = 1
+            consciousness = 1
+        }
+    }
+}
+
+#Portugal's reaction to their countertreaty being rejected
+country_event = {
+    id = 46872852
+    title = "Spain Rejects our Conditions"
+    desc = "SPAINREJECTSTOF"
+    picture = ""
+    is_triggered_only = yes
+
+    option = {
+        name = "We are not subjects to the government in Madrid §RMay lead to war§W"
+        prestige = 10
+        any_pop = {
+            limit = { location = { is_core = POR continent = europe } }
+            militancy = -3
+            consciousness = -3
+        }
+        relation = { who = SPA value = -200 }
+        leave_alliance = SPA
+        SPA = { diplomatic_influence = { who = POR value = -200 } }
+        SPA = { country_event = { id = 46872853 days = 10 } }
+    }
+}
+
+#Spain gets informed about Portugal's reaction
+country_event = {
+    id = 46872853
+    title = "The Portuguse Response"
+    desc = "WARORENDTOF"
+    picture = ""
+    is_triggered_only = yes
+
+    option = {
+        name = "There's no way around it. Bring the Bourbons back"
+        prestige = -10
+        clr_global_flag = king_fernando_rules
+        set_country_flag = king_alfonso_rules
+		government = prussian_constitutionalism
+        ruling_party_ideology = conservative
+        political_reform = regionalism
+		set_country_flag = stay_regionalist
+		clr_country_flag = stay_federalist
+		remove_accepted_culture = catalan
+		remove_accepted_culture = basque
+		remove_accepted_culture = galician
+		random_owned = {
+            limit = { owner = { CLN = { has_country_flag = global_mc_setup_complete } } }
+            owner = { country_event = 8365937 }
+        }
+		political_reform = non_socialist
+		political_reform = yes_meeting
+		political_reform = free_press
+		political_reform = wealth_weighted_voting
+		political_reform = state_equal_weight
+		political_reform = first_past_the_post
+		political_reform = harassment
+		add_country_modifier = {
+			name = spanish_restoration
+			duration = 1825
+		}
+		ai_chance = { factor = 1 }
+    }
+
+    option = {
+        name = "Fernando remains, and we'll go to war if Luis doesn't want to reason"
+        badboy = 10
+        war = {
+			target = POR
+			attacker_goal = { casus_belli = scripted_war_big }
+			defender_goal = { casus_belli = status_quo }
+		}
+    }
+}
+
+
