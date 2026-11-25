@@ -1,4 +1,306 @@
-# Glorious Revolution begins
+#First event, the uprising of San Gil (previously a minor event) deciding if to leave the Liberal Union in charge or switch to the Moderates
+country_event = {
+    id = 18482352
+    title = "The Uprising of San Gil"
+    desc = "SANGILUPRISING"
+    picture = "san_gil"
+	fire_only_once = yes
+
+	trigger = {
+		year = 1866
+        NOT = { year = 1870 }
+		tag = SPA
+		owns = 498
+		month = 5
+		has_country_flag = monarchy_government
+	}
+
+	mean_time_to_happen = { days = 1 }
+
+    immediate = { set_country_flag = glorious_revolution_start }
+
+    option = {
+        name = "O'Donnell had his chance" #Switch to Moderates (basically guarantees revolution)
+        ruling_party_ideology = reactionary
+        random_owned = {
+            limit = { owner = { government = hms_government } }
+            owner = { government = prussian_constitutionalism }
+        }
+        random_owned = {
+            limit = { owner = { government = constitutional_empire } }
+            owner = { government = semi_constitutional_empire }
+        }
+        random_owned = {
+            limit = { owner = { NOT = { OR = { vote_franschise = none_voting vote_franschise = landed_voting vote_franschise = wealth_weighted_voting } } } }
+            owner = { political_reform = wealth_weighted_voting }
+        }
+        random_owned = {
+            limit = { owner = { NOT = { OR = { upper_house_composition = party_appointed upper_house_composition = appointed } } } }
+            owner = { political_reform = appointed }
+        }
+        random_owned = {
+            limit = { owner = { NOT = { public_meetings = no_meeting } } }
+            owner = { political_reform = no_meeting }
+        }
+        random_owned = {
+            limit = { owner = { NOT = { press_rights = state_press } } }
+            owner = { political_reform = state_press }
+        }
+        random_owned = {
+            limit = { owner = { NOT = { trade_unions = no_trade_unions } } }
+            owner = { political_reform = no_trade_unions }
+        }
+        random_owned = {
+            limit = { owner = { NOT = { OR = { political_parties = underground_parties political_parties = harassment } } } }
+            owner = { political_reform = harassment }
+        }
+        random_owned = {
+            limit = { owner = { has_country_flag = stay_federalist } }
+            owner = {
+                political_reform = regionalism
+                clr_country_flag = stay_federalist
+                set_country_flag = stay_regionalist
+                remove_accepted_culture = catalan
+                remove_accepted_culture = galician
+                remove_accepted_culture = basque
+                random_owned = {
+                    limit = { owner = { CLN = { has_country_flag = global_mc_setup_complete } } }
+                    owner = { country_event = 8365937 }
+                }
+                any_pop = {
+                    limit = { is_accepted_culture = no location = { is_core = SPA continent = europe } }
+                    militancy = 6 consciousness = 8
+                }
+            }
+        }
+        any_pop = {
+			limit = { location = { is_core = SPA continent = europe } }
+			scaled_militancy = { factor = 4 ideology = liberal }
+			scaled_militancy = { factor = 6 ideology = radical }
+            scaled_consciousness = { ideology = conservative factor = 2 }
+            scaled_militancy = { ideology = reactionary factor = -5 }
+            scaled_consciousness = { ideology = reactionary factor = -5 }
+		}
+        ai_chance = { factor = 8 modifier = { factor = 98 in_sphere = POR } }
+    }
+    
+    option = {
+        name = "He still has this under control" #Safe route (no revolution)
+        set_country_flag = kept_donnell
+        ruling_party_ideology = conservative
+        add_country_modifier = { name = global_liberal_agitation duration = 730 }
+        any_pop = {
+			limit = { location = { is_core = SPA continent = europe } }
+			scaled_militancy = { factor = 4 ideology = liberal }
+			scaled_militancy = { factor = 6 ideology = radical }
+		}
+        ai_chance = { factor = 2 }
+    }
+}
+
+#The Pact of Ostend, happens during the prelude to the revolution if SPA hasn't introduced federalism
+country_event = {
+    id = 37759
+    title = "The Pact of Ostend"
+    desc = "OSTENDPACT"
+    picture = "ostend_pact"
+    fire_only_once = yes
+    
+    trigger = {
+        year = 1866
+		tag = SPA
+		month = 7
+        has_country_flag = glorious_revolution_start
+		has_country_flag = monarchy_government
+        NOT = { has_country_flag = stay_federalist }
+    }
+    
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "Their schemes don't scare us"
+        set_country_flag = ostend_pact
+        any_pop = {
+            scaled_militancy = { ideology = liberal factor = 2 }
+            scaled_consciousness = { ideology = liberal factor = 4 }
+            scaled_militancy = { ideology = radical factor = 2 }
+            scaled_consciousness = { ideology = radical factor = 4 }
+        }
+    }
+}
+
+#Flavour event about the retrat of the Union from the government if the player cho
+country_event = {
+    id = 37760
+    title = "El Retraimiento"
+    desc = "ULRETREAT"
+    picture = "spanish_first_republic"
+    fire_only_once = yes
+
+    trigger = {
+        year = 1867
+        month = 3
+        TAG = SPA
+        has_country_flag = glorious_revolution_start
+        has_country_flag = monarchy_government
+        NOT = { has_country_flag = kept_donnell }
+    }
+
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "The government will remain closed!"
+        any_pop = {
+            scaled_militancy = { ideology = conservative factor = 3 }
+            scaled_consciousness = { ideology = conservative factor = 3 }
+        }
+        add_country_modifier = { name = resistance_to_new_regime duration = 1095 }
+    }
+}
+
+#Death of O'Donnell
+country_event = {
+    id = 37761
+    title = "The Death of O'Donnell"
+    desc = "ODONNELLDEATH"
+    picture = "leopoldo_odonnell"
+    fire_only_once = yes
+    
+    trigger = {
+        year = 1867
+		tag = SPA
+		month = 10
+        has_country_flag = glorious_revolution_start
+		has_country_flag = monarchy_government
+    }
+    
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "A great man he was"
+        random_owned = {
+            limit = { owner = { has_country_flag = kept_donnell } }
+            owner = { any_pop = { scaled_consciousness = { ideology = conservative factor = 2 } } }
+        }
+        random_owned = {
+            limit = { owner = { has_country_flag = kept_donnell has_country_flag = ostend_pact } }
+            owner = { add_country_modifier = { name = power_vacuum duration = 730 } }
+        }
+        random_owned = {
+            limit = { NOT = { owner = { has_country_flag = kept_donnell } } }
+            owner = { any_pop = { scaled_consciousness = { ideology = conservative factor = 4 } } }
+        }
+    }
+}
+
+#Death of Narvaez
+country_event = {
+    id = 37762
+    title = "The Death of Narvaez"
+    desc = "NARVAEZDEATH"
+    picture = "narvaez"
+    fire_only_once = yes
+    
+    trigger = {
+        year = 1868
+		tag = SPA
+		month = 4
+        has_country_flag = glorious_revolution_start
+		has_country_flag = monarchy_government
+    }
+    
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "The old guard is fading away"
+        random_owned = {
+            limit = { owner = { has_country_flag = kept_donnell } }
+            owner = { any_pop = { scaled_consciousness = { ideology = reactionary factor = 4 } } }
+        }
+        random_owned = {
+            limit = { NOT = { owner = { has_country_flag = kept_donnell } } }
+            owner = { any_pop = { scaled_consciousness = { ideology = reactionary factor = 2 } } add_country_modifier = { name = power_vacuum duration = 730 } }
+        }
+    }
+}
+
+#OUTCOME #1 - Revolution Hard Fail - Happens if Spain didn't get the Ostend Pact
+country_event = {
+    id = 37763
+    title = "The Mutinity of Cadiz"
+    desc = "REVOLUTIONFAILA"
+    picture = "1868_cadiz"
+    fire_only_once = yes
+    
+    trigger = {
+        tag = SPA
+        year = 1868
+        owns = 512
+		month = 9
+        has_country_flag = glorious_revolution_start
+        has_country_flag = monarchy_government
+        NOT = { has_country_flag = ostend_pact }
+        NOT = { OR = { has_country_flag = glorious_revolution_fail has_global_flag = spain_glorious_revolution } }
+    }
+    
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "¡La monarquía es invencible!"
+        clr_country_flag = glorious_revolution_start
+        set_country_flag = glorious_revolution_fail
+        prestige = 5
+        512 = { add_province_modifier = { name = war_torn duration = 730 } any_pop = { militancy = 5 consciousness = 5 } }
+        any_pop = { scaled_consciousness = { ideology = liberal factor = 2 } scaled_consciousness = { ideology = radical factor = 1 } }
+    }
+}
+
+#OUTCOME #2 - Revolution Fail - Happens if Spain recieved the Ostend pact but kept the Liberal Union in power
+country_event = {
+    id = 37764
+    title = "The Revolution of Cadiz"
+    desc = "REVOLUTIONFAILB"
+    picture = "1868_cadiz"
+    fire_only_once = yes
+    
+    trigger = {
+        tag = SPA
+        year = 1868
+        owns = 512
+		month = 9
+        has_country_flag = glorious_revolution_start
+        has_country_flag = monarchy_government
+        has_country_flag = ostend_pact
+        NOT = { OR = { has_country_flag = glorious_revolution_fail has_global_flag = spain_glorious_revolution } }
+        OR = {
+            government = hms_government
+            government = constitutional_empire
+            AND = { OR = { government = prussian_constitutionalism government = semi_constitutional_empire } has_country_flag = kept_donnell }
+            AND = { OR = { government = absolute_monarchy government = absolute_empire } has_country_flag = kept_donnell NOT = { average_consciousness = 4 } }
+        }
+    }
+    
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "¿Será invencible la Monarquia?"
+        clr_country_flag = glorious_revolution_start
+        set_country_flag = glorious_revolution_fail
+        512 = { add_province_modifier = { name = war_torn duration = 730 } any_pop = { militancy = 5 consciousness = 5 } }
+        any_owned = {
+            limit = { OR = { region = SPA_512 region = SPA_513 } }
+            add_province_modifier = { name = liberal_agitation duration = 730 } any_pop = { militancy = 3 consciousness = 3 }
+        }
+        any_pop = {
+            scaled_militancy = { ideology = liberal factor = 4 }
+            scaled_militancy = { ideology = liberal factor = 4 }
+            scaled_militancy = { ideology = radical factor = 4 }
+            scaled_militancy = { ideology = radical factor = 4 }
+        }
+    }
+}
+
+#OUTCOME #3 - The Actual Revolution - Happens to a Spain that chose Narvaez or is Absolute Monarchy with high consciousness
 country_event = {
     id = 37720
     title = "EVTNAME37720" #The Glorious Revolution
@@ -10,38 +312,33 @@ country_event = {
     trigger = {
         tag = SPA
         year = 1868
-        has_country_flag = monarchy_government
+        owns = 512
 		month = 9
-        is_greater_power = no
+        has_country_flag = glorious_revolution_start
+        has_country_flag = monarchy_government
+        has_country_flag = ostend_pact
+        NOT = { OR = { has_country_flag = glorious_revolution_fail has_global_flag = spain_glorious_revolution } }
         OR = {
-            has_country_modifier = recently_lost_war
-            NOT = { owns = 1492 }
-            NOT = { owns = 1498 }
-            NOT = { owns = 512 }
-            NOT = { owns = 513 }
-            NOT = { owns = 477 }
-            NOT = { owns = 503 }
-            NOT = { owns = 474 }
-            NOT = { owns = 486 }
-            NOT = { owns = 487 }
-            NOT = { owns = 2209 }
-            NOT = { owns = 1455 }
-            average_militancy = 3
-            any_core = { country_units_in_province = REB }
+            NOT = { has_country_flag = kept_donnell }
+            AND = { OR = { government = absolute_monarchy government = absolute_empire } average_consciousness = 4 }
         }
-		NOT = { year = 1869 }
     }
 
     mean_time_to_happen = { days = 1 }
 
     option = {
-        name = "We need a new competent, liberal monarch."
-		random_owned = { limit = { owner = { any_owned_province = { is_core = PRI } } } owner = {
-			country_event = { id = 90135 days = 6 }
-		} }
-		random_owned = { limit = { owner = { any_owned_province = { is_core = CUB } } } owner = {
-			country_event = { id = 98105 days = 13 }
-		} }
+        name = "¡Que viva España con Honra!"
+		random_owned = {
+            limit = { owner = { any_owned_province = { is_core = PRI } } DOM = { NOT = { has_country_flag = grito_de_moca } } }
+            owner = { country_event = { id = 90135 days = 6 } } }
+        random_owned = {
+            limit = { owner = { any_owned_province = { is_core = DOM } } DOM = { NOT = { OR = { has_country_flag = ready_for_restoration has_country_flag = restoration_can_begin has_country_flag = grito_de_moca } } } }
+            owner = { country_event = { id = 98115 days = 10 } }
+        }
+		random_owned = {
+            limit = { owner = { any_owned_province = { is_core = CUB } } DOM = { NOT = { has_country_flag = grito_de_moca } } }
+            owner = { country_event = { id = 98105 days = 13 } }
+        }
 		any_country = {
 			limit = {
 				OR = {
@@ -59,6 +356,7 @@ country_event = {
 				value = -100
 			}
 		}
+        clr_country_flag = glorious_revolution_start
 		set_global_flag = spain_glorious_revolution
 		government = prov_gov_liberal
         ruling_party_ideology = liberal
@@ -83,6 +381,8 @@ country_event = {
 		political_reform = state_equal_weight
 		political_reform = proportional_representation
 		political_reform = gerrymandering
+        remove_country_modifier = resistance_to_new_regime
+        remove_country_modifier = power_vacuum
 		ai_chance = { factor = 1 }
     }
 }
@@ -103,6 +403,11 @@ country_event = {
             consciousness = 5
             militancy = 7
         }
+        any_pop = {
+            limit = { has_pop_culture = afro_latino }
+            consciousness = 3
+            militancy = 5
+        }
 		any_owned = {
 			limit = {
 				OR = {
@@ -112,36 +417,19 @@ country_event = {
 			}
 			secede_province = CUB
 		}
-        2212 = {
-            remove_core = SPA
-        }
-        44 = {
-            remove_core = SPA
-        }
-        2211 = {
-            remove_core = SPA
-        }
-        2210 = {
-            remove_core = SPA
-        }
-        2209 = {
-            remove_core = SPA
-        }
-        3660 = {
-            remove_core = SPA
-        }
 		casus_belli = { target = CUB type = conquest_low months = 36 }
         war = {
             target = CUB
             attacker_goal = { casus_belli = conquest_low }
             defender_goal = { casus_belli = acquire_core_state state_province_id = 2209 }
         }
+        CUB = { add_country_modifier = { name = small_country_draft duration = 1025 } }
         ai_chance = { factor = 1 }
     }
 
     option = {
         name = "EVT98105OPTB"
-        prestige = -20
+        prestige = -15
         badboy = -5
         release_vassal = CUB
         relation = {
@@ -150,6 +438,7 @@ country_event = {
         }
         CUB = {
             any_pop = { militancy = -4 }
+            all_core = { remove_core = THIS }
         }
         random_owned = {
             limit = {
@@ -158,6 +447,81 @@ country_event = {
             owner = {
                 diplomatic_influence = {
                     who = CUB
+                    value = 200
+                }
+            }
+        }
+        ai_chance = { factor = 0 }
+    }
+}
+
+#Glorious Revolution triggers uprising in Dominican Republic if owned without having the dominican annexation process
+country_event = {
+    id = 98115
+    title = "The Grito de Capotillo"
+    desc = "RESTORATIONWARV2"
+    picture = "battle_of_monte_cristi"
+	fire_only_once = yes
+	is_triggered_only = yes
+
+    option = {
+        name = "Enlist the troops as quickly as possible"
+        any_pop = {
+            limit = { has_pop_culture = caribeno }
+            consciousness = 3
+            militancy = 5
+        }
+        any_pop = {
+            limit = { has_pop_culture = afro_latino }
+            consciousness = 2
+            militancy = 4
+        }
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 2216
+					province_id = 3309
+				}
+			}
+			secede_province = DOM
+		}
+		casus_belli = { target = DOM type = conquest_low months = 36 }
+        war = {
+            target = DOM
+            attacker_goal = { casus_belli = conquest_low }
+            defender_goal = { casus_belli = acquire_core_state state_province_id = 2214 }
+        }
+        DOM = {
+            add_country_modifier = { name = small_country_draft duration = 1025 }
+            capital = 2216
+            capital_scope = {
+                sub_unit = { type = infantry value = current }
+                sub_unit = { type = hussar value = current }
+            }
+        }
+        ai_chance = { factor = 1 }
+    }
+
+    option = {
+        name = "Tell them to put their guns down in exchange for autonomy §GLose 3 infamy§W"
+        prestige = -10
+        badboy = -3
+        release_vassal = DOM
+        relation = {
+            who = DOM
+            value = 50
+        }
+        DOM = {
+            any_pop = { militancy = -3 }
+            all_core = { remove_core = THIS }
+        }
+        random_owned = {
+            limit = {
+                owner = { is_greater_power = yes }
+            }
+            owner = {
+                diplomatic_influence = {
+                    who = DOM
                     value = 200
                 }
             }
@@ -200,6 +564,7 @@ country_event = {
         }
         PRI = {
             any_pop = { militancy = -4 }
+            all_core = { remove_core = THIS }
         }
         random_owned = {
             limit = {
@@ -229,7 +594,6 @@ country_event = {
         tag = SPA
         year = 1869
 		government = prov_gov_liberal
-		NOT = { year = 1870 }
     }
 
     mean_time_to_happen = { days = 1 }
@@ -405,11 +769,14 @@ country_event = {
 		remove_accepted_culture = catalan
 		remove_accepted_culture = basque
 		remove_accepted_culture = galician
-		country_event = 8365937
+		random_owned = {
+            limit = { owner = { CLN = { has_country_flag = global_mc_setup_complete } } }
+            owner = { country_event = 8365937 }
+        }
 		political_reform = non_socialist
 		political_reform = yes_meeting
 		political_reform = free_press
-		political_reform = none_voting
+		political_reform = wealth_weighted_voting
 		political_reform = state_equal_weight
 		political_reform = first_past_the_post
 		political_reform = harassment
@@ -600,6 +967,449 @@ country_event = {
     }
 }
 
+#-----THIRD CARLIST WAR EVENTS-----
+
+#Third Carlist War Starts
+country_event = {
+    id = 37755
+    title = "The Third Carlist War"
+    desc = "THIRDCARLISTWAR"
+    picture = "carlistas_en_miranda"
+    fire_only_once = yes
+
+    trigger = {
+        tag = SPA
+        SPC = { exists = no }
+        has_global_flag = spain_glorious_revolution
+        year = 1872
+        month = 9
+        any_owned_province = { OR = { region = SPA_492 AND = { region = SPA_498 NOT = { OR = { province_id = 498 province_id = 501 } } } } }
+    }
+
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "Third?! What happened with the Second?"
+        SPA = { all_core = { add_core = SPC } }
+		any_land_province = {
+            limit = { OR = { continent = north_america continent = south_america } NOT = { OR = { is_core = CUB is_core = DOM is_core = PRI } } }
+            remove_core = SPC
+        }
+        any_owned = {
+            limit = { OR = {
+                region = SPA_492
+                province_id = 500
+                province_id = 3433
+                province_id = 3252
+                province_id = 499
+            } }
+            secede_province = SPC
+        }
+        create_vassal = SPC
+        any_owned = {
+            limit = { OR = {
+                region = SPA_492
+                province_id = 500
+                province_id = 3433
+                province_id = 3252
+                province_id = 499
+            } }
+            secede_province = SPC
+        }
+        random_owned = { limit = { 493 = { owned_by = SPC } } SPC = { capital = 493 } }
+        random_owned = { limit = { owner = { has_country_flag = cored_hispaniola_sp } } SPC = { set_country_flag = cored_hispaniola_sp } }
+        random_owned = { limit = { owner = { has_country_flag = belize_purchase } } SPC = { set_country_flag = belize_purchase } }
+        random_owned = {
+            limit = { owner = { has_country_flag = the_slavery_debate NOT = { has_country_flag = moret_law } } }
+            SPC = { set_country_flag = the_slavery_debate political_reform = yes_slavery }
+        }
+        random_owned = {
+            limit = { owner = { has_country_flag = the_slavery_debate has_country_flag = moret_law NOT = { has_country_flag = cuba_patronage } } }
+            SPC = { set_country_flag = the_slavery_debate set_country_flag = moret_law political_reform = freedom_of_womb }
+        }
+        random_owned = {
+            limit = { owner = { OR = { AND = { has_country_flag = the_slavery_debate has_country_flag = moret_law has_country_flag = cuba_patronage } NOT = { has_country_flag = the_slavery_debate } } } }
+            SPC = { clr_country_flag = the_slavery_debate political_reform = no_slavery }
+        }
+        SPC = {
+            clr_country_flag = carlos_vi
+            clr_country_flag = juan_iii
+            set_country_flag = carlos_vii
+            set_country_flag = 1872_carlist
+            treasury = 100000
+			canned_food = 100
+			small_arms = 100
+			artillery = 100
+			ammunition = 100
+            government = absolute_monarchy
+            ruling_party_ideology = reactionary
+			political_reform = none_voting
+			political_reform = party_appointed
+			political_reform = no_meeting
+			political_reform = state_press
+			political_reform = state_controlled
+			political_reform = underground_parties
+            add_accepted_culture = basque
+            add_accepted_culture = catalan
+            add_accepted_culture = galician
+			random_owned = {
+				limit = {
+					owner = {
+						CLN = { has_country_flag = global_mc_setup_complete }
+					}
+				}
+				owner = {
+					country_event = 8365936
+				}
+			}
+            define_general = {
+                name = "Antonio Dorregaray"
+                personality = attack_5.1
+				background = defence_3.1
+            }
+            define_general = {
+                name = "Nicolás Ollo"
+                personality = attack_3.1
+				background = no_background
+            }
+            define_general = {
+                name = "Torcuato Mendiry"
+                personality = attack_2.1
+                background = defence_2.1
+            }
+            define_general = {
+                name = "Marquez de Valdespina"
+                personality = attack_2.1
+                background = defence_4.1
+            }
+            define_general = {
+                name = "Alfonso de Borbón-Dos Sicilias"
+                personality = attack_3.1
+                background = defence_3.1
+            }
+            capital_scope = {
+                sub_unit = { type = infantry value = current }
+                sub_unit = { type = infantry value = current }
+                sub_unit = { type = infantry value = current }
+                sub_unit = { type = hussar value = current }
+                sub_unit = { type = artillery value = current }
+                sub_unit = { type = artillery value = current }
+            }
+        }
+        random_owned = {
+            limit = { 500 = { owned_by = SPC } }
+            owner = {
+                500 = {
+                    sub_unit = { type = infantry value = current }
+                    sub_unit = { type = infantry value = current }
+                    sub_unit = { type = hussar value = current }
+                }
+            }
+        }
+        set_global_flag = third_carlist_war
+        CLN = { country_event = { id = 18492227 days = 60 } }
+
+        ai_chance = { factor = 1 }
+    }
+
+    option = {
+        name = "Only Don Carlos can end this liberal anarchy §BPlay as Carlist Spain§W"
+        SPA = { all_core = { add_core = SPC } }
+		any_land_province = {
+            limit = { OR = { continent = north_america continent = south_america } NOT = { OR = { is_core = CUB is_core = DOM is_core = PRI } } }
+            remove_core = SPC
+        }
+        any_owned = {
+            limit = { OR = {
+                region = SPA_492
+                province_id = 500
+                province_id = 3433
+                province_id = 3252
+                province_id = 499
+            } }
+            secede_province = SPC
+        }
+        create_vassal = SPC
+        any_owned = {
+            limit = { OR = {
+                region = SPA_492
+                province_id = 500
+                province_id = 3433
+                province_id = 3252
+                province_id = 499
+            } }
+            secede_province = SPC
+        }
+        random_owned = { limit = { 493 = { owned_by = SPC } } SPC = { capital = 493 } }
+        random_owned = { limit = { owner = { has_country_flag = cored_hispaniola_sp } } SPC = { set_country_flag = cored_hispaniola_sp } }
+        random_owned = { limit = { owner = { has_country_flag = belize_purchase } } SPC = { set_country_flag = belize_purchase } }
+        random_owned = {
+            limit = { owner = { has_country_flag = the_slavery_debate NOT = { has_country_flag = moret_law } } }
+            SPC = { set_country_flag = the_slavery_debate political_reform = yes_slavery }
+        }
+        random_owned = {
+            limit = { owner = { has_country_flag = the_slavery_debate has_country_flag = moret_law NOT = { has_country_flag = cuba_patronage } } }
+            SPC = { set_country_flag = the_slavery_debate set_country_flag = moret_law political_reform = freedom_of_womb }
+        }
+        random_owned = {
+            limit = { owner = { OR = { AND = { has_country_flag = the_slavery_debate has_country_flag = moret_law has_country_flag = cuba_patronage } NOT = { has_country_flag = the_slavery_debate } } } }
+            SPC = { clr_country_flag = the_slavery_debate political_reform = no_slavery }
+        }
+        SPC = {
+            clr_country_flag = carlos_vi
+            clr_country_flag = juan_iii
+            set_country_flag = carlos_vii
+            set_country_flag = 1872_carlist
+            treasury = 100000
+			canned_food = 100
+			small_arms = 100
+			artillery = 100
+			ammunition = 100
+            government = absolute_monarchy
+            ruling_party_ideology = reactionary
+			political_reform = none_voting
+			political_reform = party_appointed
+			political_reform = no_meeting
+			political_reform = state_press
+			political_reform = state_controlled
+			political_reform = underground_parties
+            add_accepted_culture = basque
+            add_accepted_culture = catalan
+            add_accepted_culture = galician
+			random_owned = {
+				limit = {
+					owner = {
+						CLN = { has_country_flag = global_mc_setup_complete }
+					}
+				}
+				owner = {
+					country_event = 8365936
+				}
+			}
+            define_general = {
+                name = "Antonio Dorregaray"
+                personality = attack_5.1
+				background = defence_3.1
+            }
+            define_general = {
+                name = "Nicolás Ollo"
+                personality = attack_3.1
+				background = no_background
+            }
+            define_general = {
+                name = "Torcuato Mendiry"
+                personality = attack_2.1
+                background = defence_2.1
+            }
+            define_general = {
+                name = "Marquez de Valdespina"
+                personality = attack_2.1
+                background = defence_4.1
+            }
+            define_general = {
+                name = "Alfonso de Borbón-Dos Sicilias"
+                personality = attack_3.1
+                background = defence_3.1
+            }
+            capital_scope = {
+                sub_unit = { type = infantry value = current }
+                sub_unit = { type = infantry value = current }
+                sub_unit = { type = infantry value = current }
+                sub_unit = { type = hussar value = current }
+                sub_unit = { type = artillery value = current }
+                sub_unit = { type = artillery value = current }
+            }
+        }
+        random_owned = {
+            limit = { 500 = { owned_by = SPC } }
+            owner = {
+                500 = {
+                    sub_unit = { type = infantry value = current }
+                    sub_unit = { type = infantry value = current }
+                    sub_unit = { type = hussar value = current }
+                }
+            }
+        }
+        set_global_flag = third_carlist_war
+        CLN = { country_event = { id = 18492227 days = 60 } }
+        change_tag_no_core_switch = SPC
+
+        ai_chance = { factor = 0 }
+    }
+}
+
+#SPA is victorious
+country_event = {
+    id = 37756
+    title = "Carlists Defeated"
+    desc = "THIRDCARLISTDEFEAT"
+    picture = "carlist_defeat"
+    fire_only_once = yes
+    
+    trigger = {
+        has_global_flag = third_carlist_war
+        tag = SPA
+		SPC = { exists = no }
+    }
+    
+    mean_time_to_happen = {
+        days = 1
+    }
+
+    option = {
+        name = "Carlism will fade away"
+        clr_global_flag = third_carlist_war
+        SPC = { all_core = { remove_core = SPC } }
+        prestige = 10
+        any_pop = {
+            scaled_militancy = { factor = -3 ideology = liberal }
+            scaled_consciousness = { factor = -3 ideology = liberal }
+            scaled_militancy = { factor = -1 ideology = radical }
+            scaled_consciousness = { factor = -1 ideology = radical }
+            scaled_militancy = { factor = -1 ideology = socialist }
+            scaled_consciousness = { factor = -1 ideology = socialist }
+            scaled_militancy = { factor = 5 ideology = reactionary }
+            scaled_consciousness = { factor = 5 ideology = reactionary }
+        }
+        any_pop = {
+            limit = { OR = { is_culture = basque is_culture = catalan is_culture = galician } }
+            militancy = 2
+            consciousness = 2
+        }
+    }
+}
+
+#Carlists win
+country_event = {
+    id = 37757
+    title = "Carlism Prevails"
+    desc = "THIRDCARLISTWIN"
+    picture = "carlist_victory"
+    fire_only_once = yes
+    
+    trigger = {
+        has_global_flag = third_carlist_war
+        tag = SPC
+		is_vassal = no
+		OR = {
+			SPA = { exists = no }
+			SPA = {
+				exists = yes
+				truce_with = THIS
+				war = no
+			}
+		}
+    }
+    
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "All institutions shall serve the king"
+        clr_global_flag = third_carlist_war
+		set_global_flag = carlist_flag
+        inherit = SPA
+        SPA = { all_core = { remove_core = SPA } }
+        prestige = 100
+        any_owned = {
+            limit = { is_core = THIS continent = europe }
+            any_pop = {
+                ideology = { factor = 0.10 value = reactionary }
+                scaled_militancy = { factor = -3 ideology = reactionary }
+                scaled_consciousness = { factor = -3 ideology = reactionary }
+                scaled_consciousness = { factor = 1 ideology = liberal }
+                scaled_militancy = { factor = 2 ideology = radical }
+                scaled_consciousness = { factor = 1 ideology = radical }
+                scaled_militancy = { factor = 1 ideology = socialist }
+                scaled_consciousness = { factor = 1 ideology = socialist }
+            }
+        }
+        any_pop = {
+            limit = { OR = { is_culture = basque is_culture = catalan is_culture = galician } }
+            militancy = -2
+            consciousness = -2
+        }
+        SPC = { capital = 487 }
+        random_owned = {
+            limit = { owner = { has_country_flag = the_slavery_debate has_country_flag = moret_law NOT = { has_country_flag = cuba_patronage } } }
+            owner = {
+                any_owned = {
+                    limit = { NOT = { region = SPA_2209 } }
+                    state_scope = { is_slave = no }
+                }
+                any_owned = {
+                    limit = { region = SPA_2209 }
+                    state_scope = { is_slave = yes }
+                }
+            }
+        }
+        any_owned = { limit = { owner = { NOT = { has_country_flag = fueros_solved } } OR = { is_core = CAT is_core = BSQ is_core = GLC } } add_province_modifier = { name = fueros_autonomy duration = -1 } }
+        government = absolute_monarchy
+        random_owned = { limit = { owner = { NOT = { vote_franschise = none_voting } } } owner = { political_reform = none_voting } }
+        random_owned = { limit = { owner = { NOT = { upper_house_composition = party_appointed } } } owner = { political_reform = party_appointed } }
+        random_owned = { limit = { owner = { NOT = { public_meetings = no_meeting } } } owner = { political_reform = no_meeting } }
+        random_owned = { limit = { owner = { NOT = { press_rights = state_press } } } owner = { political_reform = state_press } }
+        random_owned = { limit = { owner = { NOT = { trade_unions = no_trade_unions } } } owner = { political_reform = no_trade_unions } }
+        random_owned = { limit = { owner = { NOT = { political_parties = underground_parties } } } owner = { political_reform = underground_parties } }
+    }
+
+    option = {
+        name = "Perhaps some powers could be relayed to the Cortes"
+        clr_global_flag = third_carlist_war
+		set_global_flag = carlist_flag
+        inherit = SPA
+        SPA = { all_core = { remove_core = SPA } }
+        prestige = 100
+        any_owned = {
+            limit = { is_core = THIS continent = europe }
+            any_pop = {
+                ideology = { factor = 0.10 value = reactionary }
+                scaled_militancy = { factor = -3 ideology = reactionary }
+                scaled_consciousness = { factor = -3 ideology = reactionary }
+                scaled_consciousness = { factor = 1 ideology = liberal }
+                scaled_militancy = { factor = 2 ideology = radical }
+                scaled_consciousness = { factor = 1 ideology = radical }
+                scaled_militancy = { factor = 1 ideology = socialist }
+                scaled_consciousness = { factor = 1 ideology = socialist }
+            }
+        }
+        any_pop = {
+            limit = { OR = { is_culture = basque is_culture = catalan is_culture = galician } }
+            militancy = -2
+            consciousness = -2
+        }
+        SPC = { capital = 487 }
+        random_owned = {
+            limit = { owner = { has_country_flag = the_slavery_debate has_country_flag = moret_law NOT = { has_country_flag = cuba_patronage } } }
+            owner = {
+                any_owned = {
+                    limit = { NOT = { region = SPA_2209 } }
+                    state_scope = { is_slave = no }
+                }
+                any_owned = {
+                    limit = { region = SPA_2209 }
+                    state_scope = { is_slave = yes }
+                }
+            }
+        }
+        any_owned = { limit = { owner = { NOT = { has_country_flag = fueros_solved } } OR = { is_core = CAT is_core = BSQ is_core = GLC } } add_province_modifier = { name = fueros_autonomy duration = -1 } }
+        government = prussian_constitutionalism
+        random_owned = {
+            limit = { owner = { OR = { vote_franschise = none_voting vote_franschise = landed_voting } } }
+            owner = { political_reform = wealth_weighted_voting }
+        }
+        random_owned = {
+            limit = { owner = { upper_house_composition = party_appointed } }
+            owner = { political_reform = appointed }
+        }
+        random_owned = {
+            limit = { OR = { political_parties = underground_parties political_parties = harassment } }
+            owner = { political_reform = gerrymandering }
+        }
+    }
+}
+
+#----------------------------------
+
 country_event = {
     id = 37725
     title = "EVTNAME37725" #King Leopold Assassinated!
@@ -691,11 +1501,14 @@ country_event = {
 		remove_accepted_culture = catalan
 		remove_accepted_culture = basque
 		remove_accepted_culture = galician
-		country_event = 8365937
+		random_owned = {
+            limit = { owner = { CLN = { has_country_flag = global_mc_setup_complete } } }
+            owner = { country_event = 8365937 }
+        }
 		political_reform = non_socialist
 		political_reform = yes_meeting
 		political_reform = free_press
-		political_reform = none_voting
+		political_reform = wealth_weighted_voting
 		political_reform = state_equal_weight
 		political_reform = first_past_the_post
 		political_reform = harassment
@@ -814,11 +1627,14 @@ country_event = {
 		remove_accepted_culture = catalan
 		remove_accepted_culture = basque
 		remove_accepted_culture = galician
-		country_event = 8365937
+		random_owned = {
+            limit = { owner = { CLN = { has_country_flag = global_mc_setup_complete } } }
+            owner = { country_event = 8365937 }
+        }
 		political_reform = non_socialist
 		political_reform = yes_meeting
 		political_reform = free_press
-		political_reform = none_voting
+		political_reform = wealth_weighted_voting
 		political_reform = state_equal_weight
 		political_reform = first_past_the_post
 		political_reform = harassment
@@ -990,7 +1806,6 @@ country_event = {
             any_core = { country_units_in_province = REB }
             NOT = { prestige = 70 }
         }
-        NOT = { year = 1875 }
     }
 
     immediate = { clr_country_flag = first_spanish_republic }
@@ -1101,10 +1916,20 @@ country_event = {
         set_country_flag = king_alfonso_rules
 		government = prussian_constitutionalism
         ruling_party_ideology = conservative
+        political_reform = regionalism
+		set_country_flag = stay_regionalist
+		clr_country_flag = stay_federalist
+		remove_accepted_culture = catalan
+		remove_accepted_culture = basque
+		remove_accepted_culture = galician
+		random_owned = {
+            limit = { owner = { CLN = { has_country_flag = global_mc_setup_complete } } }
+            owner = { country_event = 8365937 }
+        }
 		political_reform = non_socialist
 		political_reform = yes_meeting
 		political_reform = free_press
-		political_reform = none_voting
+		political_reform = wealth_weighted_voting
 		political_reform = state_equal_weight
 		political_reform = first_past_the_post
 		political_reform = harassment
