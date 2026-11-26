@@ -1,4 +1,4 @@
-#First event, the uprising of San Gil, deciding what to do with O'Donnell
+#First event, the uprising of San Gil (previously a minor event) deciding if to leave the Liberal Union in charge or switch to the Moderates
 country_event = {
     id = 18482352
     title = "The Uprising of San Gil"
@@ -8,6 +8,7 @@ country_event = {
 
 	trigger = {
 		year = 1866
+        NOT = { year = 1870 }
 		tag = SPA
 		owns = 498
 		month = 5
@@ -16,8 +17,10 @@ country_event = {
 
 	mean_time_to_happen = { days = 1 }
 
+    immediate = { set_country_flag = glorious_revolution_start }
+
     option = {
-        name = "O'Donnell had his chance"
+        name = "O'Donnell had his chance" #Switch to Moderates (basically guarantees revolution)
         ruling_party_ideology = reactionary
         random_owned = {
             limit = { owner = { government = hms_government } }
@@ -82,7 +85,7 @@ country_event = {
     }
     
     option = {
-        name = "He still has this under control"
+        name = "He still has this under control" #Safe route (no revolution)
         set_country_flag = kept_donnell
         ruling_party_ideology = conservative
         add_country_modifier = { name = global_liberal_agitation duration = 730 }
@@ -95,7 +98,7 @@ country_event = {
     }
 }
 
-#The Pact of Ostend
+#The Pact of Ostend, happens during the prelude to the revolution if SPA hasn't introduced federalism
 country_event = {
     id = 37759
     title = "The Pact of Ostend"
@@ -107,6 +110,7 @@ country_event = {
         year = 1866
 		tag = SPA
 		month = 7
+        has_country_flag = glorious_revolution_start
 		has_country_flag = monarchy_government
         NOT = { has_country_flag = stay_federalist }
     }
@@ -125,6 +129,7 @@ country_event = {
     }
 }
 
+#Flavour event about the retrat of the Union from the government if the player cho
 country_event = {
     id = 37760
     title = "El Retraimiento"
@@ -136,6 +141,7 @@ country_event = {
         year = 1867
         month = 3
         TAG = SPA
+        has_country_flag = glorious_revolution_start
         has_country_flag = monarchy_government
         NOT = { has_country_flag = kept_donnell }
     }
@@ -152,6 +158,7 @@ country_event = {
     }
 }
 
+#Death of O'Donnell
 country_event = {
     id = 37761
     title = "The Death of O'Donnell"
@@ -163,6 +170,7 @@ country_event = {
         year = 1867
 		tag = SPA
 		month = 10
+        has_country_flag = glorious_revolution_start
 		has_country_flag = monarchy_government
     }
     
@@ -185,6 +193,7 @@ country_event = {
     }
 }
 
+#Death of Narvaez
 country_event = {
     id = 37762
     title = "The Death of Narvaez"
@@ -196,6 +205,7 @@ country_event = {
         year = 1868
 		tag = SPA
 		month = 4
+        has_country_flag = glorious_revolution_start
 		has_country_flag = monarchy_government
     }
     
@@ -214,6 +224,7 @@ country_event = {
     }
 }
 
+#OUTCOME #1 - Revolution Hard Fail - Happens if Spain didn't get the Ostend Pact
 country_event = {
     id = 37763
     title = "The Mutinity of Cadiz"
@@ -226,22 +237,25 @@ country_event = {
         year = 1868
         owns = 512
 		month = 9
+        has_country_flag = glorious_revolution_start
         has_country_flag = monarchy_government
         NOT = { has_country_flag = ostend_pact }
-        NOT = { OR = { has_country_flag = 1868_rev_fail has_global_flag = spain_glorious_revolution } }
+        NOT = { OR = { has_country_flag = glorious_revolution_fail has_global_flag = spain_glorious_revolution } }
     }
     
     mean_time_to_happen = { days = 1 }
 
     option = {
-        name = "Como dijimos, ¡La monarquía es invencible!"
-        set_country_flag = 1868_rev_fail
+        name = "¡La monarquía es invencible!"
+        clr_country_flag = glorious_revolution_start
+        set_country_flag = glorious_revolution_fail
         prestige = 5
         512 = { add_province_modifier = { name = war_torn duration = 730 } any_pop = { militancy = 5 consciousness = 5 } }
         any_pop = { scaled_consciousness = { ideology = liberal factor = 2 } scaled_consciousness = { ideology = radical factor = 1 } }
     }
 }
 
+#OUTCOME #2 - Revolution Fail - Happens if Spain recieved the Ostend pact but kept the Liberal Union in power
 country_event = {
     id = 37764
     title = "The Revolution of Cadiz"
@@ -254,13 +268,15 @@ country_event = {
         year = 1868
         owns = 512
 		month = 9
+        has_country_flag = glorious_revolution_start
         has_country_flag = monarchy_government
         has_country_flag = ostend_pact
-        NOT = { OR = { has_country_flag = 1868_rev_fail has_global_flag = spain_glorious_revolution } }
+        NOT = { OR = { has_country_flag = glorious_revolution_fail has_global_flag = spain_glorious_revolution } }
         OR = {
             government = hms_government
             government = constitutional_empire
             AND = { OR = { government = prussian_constitutionalism government = semi_constitutional_empire } has_country_flag = kept_donnell }
+            AND = { OR = { government = absolute_monarchy government = absolute_empire } has_country_flag = kept_donnell NOT = { average_consciousness = 4 } }
         }
     }
     
@@ -268,7 +284,8 @@ country_event = {
 
     option = {
         name = "¿Será invencible la Monarquia?"
-        set_country_flag = 1868_rev_fail
+        clr_country_flag = glorious_revolution_start
+        set_country_flag = glorious_revolution_fail
         512 = { add_province_modifier = { name = war_torn duration = 730 } any_pop = { militancy = 5 consciousness = 5 } }
         any_owned = {
             limit = { OR = { region = SPA_512 region = SPA_513 } }
@@ -283,7 +300,7 @@ country_event = {
     }
 }
 
-# Glorious Revolution begins
+#OUTCOME #3 - The Actual Revolution - Happens to a Spain that chose Narvaez or is Absolute Monarchy with high consciousness
 country_event = {
     id = 37720
     title = "EVTNAME37720" #The Glorious Revolution
@@ -297,9 +314,10 @@ country_event = {
         year = 1868
         owns = 512
 		month = 9
+        has_country_flag = glorious_revolution_start
         has_country_flag = monarchy_government
         has_country_flag = ostend_pact
-        NOT = { OR = { has_country_flag = 1868_rev_fail has_global_flag = spain_glorious_revolution } }
+        NOT = { OR = { has_country_flag = glorious_revolution_fail has_global_flag = spain_glorious_revolution } }
         OR = {
             NOT = { has_country_flag = kept_donnell }
             AND = { OR = { government = absolute_monarchy government = absolute_empire } average_consciousness = 4 }
@@ -338,6 +356,7 @@ country_event = {
 				value = -100
 			}
 		}
+        clr_country_flag = glorious_revolution_start
 		set_global_flag = spain_glorious_revolution
 		government = prov_gov_liberal
         ruling_party_ideology = liberal
