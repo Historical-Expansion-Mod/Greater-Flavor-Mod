@@ -2230,7 +2230,7 @@ country_event = {
     id = 46872850
     title = "The Portuguese Demands"
     desc = "PORDEMANDSTOF"
-    picture = ""
+    picture = "treaty"
     is_triggered_only = yes
 
     option = {
@@ -2358,8 +2358,9 @@ country_event = {
     }
 
     option = {
-        name = "Fernando remains, and we'll go to war if Luis doesn't want to reason"
-        badboy = 10
+        name = "The progressive's project can be saved by force §RDeclare War, 12 infamy§W"
+        badboy = 12
+        set_global_flag = tof_war
         war = {
 			target = POR
 			attacker_goal = { casus_belli = scripted_war_big }
@@ -2368,4 +2369,125 @@ country_event = {
     }
 }
 
+#Portuguese Victory in the war
+country_event = {
+    id = 46872855
+    title = "Our Independence Secured"
+    desc = "PORWINWTOF"
+    picture = ""
+    
+    trigger = {
+        tag = POR
+        has_global_flag = tof_war
+        NOT = { war_with = SPA }
+        NOT = { has_country_flag = lost_the_war }
+    }
+
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = ""
+        clr_global_flag = tof_war
+        prestige = 25
+        any_pop = {
+            limit = { location = { is_core = POR continent = europe } }
+            militancy = -6 consciousness = -6
+        }
+        SPA = { country_event = { id = 46872856 days = 2 } }
+    }
+}
+
+#Spanish defeat in the war
+country_event = {
+    id = 46872856
+    title = "The End of our Iberian Dreams"
+    desc = "SPADEFEATWTOF"
+    picture = ""
+    is_triggered_only = yes
+
+    option = {
+        name = "Are the two kingdoms destined to be Separated?"
+        clr_global_flag = tof_war
+        clr_global_flag = king_fernando_rules
+        set_country_flag = king_alfonso_rules
+        prestige = -25
+        government = prussian_constitutionalism
+        ruling_party_ideology = conservative
+        political_reform = regionalism
+		set_country_flag = stay_regionalist
+		clr_country_flag = stay_federalist
+		remove_accepted_culture = catalan
+		remove_accepted_culture = basque
+		remove_accepted_culture = galician
+		random_owned = {
+            limit = { owner = { CLN = { has_country_flag = global_mc_setup_complete } } }
+            owner = { country_event = 8365937 }
+        }
+		political_reform = non_socialist
+		political_reform = yes_meeting
+		political_reform = free_press
+		political_reform = wealth_weighted_voting
+		political_reform = state_equal_weight
+		political_reform = first_past_the_post
+		political_reform = harassment
+        any_pop = {
+            limit = { location = { is_core = SPA continent = europe } }
+            consciousness = 3
+        }
+    }
+}
+
+#Spanish win in the war, Iberia is formed
+country_event = {
+    id = 46872857
+    title = "The Imprisoned Kingdom"
+    desc = "SPAWINWTOF"
+    picture = ""
+    
+    trigger = {
+        tag = SPA
+        war = no
+        has_global_flag = tof_war
+        POR = { war = no has_country_flag = lost_the_war }
+    }
+
+    mean_time_to_happen = { days = 1 }
+
+    option = {
+        name = "They will come to appreciate this over time"
+        clr_global_flag = tof_war
+        any_country = {
+            limit = {
+                OR = {
+                    tag = POR
+					tag = CAT
+					tag = GLC
+					tag = BSQ
+                }
+				AND = { ai = yes tag = POR }
+            }
+            annex_to = THIS
+        }
+        POR = { all_core = { add_core = IBR } }
+        CAT = { all_core = { add_core = IBR } }
+        GLC = { all_core = { add_core = IBR } }
+        BSQ = { all_core = { add_core = IBR } }
+        change_tag = IBR
+        add_accepted_culture = catalan
+        add_accepted_culture = basque
+        add_accepted_culture = galician
+        random_owned = {
+            limit = { owner = { CLN = { has_country_flag = global_mc_setup_complete } } }
+            owner = { country_event = 8365936 }
+        }
+        any_pop = {
+            limit = { is_culture = portuguese }
+            militancy = 7 consciousness = 7
+        }
+        any_owned = {
+            limit = { is_core = POR }
+            add_province_modifier = { name = nationalist_agitation duration = 7300 }
+        }
+    }
+}
 
